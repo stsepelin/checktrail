@@ -1,5 +1,5 @@
 """First-party compiler/header and source-endpoint observations, never a review."""
-import argparse,gzip,hashlib,json,os,pathlib,posixpath,re,stat,struct,subprocess,sys,tarfile,time,xml.etree.ElementTree as ET
+import argparse,gzip,hashlib,json,os,pathlib,posixpath,re,stat,struct,subprocess,sys,tarfile,time,zlib,xml.etree.ElementTree as ET
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from common import Refusal,need,freeze,encoded,read_json,hash_file,git_blob,syncdir,safe_relative
 def file_identity(path,maximum=256*1024**2,deadline=None):
@@ -195,9 +195,10 @@ def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
     while reader.read(65536):pass
    need(file_identity(p,2*1024**3,deadline)==identity,'selected SDK archive changed during metadata validation');row['fullGzipStreamIntegrityVerified']=True
    versions=[x for x in row['versionFiles'] if x['path']=='sdk/10.0.401/.version'];row['requiredProductLayoutMetadataObserved']=layout=={'hostfxr','coreclr','corelib','sdk-entry-assembly'};row['selectedSDKArchiveMetadataAndAttributionMatched']=len(versions)==1 and all(x in versions[0]['lines'] for x in [profile['source']['commit'],'10.0.401',profile['targetRID']]) and row['targetDotnetARM64MuslELFMetadataMatched'] and row['requiredProductLayoutMetadataObserved'] and row['changedSinceProtectedPreBuildSnapshot'] and command_passed
-  except (ValueError,tarfile.TarError,Refusal,struct.error,OSError,EOFError):row['selectedSDKArchiveMetadataAndAttributionMatched']=False
+  except (ValueError,tarfile.TarError,Refusal,struct.error,OSError,EOFError,zlib.error):row['selectedSDKArchiveMetadataAndAttributionMatched']=False
   rows.append(row)
  return {'candidates':rows,'outputInventoryComplete':inventory['snapshotComplete'],'selectedSDKArchiveMetadataAndAttributionObserved':any(x.get('selectedSDKArchiveMetadataAndAttributionMatched') for x in rows),'productOrBuildQualificationClaimed':False,'metadataLayoutAndAttributionAreNotProductExecutionOrReproducibility':True,'bootstrapDotnetAndInputArchivesSearched':False,'historicalPublisherBinaryEqualityClaimed':False}
+SOURCE_ROOT='/work/source'
 SDK_OUTPUT_ROOTS=['/work/staging','/work/source/artifacts']
 def optional_json(path):return read_json(path) if pathlib.Path(path).exists() else None
 def post_build_sdks(roots,profile,deadline,evidence):
@@ -220,25 +221,31 @@ def build_sdk_outputs(roots,profile,deadline,evidence):
  """
  evidence=pathlib.Path(evidence);recorded=optional_json(evidence/'POST-BUILD-SDK-OUTPUTS.json')
  if recorded is not None:value=recorded;source='post-build-before-test-record'
- elif any((evidence/x).exists() for x in ['PRE-TEST-OUTPUT-IDENTITIES.json','original-tests-TERMINAL.json']):value={'candidates':[],'selectedSDKArchiveMetadataAndAttributionObserved':False,'productOrBuildQualificationClaimed':False};source='INCOMPLETE test phase admitted without a post-build SDK output record'
+ elif any((evidence/x).exists() for x in ['PRE-TEST-OUTPUT-IDENTITIES.json','original-tests-TERMINAL.json']):value={'candidates':[],'outputInventoryComplete':False,'selectedSDKArchiveMetadataAndAttributionObserved':False,'productOrBuildQualificationClaimed':False};source='INCOMPLETE test phase admitted without a post-build SDK output record'
  else:value={**fresh_sdks(roots,profile,deadline,optional_json(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-build-TERMINAL.json')),'observedAfterBuildStoppedBeforeTestPhase':True};source='final-tree-no-test-phase-admitted'
- final=output_inventory(roots,deadline,'sdk-archives');built=set();changed=[]
+ # With no test phase the tree fresh_sdks just inventoried is the final one.
+ final=output_inventory(roots,deadline,'sdk-archives') if source=='post-build-before-test-record' else {'snapshotComplete':value['outputInventoryComplete'],'entries':{row['path']:row['archive'] for row in value['candidates']}}
+ built=set();changed=[]
  for row in value['candidates']:
   now=final['entries'].get(row['path']);identity=(row['archive']['bytes'],row['archive']['sha256']);built.add((row['path'],*identity))
   row['finalObservation']=('absent' if final['snapshotComplete'] else 'not-found-in-incomplete-final-inventory') if now is None else 'unchanged' if (now['bytes'],now['sha256'])==identity else 'replaced'
-  if row['finalObservation']!='unchanged':changed.append(row['path'])
+  # Only an archive the build produced, positively seen gone or different, is a build output the final tree lost.
+  if row['changedSinceProtectedPreBuildSnapshot'] is True and row['finalObservation'] in ['absent','replaced']:changed.append(row['path'])
  later=[{'path':path,'archive':x,'creditedAsBuildOutput':False} for path,x in sorted(final['entries'].items()) if (path,x['bytes'],x['sha256']) not in built]
  return {**value,'buildOutputObservation':source,'finalOutputInventoryComplete':final['snapshotComplete'],'buildOutputsAbsentOrReplacedAtFinalObservation':changed,'outputsFirstObservedAfterBuildNotCredited':later}
 def after(profile,evidence,deadline,test_started_wall=None):
- evidence=pathlib.Path(evidence);before=read_json(evidence/'source-before.json') if (evidence/'source-before.json').exists() else None;endpoint=tracked_after('/work/source',before,deadline) if before is not None else {'state':'INCOMPLETE original materialization; no valid tracked baseline','passingCredit':False};freeze(evidence/'SOURCE-ENDPOINT-CHANGES.json',encoded(endpoint));freeze(evidence/'ACTUAL-CMAKE-COMPILER-SELECTION.json',encoded({'records':cmake_records('/work/source',deadline),'packageLabelsAloneAreExecutionEvidence':False}));freeze(evidence/'ORIGINAL-NATURAL-TEST-REPORTS.json',encoded(reports('/work/source',deadline,{x['path'] for x in before['entries']} if before else (),test_started_wall,read_json(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json') if (evidence/'PRE-TEST-OUTPUT-IDENTITIES.json').exists() else None,read_json(evidence/'original-tests-TERMINAL.json') if (evidence/'original-tests-TERMINAL.json').exists() else None)));freeze(evidence/'FRESH-SELECTED-SDK-OUTPUTS.json',encoded(build_sdk_outputs(SDK_OUTPUT_ROOTS,profile,deadline,evidence)))
+ evidence=pathlib.Path(evidence);before=read_json(evidence/'source-before.json') if (evidence/'source-before.json').exists() else None;endpoint=tracked_after(SOURCE_ROOT,before,deadline) if before is not None else {'state':'INCOMPLETE original materialization; no valid tracked baseline','passingCredit':False};freeze(evidence/'SOURCE-ENDPOINT-CHANGES.json',encoded(endpoint));freeze(evidence/'ACTUAL-CMAKE-COMPILER-SELECTION.json',encoded({'records':cmake_records(SOURCE_ROOT,deadline),'packageLabelsAloneAreExecutionEvidence':False}));freeze(evidence/'ORIGINAL-NATURAL-TEST-REPORTS.json',encoded(reports(SOURCE_ROOT,deadline,{x['path'] for x in before['entries']} if before else (),test_started_wall,read_json(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json') if (evidence/'PRE-TEST-OUTPUT-IDENTITIES.json').exists() else None,read_json(evidence/'original-tests-TERMINAL.json') if (evidence/'original-tests-TERMINAL.json').exists() else None)));freeze(evidence/'FRESH-SELECTED-SDK-OUTPUTS.json',encoded(build_sdk_outputs(SDK_OUTPUT_ROOTS,profile,deadline,evidence)))
+def phase(mode,profile,evidence,deadline,test_started_wall=None):
+ evidence=pathlib.Path(evidence)
+ if mode=='probe':image_probe(profile,evidence)
+ elif mode=='before-build':freeze(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json',encoded(output_inventory(SDK_OUTPUT_ROOTS,deadline,'sdk-archives')))
+ elif mode=='before-test':post_build_sdks(SDK_OUTPUT_ROOTS,profile,deadline,evidence);freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',encoded(output_inventory([SOURCE_ROOT],deadline,'test-reports')))
+ else:need(mode=='after','known observer phase');after(profile,evidence,deadline,test_started_wall)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('mode',choices=['probe','before-build','before-test','after']);p.add_argument('--profile',required=True);p.add_argument('--evidence',required=True);p.add_argument('--deadline',type=float,required=True);p.add_argument('--uid',type=int,required=True);p.add_argument('--gid',type=int,required=True);p.add_argument('--test-start-wall',type=float);a=p.parse_args();profile=read_json(a.profile)
  os.chown(a.evidence,0,0)
  try:
-  if a.mode=='probe':image_probe(profile,a.evidence)
-  elif a.mode=='before-build':freeze(pathlib.Path(a.evidence)/'PRE-BUILD-OUTPUT-IDENTITIES.json',encoded(output_inventory(SDK_OUTPUT_ROOTS,a.deadline,'sdk-archives')))
-  elif a.mode=='before-test':post_build_sdks(SDK_OUTPUT_ROOTS,profile,a.deadline,a.evidence);freeze(pathlib.Path(a.evidence)/'PRE-TEST-OUTPUT-IDENTITIES.json',encoded(output_inventory(['/work/source'],a.deadline,'test-reports')))
-  else:after(profile,a.evidence,a.deadline,a.test_start_wall)
+  phase(a.mode,profile,a.evidence,a.deadline,a.test_start_wall)
  finally:
   for f in pathlib.Path(a.evidence).iterdir():
    if f.is_file() and not f.is_symlink():os.chown(f,a.uid,a.gid)

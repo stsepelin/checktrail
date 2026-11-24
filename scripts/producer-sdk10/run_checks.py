@@ -1,8 +1,23 @@
-"""Run only first-party synthetic controls; never imports SDK/project bodies."""
-import argparse,hashlib,json,os,pathlib,resource,subprocess,sys,time,unittest
+"""Run only first-party synthetic controls; never imports SDK/project bodies.
+
+Until bound_tests() has verified the directory, this file imports only the
+standard library: the directory is not on sys.path, and isolated mode (-I)
+keeps the interpreter from adding it as the script directory.
+"""
+import sys
+if __name__=='__main__' and not sys.flags.isolated:raise SystemExit('run_checks.py must run isolated (python3 -I) so its directory is not importable before verification')
+import argparse,hashlib,json,os,pathlib,resource,subprocess,time,unittest
 HERE=pathlib.Path(__file__).resolve().parent
-sys.path.insert(0,str(HERE))
-from common import need,encoded,freeze,hash_file
+class Unreviewed(RuntimeError):pass
+def need(value,message):
+ if not value:raise Unreviewed(message)
+def hash_file(path):
+ h=hashlib.sha256();n=0
+ with open(path,'rb') as f:
+  for block in iter(lambda:f.read(1048576),b''):n+=len(block);h.update(block)
+ return n,h.hexdigest()
+def importable(folder):
+ if str(folder) not in sys.path:sys.path.insert(0,str(folder))
 
 def bound_tests(folder,pin):
  """Return the test modules of an exactly reviewed control directory.
@@ -29,13 +44,15 @@ def bound_tests(folder,pin):
  tests=sorted(x[:-3] for x in names if x.startswith('test_') and x.endswith('.py'));need(tests,'nonempty reviewed Python controls');return tests
 
 def worker(out,pin):
- suite=unittest.defaultTestLoader.loadTestsFromNames(bound_tests(HERE,pin))
+ names=bound_tests(HERE,pin);importable(HERE);from common import encoded,freeze
+ suite=unittest.defaultTestLoader.loadTestsFromNames(names)
  result=unittest.TextTestRunner(verbosity=2).run(suite)
  row={'tests':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skipped':len(result.skipped),'originalSourceDockerSdkOrNetworkExecuted':False}
  freeze(out/'PYTHON.json',encoded(row));return 0 if result.wasSuccessful() and result.testsRun>0 and not result.skipped else 1
 
 def run(out,pin):
- bound_tests(HERE,pin);need(not out.exists(),'fresh private synthetic output root');out.mkdir(mode=0o700);rows=[]
+ bound_tests(HERE,pin);importable(HERE);from common import encoded,freeze
+ need(not out.exists(),'fresh private synthetic output root');out.mkdir(mode=0o700);rows=[]
  for name,args in [('python',[sys.executable,'-I','-S','-B',str(HERE/'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin]),('crypto',['node',str(HERE/'test_crypto.mjs'),str(out/'crypto-test-only')])]:
   started=time.monotonic();log=out/(name+'.log')
   def limit():resource.setrlimit(resource.RLIMIT_FSIZE,(4*1024**2,4*1024**2))

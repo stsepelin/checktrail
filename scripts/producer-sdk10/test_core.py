@@ -178,10 +178,13 @@ class Controls(unittest.TestCase):
     code,log,out=self.control_worker(bundle,value)
     self.assertNotEqual(code,0);self.assertIn('unreviewed entry in executed control directory: '+extra,log);self.assertEqual(list(markers.iterdir()),[]);self.assertFalse((out/'PYTHON.json').exists())
  def test_changed_listed_or_protected_control_or_unpinned_protected_manifest_is_refused(self):
-  for case in ['listed','protected','protected-manifest-unpinned','protected-manifest-changed']:
+  for case in ['listed','protected','verifier-helper','protected-manifest-unpinned','protected-manifest-changed']:
    with self.subTest(case=case):
     bundle,markers,control,pin=self.control_bundle();value=pin(manifest_protected=case!='protected-manifest-unpinned')
     if case in ['listed','protected']:target=bundle/('test_'+case+'_marker.py');target.write_bytes(target.read_bytes()+b'# foreign-7319\n');expected='frozen first-party control file changed: test_'+case+'_marker.py'
+    elif case=='verifier-helper':
+     # common.py is pinned like any control; changing it must not run before the pin is checked.
+     target=bundle/'common.py';target.write_bytes(target.read_bytes()+('\nimport pathlib\npathlib.Path('+repr(str(markers/'helper'))+').write_text("imported-7319")\n').encode());expected='frozen first-party control file changed: common.py'
     elif case=='protected-manifest-changed':target=bundle/'PROTECTED-CONTROLS.json';target.write_bytes(target.read_bytes()+b' ');expected='frozen first-party control file changed: PROTECTED-CONTROLS.json'
     else:expected='unreviewed entry in executed control directory: PROTECTED-CONTROLS.json, test_protected_marker.py'
     code,log,out=self.control_worker(bundle,value)
@@ -189,7 +192,7 @@ class Controls(unittest.TestCase):
  def test_controller_refuses_unreviewed_entry_before_creating_output_or_children(self):
   import run_checks
   bundle,markers,control,pin=self.control_bundle();value=pin();control('test_unlisted_marker.py','unlisted');out=self.root/'controller-out'
-  with patch.object(run_checks,'HERE',bundle),patch.object(run_checks.subprocess,'run') as child,self.assertRaisesRegex(common.Refusal,'unreviewed entry in executed control directory: test_unlisted_marker.py'):run_checks.run(out,value)
+  with patch.object(run_checks,'HERE',bundle),patch.object(run_checks.subprocess,'run') as child,self.assertRaisesRegex(run_checks.Unreviewed,'unreviewed entry in executed control directory: test_unlisted_marker.py'):run_checks.run(out,value)
   child.assert_not_called();self.assertFalse(out.exists());self.assertEqual(list(markers.iterdir()),[])
   (bundle/'test_unlisted_marker.py').unlink();self.assertEqual(run_checks.bound_tests(bundle,value),['test_listed_marker','test_protected_marker'])
 if __name__=='__main__':

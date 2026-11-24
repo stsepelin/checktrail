@@ -1,5 +1,5 @@
 """Synthetic report/package bodies only; no SDK, Docker or source execution."""
-import copy,gzip,io,json,os,struct,sys,tarfile,tempfile,time,unittest
+import contextlib,copy,gzip,io,json,os,struct,sys,tarfile,tempfile,time,unittest
 from pathlib import Path
 from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -90,18 +90,20 @@ class ObserverControls(unittest.TestCase):
    for item,body in members+[members[0]]:tar.addfile(item,io.BytesIO(body))
   self.assertFalse(self.fresh()['selectedSDKArchiveMetadataAndAttributionObserved'])
 
- def phases(self,build=None,tests=None,record=True):
-  # Build and test phases share the staging and artifacts roots; only the
-  # before-test observer sits between them, as in the hosted controller.
-  evidence=self.root/'evidence';evidence.mkdir();staging=self.root/'staging';staging.mkdir();roots=[str(staging),str(self.root/'artifacts')];profile={'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'};archive=staging/'dotnet-sdk-10.0.401-linux-musl-arm64.tar.gz'
-  with mock.patch.object(observer,'SDK_OUTPUT_ROOTS',roots):
-   common.freeze(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json',common.encoded(observer.output_inventory(roots,time.monotonic()+10,'sdk-archives')))
+ def phases(self,build=None,tests=None,record=True,preexisting=None):
+  # Drives the production phase handler. Build and test phases share the
+  # staging and artifacts roots; only the before-test observer sits between them.
+  evidence=self.root/'evidence';evidence.mkdir();staging=self.root/'staging';staging.mkdir();source=self.root/'source';source.mkdir();roots=[str(staging),str(self.root/'artifacts')];profile={'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'};archive=staging/'dotnet-sdk-10.0.401-linux-musl-arm64.tar.gz'
+  if preexisting:preexisting(staging)
+  with mock.patch.object(observer,'SDK_OUTPUT_ROOTS',roots),mock.patch.object(observer,'SOURCE_ROOT',str(source)):
+   observer.phase('before-build',profile,evidence,time.monotonic()+10)
    if build:build(archive)
    common.freeze(evidence/'original-build-TERMINAL.json',common.encoded({'originalCodeExecuted':True,'exitCode':0,'stopReason':None}))
    if tests is not None:
-    if record:observer.post_build_sdks(roots,profile,time.monotonic()+10,evidence)
-    common.freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',common.encoded(observer.output_inventory([str(self.root/'source')],time.monotonic()+10,'test-reports')));tests(archive)
-   observer.after(profile,evidence,time.monotonic()+30)
+    if record:observer.phase('before-test',profile,evidence,time.monotonic()+10);self.assertTrue((evidence/'PRE-TEST-OUTPUT-IDENTITIES.json').exists())
+    else:common.freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',common.encoded(observer.output_inventory([str(source)],time.monotonic()+10,'test-reports')))
+    tests(archive)
+   observer.phase('after',profile,evidence,time.monotonic()+30)
   return common.read_json(evidence/'FRESH-SELECTED-SDK-OUTPUTS.json'),str(archive)
  def test_archive_first_created_during_test_phase_is_not_build_output(self):
   row,path=self.phases(tests=lambda archive:self.sdk(path=archive))
@@ -114,7 +116,7 @@ class ObserverControls(unittest.TestCase):
     self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name);hashes=[]
     def build(archive):self.sdk(path=archive,changes=built);hashes.append(common.hash_file(archive)[1])
     def tests(archive):self.sdk(path=archive,changes=replacement);hashes.append(common.hash_file(archive)[1])
-    row,path=self.phases(build,tests);self.assertNotEqual(hashes[0],hashes[1])
+    row,path=self.phases(build,tests);self.assertNotEqual(hashes[0],hashes[1]);self.assertEqual([x['archive']['sha256'] for x in common.read_json(self.root/'evidence/POST-BUILD-SDK-OUTPUTS.json')['candidates']],[hashes[0]])
     self.assertEqual(row['selectedSDKArchiveMetadataAndAttributionObserved'],valid);self.assertEqual([(x['path'],x['archive']['sha256'],x['finalObservation']) for x in row['candidates']],[(path,hashes[0],'replaced')])
     self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[path]);self.assertEqual([(x['archive']['sha256'],x['creditedAsBuildOutput']) for x in row['outputsFirstObservedAfterBuildNotCredited']],[(hashes[1],False)])
  def test_build_archive_removed_during_tests_stays_build_output_and_is_reported_absent(self):
@@ -136,11 +138,23 @@ class ObserverControls(unittest.TestCase):
   results=self.root/'artifacts/TestResults';readable=results/'readable-3301';locked=results/'locked-3301';readable.mkdir(parents=True);locked.mkdir()
   (readable/'visible.xml').write_bytes(b'<testsuite tests="1"><testcase name="visible-preexisting-3301"/></testsuite>');(locked/'hidden.xml').write_bytes(b'<testsuite tests="1"><testcase name="hidden-preexisting-3301"/></testsuite>')
   self.addCleanup(lambda:locked.exists() and os.chmod(locked,0o755));return readable,locked
- def unreadable(self):
-  if os.geteuid()==0:self.skipTest('root reads a mode-000 directory, so no unlisted directory can be produced')
+ @contextlib.contextmanager
+ def unlistable(self,folder):
+  # Root lists a mode-000 directory, and run_checks fails on any skip, so as
+  # root the same listing failure is raised for that one directory instead.
+  if os.geteuid()!=0:
+   os.chmod(folder,0)
+   try:yield
+   finally:os.chmod(folder,0o755)
+   return
+  real=os.scandir
+  def scandir(path='.'):
+   if os.fspath(path)==str(folder):raise PermissionError(13,'synthetic unlistable directory',str(folder))
+   return real(path)
+  with mock.patch.object(os,'scandir',scandir):yield
  def test_unlisted_directory_leaves_pre_test_snapshot_incomplete_without_freshness_credit(self):
-  self.unreadable();readable,locked=self.report_tree();os.chmod(locked,0)
-  before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports');os.chmod(locked,0o755)
+  readable,locked=self.report_tree()
+  with self.unlistable(locked):before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
   self.assertFalse(before['snapshotComplete']);self.assertEqual(list(before['entries']),[str(readable/'visible.xml')]);self.assertEqual([x['path'] for x in before['unlistedDirectories']],[str(locked)])
   row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
   self.assertEqual({Path(x['path']).name:x['changedSinceProtectedPreTestSnapshot'] for x in row['reports']},{'visible.xml':False,'hidden.xml':False});self.assertFalse(row['allCreditedFreshTestsPassed'])
@@ -152,9 +166,29 @@ class ObserverControls(unittest.TestCase):
  def test_unlisted_directory_in_final_report_scan_blocks_passing_credit(self):
   # A failing report the final scan cannot list must not leave the readable
   # passing report as the whole answer.
-  self.unreadable();readable,locked=self.report_tree();before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
-  (readable/'fresh.xml').write_bytes(b'<testsuite tests="1"><testcase name="fresh-after-snapshot-3301"/></testsuite>');(locked/'failed.xml').write_bytes(b'<testsuite tests="1" failures="1"><testcase name="failed-3301"><failure/></testcase></testsuite>');os.chmod(locked,0)
-  row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
-  os.chmod(locked,0o755);self.assertEqual(sorted(Path(x['path']).name for x in row['reports']),['fresh.xml','visible.xml']);self.assertFalse(row['reportInventoryComplete']);self.assertFalse(row['allCreditedFreshTestsPassed'])
+  readable,locked=self.report_tree();before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
+  (readable/'fresh.xml').write_bytes(b'<testsuite tests="1"><testcase name="fresh-after-snapshot-3301"/></testsuite>');(locked/'failed.xml').write_bytes(b'<testsuite tests="1" failures="1"><testcase name="failed-3301"><failure/></testcase></testsuite>')
+  with self.unlistable(locked):row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
+  self.assertEqual(sorted(Path(x['path']).name for x in row['reports']),['fresh.xml','visible.xml']);self.assertFalse(row['reportInventoryComplete']);self.assertFalse(row['allCreditedFreshTestsPassed'])
+
+ def test_undecodable_build_archive_still_freezes_the_post_build_record(self):
+  # A valid gzip header over an invalid DEFLATE block raises zlib.error; the
+  # before-test observer must record a negative candidate, not stop the tests.
+  def build(archive):archive.write_bytes(bytes.fromhex('1f8b0800000000000003')+b'\x07'+b'undecodable-6627'*8)
+  row,path=self.phases(build,lambda archive:None)
+  self.assertFalse(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertEqual([(x['path'],x['selectedSDKArchiveMetadataAndAttributionMatched'],x['finalObservation']) for x in row['candidates']],[(path,False,'unchanged')])
+ def test_only_build_outputs_positively_lost_are_summarized_as_absent_or_replaced(self):
+  older=[]
+  def preexisting(staging):older.append(self.sdk(path=staging/'dotnet-sdk-preexisting-6627.tar.gz',changes={'sdk/10.0.401/preexisting-6627.txt':b'before-build-6627'}))
+  def tests(archive):older[0].unlink();archive.unlink()
+  row,path=self.phases(lambda archive:self.sdk(path=archive),tests,preexisting=preexisting)
+  self.assertEqual({x['path']:(x['changedSinceProtectedPreBuildSnapshot'],x['finalObservation']) for x in row['candidates']},{str(older[0]):(False,'absent'),path:(True,'absent')})
+  self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[path]);self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved'])
+ def test_build_output_hidden_by_an_incomplete_final_inventory_is_not_reported_removed(self):
+  hidden=[]
+  def build(archive):folder=archive.parent/'nested-6627';folder.mkdir();hidden.append(folder);self.sdk(path=folder/archive.name)
+  def tests(archive):stack.enter_context(self.unlistable(hidden[0]))
+  with contextlib.ExitStack() as stack:row,path=self.phases(build,tests)
+  self.assertEqual([x['finalObservation'] for x in row['candidates']],['not-found-in-incomplete-final-inventory']);self.assertFalse(row['finalOutputInventoryComplete']);self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[]);self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved'])
 
 if __name__=='__main__':unittest.main(verbosity=2)
