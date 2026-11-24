@@ -15,6 +15,8 @@ CARRIER='scripts/producer-qualification/gcc-hosted-carrier.py'
 SDK='scripts/producer-qualification/gcc-hosted-sdk.py'
 STRUCTURED='scripts/producer-qualification/gcc-sdk-structured-diagnostics.py'
 IMAGE_IDENTITY='scripts/producer-qualification/binutils-image-identity.mjs'
+PHASE0_CAPACITY='scripts/producer-qualification/gcc-hosted-phase0-capacity.py'
+DERIVED_RUN='scripts/producer-qualification/gcc-sdk-derived-run.py'
 # The carrier pin approved by the previous policy revision, before live sampling tolerated vanished entries.
 PREVIOUS_CARRIER=(43970,'ea6521cec4a88bfacf73999c4f9e4ee42fc3253c25a3224bd76702d93a7555ea')
 
@@ -114,7 +116,7 @@ class LocalSdk(unittest.TestCase):
   self.assertEqual((approval['approvedOn'],approval['approvedBy']),('2026-11-24','operator'))
   # The approval names exactly the runtime rows whose bytes differ from the
   # previous revision, and the rows that revision did not pin at all.
-  self.assertEqual(approval['changedRuntimeFiles'],[CARRIER,SDK])
+  self.assertEqual(approval['changedRuntimeFiles'],[CARRIER,SDK,PHASE0_CAPACITY,DERIVED_RUN])
   self.assertEqual(approval['addedRuntimeFiles'],[STRUCTURED,IMAGE_IDENTITY,*['scripts/producer-qualification/'+name for name in
                    ['binutils-acquisition-plan.mjs','binutils-retention-observer.mjs','c-producer-profile.mjs']],'scripts/qualify-binutils-producer.mjs'])
   paths=[row['path'] for row in policy['runtimeFiles']]
@@ -122,6 +124,12 @@ class LocalSdk(unittest.TestCase):
   self.assertTrue(any('LIVE_VANISHED_CEILING' in line for line in approval['scope']))
   self.assertTrue(any('container ID' in line for line in approval['scope']))
   self.assertTrue(any('standard library before loading any sibling' in line for line in approval['scope']))
+  # The later 2026-11-24 fixes name each runtime file they changed.
+  further=[line for line in approval['scope'] if line.startswith('Further changes approved by the operator on 2026-11-24')]
+  self.assertEqual(len(further),1)
+  for path in [CARRIER,PHASE0_CAPACITY,DERIVED_RUN]:self.assertIn(Path(path).name,further[0])
+  for topic in ['Restore capacity','Bounded native waits','Descriptor walk','Not-started generator','Git configuration']:
+   self.assertEqual(sum(line.startswith(topic+':') for line in approval['scope']),1,topic)
 
  def counterfactual(self,directory):
   copy=Path(directory).resolve()/'copy';copy.mkdir()

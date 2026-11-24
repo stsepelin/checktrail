@@ -92,8 +92,12 @@ def run(command,label,records,deadline):
     remaining=deadline-time.monotonic();require(remaining>0,'Generated SDK operation deadline')
     started=time.monotonic();request={'label':label,'command':command,'cwd':'/work','state':'requested'}
     with records.open('ab') as sink:sink.write(canonical(request)+b'\n');sink.flush();os.fsync(sink.fileno())
-    child=None;selector=None;limit=min(COMMAND_SECONDS,remaining);output=bytearray();error=None;code=None;cleanup_errors=[]
+    child=None;selector=None;limit=min(COMMAND_SECONDS,deadline-started);output=bytearray();error=None;code=None;cleanup_errors=[]
     try:
+        # Journaling can stall in fsync. The child starts only if the command
+        # and whole-operation budget survived it; otherwise the terminal row
+        # records a command that never started.
+        require(time.monotonic()-started<limit,'Generated SDK operation deadline before start')
         child=subprocess.Popen(command,cwd='/work',stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
         selector=selectors.DefaultSelector();selector.register(child.stdout,selectors.EVENT_READ)
         while selector.get_map():

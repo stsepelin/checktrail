@@ -5,6 +5,7 @@ service context. No argument can select source commands, a repository, image,
 remote destination, flags, a larger quota or a different producer.
 """
 import argparse
+import errno
 import hashlib
 import importlib.util
 import json
@@ -50,13 +51,158 @@ def physical(path):
     return path
 
 
+# Git runs as root here. No system or global configuration is read, attribute
+# files outside the checkout are ignored, and a repository whose own
+# configuration names a program git could run while reading the tree is
+# refused before git starts.
+GIT_ENV = {'PATH': HOST_ENV['PATH'], 'GIT_CONFIG_NOSYSTEM': '1', 'GIT_CONFIG_GLOBAL': '/dev/null',
+           'GIT_ATTR_NOSYSTEM': '1'}
+GIT_CONFIG_BYTES = 1024 ** 2
+GIT_EXECUTABLE_KEYS = {('filter', 'clean'), ('filter', 'smudge'), ('filter', 'process'),
+                       ('diff', 'textconv'), ('diff', 'command'), ('diff', 'external'),
+                       ('core', 'fsmonitor'), ('core', 'hookspath'), ('include', 'path'), ('includeif', 'path')}
+
+
+def git_config_keys(raw):
+    """Return (section, name) for every variable in a git config.
+
+    Reads the file as data in git's own syntax, including same-line
+    variables after a header, quoted values and backslash continuations.
+    Anything it cannot parse is refused rather than guessed.
+    """
+    try:
+        text = raw.decode('utf-8')
+    except UnicodeDecodeError:
+        raise ValueError('Repository git configuration is not readable data')
+    keys = []
+    section = None
+    index, size = 0, len(text)
+
+    def malformed():
+        raise ValueError('Repository git configuration is malformed')
+
+    while index < size:
+        char = text[index]
+        if char in ' \t\r\n':
+            index += 1
+        elif char in '#;':
+            while index < size and text[index] != '\n':
+                index += 1
+        elif char == '[':
+            index += 1
+            start = index
+            while index < size and (text[index].isalnum() or text[index] in '-.'):
+                index += 1
+            name = text[start:index]
+            if not name:
+                malformed()
+            if index < size and text[index] in ' \t':
+                while index < size and text[index] in ' \t':
+                    index += 1
+                if index >= size or text[index] != '"':
+                    malformed()
+                index += 1
+                while True:
+                    if index >= size or text[index] == '\n':
+                        malformed()
+                    if text[index] == '\\':
+                        if index + 1 >= size or text[index + 1] == '\n':
+                            malformed()
+                        index += 2
+                    elif text[index] == '"':
+                        index += 1
+                        break
+                    else:
+                        index += 1
+            if index >= size or text[index] != ']':
+                malformed()
+            index += 1
+            # Git keys split at the first dot: `[filter.x]` and `[filter.x "y"]`
+            # both define variables in the filter section.
+            section = name.split('.', 1)[0].lower()
+        elif char.isalpha():
+            start = index
+            while index < size and (text[index].isalnum() or text[index] == '-'):
+                index += 1
+            if section is None:
+                malformed()
+            keys.append((section, text[start:index].lower()))
+            while index < size and text[index] in ' \t':
+                index += 1
+            if index < size and text[index] == '=':
+                index += 1
+                quoted = False
+                while index < size and text[index] != '\n':
+                    if text[index] == '\\':
+                        if index + 1 >= size:
+                            malformed()
+                        if text[index + 1] == '\r' and text[index + 2:index + 3] == '\n':
+                            index += 3
+                        elif text[index + 1] == '\n' or text[index + 1] in 'ntb"\\':
+                            index += 2
+                        else:
+                            malformed()
+                    elif text[index] == '"':
+                        quoted = not quoted
+                        index += 1
+                    elif text[index] in '#;' and not quoted:
+                        while index < size and text[index] != '\n':
+                            index += 1
+                    else:
+                        index += 1
+                if quoted:
+                    malformed()
+            elif index < size and text[index] not in '\r\n#;':
+                malformed()
+        else:
+            malformed()
+    return keys
+
+
+def read_bounded(path):
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | getattr(os, 'O_CLOEXEC', 0))
+    with os.fdopen(descriptor, 'rb') as stream:
+        require(stat.S_ISREG(os.fstat(stream.fileno()).st_mode), 'Repository git metadata must be a regular file')
+        raw = stream.read(GIT_CONFIG_BYTES + 1)
+    require(len(raw) <= GIT_CONFIG_BYTES, 'Repository git metadata exceeds its bound')
+    return raw
+
+
+def git_config_files(repository):
+    """Configuration files git would read for this checkout, found without git."""
+    dotgit = repository / '.git'
+    kind = os.lstat(dotgit).st_mode
+    if stat.S_ISDIR(kind):
+        gitdir = dotgit
+    else:
+        require(stat.S_ISREG(kind), 'Repository git directory must be a directory or gitdir file')
+        line = read_bounded(dotgit).decode('utf-8').strip()
+        require(line.startswith('gitdir: ') and '\n' not in line, 'Repository gitdir file is malformed')
+        gitdir = repository / line[len('gitdir: '):]
+    common = gitdir
+    if os.path.lexists(gitdir / 'commondir'):
+        common = gitdir / read_bounded(gitdir / 'commondir').decode('utf-8').strip()
+    files = [common / 'config']
+    files += [path for path in {gitdir / 'config.worktree', common / 'config.worktree'} if os.path.lexists(path)]
+    return files
+
+
+def refuse_executable_git_config(repository):
+    for path in git_config_files(repository):
+        for section, name in git_config_keys(read_bounded(path)):
+            require((section, name) not in GIT_EXECUTABLE_KEYS,
+                    'Repository git configuration names a program git could run: ' + section + '.' + name)
+
+
 def verify_repository(repository, selected):
-    git = ['/usr/bin/git', '-c', 'core.fsmonitor=false', '-c', 'safe.directory=' + str(repository), '--no-optional-locks']
-    head = subprocess.run([*git, 'rev-parse', 'HEAD'], cwd=repository, env=HOST_ENV,
+    refuse_executable_git_config(repository)
+    git = ['/usr/bin/git', '-c', 'core.fsmonitor=false', '-c', 'core.hooksPath=/dev/null',
+           '-c', 'core.attributesFile=/dev/null', '-c', 'safe.directory=' + str(repository), '--no-optional-locks']
+    head = subprocess.run([*git, 'rev-parse', 'HEAD'], cwd=repository, env=GIT_ENV, stdin=subprocess.DEVNULL,
                           capture_output=True, timeout=10, check=True).stdout.decode().strip()
     require(head == selected['GITHUB_SHA'], 'Actual first-party checkout differs from service source head')
-    result = subprocess.run([*git, 'diff', '--no-ext-diff', '--quiet', 'HEAD', '--'], cwd=repository,
-                            env=HOST_ENV, capture_output=True, timeout=10)
+    result = subprocess.run([*git, 'diff', '--no-ext-diff', '--no-textconv', '--quiet', 'HEAD', '--'], cwd=repository,
+                            env=GIT_ENV, stdin=subprocess.DEVNULL, capture_output=True, timeout=10)
     require(result.returncode == 0, 'Tracked native carrier source is dirty/unavailable')
     return {'headSha': head, 'trackedSourceUnchanged': True, 'projectCodeExecutedByGitRead': False}
 
@@ -227,13 +373,25 @@ def validate_container(owner, identifier, name, catalog, output):
             'actualLimitsObserved': True, 'mountMapObserved': True, 'nativeSourceInvoked': False}
 
 
+DIRECTORY_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | getattr(os, 'O_CLOEXEC', 0)
+STATE_DEPTH_CEILING = 256
+# A listed name that is gone, or is no longer the kind of node it was, when
+# the walk reaches it.
+LIVE_CHANGED_ERRNOS = {errno.ENOENT, errno.ELOOP, errno.ENOTDIR, errno.EINVAL}
+
+
 def allocated_state(root, maximum_seconds=30, *, live=False):
     """Measure logical and unique allocated bytes under root.
 
+    Every name is resolved relative to an open descriptor of the directory
+    that listed it, and every directory is opened with O_NOFOLLOW, so a
+    directory renamed or replaced by a symlink after it was listed can never
+    lead the walk into another tree.
+
     A stopped tree (admission, checkpoint, relocation) must stay readable for
-    the whole walk: any entry that disappears is an error. A live sample runs
-    beside a build that legitimately unlinks temporaries, so an entry removed
-    after its parent was listed is no longer allocated and is skipped. That
+    the whole walk: any entry that disappears or changes kind is an error. A
+    live sample runs beside a build that legitimately unlinks temporaries, so
+    an entry removed or replaced after its parent was listed is skipped. That
     tolerance is bounded per sample, and the root itself must always exist.
     """
     started = time.monotonic()
@@ -242,26 +400,9 @@ def allocated_state(root, maximum_seconds=30, *, live=False):
     logical = 0
     allocated = 0
     known = set()
-    stack = [root]
-    while stack:
-        require(time.monotonic() - started < maximum_seconds, 'Native capacity sample deadline')
-        path = stack.pop()
-        try:
-            info = path.lstat()
-            if stat.S_ISDIR(info.st_mode):
-                children, size = list(path.iterdir()), 0
-            elif stat.S_ISREG(info.st_mode):
-                children, size = [], info.st_size
-            elif stat.S_ISLNK(info.st_mode):
-                children, size = [], len(os.readlink(path).encode())
-            else:
-                raise ValueError('Native state contains an unrestorable special node')
-        except FileNotFoundError:
-            if not live or path == root:
-                raise
-            vanished += 1
-            require(vanished <= LIVE_VANISHED_CEILING, 'Live native state changed beyond its sampling tolerance')
-            continue
+
+    def count(info, size):
+        nonlocal entries, logical, allocated
         entries += 1
         require(entries <= 1000000, 'Actual native state entry ceiling')
         identity = (info.st_dev, info.st_ino)
@@ -269,7 +410,52 @@ def allocated_state(root, maximum_seconds=30, *, live=False):
             allocated += info.st_blocks * 512
             known.add(identity)
         logical += size
-        stack.extend(children)
+
+    def changed(error):
+        nonlocal vanished
+        if not live or error.errno not in LIVE_CHANGED_ERRNOS:
+            raise error
+        vanished += 1
+        require(vanished <= LIVE_VANISHED_CEILING, 'Live native state changed beyond its sampling tolerance')
+
+    def opened(name, parent=None):
+        descriptor = os.open(name, DIRECTORY_FLAGS, dir_fd=parent)
+        try:
+            return descriptor, os.fstat(descriptor), os.listdir(descriptor)
+        except BaseException:
+            os.close(descriptor)
+            raise
+
+    descriptor, info, listed = opened(root)
+    frames = [(descriptor, listed)]
+    try:
+        count(info, 0)
+        while frames:
+            require(time.monotonic() - started < maximum_seconds, 'Native capacity sample deadline')
+            parent, names = frames[-1]
+            if not names:
+                frames.pop()
+                os.close(parent)
+                continue
+            name = names.pop()
+            try:
+                info = os.stat(name, dir_fd=parent, follow_symlinks=False)
+                if stat.S_ISDIR(info.st_mode):
+                    require(len(frames) < STATE_DEPTH_CEILING, 'Actual native state depth ceiling')
+                    child, info, listed = opened(name, parent)
+                    frames.append((child, listed))
+                    count(info, 0)
+                elif stat.S_ISREG(info.st_mode):
+                    count(info, info.st_size)
+                elif stat.S_ISLNK(info.st_mode):
+                    count(info, len(os.readlink(name, dir_fd=parent).encode()))
+                else:
+                    raise ValueError('Native state contains an unrestorable special node')
+            except OSError as error:
+                changed(error)
+    finally:
+        for parent, _ in frames:
+            os.close(parent)
     measured = {'entries': entries, 'logicalBytes': logical, 'allocatedBytes': allocated,
                 'quotaEnforced': False, 'samplingIsPhysicalHighWater': False}
     if live:
@@ -300,21 +486,26 @@ def native_observation(output, identifier, maximum_seconds, service_clock, *, sc
     next_sample = 0
     samples = []
     failure = None
+    def allowance():
+        # Every blocking step below may spend only what is left of BOTH the
+        # native allowance and the source-job time above its finalization reserve.
+        now = time.monotonic()
+        return min(maximum_seconds - (now - start),
+                   service_clock['remainingSeconds'] - (now - service_clock['capturedMonotonic']) - capacity.FINALIZE_SECONDS)
+
     try:
         with (output / 'native.log').open('xb') as log:
             while selector.get_map():
                 elapsed = time.monotonic() - start
-                remaining_service = service_clock['remainingSeconds'] - (time.monotonic() - service_clock['capturedMonotonic'])
-                require(elapsed <= maximum_seconds and remaining_service >= capacity.FINALIZE_SECONDS,
-                        'Native attempt reached source-job/native cutoff; terminal remains unobserved')
+                require(allowance() >= 0, 'Native attempt reached source-job/native cutoff; terminal remains unobserved')
                 if elapsed >= next_sample:
-                    state = allocated_state(output / 'state', live=True)
+                    state = allocated_state(output / 'state', maximum_seconds=min(30, allowance()), live=True)
                     free = shutil.disk_usage(output).free
                     samples.append({**state, 'elapsedSeconds': elapsed, 'availableDiskBytes': free})
                     require(state['logicalBytes'] <= STATE_CEILING and state['allocatedBytes'] <= STATE_CEILING and
                             free >= 8 * GIB + capacity.CHECKPOINT_BYTES, 'Native state/scratch guard reached')
                     next_sample = elapsed + 30
-                for key, _ in selector.select(timeout=1):
+                for key, _ in selector.select(timeout=max(0, min(1, allowance()))):
                     raw = os.read(key.fileobj.fileno(), 65536)
                     if not raw:
                         selector.unregister(key.fileobj)
@@ -322,7 +513,12 @@ def native_observation(output, identifier, maximum_seconds, service_clock, *, sc
                     observed_bytes += len(raw)
                     require(observed_bytes <= LOG_CEILING, 'Native log retention ceiling reached')
                     log.write(raw)
-            status = process.wait(timeout=10)
+            wait_seconds = min(10, allowance())
+            require(wait_seconds > 0, 'Native attempt reached source-job/native cutoff; terminal remains unobserved')
+            try:
+                status = process.wait(timeout=wait_seconds)
+            except subprocess.TimeoutExpired:
+                raise ValueError('Native attempt reached source-job/native cutoff; terminal remains unobserved')
             require(status == 0, 'Original first-stage controller exited nonzero' if scope == 'configure' else 'SDK reconstruction body exited nonzero; no GCC target was selected')
             require(time.monotonic() - start <= maximum_seconds and service_clock['remainingSeconds'] -
                     (time.monotonic() - service_clock['capturedMonotonic']) >= capacity.FINALIZE_SECONDS,

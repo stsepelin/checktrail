@@ -145,8 +145,13 @@ class Daemon:
             if '--all' in args:return ''.join(key+'\n' for key in self.images)
             return ''.join(key+'\n' for key,row in self.images.items() if args[-1] in row['RepoTags'])
         if verb=='rm':
-            target=self.image_ref(args[2]);self.effects.append(('image-rm',target))
-            if len(self.images[target]['RepoTags'])>1 and args[2]==target:raise Refused('image is referenced in multiple repositories')
+            # Docker semantics: a tag reference only untags unless it was the
+            # last tag; an ID with several tags is refused without --force.
+            target=self.image_ref(args[2]);self.effects.append(('image-rm',target));row=self.images[target]
+            if args[2]!=target:
+                row['RepoTags']=[tag for tag in row['RepoTags'] if tag!=args[2]]
+                if row['RepoTags']:return 'Untagged: '+args[2]+'\n'
+            elif len(row['RepoTags'])>1:raise Refused('image is referenced in multiple repositories')
             del self.images[target];return 'Deleted: '+target+'\n'
         raise AssertionError('Unplanned image operation '+repr(args))
 
@@ -388,13 +393,17 @@ class Identity(unittest.TestCase):
                 self.assertEqual(result['ownedContainerCleanup'],'removed')
                 owned=[target for verb,target in daemon.effects if verb=='start'][0]
                 self.assertEqual([verb for verb,target in daemon.effects if target==owned],['inspect','start','inspect','inspect','commit','inspect','rm'])
-                image=prepared['localImage']['localImageId'];self.assertNotIn(image,daemon.images)
-                self.assertIn(('image-rm',image),daemon.effects)
+                image=prepared['localImage']['localImageId']
                 if rebind:
-                    # The tag now names a foreign image: cleanup removes only ours
-                    # and stays unqualified instead of deleting the holder.
-                    self.assertIsInstance(cleanup,ValueError);self.assertIn('remains after removal',str(cleanup))
-                else:self.assertTrue(cleanup['ownedImageCleanupComplete'])
+                    # The tag now names a foreign image: removing by that tag
+                    # would untag the holder, so cleanup removes nothing and
+                    # stays unqualified, retaining the untagged owned image.
+                    self.assertIsInstance(cleanup,ValueError);self.assertIn('no longer names the observed image',str(cleanup))
+                    self.assertIn(image,daemon.images);self.assertEqual(daemon.images[image]['RepoTags'],[])
+                    self.assertFalse(any(verb=='image-rm' for verb,_ in daemon.effects))
+                else:
+                    self.assertTrue(cleanup['ownedImageCleanupComplete'])
+                    self.assertNotIn(image,daemon.images);self.assertIn(('image-rm',image),daemon.effects)
 
     def test_main05_sdk_materializer_failure_signals_and_removes_only_the_admitted_id(self):
         for rebind in [True,False]:
@@ -498,16 +507,26 @@ class StaticSweep(unittest.TestCase):
         if isinstance(node,ast.Name) and node.id in self.ID_NAMES:return True
         return isinstance(node,ast.Subscript) and isinstance(node.slice,ast.Constant) and node.slice.value=='Id'
 
-    def allowed(self,verb,node):
+    # The one tag-addressed removal: it re-reads tag->ID immediately before the
+    # effect and verifies the ID afterwards, because Docker deletes an image
+    # removed by tag only when no other tag still holds it.
+    TAG_REMOVAL=('remove_owned_tag','image-rm','tag')
+
+    def allowed(self,verb,node,function=None):
         if self.identity(node):return True
+        if (function,verb,ast.unparse(node))==self.TAG_REMOVAL:return True
         if isinstance(node,ast.BoolOp) and isinstance(node.op,ast.Or) and verb=='inspect':
             # `identifier or name`: the name only when a create returned no ID.
             return len(node.values)==2 and self.identity(node.values[0])
         return (verb,ast.unparse(node)) in self.LOOKUPS
 
     def scan(self,source,label):
-        checked=0;refused=[]
-        for node in ast.walk(ast.parse(source)):
+        checked=0;refused=[];tree=ast.parse(source);enclosing={}
+        for function in ast.walk(tree):
+            if isinstance(function,(ast.FunctionDef,ast.AsyncFunctionDef)):
+                # Breadth-first order visits outer functions first, so the innermost name wins.
+                for inner in ast.walk(function):enclosing[id(inner)]=function.name
+        for node in ast.walk(tree):
             if not isinstance(node,ast.List) or not node.elts:continue
             elements=node.elts;first=elements[0]
             if isinstance(first,ast.Constant) and first.value=='/usr/bin/docker':elements=elements[1:]
@@ -521,7 +540,7 @@ class StaticSweep(unittest.TestCase):
             if reference is None:refused.append(label+':'+str(node.lineno)+' '+verb+' <no reference>');continue
             checked+=1
             # A literal reference is a fixed name: never an admitted ID.
-            if not self.allowed(verb,reference):refused.append(label+':'+str(node.lineno)+' '+verb+' '+ast.unparse(reference))
+            if not self.allowed(verb,reference,enclosing.get(id(node))):refused.append(label+':'+str(node.lineno)+' '+verb+' '+ast.unparse(reference))
         return checked,refused
 
     def test_every_docker_container_and_image_effect_addresses_an_id(self):
@@ -535,6 +554,10 @@ class StaticSweep(unittest.TestCase):
                           ("docker(['cp','-a',seed+':'+x,y])",False),("docker(['commit','--pause=true',name,tag])",False),
                           ("docker(['inspect',name or identifier])",False),("docker(['rm','fixed-synthetic-name-137'])",False),
                           ("docker(['image','rm',tag])",False),("docker(['image','rm','synthetic:137'])",False),
+                          ("def remove_owned_tag(tag):docker(['image','rm','synthetic:137'])",False),
+                          ("def remove_owned_tag(tag):docker(['rm',tag])",False),
+                          ("def cleanup_owned(tag):docker(['image','rm',tag])",False),
+                          ("def remove_owned_tag(tag):docker(['image','rm',tag],timeout=30)",True),
                           ("subprocess.Popen(['/usr/bin/docker','start','--attach',name])",False),
                           ("docker(['rm',identifier])",True),("docker(['rm','--force',owner['Id']])",True),
                           ("docker(['cp','-a',seed_identifier+':'+x,y])",True),("docker(['inspect',identifier or name])",True),

@@ -55,7 +55,11 @@ retained separately from the observer, wrapper and container outcomes.
 Owned container/image cleanup also covers successful creation followed by
 failed inspection or a lost returned value. Recovery requires retained intent,
 physical ownership and exact identity; a rebound tag, unproven resource or
-ambiguous result cannot authorize broad cleanup. Actual SDK/native elapsed
+ambiguous result cannot authorize broad cleanup. The local SDK image is
+removed only through its exact owned tag, re-read immediately before removal,
+so Docker deletes it only while no other tag holds it; an image that keeps a
+foreign tag is reported, never removed, and an owned image left untagged keeps
+cleanup unqualified. Actual SDK/native elapsed
 time remains charged when later checks or retention fail. A genuine zero with
 an unconfirmed family creates a charged `terminal-incomplete` row with no
 checkpoint. Such a row blocks every continuation; there is no caller Boolean
@@ -98,8 +102,21 @@ that reconciliation removes the ID it observed. The on-host receipt entry checks
 its policy, the checkout and every `runtimeFiles` pin with the standard library
 before it loads any sibling, so a changed helper's module code never runs before
 its mismatch is refused; it also reads no adjacent bytecode cache, so the
-pinned source is what runs. The operator approved these changes on 2026-11-24; the
-policy records the approval and the changed and added files in
+pinned source is what runs. The same amended v6 also pins
+`gcc-hosted-phase0-capacity.py` and `gcc-sdk-derived-run.py` at changed bytes.
+Phase-0 admission budgets the second uncompressed tree the carrier restores
+beside the original tree and the checkpoint. Every live capacity sample,
+selector wait and post-EOF wait in the configure carrier spends only the
+smaller of the remaining native allowance and the source-job time above the
+finalization reserve. State is measured from directory descriptors opened with
+`O_NOFOLLOW`, so a directory replaced by a symlink mid-walk is never entered: a
+live sample counts it as changed, a stopped scan refuses it. A generator whose
+budget ran out while its request was journaled is recorded as not started.
+Checkout checks run git without system or global configuration, outside
+attribute files, hooks, textconv or external diff, and refuse a repository
+whose own configuration names a filter, diff, fsmonitor, hooks or include
+program before git runs. The operator approved all of these changes on
+2026-11-24; the policy records the approval and the changed and added files in
 `revisionApproval`. The historical v3 decoder remains bound to SDK policy v5,
 which retains primary errors and cleanup diagnostics, and the historical v2
 decoder remains bound to SDK policy v4. A receipt qualifies only the profile

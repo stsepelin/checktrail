@@ -85,6 +85,17 @@ class Phase0Capacity(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'phase-0 growth'):
             c.admit(resources(),service(),state_bytes=0,state_ceiling_bytes=64*c.GIB)
 
+    def test_scratch_budget_holds_the_restore_tree_beside_original_tree_and_checkpoint(self):
+        # The carrier's post-capture readback needs the tree's logical size plus
+        # its 8 GiB floor while the original tree and checkpoint still occupy disk.
+        state=1234567*4096;preparation=3*c.GIB+137
+        exact=(c.STATE_CEILING_BYTES-state)+c.STATE_CEILING_BYTES+c.CHECKPOINT_BYTES+c.ENVELOPE_BYTES+8*c.GIB+preparation
+        value=c.admit({**resources(),'freeDiskBytes':exact},service(),state_bytes=state,preparation_bytes=preparation)
+        self.assertEqual(value['requiredScratchBytes'],exact)
+        self.assertEqual(value['restoreReadbackTreeBytes'],c.STATE_CEILING_BYTES)
+        with self.assertRaisesRegex(ValueError,'scratch/capture capacity'):
+            c.admit({**resources(),'freeDiskBytes':exact-1},service(),state_bytes=state,preparation_bytes=preparation)
+
     def test_source_clock_reserves_capture_upload_download_replay_and_cleanup(self):
         value=c.admit(resources(),service(),state_bytes=0)
         self.assertEqual(value['maximumNativeSeconds'],3600)

@@ -86,12 +86,13 @@ class Observations(unittest.TestCase):
   with tempfile.TemporaryDirectory() as name:
    root=Path(name).resolve();(root/'state').mkdir();(root/'state/synthetic-object').write_bytes(b'object');(root/'observations').mkdir()
    if transient:(root/'state/cc1-transient.s').write_bytes(b't'*9137)
-   listing=Path.iterdir
-   def racing(path):
+   listing=os.listdir;state=(root/'state').stat()
+   def racing(descriptor):
     # The running build unlinks its temporary after the sampler listed it.
-    listed=list(listing(path))
-    if transient and path==root/'state' and (path/'cc1-transient.s').exists():(path/'cc1-transient.s').unlink()
-    return iter(listed)
+    listed=listing(descriptor);observed=os.fstat(descriptor)
+    if transient and (observed.st_dev,observed.st_ino)==(state.st_dev,state.st_ino) and (root/'state/cc1-transient.s').exists():
+     (root/'state/cc1-transient.s').unlink()
+    return listed
    processes=[];calls=[]
    def popen(args,**kw):
     if rebind=='before-start':bound[NAME]=FOREIGN
@@ -117,7 +118,7 @@ class Observations(unittest.TestCase):
     with mock.patch.object(m.h,'docker',side_effect=docker),mock.patch.object(m.subprocess,'Popen',side_effect=popen),\
          mock.patch.object(m.shutil,'disk_usage',return_value=SimpleNamespace(free=200*m.h.GIB)),\
          mock.patch.object(m.h,'LOG_CEILING',log_bound if log_bound is not None else m.h.LOG_CEILING),\
-         mock.patch.object(Path,'iterdir',racing):
+         mock.patch.object(m.h.os,'listdir',racing):
      result=m.observe(root,NAME,IDENTIFIER,maximum,{'capturedMonotonic':time.monotonic(),'remainingSeconds':20000},sdk_seconds=50)
     self.assertEqual(json.loads((root/'MAIN05-ATTEMPT.json').read_bytes()),result)
     self.samples=json.loads((root/'resource-samples.json').read_bytes())['samples']

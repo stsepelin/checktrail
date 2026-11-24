@@ -19,7 +19,7 @@ import sys
 import time
 import traceback
 
-POLICY_SHA256='3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923'
+POLICY_SHA256='30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -350,17 +350,101 @@ def guarded(work,private,head):
         return failed_receipt(value,'sdk-proof-refused',time.monotonic()-started)
 
 
-CHECKOUT_ENV={'PATH':'/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'}
+# Git runs as root here: no system or global configuration, no attribute
+# files outside the checkout, and a repository whose own configuration names
+# a program git could run while reading the tree is refused before git starts.
+CHECKOUT_ENV={'PATH':'/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+              'GIT_CONFIG_NOSYSTEM':'1','GIT_CONFIG_GLOBAL':'/dev/null','GIT_ATTR_NOSYSTEM':'1'}
+GIT_CONFIG_BYTES=1024**2
+GIT_EXECUTABLE_KEYS={('filter','clean'),('filter','smudge'),('filter','process'),('diff','textconv'),('diff','command'),
+                     ('diff','external'),('core','fsmonitor'),('core','hookspath'),('include','path'),('includeif','path')}
+
+
+def git_config_keys(raw):
+    """(section, name) of every variable in a git config, read as data in git's
+    own syntax; same-line variables after a header, quoting and backslash
+    continuations included. Anything unparseable is refused, never guessed."""
+    try:text=raw.decode('utf-8')
+    except UnicodeDecodeError:raise Refusal('source-refused')
+    keys=[];section=None;index=0;size=len(text)
+    while index<size:
+        char=text[index]
+        if char in ' \t\r\n':index+=1
+        elif char in '#;':
+            while index<size and text[index]!='\n':index+=1
+        elif char=='[':
+            index+=1;start=index
+            while index<size and (text[index].isalnum() or text[index] in '-.'):index+=1
+            name=text[start:index];require(name,'source-refused')
+            if index<size and text[index] in ' \t':
+                while index<size and text[index] in ' \t':index+=1
+                require(index<size and text[index]=='"','source-refused');index+=1
+                while True:
+                    require(index<size and text[index]!='\n','source-refused')
+                    if text[index]=='\\':
+                        require(index+1<size and text[index+1]!='\n','source-refused');index+=2
+                    elif text[index]=='"':index+=1;break
+                    else:index+=1
+            require(index<size and text[index]==']','source-refused');index+=1
+            # Git keys split at the first dot: [filter.x] and [filter.x "y"] are both the filter section.
+            section=name.split('.',1)[0].lower()
+        elif char.isalpha():
+            start=index
+            while index<size and (text[index].isalnum() or text[index]=='-'):index+=1
+            require(section is not None,'source-refused');keys.append((section,text[start:index].lower()))
+            while index<size and text[index] in ' \t':index+=1
+            if index<size and text[index]=='=':
+                index+=1;quoted=False
+                while index<size and text[index]!='\n':
+                    if text[index]=='\\':
+                        require(index+1<size,'source-refused')
+                        if text[index+1]=='\r' and text[index+2:index+3]=='\n':index+=3
+                        else:require(text[index+1]=='\n' or text[index+1] in 'ntb"\\','source-refused');index+=2
+                    elif text[index]=='"':quoted=not quoted;index+=1
+                    elif text[index] in '#;' and not quoted:
+                        while index<size and text[index]!='\n':index+=1
+                    else:index+=1
+                require(not quoted,'source-refused')
+            else:require(index>=size or text[index] in '\r\n#;','source-refused')
+        else:raise Refusal('source-refused')
+    return keys
+
+
+def read_git_metadata(path):
+    with os.fdopen(os.open(path,os.O_RDONLY|os.O_NOFOLLOW|getattr(os,'O_CLOEXEC',0)),'rb') as stream:
+        require(stat.S_ISREG(os.fstat(stream.fileno()).st_mode),'source-refused');raw=stream.read(GIT_CONFIG_BYTES+1)
+    require(len(raw)<=GIT_CONFIG_BYTES,'source-refused');return raw
+
+
+def git_config_files(repository):
+    """Configuration files git would read for this checkout, found without git."""
+    dotgit=repository/'.git';kind=os.lstat(dotgit).st_mode
+    if stat.S_ISDIR(kind):gitdir=dotgit
+    else:
+        require(stat.S_ISREG(kind),'source-refused');line=read_git_metadata(dotgit).decode('utf-8').strip()
+        require(line.startswith('gitdir: ') and '\n' not in line,'source-refused');gitdir=repository/line[len('gitdir: '):]
+    common=gitdir
+    if os.path.lexists(gitdir/'commondir'):common=gitdir/read_git_metadata(gitdir/'commondir').decode('utf-8').strip()
+    return [common/'config',*[path for path in {gitdir/'config.worktree',common/'config.worktree'} if os.path.lexists(path)]]
+
+
+def refuse_executable_git_config(repository):
+    try:files=[read_git_metadata(path) for path in git_config_files(repository)]
+    except (OSError,UnicodeDecodeError):raise Refusal('source-refused')
+    for raw in files:
+        require(all(key not in GIT_EXECUTABLE_KEYS for key in git_config_keys(raw)),'source-refused')
 
 
 def verify_checkout(repository,head):
     """Stdlib-only checkout identity: only /usr/bin/git runs, never project code."""
     require(type(head) is str and re.fullmatch('[a-f0-9]{40}',head),'source-refused')
-    git=['/usr/bin/git','-c','core.fsmonitor=false','-c','safe.directory='+str(repository),'--no-optional-locks']
+    refuse_executable_git_config(repository)
+    git=['/usr/bin/git','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null','-c','core.attributesFile=/dev/null',
+         '-c','safe.directory='+str(repository),'--no-optional-locks']
     observed=subprocess.run([*git,'rev-parse','HEAD'],cwd=repository,env=CHECKOUT_ENV,stdin=subprocess.DEVNULL,
                             capture_output=True,timeout=10,check=False)
     require(observed.returncode==0 and observed.stdout.decode(errors='replace').strip()==head,'source-refused')
-    clean=subprocess.run([*git,'diff','--no-ext-diff','--quiet','HEAD','--'],cwd=repository,env=CHECKOUT_ENV,
+    clean=subprocess.run([*git,'diff','--no-ext-diff','--no-textconv','--quiet','HEAD','--'],cwd=repository,env=CHECKOUT_ENV,
                          stdin=subprocess.DEVNULL,capture_output=True,timeout=10,check=False)
     require(clean.returncode==0,'source-refused')
 

@@ -246,7 +246,7 @@ class NativeBoundary(unittest.TestCase):
             child.wait=mock.Mock(side_effect=reaped)
             try:
                 with mock.patch.object(m.subprocess,'Popen',return_value=child),mock.patch.object(m.os,'killpg') as kill,\
-                     mock.patch.object(m.time,'monotonic',side_effect=[1000,1000,1000,1000,1000,1000,1003,1003]):
+                     mock.patch.object(m.time,'monotonic',side_effect=[1000,1000,1000,1000,1000,1000,1000,1003,1003]):
                     with self.assertRaisesRegex(ValueError,'SDK tool timeout'):m.run(['/usr/bin/fc-list'],'synthetic',records,1002)
                 kill.assert_not_called();child.wait.assert_called_once_with(timeout=2)
                 row=json.loads(records.read_bytes().splitlines()[-1])
@@ -287,6 +287,49 @@ class NativeBoundary(unittest.TestCase):
                     m.run(['/usr/bin/fc-list'],'synthetic',records,time.monotonic()-1)
                 spawn.assert_not_called()
             self.assertFalse(records.exists())
+
+    def journal_stall(self,stall,deadline_left):
+        """Run with a clock that advances by `stall` inside the request fsync."""
+        now=[7000.0];spawned=[]
+        def stalled_fsync(descriptor):
+            os.fsync(descriptor);now[0]+=stall
+        class SyntheticChild:
+            def __init__(self):
+                reader,writer=os.pipe();os.close(writer);self.stdout=os.fdopen(reader,'rb',buffering=0)
+                self.pid=424242;self.returncode=None
+            def wait(self,timeout=None):self.returncode=0;return 0
+        def popen(command,**kwargs):
+            spawned.append(command);return SyntheticChild()
+        class StalledOS:
+            def __getattr__(self,name):return getattr(os,name)
+            fsync=staticmethod(stalled_fsync)
+        with tempfile.TemporaryDirectory() as name:
+            records=Path(name)/'records'
+            with mock.patch.object(m,'time',types.SimpleNamespace(monotonic=lambda:now[0])),mock.patch.object(m,'os',StalledOS()),\
+                 mock.patch.object(m.subprocess,'Popen',side_effect=popen),mock.patch.object(m.sys,'stdout',types.SimpleNamespace(buffer=io.BytesIO())):
+                try:value=m.run(['/usr/bin/fc-list'],'synthetic',records,7000.0+deadline_left),None
+                except ValueError as error:value=None,error
+            rows=[json.loads(line) for line in records.read_bytes().splitlines()]
+        return value,rows,spawned
+
+    def test_journal_stall_past_the_deadline_never_starts_the_generator(self):
+        (_,error),rows,spawned=self.journal_stall(stall=41.5,deadline_left=37.25)
+        self.assertEqual(spawned,[]);self.assertIn('deadline before start',str(error))
+        self.assertEqual([row['state'] for row in rows],['requested','terminal'])
+        terminal=rows[1]
+        self.assertFalse(terminal['terminalObserved']);self.assertIsNone(terminal['exitCode']);self.assertIsNone(terminal['signal'])
+        self.assertFalse(terminal['stdoutComplete']);self.assertEqual(terminal['stdoutBytesRetained'],0)
+        self.assertIn('deadline before start',terminal['error']);self.assertEqual(terminal['elapsedSeconds'],41.5)
+
+    def test_journal_stall_past_the_command_budget_never_starts_the_generator(self):
+        (_,error),rows,spawned=self.journal_stall(stall=m.COMMAND_SECONDS+0.5,deadline_left=m.TOTAL_SECONDS)
+        self.assertEqual(spawned,[]);self.assertIn('deadline before start',str(error))
+        self.assertFalse(rows[-1]['terminalObserved'])
+
+    def test_journal_stall_inside_the_budget_still_runs_the_generator(self):
+        (value,error),rows,spawned=self.journal_stall(stall=29.75,deadline_left=37.25)
+        self.assertIsNone(error);self.assertEqual(spawned,[['/usr/bin/fc-list']])
+        self.assertEqual(value[1]['exitCode'],0);self.assertTrue(rows[-1]['terminalObserved'])
 
     def test_spawn_failure_records_unknown_terminal_and_unknown_command_never_starts(self):
         with tempfile.TemporaryDirectory() as name:

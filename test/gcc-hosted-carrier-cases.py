@@ -1,6 +1,8 @@
 """Synthetic lifecycle/SDK/selection controls; Docker and upstream never run."""
 import base64
+import contextlib
 import copy
+import errno
 import hashlib
 import importlib.util
 import io
@@ -100,7 +102,66 @@ class Body(unittest.TestCase):
                 self.assertNotEqual(rows[-1]['exitCode'],137)
 
 
+def marking_filter(base,marker):
+    """A clean filter program that leaves `marker` behind when git runs it.
+    A script file keeps git's own value quoting and `;` comments out of the way."""
+    script=base/'synthetic-clean-filter.sh'
+    script.write_text('#!/bin/sh\necho synthetic-filter-ran-137 > "%s"\nexec cat\n'%marker);script.chmod(0o755)
+    return script
+
+
+def filtered_repository(base,config):
+    """A committed throwaway checkout whose tracked file is stat-dirty, so a
+    `git diff HEAD` must re-read it through any configured clean filter.
+    `config` is appended to .git/config only after the commit."""
+    repository=base/'checkout';repository.mkdir()
+    env={'HOME':str(base),'GIT_CONFIG_NOSYSTEM':'1','PATH':'/usr/bin:/bin'}
+    git=['/usr/bin/git','-c','user.name=synthetic','-c','user.email=synthetic@invalid','-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false']
+    subprocess.run([*git,'init','-q'],cwd=repository,env=env,check=True,capture_output=True,timeout=60)
+    (repository/'tracked.txt').write_bytes(b'Synthetic tracked bytes 137\n')
+    (repository/'.gitattributes').write_bytes(b'* filter=synthetic diff=synthetic\n')
+    for command in [['add','-A'],['commit','-q','-m','synthetic checkout']]:
+        subprocess.run([*git,*command],cwd=repository,env=env,check=True,capture_output=True,timeout=60)
+    head=subprocess.run([*git,'rev-parse','HEAD'],cwd=repository,env=env,check=True,capture_output=True,timeout=10).stdout.decode().strip()
+    with (repository/'.git/config').open('a') as stream:stream.write(config)
+    info=(repository/'tracked.txt').stat();os.utime(repository/'tracked.txt',ns=(info.st_atime_ns,info.st_mtime_ns+137*10**9))
+    return repository,head
+
+
 class Host(unittest.TestCase):
+    def test_repository_whose_config_defines_a_clean_filter_is_refused_before_git_runs_it(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-git-filter-synthetic-') as name:
+            base=Path(name).resolve();marker=base/'filter-ran.marker'
+            repository,head=filtered_repository(base,'[filter "synthetic"]\n\tclean = %s\n'%marking_filter(base,marker))
+            try:h.verify_repository(repository,{'GITHUB_SHA':head});refusal=None
+            except ValueError as error:refusal=error
+            self.assertFalse(marker.exists(),'A configured clean filter ran during checkout verification')
+            self.assertRegex(str(refusal),'names a program git could run: filter.clean')
+
+    def test_every_git_program_key_and_spelling_is_refused(self):
+        for config in ['[filter "synthetic"]\n\tsmudge = /bin/false\n','[filter "synthetic"]\n\tprocess = /bin/false\n',
+                       '[Filter.Synthetic]\n\tClean = /bin/false\n','[filter.outer "inner"] clean = /bin/false\n',
+                       '[diff "synthetic"]\n\ttextconv = /bin/false\n','[diff "synthetic"]\n\tcommand = /bin/false\n',
+                       '[diff]\n\texternal = /bin/false\n','[core]\n\tfsmonitor = /bin/false\n','[core]\n\thooksPath = /tmp/hooks\n',
+                       '[include]\n\tpath = /tmp/synthetic.config\n','[includeIf "gitdir:/"]\n\tpath = /tmp/synthetic.config\n',
+                       '[core]\n\tbroken = "unterminated\n','[core\n']:
+            with self.subTest(config=config),tempfile.TemporaryDirectory(prefix='gcc-git-key-synthetic-') as name:
+                repository,head=filtered_repository(Path(name).resolve(),config)
+                with mock.patch.object(h.subprocess,'run') as run,self.assertRaisesRegex(ValueError,'Repository git configuration'):
+                    h.verify_repository(repository,{'GITHUB_SHA':head})
+                run.assert_not_called()
+
+    def test_benign_config_that_only_mentions_filters_verifies_the_checkout(self):
+        config=('[remote "origin"]\n\turl = https://example.invalid/synthetic.git\n\tpartialclonefilter = blob:none\n'
+                '[diff "synthetic"]\n\txfuncname = "^synthetic ; [filter]"\n'
+                '[core]\n\tcomment = continued \\\n  [filter "fake"] clean = /bin/false\n')
+        with tempfile.TemporaryDirectory(prefix='gcc-git-benign-synthetic-') as name:
+            repository,head=filtered_repository(Path(name).resolve(),config)
+            value=h.verify_repository(repository,{'GITHUB_SHA':head})
+            self.assertEqual(value['headSha'],head);self.assertTrue(value['trackedSourceUnchanged'])
+            path=repository/'tracked.txt';path.write_bytes(path.read_bytes()+b'synthetic dirty 137\n')
+            with self.assertRaisesRegex(ValueError,'dirty'):h.verify_repository(repository,{'GITHUB_SHA':head})
+
     def test_host_node_uses_the_explicit_physical_executable_without_inherited_path_or_options(self):
         record = node_record()
         with mock.patch.dict(os.environ, {'PATH': '/absent/synthetic', 'NODE_OPTIONS': '--not-a-real-option'}):
@@ -268,13 +329,89 @@ class Host(unittest.TestCase):
     def racing_listing(self,directory,names):
         """List directory as a running build would see it, then unlink names
         before the walk reaches them: the listing/lstat race, made certain."""
-        original=Path.iterdir
-        def iterdir(path):
-            listed=list(original(path))
-            if path==directory:
+        original=os.listdir;target=directory.stat()
+        def listdir(descriptor):
+            listed=original(descriptor)
+            observed=os.fstat(descriptor)
+            if (observed.st_dev,observed.st_ino)==(target.st_dev,target.st_ino):
                 for item in names:(directory/item).unlink()
-            return iter(listed)
-        return mock.patch.object(Path,'iterdir',iterdir)
+            return listed
+        return mock.patch.object(h.os,'listdir',listdir)
+
+    def swap_tree(self,base):
+        """root/kept (613 B) and root/sub/inner.o (1375 B) inside the state;
+        outside/inner.o (7919 B) and outside/outside-only.bin (4099 B) are not."""
+        root=base/'state';(root/'sub').mkdir(parents=True);(root/'kept').write_bytes(b'k'*613)
+        (root/'sub/inner.o').write_bytes(b'i'*1375)
+        outside=base/'outside';outside.mkdir();(outside/'inner.o').write_bytes(b'o'*7919)
+        (outside/'outside-only.bin').write_bytes(b'x'*4099)
+        return root,outside
+
+    def racing_swap(self,root,outside,trigger,*,after):
+        """Rename root/sub away and plant root/sub -> outside exactly when the
+        walk stats `trigger` (after the stat returns when `after`, else before).
+        Both the descriptor-relative stat and a pathname lstat are observed."""
+        swapped=[]
+        def swap():
+            if not swapped:
+                (root/'sub').rename(root.parent/'moved-sub');(root/'sub').symlink_to(outside,target_is_directory=True)
+                swapped.append(True)
+        original_stat=os.stat;original_lstat=Path.lstat
+        def observe(matched,call):
+            if matched and not after:swap()
+            value=call()
+            if matched and after:swap()
+            return value
+        def stat_hook(path,*args,dir_fd=None,follow_symlinks=True):
+            return observe(dir_fd is not None and path==trigger.name,
+                           lambda:original_stat(path,*args,dir_fd=dir_fd,follow_symlinks=follow_symlinks))
+        def lstat_hook(path):
+            return observe(path==trigger,lambda:original_lstat(path))
+        stack=contextlib.ExitStack()
+        stack.enter_context(mock.patch.object(h.os,'stat',stat_hook))
+        stack.enter_context(mock.patch.object(Path,'lstat',lstat_hook))
+        return stack,swapped
+
+    def test_directory_swapped_for_an_outside_symlink_after_its_lstat_is_never_entered(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-swap-synthetic-') as name:
+            root,outside=self.swap_tree(Path(name).resolve())
+            stack,swapped=self.racing_swap(root,outside,root/'sub',after=True)
+            with stack:value=h.allocated_state(root,live=True)
+            self.assertEqual(swapped,[True]);self.assertTrue((root/'sub').is_symlink())
+            # Only kept is counted: the listed directory is gone and its symlink
+            # replacement is skipped as a changed entry, never followed.
+            self.assertEqual(value['logicalBytes'],613);self.assertEqual(value['vanishedEntries'],1)
+            self.assertEqual(value['entries'],2)
+
+    def test_stopped_scan_refuses_a_directory_swapped_for_a_symlink(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-swap-stopped-synthetic-') as name:
+            root,outside=self.swap_tree(Path(name).resolve())
+            stack,swapped=self.racing_swap(root,outside,root/'sub',after=True)
+            with stack,self.assertRaises(OSError) as raised:h.allocated_state(root)
+            self.assertEqual(swapped,[True])
+            # Linux reports ELOOP for O_NOFOLLOW on a symlink; Darwin checks
+            # O_DIRECTORY first and reports ENOTDIR.
+            self.assertIn(raised.exception.errno,{errno.ELOOP,errno.ENOTDIR})
+
+    def test_queued_descendant_is_read_from_the_opened_directory_not_through_a_swapped_path(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-swap-queued-synthetic-') as name:
+            root,outside=self.swap_tree(Path(name).resolve())
+            stack,swapped=self.racing_swap(root,outside,root/'sub/inner.o',after=False)
+            with stack:value=h.allocated_state(root,live=True)
+            self.assertEqual(swapped,[True])
+            # The descendant is the 1375-byte file of the directory that was
+            # listed, not the 7919-byte file the swapped path now names.
+            self.assertEqual(value['logicalBytes'],613+1375);self.assertEqual(value['vanishedEntries'],0)
+
+    def test_unchanged_tree_with_a_subdirectory_is_counted_in_full(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-swap-near-miss-synthetic-') as name:
+            root,_=self.swap_tree(Path(name).resolve())
+            (root/'link').symlink_to('sub/inner.o')
+            for live in [True,False]:
+                with self.subTest(live=live):
+                    value=h.allocated_state(root,live=live)
+                    self.assertEqual(value['logicalBytes'],613+1375+len('sub/inner.o'));self.assertEqual(value['entries'],5)
+                    self.assertEqual(value.get('vanishedEntries',0),0)
 
     def test_live_sample_skips_an_entry_unlinked_between_listing_and_lstat(self):
         with tempfile.TemporaryDirectory(prefix='gcc-live-race-synthetic-') as name:
@@ -377,6 +514,54 @@ class Host(unittest.TestCase):
             attempt=json.loads((output/'ATTEMPT.json').read_bytes())
             self.assertIsNone(attempt['nativeOriginalCommandExitCode']);self.assertTrue(attempt['allElapsedTimeMustBeChargedOnRetry'])
             self.assertFalse(attempt['checkpointCompleted'])
+
+    def bounded_observation(self,output,*,maximum,service_left):
+        """Run one observation on a frozen clock and record the time each
+        blocking step was allowed: capacity sample, selector wait, post-EOF wait."""
+        read_fd,write_fd=os.pipe();os.write(write_fd,b'Synthetic bounded stdout\n');os.close(write_fd)
+        granted={'sample':[],'select':[],'wait':[]}
+        class Process:
+            def __init__(self):self.stdout=os.fdopen(read_fd,'rb');self.pid=999999;self.returncode=None
+            def wait(self,timeout=None):granted['wait'].append(timeout);self.returncode=0;return 0
+            def poll(self):return self.returncode
+        real_selector=h.selectors.DefaultSelector
+        class Selector:
+            def __init__(self):self.inner=real_selector()
+            def __getattr__(self,name):return getattr(self.inner,name)
+            def select(self,timeout=None):granted['select'].append(timeout);return self.inner.select(timeout=timeout)
+        real_allocated=h.allocated_state
+        def allocated(root,maximum_seconds=30,*,live=False):
+            granted['sample'].append(maximum_seconds);return real_allocated(root,maximum_seconds,live=live)
+        state={'Running':False,'Pid':0,'Status':'exited','ExitCode':0,'OOMKilled':False,'Error':''}
+        def docker(arguments,**kwargs):
+            return json.dumps([{'Id':SYNTHETIC_ID,'State':state}]).encode() if arguments[0]=='inspect' else b''
+        service={'remainingSeconds':h.capacity.FINALIZE_SECONDS+service_left,'capturedMonotonic':5000.0}
+        with mock.patch.object(h.subprocess,'Popen',return_value=Process()),mock.patch.object(h,'docker',side_effect=docker),\
+             mock.patch.object(h.time,'sleep'),mock.patch.object(h.time,'monotonic',return_value=5000.0),\
+             mock.patch.object(h.selectors,'DefaultSelector',Selector),mock.patch.object(h,'allocated_state',allocated):
+            h.native_observation(output,SYNTHETIC_ID,maximum,service)
+        return granted
+
+    def test_sample_selector_and_post_eof_wait_spend_only_the_remaining_native_time(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-bounded-native-synthetic-') as name:
+            output=Path(name).resolve();(output/'state').mkdir()
+            granted=self.bounded_observation(output,maximum=3.5,service_left=1000)
+            self.assertEqual(granted['sample'],[3.5]);self.assertEqual(granted['wait'],[3.5])
+            self.assertTrue(granted['select'] and all(0<=value<=1 for value in granted['select']))
+
+    def test_sample_selector_and_post_eof_wait_stop_at_the_finalization_reserve(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-bounded-service-synthetic-') as name:
+            output=Path(name).resolve();(output/'state').mkdir()
+            granted=self.bounded_observation(output,maximum=60,service_left=0.375)
+            self.assertEqual(granted['sample'],[0.375]);self.assertEqual(granted['wait'],[0.375])
+            self.assertTrue(granted['select'] and all(value==0.375 for value in granted['select']))
+
+    def test_ample_allowance_keeps_the_fixed_sample_selector_and_wait_caps(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-bounded-ample-synthetic-') as name:
+            output=Path(name).resolve();(output/'state').mkdir()
+            granted=self.bounded_observation(output,maximum=1800,service_left=2700)
+            self.assertEqual(granted['sample'],[30]);self.assertEqual(granted['wait'],[10])
+            self.assertTrue(granted['select'] and all(value==1 for value in granted['select']))
 
     def test_late_zero_terminal_after_last_pipe_read_still_refuses(self):
         with tempfile.TemporaryDirectory(prefix='gcc-late-terminal-synthetic-') as name:

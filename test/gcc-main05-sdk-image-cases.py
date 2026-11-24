@@ -100,58 +100,172 @@ class LocalSdkImage(unittest.TestCase):
             self.assertFalse((output/'SDK-LOCAL-IMAGE.json').exists())
 
 
+FOREIGN_TAG='synthetic-foreign/holder:137'
+FOREIGN_IMAGE='sha256:'+'f1'*32
+
+
+class ImageTable:
+    """Synthetic image store with Docker's removal semantics.
+
+    `image rm <tag>` only untags while another tag holds the image and deletes
+    it with its last tag; `image rm <id>` deletes an image that has at most one
+    tag (taking that tag with it) and refuses one with several. `races` maps a
+    call (as a tuple) to a mutation applied by another client right before it.
+    """
+    def __init__(self):
+        self.images={};self.tags={};self.calls=[];self.races={}
+
+    def bind(self,tag,image):self.tags[tag]=image
+
+    def view(self,image):
+        return {**self.images[image],'RepoTags':sorted(tag for tag,bound in self.tags.items() if bound==image)}
+
+    def resolve(self,reference):
+        if reference in self.images:return reference
+        if reference in self.tags:return self.tags[reference]
+        raise ValueError('Fixed Docker operation failed: No such image: '+reference)
+
+    def __call__(self,args,**kw):
+        self.calls.append(list(args))
+        race=self.races.pop(tuple(args),None)
+        if race:race(self)
+        if args[:2]==['image','ls'] and '--all' in args:return ''.join(image+'\n' for image in self.images).encode()
+        if args[:2]==['image','ls']:return (self.tags[args[-1]]+'\n').encode() if args[-1] in self.tags else b''
+        if args[:2]==['image','inspect']:return json.dumps([self.view(self.resolve(args[2]))]).encode()
+        if args[0]=='tag':self.resolve(args[1]);self.bind(args[2],self.resolve(args[1]));return b''
+        if args[:2]==['image','rm']:
+            reference=args[2];image=self.resolve(reference);held=self.view(image)['RepoTags']
+            if reference==image:
+                if len(held)>1:raise ValueError('Fixed Docker operation failed: image is referenced in multiple repositories')
+                for tag in held:del self.tags[tag]
+            else:
+                del self.tags[reference]
+                if len(held)>1:return ('Untagged: '+reference+'\n').encode()
+            del self.images[image];return ('Deleted: '+image+'\n').encode()
+        raise AssertionError(args)
+
+
 class FailedSnapshotCleanup(unittest.TestCase):
     def attempt(self,output,mode):
-        owner,proof,base,image=fixture();state={'created':False,'tag':False};calls=[]
+        owner,proof,base,image=fixture();table=ImageTable()
         if mode=='validation-failure':image['Architecture']='arm64'
         def docker(args,**kw):
-            calls.append(args)
             if args==['inspect','--size',CONTAINER]:return json.dumps([owner]).encode()
-            if args==['image','ls','--no-trunc','--quiet',TAG]:return (image['Id']+'\n').encode() if state['tag'] else b''
             if args==['commit','--pause=true',CONTAINER,TAG]:
                 self.assertTrue((output/'SDK-LOCAL-SNAPSHOT-REQUEST.json').is_file())
-                state.update(created=True,tag=True)
+                table.images[IMAGE]={key:value for key,value in image.items() if key!='RepoTags'};table.bind(TAG,IMAGE)
                 if mode.startswith('ambiguous'):raise ValueError('Synthetic commit response lost after actual image creation')
                 return (IMAGE+'\n').encode()
-            if args==['image','inspect',IMAGE] or args==['image','inspect',TAG]:return json.dumps([image]).encode()
-            if args==['image','rm',IMAGE]:state.update(created=False,tag=False);return b'Synthetic exact owned tag removed'
-            if args==['image','ls','--all','--no-trunc','--quiet']:return (IMAGE+'\n').encode() if state['created'] else b''
-            raise AssertionError(args)
+            return table(args,**kw)
         with self.assertRaises(ValueError):m.commit_prepared(NAME,CONTAINER,base,proof,output,docker)
-        return image,state,calls,docker
+        return image,table,docker
+
+    def removals(self,table):return [call for call in table.calls if call[:2]==['image','rm'] or call[0]=='tag']
 
     def test_created_image_cleanup_recovers_from_command_when_no_success_return_exists(self):
         with tempfile.TemporaryDirectory() as name:
-            output=Path(name).resolve();image,state,calls,docker=self.attempt(output,'validation-failure')
-            self.assertTrue(state['created']);self.assertTrue((output/'SDK-LOCAL-SNAPSHOT-COMMAND.json').exists())
+            output=Path(name).resolve();image,table,docker=self.attempt(output,'validation-failure')
+            self.assertIn(IMAGE,table.images);self.assertTrue((output/'SDK-LOCAL-SNAPSHOT-COMMAND.json').exists())
             self.assertFalse((output/'SDK-LOCAL-IMAGE.json').exists())
-            result=m.cleanup_owned(output,docker);self.assertTrue(result['ownedImageCleanupComplete']);self.assertFalse(state['created'])
-            self.assertEqual([call for call in calls if call[:2]==['image','rm']],[['image','rm',IMAGE]])
+            result=m.cleanup_owned(output,docker);self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
+            self.assertEqual(self.removals(table),[['image','rm',TAG]])
             self.assertFalse(result['unrelatedTagsRemoved']);self.assertFalse(result['imagePrunePerformed'])
 
     def test_ambiguous_local_commit_recovers_only_from_exact_request_tag_and_independent_owner(self):
         with tempfile.TemporaryDirectory() as name:
-            output=Path(name).resolve();image,state,calls,docker=self.attempt(output,'ambiguous-created')
-            self.assertTrue(state['created']);self.assertFalse((output/'SDK-LOCAL-SNAPSHOT-COMMAND.json').exists())
-            result=m.cleanup_owned(output,docker);self.assertTrue(result['ownedImageCleanupComplete']);self.assertFalse(state['created'])
+            output=Path(name).resolve();image,table,docker=self.attempt(output,'ambiguous-created')
+            self.assertIn(IMAGE,table.images);self.assertFalse((output/'SDK-LOCAL-SNAPSHOT-COMMAND.json').exists())
+            result=m.cleanup_owned(output,docker);self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
             self.assertIsNone(result['returnedLocalImageId']);self.assertEqual(result['observedLocalImageId'],IMAGE)
 
     def test_rebound_or_unproven_owner_image_is_retained_without_deleting_any_resource(self):
         for mode in ['validation-failure','ambiguous-created']:
             with self.subTest(mode=mode),tempfile.TemporaryDirectory() as name:
-                output=Path(name).resolve();image,state,calls,docker=self.attempt(output,mode)
-                if mode=='validation-failure':image['Id']='sha256:'+'9'*64
-                else:image['Config']['Labels']['io.checktrail.gcc-staged-owner']='other-owner'
+                output=Path(name).resolve();image,table,docker=self.attempt(output,mode)
+                if mode=='validation-failure':
+                    table.images[FOREIGN_IMAGE]=dict(table.images[IMAGE],Id=FOREIGN_IMAGE);table.bind(TAG,FOREIGN_IMAGE)
+                else:table.images[IMAGE]['Config']['Labels']['io.checktrail.gcc-staged-owner']='other-owner'
                 with self.assertRaises(ValueError):m.cleanup_owned(output,docker)
-                self.assertTrue(state['created']);self.assertFalse(any(call[:2]==['image','rm'] for call in calls))
+                self.assertIn(IMAGE,table.images);self.assertEqual(self.removals(table),[])
                 self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
 
     def test_ambiguous_commit_without_tag_or_returned_identity_never_claims_cleanup_complete(self):
         with tempfile.TemporaryDirectory() as name:
-            output=Path(name).resolve();_,state,calls,docker=self.attempt(output,'ambiguous-created');state['tag']=False
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'ambiguous-created');del table.tags[TAG]
             with self.assertRaisesRegex(ValueError,'cleanup is unproven'):m.cleanup_owned(output,docker)
-            self.assertTrue(state['created']);self.assertFalse(any(call[:2]==['image','rm'] for call in calls))
+            self.assertIn(IMAGE,table.images);self.assertEqual(self.removals(table),[])
             self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
+
+    def test_tag_dropped_and_image_aliased_after_inspection_keeps_the_foreign_tag_and_image(self):
+        # Another client untags ours and tags the image as its own between the
+        # admission inspect and the removal. Removing by ID would take its tag.
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure')
+            raced=[]
+            def docker_after_inspect(args,**kw):
+                value=docker(args,**kw)
+                if args==['image','inspect',TAG] and not raced:
+                    raced.append(True);del table.tags[TAG];table.bind(FOREIGN_TAG,IMAGE)
+                return value
+            with self.assertRaisesRegex(ValueError,'no longer names the observed image'):m.cleanup_owned(output,docker_after_inspect)
+            self.assertEqual(raced,[True])
+            self.assertIn(IMAGE,table.images);self.assertEqual(table.view(IMAGE)['RepoTags'],[FOREIGN_TAG])
+            self.assertEqual([call for call in table.calls if call[:2]==['image','rm']],[])
+            self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
+
+    def test_tag_rebound_to_a_foreign_image_after_inspection_never_untags_that_image(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure')
+            raced=[]
+            def docker_after_inspect(args,**kw):
+                value=docker(args,**kw)
+                if args==['image','inspect',TAG] and not raced:
+                    raced.append(True);table.images[FOREIGN_IMAGE]=dict(table.images[IMAGE],Id=FOREIGN_IMAGE);table.bind(TAG,FOREIGN_IMAGE)
+                return value
+            with self.assertRaisesRegex(ValueError,'no longer names the observed image'):m.cleanup_owned(output,docker_after_inspect)
+            self.assertEqual(raced,[True])
+            self.assertIn(FOREIGN_IMAGE,table.images);self.assertEqual(table.view(FOREIGN_IMAGE)['RepoTags'],[TAG])
+            self.assertIn(IMAGE,table.images);self.assertEqual([call for call in table.calls if call[:2]==['image','rm']],[])
+
+    def test_rebind_in_the_last_instant_before_removal_is_detected_and_reported(self):
+        # The Docker API offers no compare-and-delete: a rebind between the
+        # final tag read and the removal reaches the foreign image. The owned
+        # image is then left untagged, which cleanup refuses to call complete.
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure')
+            def rebind(store):store.images[FOREIGN_IMAGE]=dict(store.images[IMAGE],Id=FOREIGN_IMAGE);store.bind(TAG,FOREIGN_IMAGE)
+            table.races[('image','rm',TAG)]=rebind
+            with self.assertRaisesRegex(ValueError,'survived removal of its only tag'):m.cleanup_owned(output,docker)
+            self.assertIn(IMAGE,table.images);self.assertEqual(table.view(IMAGE)['RepoTags'],[])
+            self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
+
+    def test_image_that_already_carries_a_foreign_alias_loses_only_the_owned_tag(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');table.bind(FOREIGN_TAG,IMAGE)
+            result=m.cleanup_owned(output,docker)
+            self.assertTrue(result['ownedImageCleanupComplete']);self.assertEqual(result['unrelatedRemainingAliasesProtected'],[FOREIGN_TAG])
+            self.assertIn(IMAGE,table.images);self.assertEqual(table.view(IMAGE)['RepoTags'],[FOREIGN_TAG])
+            self.assertEqual(self.removals(table),[['image','rm',TAG]])
+
+    def test_returned_untagged_image_is_removed_through_the_owned_tag_not_its_id(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');del table.tags[TAG]
+            result=m.cleanup_owned(output,docker)
+            self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
+            self.assertEqual(self.removals(table),[['tag',IMAGE,TAG],['image','rm',TAG]])
+
+    def test_returned_untagged_image_aliased_before_removal_keeps_the_foreign_tag(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');del table.tags[TAG]
+            raced=[]
+            def docker_after_inspect(args,**kw):
+                value=docker(args,**kw)
+                if args==['image','inspect',IMAGE] and not raced:raced.append(True);table.bind(FOREIGN_TAG,IMAGE)
+                return value
+            result=m.cleanup_owned(output,docker_after_inspect)
+            self.assertEqual(raced,[True]);self.assertTrue(result['ownedImageCleanupComplete'])
+            self.assertIn(IMAGE,table.images);self.assertEqual(table.view(IMAGE)['RepoTags'],[FOREIGN_TAG])
+            self.assertEqual(result['unrelatedRemainingAliasesProtected'],[FOREIGN_TAG])
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

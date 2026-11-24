@@ -43,13 +43,20 @@
     "approvedOn": "2026-11-24",
     "changedRuntimeFiles": [
       "scripts/producer-qualification/gcc-hosted-carrier.py",
-      "scripts/producer-qualification/gcc-hosted-sdk.py"
+      "scripts/producer-qualification/gcc-hosted-sdk.py",
+      "scripts/producer-qualification/gcc-hosted-phase0-capacity.py",
+      "scripts/producer-qualification/gcc-sdk-derived-run.py"
     ],
     "scope": [
       "Live sampling: live capacity samples skip entries unlinked between their parent listing and their own lstat, readlink or listing, bounded by LIVE_VANISHED_CEILING per sample; the sampled root must exist, and stopped admission, checkpoint and relocation scans stay strict.",
       "Container identity: once a create returns its container ID, every start, attach, signal, copy, terminal inspection and removal in the hosted configure carrier and the SDK reconstruction addresses that ID; a name is read only to admit the created container or to reconcile a create that returned no ID, and that reconciliation removes the ID it observed.",
       "Import order: the on-host receipt entry verifies its policy, the checkout and every runtimeFiles pin with the standard library before loading any sibling, reads no adjacent bytecode cache, and every first-party module it loads or executes, including the JavaScript import closure of the two acquisition entry points, is pinned as a runtimeFiles row.",
-      "No limit, command, image or other runtime file changes."
+      "Restore capacity: gcc-hosted-phase0-capacity.py admits phase 0 only when free scratch also holds a second uncompressed tree of up to the state ceiling, the readback the carrier restores beside the original tree and the checkpoint before its 8 GiB floor.",
+      "Bounded native waits: in gcc-hosted-carrier.py every live capacity sample, selector wait and post-EOF wait is bounded by the smaller of the remaining native allowance and the remaining source-job time above the finalization reserve.",
+      "Descriptor walk: gcc-hosted-carrier.py measures state from directory descriptors opened with O_NOFOLLOW and O_DIRECTORY and resolves every name relative to the directory that listed it, so a directory replaced by a symlink is never entered; live samples count such an entry within LIVE_VANISHED_CEILING, stopped scans refuse it, and a walk deeper than 256 levels is refused.",
+      "Not-started generator: gcc-sdk-derived-run.py re-reads the command and whole-operation budget after journaling a request and records a not-started terminal instead of starting a generator once that budget is spent.",
+      "Git configuration: gcc-hosted-carrier.py runs git with no system or global configuration, no outside attribute files, no hooks and no textconv or external diff, and refuses a checkout whose own configuration names a filter, diff, fsmonitor, hooks or include program before git starts.",
+      "Further changes approved by the operator on 2026-11-24: gcc-hosted-phase0-capacity.py, gcc-hosted-carrier.py and gcc-sdk-derived-run.py, as listed above. No command, image or other runtime file changes; the limit changes are the restore-tree term of the phase-0 scratch budget and the state depth ceiling."
     ]
   },
   "runtimeFiles": [
@@ -60,16 +67,16 @@
       "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d"
     },
     {
-      "bytes": 46269,
+      "bytes": 54676,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
-      "sha256": "452afc9bcb6588bb9db88473de42d1ce35ef514932a5cd08feb8989aed1feb2d"
+      "sha256": "2e56567cafc78dfe152d0ae4645d6daecfbc40bd153790be50816b8175f9d9de"
     },
     {
-      "bytes": 7231,
+      "bytes": 7585,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-phase0-capacity.py",
-      "sha256": "df30328a8be4cabd05d1765abdb46f996ce79db7100147b77ba9d9135eac0a2d"
+      "sha256": "ee1192ba5e30b1697cf25fdcc05bf28142a89644a04186c612f1298c81d9a720"
     },
     {
       "bytes": 22696,
@@ -90,10 +97,10 @@
       "sha256": "c2ce6976e93620c6d47a0723421ffb1c4e450420ca2475355741dbd195033e05"
     },
     {
-      "bytes": 33918,
+      "bytes": 34224,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-sdk-derived-run.py",
-      "sha256": "48d14b5689cac1011eb394c1841ce32d330b114ae394c5d047d9fb27f7a077e5"
+      "sha256": "f7588867138b11f2fc136f9e4417b811fd62792ece75c78ef66b19048ea18ac8"
     },
     {
       "bytes": 7496,

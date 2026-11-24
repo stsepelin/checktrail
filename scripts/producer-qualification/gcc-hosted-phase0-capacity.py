@@ -91,14 +91,20 @@ def admit(resources, service, *, state_bytes, state_ceiling_bytes=STATE_CEILING_
             resources['availableMemoryBytes'] >= 8 * GIB, 'Insufficient actual stock CPU/memory')
     require(type(state_bytes) is int and 0 <= state_bytes <= state_ceiling_bytes == STATE_CEILING_BYTES and
             type(preparation_bytes) is int and preparation_bytes >= 0, 'Wrong fixed phase-0 growth budget')
-    required = state_ceiling_bytes - state_bytes + CHECKPOINT_BYTES + ENVELOPE_BYTES + 8 * GIB + preparation_bytes
+    # After capture the carrier keeps the original tree and the compressed
+    # checkpoint while it restores an independent readback tree of up to the
+    # same logical ceiling, and still requires the 8 GiB floor beside them.
+    restore_tree = state_ceiling_bytes
+    required = (state_ceiling_bytes - state_bytes + CHECKPOINT_BYTES + ENVELOPE_BYTES + restore_tree +
+                8 * GIB + preparation_bytes)
     require(resources['freeDiskBytes'] >= required, 'Actual phase-0 scratch/capture capacity unavailable')
     require(service['cache']['headroomAdmitted'], 'Actual finite phase-0 unpaid cache headroom unavailable')
     remaining = service['clock']['remainingSeconds'] - (time.monotonic() - service['clock']['capturedMonotonic'])
     maximum = min(3600, int(remaining - FINALIZE_SECONDS))
     require(maximum >= 60, 'Source job cannot retain capture/upload/finalization reserve')
     return {'maximumNativeSeconds': maximum, 'requiredScratchBytes': required,
-            'stateCeilingBytes': STATE_CEILING_BYTES, 'compressedCheckpointByteLimit': CHECKPOINT_BYTES,
+            'stateCeilingBytes': STATE_CEILING_BYTES, 'restoreReadbackTreeBytes': restore_tree,
+            'compressedCheckpointByteLimit': CHECKPOINT_BYTES,
             'envelopeByteLimit': ENVELOPE_BYTES, 'sharedConcurrentWriteMarginBytes': SHARED_MARGIN_BYTES,
             'checkpointPredecessorEntries': 0, 'actualCacheReservation': False,
             'sourceServiceClockWitnessed': True, 'laterPhaseCapacityQualified': False,

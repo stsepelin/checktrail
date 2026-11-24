@@ -176,16 +176,18 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
 
     def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
         root,_,_,good,_=self.run_entry(self.noisy)
-        current='3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923'
+        current='30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261'
         v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
         v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
         self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
         decoders={current:m.validate_receipt,v5:m.validate_historical_v5_receipt,v4:m.validate_historical_v4_receipt}
-        # The pre-amendment v6 digest never authorized a run, so no receipt or
-        # checkpoint carries it and no decoder keeps it.
-        retired='ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'
-        for decode in decoders.values():
-            with self.subTest(retired=retired),self.assertRaises(m.Refusal):decode({**good,'sourcePolicySha256':retired})
+        # Earlier v6 amendments never authorized a run, so no receipt or
+        # checkpoint carries their digests and no decoder keeps them.
+        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923']
+        self.assertNotIn(current,retired)
+        for digest in retired:
+            for decode in decoders.values():
+                with self.subTest(retired=digest),self.assertRaises(m.Refusal):decode({**good,'sourcePolicySha256':digest})
         for policy in decoders:
             for admitted,decode in decoders.items():
                 value={**good,'sourcePolicySha256':policy}
@@ -622,5 +624,49 @@ class SiblingAdmission(unittest.TestCase):
   with self.assertRaises(decoder.Bad):m.validate_structured(confused)
   observed=m.unobserved_structured();observed['state']='invalid';observed['errorId']='record-unavailable'
   self.assertEqual(m.validate_structured(observed)['state'],'invalid')
+
+class CheckoutGitConfig(unittest.TestCase):
+ """The stdlib-only checkout check refuses a repository whose own config
+ names a program git could run, and agrees with git about which keys exist."""
+ carrier_cases=load(ROOT/'test/gcc-hosted-carrier-cases.py')
+ CORPUS=['[core]\n\trepositoryformatversion = 0\n\tbare = false\n[remote "origin"]\n\turl = https://example.invalid/x.git\n\tpartialclonefilter = blob:none\n',
+         '[filter "synthetic"]\n\tclean = /bin/false\n','[Filter.Synthetic]\n\tSMUDGE = /bin/false\n','[filter.outer "inner"] process = /bin/false\n',
+         '[diff "synthetic"]\n\txfuncname = "^x ; [filter]"\n\ttextconv = /bin/false\n','[diff]\n\texternal = /bin/false\n',
+         '[core]\n\tcomment = continued \\\n  [filter "fake"] clean = /bin/false\n\thooksPath = /tmp/hooks\n',
+         '[includeIf "gitdir:/"]\n\tpath = /tmp/synthetic.config\n[include]\n\tpath = /tmp/other.config\n',
+         '[core] fsmonitor\n; [filter "commented"] clean = /bin/false\n# [diff "c"] textconv = x\n',
+         '[http "https://example.invalid/"]\n\textraheader = synthetic 137\n']
+ def test_both_readers_list_exactly_the_keys_git_itself_reads(self):
+  h=self.carrier_cases.h
+  for config in self.CORPUS:
+   with self.subTest(config=config),tempfile.TemporaryDirectory() as name:
+    path=Path(name)/'config';path.write_text(config)
+    listed=subprocess.run(['/usr/bin/git','config','--file',str(path),'--list','--name-only'],env={'PATH':'/usr/bin:/bin','GIT_CONFIG_NOSYSTEM':'1'},
+                          check=True,capture_output=True,timeout=10).stdout.decode().splitlines()
+    expected=sorted((key.split('.',1)[0].lower(),key.rsplit('.',1)[1].lower()) for key in listed)
+    self.assertTrue(expected)
+    self.assertEqual(sorted(m.git_config_keys(config.encode())),expected)
+    self.assertEqual(sorted(h.git_config_keys(config.encode())),expected)
+ def test_malformed_config_is_refused_by_both_readers(self):
+  h=self.carrier_cases.h
+  for config in ['[core\n','[core]\n\tbroken = "unterminated\n','[core]\n\tbad = escape \\q\n','orphan = before any section\n',b'[core]\n\tx = \xff\n']:
+   raw=config if isinstance(config,bytes) else config.encode()
+   with self.subTest(config=config):
+    with self.assertRaises(m.Refusal):m.git_config_keys(raw)
+    with self.assertRaises(ValueError):h.git_config_keys(raw)
+ def test_clean_filter_in_repository_config_is_refused_before_git_runs_it(self):
+  with tempfile.TemporaryDirectory(prefix='gcc-receipt-git-filter-') as name:
+   base=Path(name).resolve();marker=base/'filter-ran.marker'
+   repository,head=self.carrier_cases.filtered_repository(base,'[filter "synthetic"]\n\tclean = %s\n'%self.carrier_cases.marking_filter(base,marker))
+   try:m.verify_checkout(repository,head);refusal=None
+   except m.Refusal as error:refusal=error
+   self.assertFalse(marker.exists(),'A configured clean filter ran during checkout verification')
+   self.assertEqual(getattr(refusal,'identifier',None),'source-refused')
+ def test_clean_checkout_with_benign_filter_mentions_is_verified(self):
+  with tempfile.TemporaryDirectory(prefix='gcc-receipt-git-benign-') as name:
+   repository,head=self.carrier_cases.filtered_repository(Path(name).resolve(),self.CORPUS[0])
+   self.assertIsNone(m.verify_checkout(repository,head))
+   with self.assertRaises(m.Refusal):m.verify_checkout(repository,'c'*40)
+
 
 if __name__=='__main__':unittest.main()
