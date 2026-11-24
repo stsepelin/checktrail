@@ -283,8 +283,9 @@ try {
       "Selection metadata cannot assert acceptance or quality",
     );
   // These are declaration counts, separate from execution and acceptance.
+  // A case is addressed by its owning profile key as well as file and name.
   const sharedCases = new Set();
-  for (const rows of Object.values(current)) {
+  for (const [owner, rows] of Object.entries(current)) {
     assert.ok(
       Array.isArray(rows),
       "Required native manifests must contain arrays",
@@ -310,14 +311,16 @@ try {
           row.name.length <= 512,
         "Invalid required native case name",
       );
-      sharedCases.add(canonical([row.file, row.name]));
+      sharedCases.add(canonical([owner, row.file, row.name]));
     }
   }
   let casesInSharedManifest = 0;
   const outsideSharedManifest = [];
   for (const profile of inventory.extensionProfiles) {
     const present = profile.acceptanceCases.filter((entry) =>
-      sharedCases.has(canonical([profile.acceptanceFile, entry.name])),
+      sharedCases.has(
+        canonical([profile.id, profile.acceptanceFile, entry.name]),
+      ),
     ).length;
     casesInSharedManifest += present;
     if (present !== profile.acceptanceCases.length)
@@ -356,7 +359,7 @@ try {
         if (matches.length === 1 && matches[0].file === file)
           alternateBindings.push(binding);
         else unresolvedBindings.push(binding);
-      } else if (sharedCases.has(canonical([file, entry.name]))) {
+      } else if (sharedCases.has(canonical([profile.id, file, entry.name]))) {
         declaredFileBindings++;
       } else unresolvedBindings.push(binding);
     }

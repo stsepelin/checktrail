@@ -20,6 +20,11 @@ entry in the default file, duplicate entries or a different file leave that case
 unresolved. An unrelated adjacent callback name does not invalidate a correct
 binding. The selected inventory and its pinned scope remain unchanged.
 
+Declared-file bindings follow the same address rule: a case counts only when its
+default file and name appear under its own profile key. The same callback filed
+only under another profile, such as `core`, leaves the case unresolved; a copy
+kept in both profiles still resolves.
+
 The `controllerCaseBindings` report partitions every selected case into a
 declared-file binding, an alternate-file binding or an unresolved binding.
 `selectedCaseBindings` retains the earlier default-file-only visibility report

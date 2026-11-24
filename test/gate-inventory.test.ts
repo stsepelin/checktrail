@@ -242,6 +242,56 @@ test("finite inventory reports shared-manifest visibility without treating alter
   }
 });
 
+// The same file and name under another profile key is a different manifest
+// address: that profile's required set owns it, not the selected one.
+test("finite inventory does not count a callback filed under another profile as a selected binding", async (t) => {
+  const root = await source(t);
+  const first = await audit(root);
+  assert.equal(first.code, 0, first.stderr);
+  const baseline = JSON.parse(first.stdout);
+  const moved = JSON.parse(
+    await readFile(path.join(root, files[2]!), "utf8"),
+  ) as RequiredNative;
+  const relocated = moved["tasks-matrix"]!;
+  assert.equal(relocated.length, 9);
+  await alter<RequiredNative>(root, files[2]!, (rows) => {
+    rows.core!.push(...structuredClone(relocated));
+  });
+  const copied = await audit(root);
+  assert.equal(copied.code, 0, copied.stderr);
+  const near = JSON.parse(copied.stdout);
+  assert.deepEqual(near.selectedCaseBindings, baseline.selectedCaseBindings);
+  assert.deepEqual(
+    near.controllerCaseBindings,
+    baseline.controllerCaseBindings,
+  );
+  await alter<RequiredNative>(root, files[2]!, (rows) => {
+    delete rows["tasks-matrix"];
+  });
+  const result = await audit(root);
+  assert.equal(result.code, 0, result.stderr);
+  const after = JSON.parse(result.stdout);
+  assert.equal(
+    after.selectedCaseBindings.casesInSharedManifest,
+    baseline.selectedCaseBindings.casesInSharedManifest - 9,
+  );
+  assert.equal(
+    after.controllerCaseBindings.declaredFileBindings,
+    baseline.controllerCaseBindings.declaredFileBindings - 9,
+  );
+  assert.equal(
+    after.controllerCaseBindings.unresolvedCases,
+    baseline.controllerCaseBindings.unresolvedCases + 9,
+  );
+  assert.deepEqual(
+    after.controllerCaseBindings.unresolvedBindings
+      .filter((row: { profile: string }) => row.profile === "tasks-matrix")
+      .map((row: { name: string }) => row.name)
+      .sort(),
+    relocated.map((row) => row.name).sort(),
+  );
+});
+
 const alternateBindings = [
   ["cpp-extensions", "privacy", "cpp-extensions-surfaces"],
   ["cpp-extensions", "lifecycle", "cpp-extensions-cancel"],
