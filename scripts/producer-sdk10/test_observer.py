@@ -43,6 +43,19 @@ class ObserverControls(unittest.TestCase):
   for body in ['<root><testcase/></root>','<testsuite tests="0"/>','<assemblies/>','<TestRun/>']:
    with self.subTest(body=body):self.assertFalse(self.report(body)['allReportedTestsPassed'])
   with self.assertRaises(common.Refusal):self.report('<!DOCTYPE testsuite [<!ENTITY x "synthetic">]><testsuite tests="1"><testcase name="&x;"/></testsuite>')
+ def test_declarations_are_refused_in_every_encoding_and_a_mention_in_a_comment_is_not_one(self):
+  passing='<testsuite tests="1"><testcase name="declared-8191"/></testsuite>'
+  declared=['<!DOCTYPE testsuite [<!ENTITY x "declared-8191">]>'+passing,'<!DOCTYPE testsuite SYSTEM "declared-8191.dtd">'+passing,'<!DOCTYPE testsuite>'+passing]
+  for text in declared:
+   for encoding,body in [('utf-8',text.encode()),('utf-16',text.encode('utf-16')),('utf-16-le-declared',('<?xml version="1.0" encoding="UTF-16"?>'+text).encode('utf-16-le'))]:
+    with self.subTest(text=text,encoding=encoding),self.assertRaisesRegex(common.Refusal,'report XML external declarations'):observer.natural_report(body)
+  # A declaration ElementTree would expand without complaint is still refused.
+  with self.subTest(expanded='utf-16'),self.assertRaisesRegex(common.Refusal,'report XML external declarations'):observer.natural_report(('<!DOCTYPE t [<!ENTITY e "x">]><testsuite tests="1"><testcase name="&e;"/></testsuite>').encode('utf-16'))
+  for encoding in ['utf-8','utf-16']:
+   with self.subTest(near_miss=encoding):
+    body=('<!-- mentions <!DOCTYPE testsuite> and <!ENTITY x "8191"> only as text -->'+passing).encode(encoding)
+    row=observer.natural_report(body);self.assertTrue(row['allReportedTestsPassed']);self.assertEqual(row['tests'],1)
+  with self.assertRaises(observer.ET.ParseError):observer.natural_report(b'<testsuite tests="1"><testcase name="truncated-8191"')
  def test_report_credit_needs_successful_original_test_and_fresh_nonfixture_body(self):
   folder=self.root/'artifacts/TestResults';folder.mkdir(parents=True);before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
   body=b'<testsuite tests="1"><testcase name="actual-synthetic-result"/></testsuite>';p=folder/'fresh.xml';p.write_bytes(body);passed={'originalCodeExecuted':True,'exitCode':0,'stopReason':None}

@@ -1,5 +1,5 @@
 """First-party compiler/header and source-endpoint observations, never a review."""
-import argparse,gzip,hashlib,json,os,pathlib,posixpath,re,stat,struct,subprocess,sys,tarfile,time,zlib,xml.etree.ElementTree as ET
+import argparse,gzip,hashlib,json,os,pathlib,posixpath,re,stat,struct,subprocess,sys,tarfile,time,zlib,xml.etree.ElementTree as ET,xml.parsers.expat as expat
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from common import Refusal,need,freeze,encoded,read_json,hash_file,git_blob,syncdir,safe_relative
 def file_identity(path,maximum=256*1024**2,deadline=None):
@@ -75,6 +75,16 @@ def tracked_after(source,before,deadline):
   rows.append(row);keys=['kind','mode','sha256','target'];changed=any(old.get(k)!=row.get(k) for k in keys if k in old or k in row)
   if changed:changes.append({'path':path,'change':'modified-by-original-build-or-test','before':old,'after':row})
  return {'trackedBefore':len(tracked),'trackedAfterPresent':len(rows),'trackedEndpointChanges':changes,'endpointImmutabilityAssumed':False,'fullBeforeAndAfterTrackedIdentities':rows,'changedAndGeneratedBodiesRequireStoppedWorkCapture':True}
+def refuse_declarations(body):
+ """Refuse a report with any DOCTYPE or ENTITY declaration, in whatever encoding expat detects.
+
+ Checking the parser's own events covers UTF-16 and every other encoding the
+ parser accepts, and text that merely mentions a declaration is not one.
+ """
+ def refuse(*_):raise Refusal('report XML external declarations')
+ parser=expat.ParserCreate();parser.StartDoctypeDeclHandler=refuse;parser.EntityDeclHandler=refuse
+ try:parser.Parse(body,True)
+ except expat.ExpatError as error:raise ET.ParseError(str(error)) from error
 def natural_report(body):
  """Read native result rows and reconcile every supported declared summary.
 
@@ -82,7 +92,7 @@ def natural_report(body):
  document whose counters cover the rows. Unknown, empty and incomplete reports
  retain observations but cannot earn passing credit.
  """
- need(b'<!DOCTYPE' not in body.upper() and b'<!ENTITY' not in body.upper(),'report XML external declarations')
+ refuse_declarations(body)
  doc=ET.fromstring(body);local=lambda x:x.tag.rsplit('}',1)[-1]
  def number(value):
   need(type(value) is str and re.fullmatch(r'[0-9]+',value) is not None,'native report nonnegative integer counter');return int(value)
