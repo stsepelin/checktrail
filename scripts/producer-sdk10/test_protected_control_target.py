@@ -114,16 +114,22 @@ class ProtectedTarget(unittest.TestCase):
         with patch.object(t.time,'monotonic',side_effect=lambda:clock[0]),patch.object(t,'read_json',side_effect=late),self.assertRaisesRegex(common.Refusal,'ready-readback-completion-deadline'):t.ready(c,api,'interrupt-build',self.binding,10)
 
     def test_control_manifest_binds_exact_files_not_missing_extra_or_tampered_copy(self):
-        names=['protected_control_worker.py','target_protected_controls.py','test_protected_control_target.py'];rows=[]
+        names=['protected_control_worker.py','target_protected_controls.py','test_protected_control_target.py'];rows=[];files={}
         for name in names:
-            body=('first-party-inert-'+name).encode();(self.root/name).write_bytes(body);rows.append({'path':name,'bytes':len(body),'sha256':hashlib.sha256(body).hexdigest()})
+            body=('first-party-inert-'+name).encode();files[name]=body;rows.append({'path':name,'bytes':len(body),'sha256':hashlib.sha256(body).hexdigest()})
         def install(selection):
-            raw=common.encoded({'files':selection});(self.root/'PROTECTED-CONTROLS.json').write_bytes(raw);return hashlib.sha256(raw).hexdigest()
-        with patch.object(t,'HERE',self.root):
-            t.verify_control_inputs(install(rows))
-            for bad in [rows[:-1],rows+[rows[0]],[{**rows[0],'path':rows[0]['path']+'-suffix'},*rows[1:]]]:
-                with self.subTest(bad=bad),self.assertRaises(common.Refusal):t.verify_control_inputs(install(bad))
-            pin=install(rows);(self.root/names[0]).write_bytes(b'foreign')
-            with self.assertRaises(common.Refusal):t.verify_control_inputs(pin)
+            raw=common.encoded({'files':selection});files['PROTECTED-CONTROLS.json']=raw;return hashlib.sha256(raw).hexdigest()
+        t.verify_control_inputs(install(rows),files)
+        for bad in [rows[:-1],rows+[rows[0]],[{**rows[0],'path':rows[0]['path']+'-suffix'},*rows[1:]]]:
+            with self.subTest(bad=bad),self.assertRaises(common.Refusal):t.verify_control_inputs(install(bad),files)
+        pin=install(rows);files[names[0]]=b'foreign'
+        with self.assertRaises(common.Refusal):t.verify_control_inputs(pin,files)
+    def test_control_pin_is_checked_against_the_published_bundle_not_the_checkout(self):
+        # The checkout changes after verification; the controls that run are the
+        # verified bundle's, so the pin is checked against those bytes.
+        bundle=common.verified_bundle();pin=hashlib.sha256(bundle.files['PROTECTED-CONTROLS.json']).hexdigest()
+        for name in ['PROTECTED-CONTROLS.json','protected_control_worker.py']:(self.root/name).write_bytes(b'changed-checkout-8803')
+        with patch.object(t,'HERE',self.root):t.verify_control_inputs(pin,bundle.files)
+        with self.assertRaisesRegex(common.Refusal,'exact-reviewed-controls-manifest'):t.verify_control_inputs(hashlib.sha256(b'changed-checkout-8803').hexdigest(),bundle.files)
 
 if __name__=='__main__':unittest.main(verbosity=2)

@@ -6,14 +6,14 @@
       "sha256": "de9f6596caa75e10e76d04bf7d1aef61c92dfe4198c7f8dad07dbf05edd0cae0"
     },
     {
-      "bytes": 16543,
+      "bytes": 16652,
       "path": "target_protected_controls.py",
-      "sha256": "cae2d8eba05590fcb41a396f97ce45bb11a99fca81b3f3d6d1c6dab0fcdad0c7"
+      "sha256": "d4991b516024fa65b71173a0bc0309b63d1793ecd0545aca08e59329edb2ddbe"
     },
     {
-      "bytes": 10340,
+      "bytes": 10999,
       "path": "test_protected_control_target.py",
-      "sha256": "1bc7b089bcc2b423d7e1443cf5a1b6a7cf7e2264f09abbef666f17466e2f313b"
+      "sha256": "5a4fc08f88ff91b78dbfa1d61cf573b8c17e6ac8b8d4a7f87bf551a72964ff40"
     }
   ],
   "firstPartyControlsOnly": true,

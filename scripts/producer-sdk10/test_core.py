@@ -351,6 +351,15 @@ class Controls(unittest.TestCase):
      self.assertEqual(done.returncode,7,log);self.assertEqual((markers/'helper').read_text(),'imported-4421');self.assertEqual((markers/'entry').read_text(),'finalize --nonce synthetic-9157 --exit-7')
     else:
      self.assertNotEqual(done.returncode,0);self.assertIn('frozen first-party control file changed: helper_marker.py',log);self.assertEqual(list(markers.iterdir()),[])
+ def test_verified_data_stays_readable_after_the_checkout_is_replaced(self):
+  # The bundle answers for the directory it verified even once that path is a
+  # symlink to somewhere else; a lookup never resolves it on disk again.
+  import run_checks
+  folder=self.root/'checkout-2207';folder.mkdir();(folder/'profile.json').write_bytes(b'{"verified":2207}')
+  verified=run_checks.Bundle(folder,{'profile.json':b'{"verified":2207}'},'2'*64);path=verified.path('profile.json')
+  folder.rename(self.root/'moved-2207');elsewhere=self.root/'elsewhere-2207';elsewhere.mkdir();(elsewhere/'profile.json').write_bytes(b'{"foreign":2207}');folder.symlink_to(elsewhere)
+  self.assertEqual(verified.get_data(path),b'{"verified":2207}');self.assertEqual(verified.get_data(str(folder/'profile.json')),b'{"verified":2207}')
+  with self.assertRaises(FileNotFoundError):verified.get_data(str(elsewhere/'profile.json'))
  def test_crypto_operation_runs_a_private_copy_of_the_verified_envelope(self):
   # The checkout's envelope.mjs is replaced after verification; the operation
   # runs the verified bytes, copied into its own fresh folder.

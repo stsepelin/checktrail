@@ -134,6 +134,7 @@ def observe(controller, label, native_deadline, clock=time.monotonic, producer_b
             # The sampler ran from the observer snapshot; a changed one gives it no credit.
             record['guard'] = 'observer-snapshot'
             c.observer()
+            need(clock() < c.state['phaseDeadline'], 'live readback deadline')
             record['guard'] = 'sampler-complete'
             need(record['meter'] is not None and record['meter'].get('samplingComplete') is True, 'live work sampler incomplete')
             record['guard'] = 'sample-bounds'

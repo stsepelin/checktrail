@@ -110,7 +110,9 @@ class OutsideBundle:
 
 class Bundle:
  """Import, run and read first-party files only from verified in-memory bytes."""
- def __init__(self,folder,files,pin):self.folder=os.path.realpath(folder);self.files=dict(files);self.pin=pin
+ def __init__(self,folder,files,pin):
+  # Both spellings of the directory are fixed now; a lookup never resolves it on disk again.
+  self.folder=os.path.realpath(folder);self.folders={self.folder,os.path.abspath(folder)};self.files=dict(files);self.pin=pin
  def path(self,name):return os.path.join(self.folder,name)
  def code(self,name):
   path=self.path(name);source=self.files[name]
@@ -127,7 +129,7 @@ class Bundle:
  def get_data(self,path):
   """The verified bytes of one bundle file; no other path is served."""
   folder,name=os.path.split(os.fspath(path))
-  if os.path.realpath(folder)!=self.folder or name not in self.files:raise OSError(errno.ENOENT,'not a verified first-party bundle file',os.fspath(path))
+  if os.path.abspath(folder) not in self.folders or name not in self.files:raise OSError(errno.ENOENT,'not a verified first-party bundle file',os.fspath(path))
   return self.files[name]
  def module(self,name):
   """A private module built from the verified bytes, outside sys.modules."""

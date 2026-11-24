@@ -165,7 +165,8 @@ class IntegrationControls(unittest.TestCase):
   # verified bytes (a synthetic one input_prep refuses by its schema, so no
   # network is used) and leaves no bytecode cache behind.
   import run_checks
-  bundle=self.root/'bundle-3359';bundle.mkdir()
+  # Resolved like driver.HERE, which a verified bundle answers for.
+  bundle=(self.root/'bundle-3359').resolve();bundle.mkdir()
   for name in ['input_prep.py','common.py','run_checks.py']:(bundle/name).write_bytes(common.bundle_bytes(Path(driver.__file__).parent/name))
   (bundle/'profile.json').write_bytes(b'{"schemaVersion":3359}')
   raw=common.encoded({'schemaVersion':1,'files':[{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in ['input_prep.py','common.py','run_checks.py','profile.json']]});(bundle/'MANIFEST.json').write_bytes(raw);pin=hashlib.sha256(raw).hexdigest()

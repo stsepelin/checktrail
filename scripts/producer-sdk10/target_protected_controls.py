@@ -10,7 +10,7 @@ import stat
 import sys
 import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import bundle_bytes, context, digest, encoded, freeze, hash_file, need, owned_labels, read_json
+from common import bundle_bytes, context, digest, encoded, freeze, hash_file, need, owned_labels, read_json, verified_bundle
 from driver import Controller, HERE, NATIVE_CAP_ALIASES, manifest_check, native_identity_contract
 from owned_image import cleanup_image_inputs
 from producer_adapter import ProducerAPI
@@ -21,14 +21,15 @@ from protected_control_worker import CASES, child_argv
 def command_ok(row):
     need(complete_command(row), 'inert-control-command-transport-incomplete')
 
-def verify_control_inputs(pin):
-    raw=(HERE/'PROTECTED-CONTROLS.json').read_bytes()
-    need(hash_file(HERE/'PROTECTED-CONTROLS.json')==(len(raw),pin), 'exact-reviewed-controls-manifest')
+def verify_control_inputs(pin,files):
+    """Check the control pin and its rows against the bundle bytes that are published and run."""
+    raw=files.get('PROTECTED-CONTROLS.json')
+    need(type(raw) is bytes and digest(raw)==pin, 'exact-reviewed-controls-manifest')
     rows=json.loads(raw)['files']
     names={'protected_control_worker.py','target_protected_controls.py','test_protected_control_target.py'}
     need(type(rows) is list and len(rows)==3 and {r['path'] for r in rows}==names, 'exact-three-first-party-control-files')
     for row in rows:
-        path=HERE/row['path'];need(not path.is_symlink() and path.parent==HERE and hash_file(path)==(row['bytes'],row['sha256']), 'frozen-first-party-control-file')
+        body=files.get(row['path']);need(type(body) is bytes and (len(body),digest(body))==(row['bytes'],row['sha256']), 'frozen-first-party-control-file')
 
 def child_contract(value,binding,state):
     need(type(value) is dict and value.get('binding')==binding and value.get('originalSDKSourceSeedBuildTestsOrKeysExecuted') is False, 'fresh-exact-canary-ready-binding')
@@ -118,7 +119,7 @@ def canary(c, case, deadline):
     return summary
 
 def run(root,nonce,pin,control_pin):
-    profile=manifest_check(pin);verify_control_inputs(control_pin)
+    profile=manifest_check(pin);verify_control_inputs(control_pin,verified_bundle().files)
     need(sys.platform=='linux' and os.environ.get('RUNNER_OS')=='Linux' and os.environ.get('RUNNER_ARCH')=='X64' and platform.machine()=='x86_64', 'standard-Ubuntu26-X64-only')
     need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and os.environ.get('GITHUB_REPOSITORY')==profile['repository'] and os.environ.get('GITHUB_RUN_ATTEMPT')=='1', 'single-owned-first-party-manual-controls')
     need(os.geteuid()!=0 and os.getuid()==os.geteuid(), 'actual-host-nonroot-runner-for-DAC-negative')

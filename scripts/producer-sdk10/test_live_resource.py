@@ -141,6 +141,14 @@ class Resource(unittest.TestCase):
             c.observer = observer
         c, result, error, _ = self.run_observation(changed)
         self.assertIsNotNone(error); self.assertEqual(result['guard'], 'observer-snapshot'); self.assertFalse(result['complete'])
+        # A verification that outlasts the readback stage gives no credit either.
+        def slow(c):
+            def observer():
+                c.calls.append(('observer',)); c.clock.advance(11.0)
+            c.observer = observer
+        c, result, error, _ = self.run_observation(slow)
+        self.assertIsNotNone(error); self.assertEqual(result['guard'], 'observer-snapshot'); self.assertFalse(result['complete'])
+        self.assertIn('reap', [x[0] for x in c.calls])
         c, result, error, _ = self.run_observation()
         self.assertIsNone(error); self.assertTrue(result['complete']); self.assertIn(('observer',), c.calls)
     def test_incomplete_meter_never_credited(self):

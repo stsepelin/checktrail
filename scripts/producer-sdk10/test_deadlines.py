@@ -174,6 +174,12 @@ class CollectorLingeringDeletion(unittest.TestCase):
     self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-collector-lingering-');self.root=Path(self.temp.name);self.clock[0]=0.0
     code,result,listings,_=self.collect(lambda n:[self.artifact(ctx,2),extra])
     self.assertEqual(code,1);self.assertIn('no unexpected current-window artifact',result['error']);self.assertEqual(result['completedWindows'],[1])
+  # A count the lingering row cannot explain is refused, not waited out.
+  for total in [100,-1]:
+   with self.subTest(total=total):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-collector-lingering-');self.root=Path(self.temp.name);self.clock[0]=0.0
+    code,result,listings,_=self.collect(lambda n:([self.artifact(ctx,2)],total))
+    self.assertEqual(code,1);self.assertIn('bounded two-slot listing schema',result['error']);self.assertEqual(len([1 for phase,ids in listings if phase==2]),1)
  def test_deleted_member_listed_past_the_recovery_budget_is_refused(self):
   ctx={'run':7300,'head':'a'*40,'nonce':'synthetic-7300','attempt':1}
   code,result,listings,_=self.collect(lambda n:[self.artifact(ctx,2),self.artifact(ctx,3),self.artifact(ctx,4)])
