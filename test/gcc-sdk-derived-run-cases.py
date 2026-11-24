@@ -150,16 +150,19 @@ class NativeBoundary(unittest.TestCase):
                     finally:child.wait(timeout=5)
         self.addCleanup(cleanup_children)
         if prestarted:
-            # Establish an exited but unreaped leader BEFORE the measured window.
-            # Its real descendant still holds stdout; no scheduler-speed assumption.
+            # Bring the child to the state under test BEFORE the measured window,
+            # so a slow interpreter start cannot spend the budget being measured.
+            # True means an exited but unreaped leader whose descendant still holds
+            # stdout; a callable is a custom readiness predicate over the work root.
             child=real_popen([sys.executable,'-I','-B','-c',script],cwd=root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
             children.append(child)
-            ready_by=time.monotonic()+5
-            while time.monotonic()<ready_by:
+            def leader_exited_unreaped(_root):
                 observed=subprocess.run(['ps','-o','stat=','-p',str(child.pid)],capture_output=True,text=True,timeout=2)
-                if observed.stdout.strip().startswith('Z'):break
-                time.sleep(0.01)
-            self.assertTrue(observed.stdout.strip().startswith('Z'),'Synthetic leader did not reach exited-unreaped state')
+                return observed.stdout.strip().startswith('Z')
+            ready=prestarted if callable(prestarted) else leader_exited_unreaped
+            ready_by=time.monotonic()+10
+            while time.monotonic()<ready_by and not ready(root):time.sleep(0.01)
+            self.assertTrue(ready(root),'Synthetic child did not reach its prestarted state')
             self.assertIsNone(child.returncode)
         def synthetic_popen(command,**kwargs):
             # Executes this test's own synthetic Python program, never the named SDK command.
@@ -234,8 +237,11 @@ class NativeBoundary(unittest.TestCase):
             finally:stream.close()
 
     def test_pipe_eof_does_not_reset_the_remaining_process_or_whole_operation_budget(self):
-        script="import os,time;open('eof-marker','w').write('Synthetic closed pipe');os.close(1);os.close(2);time.sleep(3)"
-        root,_,row,_=self.invoke(script,'timeout',seconds=0.3)
+        # The marker is published atomically only after both pipe ends are closed,
+        # so its presence proves the measured run starts from an already-EOF pipe
+        # held by a live leader.
+        script="import os,time;os.close(1);os.close(2);open('eof-marker.tmp','w').write('Synthetic closed pipe');os.replace('eof-marker.tmp','eof-marker');time.sleep(30)"
+        root,_,row,_=self.invoke(script,'timeout',seconds=0.3,prestarted=lambda root:(root/'eof-marker').exists())
         self.assertEqual((root/'eof-marker').read_text(),'Synthetic closed pipe')
         self.assertFalse(row['stdoutComplete']);self.assertEqual(row['signal'],signal.SIGKILL)
         self.assertIsNone(row['exitCode']);self.assertLess(row['elapsedSeconds'],2)
