@@ -132,7 +132,13 @@ const dedicatedSelectors = {
 //   the .NET shard manifest partitions;
 // - `files`: every cohort row is filed in one of these test files;
 // - `absentNames`: no cohort row has one of these names, which the controller
-//   expects as unrequired callbacks in the batch's test files.
+//   expects as unrequired callbacks in the batch's test files;
+// - `fileOrder`: these files first appear in this order. The runner runs a
+//   batch's files in the order they first appear, and the controller compares
+//   their unrequired callbacks in that order;
+// - `shards`: the runner admits each of this many shards (row index modulo
+//   the count) on its own, so the row limit applies per shard, not to the
+//   whole cohort.
 // - `sha256`: the cohort's ordered file/name list has this canonical digest,
 //   the exact list the controller's foundation module compares against.
 const companionCohorts = [
@@ -312,14 +318,57 @@ const companionCohorts = [
       "Terraform native process observer resolves the installed engine symlink before exact parent matching",
       "Terraform planning reads all JSON module files without executing native tools and rejects empty provider module function duplicate and omitted scope",
     ],
+    fileOrder: [
+      "dist/test/terraform-reached.test.js",
+      "dist/test/terraform.test.js",
+    ],
   },
+  // These package checks install the baseline into a fresh consumer with only
+  // their listed test files, then run the whole profile there.
+  ...[
+    [
+      "cpp-extensions",
+      "cpp-tools",
+      [
+        "cpp-tools",
+        "cpp-tools-lifecycle",
+        "cpp-controls",
+        "cpp-protocol",
+        "cpp-tools-surfaces",
+        "cpp-tools-cancel",
+      ],
+    ],
+    [
+      "helm-extensions",
+      "helm",
+      ["helm", "helm-scope", "helm-lifecycle", "helm-surfaces"],
+    ],
+    [
+      "terraform-extensions",
+      "terraform",
+      [
+        "terraform",
+        "terraform-lifecycle",
+        "terraform-reached",
+        "terraform-surfaces",
+      ],
+    ],
+  ].map(([profile, cohort, names]) => ({
+    profile,
+    controller: "scripts/verify-" + cohort + "-package.mjs",
+    cohort: [cohort],
+    files: names.map((name) => "dist/test/" + name + ".test.js"),
+  })),
   // verify-ruby-tools-baseline.mjs refuses a repeated pair in the whole
-  // baseline before it selects a shard. Its eight preserved rows keep each of
-  // its three shards nonempty.
+  // baseline before it selects a shard. CI runs only its three shard phases;
+  // its unsharded default mode, run without a phase, would also need the
+  // whole list within the row limit. The eight preserved rows keep each shard
+  // nonempty.
   {
     profile: "ruby-extensions",
     controller: "scripts/verify-ruby-tools-baseline.mjs",
     cohort: ["ruby-tools"],
+    shards: 3,
   },
   // The Go workflow step validates all four profiles of its batch before it
   // runs any, so each selected profile depends on the other three.
@@ -331,15 +380,26 @@ const companionCohorts = [
     controller: ".github/workflows/ci.yml",
     cohort: [other, "go-installed-harness", "review-context-limits"],
   })),
+  // review-context-limits runs in that batch, and its installed callback
+  // requires nine passes from the whole profile.
+  ...["go-extensions", "host-session-readiness"].map((profile) => ({
+    profile,
+    controller: "test/review-context-limits.test.ts",
+    cohort: ["review-context-limits"],
+    rows: 9,
+  })),
   // The ARM64 Tasks runtime command runs this batch under `set -eu` before the
-  // lifecycle and evaluation controllers.
-  ...["lifecycle-platforms", "independent-evaluation-protocol"].map(
-    (profile) => ({
-      profile,
-      controller: "scripts/verify-tasks-runtime-arm64.mjs",
-      cohort: ["lifecycle-runtime-bindings"],
-    }),
-  ),
+  // lifecycle and evaluation controllers, and the provenance command runs only
+  // after that command succeeds.
+  ...[
+    "lifecycle-platforms",
+    "independent-evaluation-protocol",
+    "native-license-provenance",
+  ].map((profile) => ({
+    profile,
+    controller: "scripts/verify-tasks-runtime-arm64.mjs",
+    cohort: ["lifecycle-runtime-bindings"],
+  })),
   // The lifecycle controller runs its platform's foundation batch, whose files
   // must belong to lifecycleHarnessFiles in lifecycle-runtime-evidence.mjs.
   // The installed lifecycle controller compares the batch receipt with the
@@ -934,8 +994,25 @@ try {
     new Set(rows.map(address)).size === rows.length;
   const cohortAdmitted = (entry) => {
     const lists = entry.cohort.map((owner) => current[owner]);
-    if (!lists.every((rows) => runnable(rows, entry.maxRows))) return false;
+    const limit = entry.shards ? Infinity : entry.maxRows;
+    if (!lists.every((rows) => runnable(rows, limit))) return false;
     const rows = lists.flat();
+    if (
+      entry.shards &&
+      Array.from({ length: entry.shards }, (_, shard) =>
+        rows.filter((_row, index) => index % entry.shards === shard),
+      ).some((shard) => shard.length === 0 || shard.length > maxProfileRows)
+    )
+      return false;
+    const firsts = (entry.fileOrder ?? []).map((file) =>
+      rows.findIndex((row) => row.file === file),
+    );
+    if (
+      firsts.some(
+        (at, index) => at < 0 || (index > 0 && at < firsts[index - 1]),
+      )
+    )
+      return false;
     const distinct = new Set(rows.map(address));
     if (entry.rows !== undefined && distinct.size !== entry.rows) return false;
     if (entry.disjoint && distinct.size !== rows.length) return false;

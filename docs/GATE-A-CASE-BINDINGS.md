@@ -93,14 +93,27 @@ when:
     `swift-tools`. The C++, Helm and Terraform containers run `cpp-tools`,
     `helm` and `terraform` under the runner's own admission. The C++ and
     Terraform containers also expect named callbacks in those files to stay
-    unrequired, so none of those names may become a baseline row;
+    unrequired, so none of those names may become a baseline row. The runner
+    runs a batch's files in the order they first appear, and Terraform lists
+    its unrequired callbacks in that order, so `terraform-reached` must still
+    first appear before `terraform`. Each of these baselines is also installed
+    by its package check, `verify-cpp-tools-package.mjs`,
+    `verify-helm-package.mjs` or `verify-terraform-package.mjs`, which copies
+    only its listed test files, so every row's file must be one of them;
   - `verify-ruby-tools-baseline.mjs` refuses a repeated pair anywhere in
-    `ruby-tools` before it selects a shard;
+    `ruby-tools` before it selects a shard. CI runs its three shard phases,
+    each a separate runner call, so the 256-row limit applies to each shard
+    (every third row). Its unsharded default mode, which CI does not run,
+    would need the whole list within the limit;
   - the Go workflow step validates `go-extensions`, `go-installed-harness`,
     `review-context-limits` and `host-session-readiness` together before it
-    runs any, so a refusal of either selected profile also stops the other;
+    runs any, so a refusal of either selected profile also stops the other.
+    `review-context-limits` runs in that batch, and its installed callback in
+    `test/review-context-limits.test.ts` requires nine passes from the whole
+    profile;
   - the ARM64 Tasks runtime command runs `lifecycle-runtime-bindings` under
-    `set -eu` before the lifecycle and evaluation controllers;
+    `set -eu` before the lifecycle and evaluation controllers, and the ARM64
+    provenance command runs only after that command succeeds;
   - the lifecycle controller runs its platform's foundation batch,
     `posix-cleanup` with `posix-owner` or `windows-process` with
     `physical-process-output`, and requires every row's file to belong to
@@ -136,8 +149,8 @@ the same verdict. For the inline checks, the runner bounds, the baseline batches
 and the counts, it pins their source text instead: it reads each batch a
 controller passes to `verify-required-native-tests.mjs` and the check applied to
 its receipt, and every count in the block that checks that profile's
-receipts, so neither a count in another profile's block nor the first of
-several receipts can stand in for the rest. The batch, installed-callback and
+receipts, a zero included, so neither a count in another profile's block nor
+the first of several receipts can stand in for the rest. The batch, installed-callback and
 installed-harness tables must equal what it reads.
 
 Another test scans `scripts/` for every script that reads the manifest, or is a

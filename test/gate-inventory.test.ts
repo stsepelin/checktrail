@@ -712,6 +712,8 @@ interface CompanionCohort {
   sha256?: string;
   files?: string[];
   absentNames?: string[];
+  fileOrder?: string[];
+  shards?: number;
 }
 interface Admission {
   controllerProfiles: number;
@@ -963,13 +965,25 @@ const runnable = (rows: NativeCase[] | undefined, limit = 256) =>
 // comparison with the sum of the profile lengths.
 const cohortBatchAdmits = (entry: CompanionCohort, rows: RequiredNative) => {
   const lists = entry.cohort.map((owner) => rows[owner]);
-  if (!lists.every((list) => runnable(list))) return false;
+  if (!lists.every((list) => runnable(list, entry.shards ? Infinity : 256)))
+    return false;
   const all = lists.flat() as NativeCase[];
   const distinct = new Set(all.map(canonicalRow)).size;
+  const shards = Array.from({ length: entry.shards ?? 0 }, (_, shard) =>
+    all.filter((_row, index) => index % entry.shards! === shard),
+  );
+  const firsts = (entry.fileOrder ?? []).map((file) =>
+    all.findIndex((row) => row.file === file),
+  );
   return (
     (entry.rows === undefined || distinct === entry.rows) &&
     (!entry.disjoint || distinct === all.length) &&
-    !all.some((row) => entry.absentNames?.includes(row.name))
+    !all.some((row) => entry.absentNames?.includes(row.name)) &&
+    (!entry.files || all.every((row) => entry.files!.includes(row.file))) &&
+    shards.every((shard) => shard.length > 0 && shard.length <= 256) &&
+    firsts.every(
+      (at, index) => at >= 0 && (index === 0 || at > firsts[index - 1]!),
+    )
   );
 };
 const admissionProfileIds = (scope: Scope) =>
@@ -983,12 +997,17 @@ const admissionProfileIds = (scope: Scope) =>
     ),
   ].sort();
 
-// A literal count asserted on a native receipt. Fixture reports count their own
-// `tests`, and the Java warning policy receipt counts the one callback its
-// package check names itself; neither comes from a manifest profile.
+// A literal count asserted on a native receipt, zero included. Fixture reports
+// count their own `tests`, and the Java warning policy receipt counts the one
+// callback its package check names itself; neither comes from a manifest
+// profile.
 const assertedCount =
-  /(?<!\btests[!?]?|WarningPolicy\.acceptance)\.(?:required|passed)(?:,\s*|\s*===\s*)([1-9]\d*)\s*[,)]|\brequirements\.length,\s*([1-9]\d*)\s*[,)]/u;
+  /(?<!\btests[!?]?|WarningPolicy\.acceptance)\.(?:required|passed)(?:,\s*|\s*===\s*)(\d+)\s*[,)]|\brequirements\.length,\s*([1-9]\d*)\s*[,)]/u;
 const countAnchors: Record<string, Record<string, string>> = {
+  "test/review-context-limits.test.ts": {
+    "review-context-limits":
+      "expanded context original controls execute against a fresh offline installed runtime",
+  },
   "scripts/verify-tasks-runtime-arm64.mjs": {
     "confidence-provenance": "confidenceProvenance.installedEvidence.profile,",
     "lifecycle-platforms":
@@ -1180,18 +1199,22 @@ async function deriveBatchCohorts(
   }
   return found;
 }
+// The test files a package check copies into its fresh consumer.
+function copiedTestFiles(text: string) {
+  const start = text.indexOf('await mkdir(path.join(consumer, "dist/test")');
+  assert.ok(start >= 0);
+  const list = /for \(const file of \[([^\]]*)\]\)/u.exec(text.slice(start));
+  assert.ok(list);
+  return [...list[1]!.matchAll(/"([a-z0-9-]+\.test\.js)"/gu)].map(
+    (match) => "dist/test/" + match[1],
+  );
+}
 // The acceptance files verify-import-context-package.mjs copies into its fresh
 // consumer, and the selected profiles some controller installs through it.
 async function deriveInstalledHarness(root: string, admitted: string[]) {
   const controller = "scripts/verify-import-context-package.mjs";
   const text = await readFile(path.join(root, controller), "utf8");
-  const start = text.indexOf('await mkdir(path.join(consumer, "dist/test")');
-  assert.ok(start >= 0);
-  const list = /for \(const file of \[([^\]]*)\]\)/u.exec(text.slice(start));
-  assert.ok(list);
-  const files = [...list[1]!.matchAll(/"([a-z0-9-]+\.test\.js)"/gu)].map(
-    (match) => "dist/test/" + match[1],
-  );
+  const files = copiedTestFiles(text);
   const profiles = new Set<string>();
   for (const directory of ["scripts", "test"])
     for (const name of (await readdir(path.join(root, directory))).filter(
@@ -1353,6 +1376,18 @@ test("finite inventory pins the controller rules its admission copies from sourc
     const lifecycle = pinnedCounts(text, arm64, "lifecycle-platforms");
     assert.ok(lifecycle.length === 0 || lifecycle.some((n) => n !== 9), label);
   }
+  // A zero is a count that conflicts with nine, not an absent one.
+  const kotlin = "scripts/verify-kotlin-extensions-container.mjs";
+  const kotlinText = await readScript(kotlin);
+  const zeroed = kotlinText.replace(
+    "installed.profile.passed, 9);",
+    "installed.profile.passed, 0);",
+  );
+  assert.notEqual(zeroed, kotlinText);
+  assert.deepEqual(
+    [...new Set(pinnedCounts(zeroed, kotlin, "kotlin-extensions"))],
+    [9, 0],
+  );
   // A later receipt in the same block counts as much as the first.
   const vue = "scripts/verify-vue-router-assembly-container.mjs";
   const vueText = await readScript(vue);
@@ -1409,6 +1444,7 @@ test("finite inventory pins the controller rules its admission copies from sourc
       profile: "ruby-extensions",
       controller: "scripts/verify-ruby-tools-baseline.mjs",
       cohort: ["ruby-tools"],
+      shards: 3,
     },
   );
   // The preserved Ruby tools rows keep each of the baseline's three shards
@@ -1420,6 +1456,52 @@ test("finite inventory pins the controller rules its admission copies from sourc
       ) as RequiredNative
     )["ruby-tools"]!.length >= 3,
   );
+  for (const entry of report.companionCohorts.filter(
+    (row) => row.files && row.controller.endsWith("-package.mjs"),
+  )) {
+    const text = await readScript(entry.controller);
+    assert.equal(
+      text.split(`const profile = ${JSON.stringify(entry.cohort[0])};`).length,
+      2,
+      entry.controller,
+    );
+    assert.deepEqual(
+      [...entry.files!].sort(),
+      copiedTestFiles(text).sort(),
+      entry.controller,
+    );
+  }
+  // The files that produce a controller's expected unrequired callbacks, in the
+  // order the controller lists those callbacks.
+  const sources = await readdir(path.join(repository, "test"));
+  for (const entry of report.companionCohorts.filter((row) => row.fileOrder)) {
+    const owners: string[] = [];
+    for (const name of entry.absentNames!) {
+      const owner: string[] = [];
+      for (const file of sources.filter((file) => file.endsWith(".test.ts")))
+        if ((await readScript("test/" + file)).includes(JSON.stringify(name)))
+          owner.push("dist/test/" + file.replace(/\.ts$/u, ".js"));
+      assert.equal(owner.length, 1, name);
+      if (!owners.includes(owner[0]!)) owners.push(owner[0]!);
+    }
+    assert.deepEqual(entry.fileOrder, owners, entry.controller);
+  }
+  for (const entry of report.companionCohorts.filter(
+    (row) => row.controller.startsWith("test/") && row.rows !== undefined,
+  ))
+    assert.deepEqual(
+      [
+        ...new Set(
+          pinnedCounts(
+            await readScript(entry.controller),
+            entry.controller,
+            entry.cohort[0]!,
+          ),
+        ),
+      ],
+      [entry.rows],
+      entry.controller,
+    );
   const harness = await deriveInstalledHarness(repository, admitted);
   assert.equal(report.installedHarness.controller, harness.controller);
   assert.deepEqual(
@@ -1514,8 +1596,8 @@ test("finite inventory strict freeze refuses a controller profile outside the na
     assert.equal(list.length, size);
   };
   // Terraform installs only its harness files, so an unlisted long file name
-  // there is also an installed-harness refusal. The Helm baseline batch runs
-  // under the runner's admission alone.
+  // there is also an installed-harness refusal. The Go workflow batch has no
+  // file list, only the runner's own admission.
   const longName =
     (profile: string, bytes: number) => (rows: RequiredNative) => {
       rows[profile]!.push({
@@ -1528,17 +1610,19 @@ test("finite inventory strict freeze refuses a controller profile outside the na
     [
       ["256 rows", pad(256), []],
       ["257 rows", pad(257), limit("row-limit")],
-      ["a 255-byte Helm baseline file name", longName("helm", 255), []],
       [
-        "a 256-byte Helm baseline file name",
-        longName("helm", 256),
-        [
-          {
-            profile: "helm-extensions",
-            controller: "scripts/verify-helm-extensions-container.mjs",
-            reason: "companion-cohort-differs",
-          },
-        ],
+        "a 255-byte Go installed harness file name",
+        longName("go-installed-harness", 255),
+        [],
+      ],
+      [
+        "a 256-byte Go installed harness file name",
+        longName("go-installed-harness", 256),
+        ["go-extensions", "host-session-readiness"].map((profile) => ({
+          profile,
+          controller: ".github/workflows/ci.yml",
+          reason: "companion-cohort-differs",
+        })),
       ],
       [
         "a 256-byte Terraform file name",
@@ -1793,6 +1877,10 @@ test("finite inventory strict freeze refuses companion cohorts a controller requ
             "verify-tasks-runtime-arm64.mjs",
           ),
           companion("lifecycle-platforms", "verify-tasks-runtime-arm64.mjs"),
+          companion(
+            "native-license-provenance",
+            "verify-tasks-runtime-arm64.mjs",
+          ),
         ],
       ],
       [
@@ -1923,6 +2011,7 @@ test("finite inventory strict freeze refuses a baseline batch its controller's r
             "helm-extensions",
             "scripts/verify-helm-extensions-container.mjs",
           ),
+          batch("helm-extensions", "scripts/verify-helm-package.mjs"),
         ],
       ],
       [
@@ -1976,6 +2065,61 @@ test("finite inventory strict freeze refuses a baseline batch its controller's r
             "scripts/verify-kustomize-extensions-container.mjs",
           ),
         ],
+      ],
+      [
+        "a Go installed harness row filed under helm",
+        copy("go-installed-harness", "helm", 0),
+        [batch("helm-extensions", "scripts/verify-helm-package.mjs")],
+      ],
+      [
+        "the terraform baseline reversed",
+        (rows) => {
+          rows.terraform!.reverse();
+        },
+        [
+          batch(
+            "terraform-extensions",
+            "scripts/verify-terraform-extensions-container.mjs",
+          ),
+        ],
+      ],
+      [
+        "an extra review-context-limits row",
+        (rows) => {
+          rows["review-context-limits"]!.push({
+            file: rows["review-context-limits"]![0]!.file,
+            name: "review-context-limits unselected row 3907",
+          });
+        },
+        ["go-extensions", "host-session-readiness"].map((profile) =>
+          batch(profile, "test/review-context-limits.test.ts"),
+        ),
+      ],
+      [
+        "a Ruby tools shard past the row limit",
+        (rows) => {
+          const list = rows["ruby-tools"]!;
+          while (list.length < 769)
+            list.push({
+              file: list[0]!.file,
+              name: "ruby-tools padded row " + (6091 + list.length),
+            });
+        },
+        [batch("ruby-extensions", "scripts/verify-ruby-tools-baseline.mjs")],
+      ],
+      [
+        "257 Ruby tools rows in three shards, terraform lifecycle rows swapped",
+        (rows) => {
+          const list = rows["ruby-tools"]!;
+          while (list.length < 257)
+            list.push({
+              file: list[0]!.file,
+              name: "ruby-tools padded row " + (6091 + list.length),
+            });
+          const terraform = rows.terraform!;
+          [terraform[0], terraform[2]] = [terraform[2]!, terraform[0]!];
+        },
+        [],
       ],
       [
         "new distinct helm and kubeconform rows, swift reordered",
@@ -2187,6 +2331,7 @@ test("finite inventory selector admission agrees with every dedicated controller
           entry.controller in foundationSelectors ||
             batchControllers.has(entry.controller) ||
             entry.rows !== undefined ||
+            entry.files !== undefined ||
             entry.cohort.includes("ruby-tools"),
           entry.controller,
         );
@@ -2360,6 +2505,20 @@ test("finite inventory selector admission agrees with every dedicated controller
         });
       },
     ],
+    ...[257, 769].map(
+      (size) =>
+        [
+          `Ruby tools baseline of ${size} rows`,
+          (rows: RequiredNative) => {
+            const list = rows["ruby-tools"]!;
+            while (list.length < size)
+              list.push({
+                file: list[0]!.file,
+                name: "ruby-tools padded row " + (6091 + list.length),
+              });
+          },
+        ] as [string, (rows: RequiredNative) => void],
+    ),
     [
       "a row outside the installed harness",
       (rows) => {
@@ -2442,8 +2601,9 @@ const unmodelledRowSelectors: Record<string, string> = {
 const manifestReads =
   /required-native-tests\.json|verify-required-native-tests\.mjs|verify-consumer-witness-profile\.mjs|runRequiredTests|runRequiredProfiles/u;
 const exactRowRules = [
-  /\.(?:required|passed),\s*[1-9]\d*\s*[,)]/u,
-  /\b(?:required|passed)\s*===\s*[1-9]\d*/u,
+  /\.(?:required|passed),\s*\d+\s*[,)]/u,
+  /\b(?:required|passed)\s*===\s*\d+/u,
+  // A zero after `.length` is an emptiness check or a reduce seed, not a count.
   /(?:\]|\brequirements)\.length(?:\s*===\s*|,\s*)[1-9]\d*/u,
   /\brequirements\.length,\s*[A-Za-z_$][\w$]*\.length/u,
   /\b(?:deepEqual|exactUnion)\(\s*(?:\w+\(\s*)?(?:requirements|profiles|inventory|rows|definitions|allSource)\b/u,
@@ -2464,8 +2624,9 @@ async function discoverRowSelectors(root: string) {
 test("finite inventory admission models every controller that selects manifest rows by an exact rule", async (t) => {
   const shape = admission((await audit(await source(t))).stdout);
   const admitted = admissionProfileIds(await readScope());
-  // A batch cohort with neither a count nor a sum comparison holds no exact
-  // rule for the discovery to find; deriveBatchCohorts covers it instead.
+  // A batch cohort with neither a count nor a sum comparison, or with only a
+  // file list, holds no exact rule for the discovery to find; the batch and
+  // harness derivations cover it instead. The discovery scans scripts only.
   const modelled = new Set([
     ...Object.values(controllerSelectors).map((row) => row.controller),
     ...shape.companionCohorts
@@ -2475,7 +2636,6 @@ test("finite inventory admission models every controller that selects manifest r
           row.disjoint ||
           row.sha256 ||
           row.preserved ||
-          row.files ||
           row.outsideFile,
       )
       .map((row) => row.controller),
@@ -2490,7 +2650,9 @@ test("finite inventory admission models every controller that selects manifest r
   // The discovery reaches every modelled controller, and no listed exception
   // is stale.
   assert.deepEqual(
-    [...modelled].filter((name) => !found.includes(name)),
+    [...modelled].filter(
+      (name) => name.startsWith("scripts/") && !found.includes(name),
+    ),
     [],
   );
   assert.deepEqual(
@@ -2539,6 +2701,10 @@ test("finite inventory admission models every controller that selects manifest r
     [
       "verify-zig-extensions-container.mjs",
       'const source = JSON.parse(run(["node", "scripts/verify-required-native-tests.mjs", "zig-extensions"]));\nassert.equal(source.required, 9);\n',
+    ],
+    [
+      "verify-odin-extensions-container.mjs",
+      'const source = JSON.parse(run(["node", "scripts/verify-required-native-tests.mjs", "odin-extensions"]));\nassert.equal(source.required, 0);\n',
     ],
     [
       "verify-nim-extensions-container.mjs",
