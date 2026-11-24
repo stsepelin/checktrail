@@ -127,12 +127,18 @@ existing authorization.
   hosted runner exhausted the budget while running the original build, with
   the runner, elapsed time and stopping cause recorded in aggregate; or the
   operator recorded an explicit exception. Before the attempt the controller
-  declares its finalization reserve; the original command's window is the
-  five-hour budget minus preparation and that reserve. A command still running
-  at the end of its window is stopped, and that stop is the measured
-  exhaustion. A command that finishes inside its window is a source build if
+  declares its finalization reserve, justified by that carrier's own bounded
+  upload and cleanup limits; the original command's window is the five-hour
+  budget minus preparation and that reserve. The reserve, the preparation time
+  and the observed cutoff are retained so a verifier can tell genuine
+  exhaustion from an unnecessarily short window. A command still running at
+  the end of its window is stopped, and that stop is the measured exhaustion. A command that finishes inside its window is a source build if
   its required evidence is then retained; a finalization that overruns its
-  declared reserve is a controller defect under section 5.5, not exhaustion. A setup failure, denied export or
+  declared reserve is a controller defect under section 5.5, not exhaustion.
+  An existing carrier whose own job or step limit is shorter than this window
+  can still produce a source build by finishing inside it, but a cutoff at that
+  shorter limit is not a measurement: it needs a budget-aligned carrier or an
+  explicit operator exception before it can establish eligibility. A setup failure, denied export or
   early stop does not by itself show budget exhaustion. GCC 12 and .NET SDK
   10.0.401 are **explicit operator exceptions** recorded on 2026-11-24, not
   measured results: their retained attempts show interruption or no run, not a
@@ -159,10 +165,10 @@ queue and is not a Gate A obligation.
 
 Consumers still run with their original admitted input identities. Only two
 execution paths are withdrawn: the multi-job GCC 12 continuation (its staged
-and main05 carriers) and the .NET SDK 10.0.401 original-build producer. They
-remain in the repository as diagnostic tooling with their synthetic controls
-in ordinary validation, and their correctness fixes are still merged, but no
-Gate A item waits on a run of them. Every other single-job carrier, such as the
+and main05 carriers) and the .NET SDK 10.0.401 original-build producer.
+Integrating them into the repository as diagnostic tooling, with their
+synthetic controls in ordinary validation, is an A03 deliverable that is still
+open; no Gate A item waits on a run of them. Every other single-job carrier, such as the
 Go C-root bootstrap, stays on its existing acceptance path.
 
 ## 3. Ordered work ledger
