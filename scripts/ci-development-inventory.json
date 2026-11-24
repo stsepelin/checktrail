@@ -8358,7 +8358,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "1202fa8aec05ac16ba161763bb67bd9e3af2fcb0"
+      "hash": "68cabafcbb02fb70847cdabbea115d421534b7c2"
     },
     {
       "path": "scripts/audit-php-review-tools.mjs",
@@ -18130,7 +18130,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d2cbb7d4aadbc914fdab4e49cc340b9cd2cc47a3"
+      "hash": "b327c5aeee14b0857563cc605b54018c94e0ad8f"
     },
     {
       "path": "test/gate-javascript-extensions.test.ts",

@@ -2278,6 +2278,55 @@ test("finite inventory strict freeze refuses a baseline batch its controller's r
   }
 });
 
+test("finite inventory strict freeze refuses a full-suite profile list its shard selector rejects", async (t) => {
+  const selected = [
+    "assembly-vue-router",
+    "attempt-archives",
+    "confidence-provenance",
+    "consumer-impact",
+    "context-go",
+    "context-php",
+    "context-python",
+    "context-rust",
+    "go-extensions",
+    "host-session-readiness",
+    "independent-evaluation-protocol",
+    "multi-candidate-workflow",
+    "tasks-matrix",
+  ];
+  const broken: [string, (list: string[]) => string[]][] = [
+    ["a profile named twice", (list) => [...list, "gate-inventory"]],
+  ];
+  for (const [label, edit] of broken) {
+    const root = await frozen(t);
+    await alter<{ profiles: string[] }>(root, files[3]!, (value) => {
+      value.profiles = edit(value.profiles);
+    });
+    const result = await audit(root, true);
+    assert.equal(result.code, 2, label + ": " + result.stderr);
+    const refusals = JSON.parse(result.stdout).controllerAdmission
+      .refusals as AdmissionRefusal[];
+    assert.deepEqual(
+      refusals
+        .filter((row) => row.reason === "full-suite-selection-differs")
+        .map((row) => [row.profile, row.controller])
+        .sort(),
+      selected.map((profile) => [profile, "scripts/ci-full-suite-shards.mjs"]),
+      label,
+    );
+  }
+  const root = await frozen(t);
+  await alter<{ profiles: string[] }>(root, files[3]!, (value) => {
+    value.profiles = [...value.profiles].reverse();
+  });
+  const reordered = await audit(root, true);
+  assert.equal(reordered.code, 0, reordered.stderr);
+  assert.deepEqual(
+    JSON.parse(reordered.stdout).controllerAdmission.refusals,
+    [],
+  );
+});
+
 test("finite inventory strict freeze refuses rows a cache, installed context or full-suite controller cannot run", async (t) => {
   const helmLifecycle = {
     file: "dist/test/helm-lifecycle.test.js",

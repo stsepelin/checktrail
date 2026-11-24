@@ -1117,6 +1117,21 @@ try {
       })),
   ];
   const admissionRefusals = [];
+  // selectFullSuiteRequirements refuses the whole list before any shard runs
+  // when it is empty, longer than 256 or names a profile twice.
+  const fullSuiteAdmitted =
+    fullSuite.profiles.length > 0 &&
+    fullSuite.profiles.length <= 256 &&
+    new Set(fullSuite.profiles).size === fullSuite.profiles.length;
+  if (!fullSuiteAdmitted)
+    for (const owner of admissionProfiles.filter((profile) =>
+      fullSuite.profiles.includes(profile),
+    ))
+      admissionRefusals.push({
+        profile: owner,
+        controller: "scripts/ci-full-suite-shards.mjs",
+        reason: "full-suite-selection-differs",
+      });
   for (const owner of admissionProfiles) {
     const rows = current[owner] ?? [];
     const refuse = (controller, reason) =>
