@@ -23,6 +23,7 @@ CHILD=r'''
 import json,os,signal,subprocess,sys,time
 from pathlib import Path
 root=Path(sys.argv[1]);command=json.loads(sys.argv[2]);mode=sys.argv[3]
+import atexit;atexit.register(lambda:(root/'synthetic-leader-exited').write_text('exited'))
 if mode=='prestart':sys.stdout.write('Synthetic launcher refusal\n');sys.exit(128)
 records=root/'observations/original-commands.jsonl'
 request={'schemaVersion':1,'label':'original-main05','command':command,'cwd':'/build/source','state':'requested','elapsedSeconds':0,'exitCode':None}
@@ -48,16 +49,14 @@ else:
 '''
 
 
-def running(process):
+def running(process,root):
  """Report a live leader without reaping it; poll() would release its PID.
 
  The observer may signal the attach group only while its own Popen child is
  unreaped, so a harness that reaps here would hide whether that group is closed.
+ The synthetic leader marks its own exit, so no process-table access is needed.
  """
- if process.returncode is not None:return False
- probe=REAL_POPEN(['ps','-o','stat=','-p',str(process.pid)],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
- state=probe.communicate(timeout=5)[0].strip()
- return bool(state) and not state.startswith('Z')
+ return process.returncode is None and not (root/'synthetic-leader-exited').exists()
 
 
 def owner():
@@ -85,7 +84,7 @@ class Observations(unittest.TestCase):
                       {'Status':'exited','Running':False,'Pid':0,'ExitCode':code if code>=0 else 128-code,'OOMKilled':False,'Error':''})
      return json.dumps([value]).encode()
     self.assertEqual(args[:2],['kill','--signal']);self.assertEqual(args[-1],NAME)
-    if processes and running(processes[0]):os.killpg(processes[0].pid,getattr(signal,'SIG'+args[2]))
+    if processes and running(processes[0],root):os.killpg(processes[0].pid,getattr(signal,'SIG'+args[2]))
     return b''
    try:
     with mock.patch.object(m.h,'docker',side_effect=docker),mock.patch.object(m.subprocess,'Popen',side_effect=popen),\

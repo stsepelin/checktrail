@@ -169,8 +169,11 @@ def post_capture(mode,repository,output):
         if mode=='prepare-restore':return transport.prepare_restore(frame,selected,service,codec,os.environ)
         require(mode in ('pre-save','verify-restore'),'Unknown fixed native05 post-capture mode')
         # Every client numbers its raw responses from zero. A fresh directory per
-        # operation keeps the initial admission, pre-save and restore receipts.
-        receipts=frame/('service-'+mode);receipts.mkdir(mode=0o700)
+        # invocation keeps the initial admission, every pre-save refresh and the
+        # restore receipts; an existing directory is never reused.
+        receipts=next(frame/('service-%s-%03d'%(mode,index)) for index in range(1000)
+                      if not os.path.lexists(frame/('service-%s-%03d'%(mode,index))))
+        receipts.mkdir(mode=0o700)
         api=service.GitHub(os.environ.get('CHECKTRAIL_GITHUB_JOB_TOKEN'),receipts)
         if mode=='pre-save':
             expected=transport.expected_record(frame,selected,service)

@@ -260,10 +260,12 @@ class Driver(unittest.TestCase):
     opener.operation='capture-admission';m.capture(root,root,output)
     with mock.patch.object(m.h,'verify_repository') as repository,mock.patch.object(m.transport,'verify',side_effect=replay):
      opener.operation='pre-save';admission=m.post_capture('pre-save',root,output)
+     # A prepared carrier may refresh its capacity measurement before saving.
+     opener.operation='pre-save-refresh';self.assertTrue(m.post_capture('pre-save',root,output)['newCacheSaveRequired'])
      opener.operation='prepare-restore';m.post_capture('prepare-restore',root,output)
      opener.operation='verify-restore';self.assertEqual(m.post_capture('verify-restore',root,output),{'syntheticReplay':'service-cache-restored-137'})
-    self.assertEqual(repository.call_args_list,[mock.call(root,m.service.h.capacity.context(HOSTED))]*3)
-   self.assertTrue(admission['newCacheSaveRequired']);self.assertEqual(len(opener.urls),4)
+    self.assertEqual(repository.call_args_list,[mock.call(root,m.service.h.capacity.context(HOSTED))]*4)
+   self.assertTrue(admission['newCacheSaveRequired']);self.assertEqual(len(opener.urls),5)
    self.assertEqual(json.loads((output/'CARRIER.json').read_bytes())['state'],'original-main05-source-cache-physically-replayed')
    self.assertFalse((frame/'FAILED-PHASE-LEDGER.json').exists())
    retained={}
@@ -273,7 +275,8 @@ class Driver(unittest.TestCase):
     self.assertEqual(receipt['rawSha256'],hashlib.sha256(raw.read_bytes()).hexdigest());self.assertEqual(receipt['url'],'https://api.github.com'+usage)
     retained[raw.relative_to(frame).as_posix()]=json.loads(raw.read_bytes())['syntheticOperation']
    self.assertEqual(retained,{'service-000.json':'initial-admission','service-001.json':'capture-admission',
-                              'service-pre-save/service-000.json':'pre-save','service-verify-restore/service-000.json':'verify-restore'})
+                              'service-pre-save-000/service-000.json':'pre-save','service-pre-save-001/service-000.json':'pre-save-refresh',
+                              'service-verify-restore-000/service-000.json':'verify-restore'})
 
  def test_one_wrong_hosted_context_key_is_refused_before_any_post_capture_or_history_operation(self):
   for key,value in [(None,None),*WRONG_HOSTED]:
