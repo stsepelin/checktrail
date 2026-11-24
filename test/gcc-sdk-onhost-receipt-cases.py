@@ -4,7 +4,9 @@ import ast
 import hashlib
 import importlib.util
 import json
+import marshal
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -47,7 +49,8 @@ class Receipt(unittest.TestCase):
                 sys.stdout.flush();sys.stderr.flush();os.dup2(stdout.fileno(),1);os.dup2(stderr.fileno(),2)
                 with mock.patch.dict(os.environ,{'RUNNER_TEMP':str(root),'GITHUB_SHA':HEAD}),\
                      mock.patch.object(sys,'argv',arguments or ['fixed-helper','qualify-on-host','--operator-trust-execution']),\
-                     mock.patch.object(m,'fixed_work',side_effect=work) as called,mock.patch.dict(m.ADMISSION):
+                     mock.patch.object(m,'fixed_work',side_effect=work) as called,mock.patch.dict(m.ADMISSION),\
+                     mock.patch.object(sys,'pycache_prefix',sys.pycache_prefix):
                     code=m.main();calls=called.call_count
                 sys.stdout.flush();sys.stderr.flush()
             finally:
@@ -173,11 +176,16 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
 
     def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
         root,_,_,good,_=self.run_entry(self.noisy)
-        current='d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089'
+        current='3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923'
         v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
         v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
         self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
         decoders={current:m.validate_receipt,v5:m.validate_historical_v5_receipt,v4:m.validate_historical_v4_receipt}
+        # The pre-amendment v6 digest never authorized a run, so no receipt or
+        # checkpoint carries it and no decoder keeps it.
+        retired='ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77'
+        for decode in decoders.values():
+            with self.subTest(retired=retired),self.assertRaises(m.Refusal):decode({**good,'sourcePolicySha256':retired})
         for policy in decoders:
             for admitted,decode in decoders.items():
                 value={**good,'sourcePolicySha256':policy}
@@ -494,7 +502,8 @@ sys.argv=['helper','qualify-on-host','--operator-trust-execution'];raise SystemE
 class SiblingAdmission(unittest.TestCase):
  """The operator entry runs no sibling module code before its pin is checked."""
  def checkout(self,sibling,*,pinned):
-  """pinned: True re-pins the changed bytes; 'stale-hash' pins only their new size."""
+  """pinned: True re-pins the changed bytes; 'stale-hash' pins only their new size;
+  'stale-cache' keeps the pinned source and plants matching-header bytecode beside it."""
   temporary=tempfile.TemporaryDirectory(prefix='gcc-receipt-admission-');self.addCleanup(temporary.cleanup)
   base=Path(temporary.name).resolve();copy=base/'checkout';marker=base/'sibling-imported.marker'
   policy_rel='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json';receipt_rel='scripts/producer-qualification/gcc-sdk-onhost-receipt.py'
@@ -502,8 +511,17 @@ class SiblingAdmission(unittest.TestCase):
   for name in [policy_rel,receipt_rel,*[row['path'] for row in policy['runtimeFiles']]]:
    target=copy/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/name,target)
   changed=copy/'scripts/producer-qualification'/sibling;before=changed.read_bytes()
-  changed.write_bytes(before+MARKER_CODE.format(marker=str(marker)).encode());self.assertNotEqual(changed.read_bytes(),before)
-  if pinned:
+  if pinned=='stale-cache':
+   # An untracked cache whose header matches the source's mtime and size is
+   # what the default loader would execute instead of the verified source.
+   info=changed.stat();code=compile(before+MARKER_CODE.format(marker=str(marker)).encode(),str(changed),'exec')
+   cache=Path(importlib.util.cache_from_source(str(changed)));cache.parent.mkdir(exist_ok=True)
+   cache.write_bytes(importlib.util.MAGIC_NUMBER+(0).to_bytes(4,'little')+(int(info.st_mtime)&0xFFFFFFFF).to_bytes(4,'little')+
+                     (info.st_size&0xFFFFFFFF).to_bytes(4,'little')+marshal.dumps(code))
+   self.assertEqual(changed.read_bytes(),before)
+  else:
+   changed.write_bytes(before+MARKER_CODE.format(marker=str(marker)).encode());self.assertNotEqual(changed.read_bytes(),before)
+  if pinned in (True,'stale-hash'):
    # The valid near miss: the operator re-pins exactly these bytes and freezes that policy.
    row=next(row for row in policy['runtimeFiles'] if row['path'].endswith('/'+sibling))
    body=changed.read_bytes();row.update(bytes=len(body))
@@ -540,6 +558,21 @@ class SiblingAdmission(unittest.TestCase):
     code,value=self.entry(base,copy,head)
     self.assertEqual(code,1);self.assertNotEqual(value['errorId'],'source-refused')
     self.assertEqual(marker.read_text(),'sibling-module-code-ran-137')
+ def test_pinned_source_is_executed_instead_of_an_adjacent_stale_bytecode_cache(self):
+  for sibling in ['gcc-hosted-carrier.py','gcc-sdk-structured-diagnostics.py']:
+   with self.subTest(sibling=sibling):
+    base,copy,marker,head=self.checkout(sibling,pinned='stale-cache')
+    cache=Path(importlib.util.cache_from_source(str(copy/'scripts/producer-qualification'/sibling)));self.assertTrue(cache.is_file())
+    code,value=self.entry(base,copy,head)
+    self.assertEqual(code,1);self.assertNotEqual(value['errorId'],'source-refused')
+    self.assertFalse(marker.exists(),'A bytecode cache ran instead of the pinned source')
+ def test_planted_cache_is_what_the_default_loader_would_execute(self):
+  # Harness check: without the receipt's cache prefix the planted bytes do run.
+  base,copy,marker,head=self.checkout('gcc-hosted-carrier.py',pinned='stale-cache')
+  path=copy/'scripts/producer-qualification/gcc-hosted-carrier.py'
+  completed=subprocess.run([sys.executable,'-I','-B','-c','import importlib.util,sys;s=importlib.util.spec_from_file_location("c",sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)',str(path)],
+                           capture_output=True,timeout=60)
+  self.assertEqual(completed.returncode,0,completed.stderr[-2000:]);self.assertEqual(marker.read_text(),'sibling-module-code-ran-137')
  def test_dirty_or_different_checkout_is_refused_before_any_sibling_loads(self):
   for kind in ['dirty','other-head']:
    with self.subTest(kind=kind):
@@ -549,26 +582,35 @@ class SiblingAdmission(unittest.TestCase):
     code,value=self.entry(base,copy,head if kind=='dirty' else 'c'*40)
     self.assertEqual(value['errorId'],'source-refused');self.assertFalse(marker.exists())
  def test_every_loaded_or_executed_sibling_is_a_runtime_file_row(self):
-  def references(path):
-   tree=ast.parse(path.read_bytes());found=set()
-   for node in ast.walk(tree):
-    if isinstance(node,ast.Constant) and type(node.value) is str and node.value.endswith(('.py','.mjs')) and '/' not in node.value:
-     if (path.parent/node.value).is_file():found.add(node.value)
+  def python_references(path):
+   found=set()
+   for node in ast.walk(ast.parse(path.read_bytes())):
+    if isinstance(node,ast.Constant) and type(node.value) is str and node.value.endswith(('.py','.mjs')) and not node.value.startswith('/'):
+     for candidate in [path.parent/node.value,ROOT/node.value]:
+      if candidate.is_file():found.add(candidate.resolve().relative_to(ROOT).as_posix())
    return found
-  modules=ROOT/'scripts/producer-qualification'
-  # Only sibling loads count: the controller copies into the container are data.
-  closure=set();pending=['gcc-sdk-onhost-receipt.py']
+  def module_references(path):
+   found=set()
+   for specifier in re.findall(r"""(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)["'](\.{1,2}/[^"']+)["']""",path.read_text()):
+    found.add((path.parent/specifier).resolve().relative_to(ROOT).as_posix())
+   return found
+  # Python sibling loads, files run by node, and their relative ES imports.
+  start='scripts/producer-qualification/gcc-sdk-onhost-receipt.py';closure=set();pending=[start]
   while pending:
-   name=pending.pop()
-   for found in references(modules/name)-closure-{'gcc-sdk-onhost-receipt.py'}:
-    closure.add(found)
-    if found.endswith('.py'):pending.append(found)
-  pinned={row['path'] for row in json.loads((modules/'gcc-sdk-receipt-policy.v1.json').read_bytes())['runtimeFiles']}
-  declared={path.rsplit('/',1)[1] for path in m.RUNTIME_SIBLINGS}
-  self.assertEqual(len(declared),len(m.RUNTIME_SIBLINGS))
-  self.assertLessEqual(closure,{path.rsplit('/',1)[1] for path in pinned},'A loaded or executed sibling has no runtimeFiles pin')
-  self.assertLessEqual(declared,closure);self.assertLessEqual(set(m.RUNTIME_SIBLINGS),pinned)
-  self.assertIn('gcc-sdk-structured-diagnostics.py',declared);self.assertIn('binutils-image-identity.mjs',declared)
+   current=pending.pop();path=ROOT/current
+   found=python_references(path) if current.endswith('.py') else module_references(path)
+   for reference in found-closure-{start}:closure.add(reference);pending.append(reference)
+  pinned={row['path'] for row in json.loads((ROOT/'scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json').read_bytes())['runtimeFiles']}
+  self.assertEqual(sorted(closure-pinned),[],'A loaded or executed first-party file has no runtimeFiles pin')
+  self.assertEqual(len(set(m.RUNTIME_SIBLINGS)),len(m.RUNTIME_SIBLINGS))
+  self.assertLessEqual(set(m.RUNTIME_SIBLINGS),closure);self.assertLessEqual(set(m.RUNTIME_SIBLINGS),pinned)
+  for expected in ['scripts/producer-qualification/gcc-sdk-structured-diagnostics.py','scripts/producer-qualification/binutils-image-identity.mjs',
+                   'scripts/qualify-binutils-producer.mjs','scripts/producer-qualification/c-producer-profile.mjs']:
+   self.assertIn(expected,closure)
+ def test_closure_scan_follows_relative_es_imports_and_ignores_bare_packages(self):
+  pattern=r"""(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)["'](\.{1,2}/[^"']+)["']"""
+  source='import a from "./synthetic-a-137.mjs";\nimport { b } from \'../synthetic-b.mjs\';\nawait import("./synthetic-c.mjs");\nimport fs from "node:fs";\nimport "./synthetic-side-effect.mjs";\n'
+  self.assertEqual(re.findall(pattern,source),['./synthetic-a-137.mjs','../synthetic-b.mjs','./synthetic-c.mjs','./synthetic-side-effect.mjs'])
  def test_unobserved_structured_twin_is_the_decoder_empty_value_and_not_a_type_confusable_shortcut(self):
   decoder=m.structured_diagnostics()
   self.assertEqual(m.canonical(m.UNOBSERVED_STRUCTURED_SDK),m.canonical(decoder.empty()))

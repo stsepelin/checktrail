@@ -564,12 +564,13 @@ def main():
         target_controls = output / 'controls'
         target_controls.mkdir(mode=0o700)
         control_pins = []
-        for name in SOURCE_CONTROLS:
-            pin = digest_file(controls / name)
-            copy_pinned(controls / name, target_controls / name, pin)
-            if name.endswith('.sh'):
-                (target_controls / name).chmod(0o755)
-            control_pins.append({'file': name, **pin})
+        # `name` stays the per-run container owner token; controls use their own variable.
+        for control in SOURCE_CONTROLS:
+            pin = digest_file(controls / control)
+            copy_pinned(controls / control, target_controls / control, pin)
+            if control.endswith('.sh'):
+                (target_controls / control).chmod(0o755)
+            control_pins.append({'file': control, **pin})
         stage_path = Path(__file__).with_name('gcc-hosted-stage.py').resolve()
         pin = digest_file(stage_path)
         copy_pinned(stage_path, target_controls / stage_path.name, pin)

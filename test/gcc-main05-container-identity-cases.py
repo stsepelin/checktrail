@@ -105,6 +105,8 @@ class Daemon:
             if arg.startswith('--'):options[arg]=True;index+=1;continue
             image=arg;command=args[index+1:];break
         require_image=self.aliases.get(image,image);assert require_image in self.images,image
+        if any(row['Name']==options['--name'] for row in self.containers.values()):
+            raise Refused('Conflict. The container name "/'+options['--name']+'" is already in use')
         identifier=self.next_id()
         self.containers[identifier]={'Id':identifier,'Name':options['--name'],'admissions':0,
             'Config':{'Labels':labels,'Image':image,'Entrypoint':[options.get('--entrypoint')],'Cmd':command,
@@ -239,7 +241,7 @@ class Identity(unittest.TestCase):
         for foreign in daemon.foreign_images:self.assertIn(foreign,daemon.images)
 
     # Hosted configure carrier -------------------------------------------------
-    def run_carrier(self,*,rebind,exit_code):
+    def run_carrier(self,*,rebind,exit_code,holder=None):
         root=self.folder();inputs=root/'inputs';inputs.mkdir();output=root/'gcc-phase0'
         config={'synthetic':'configuration-137'};selected={'configurationSha256':'7'*64}
         def body(row):
@@ -251,6 +253,11 @@ class Identity(unittest.TestCase):
             (work/'configured-values.json').write_text(json.dumps(config))
             (output/'state/source/stamps').mkdir(parents=True);(output/'state/source/stamps/04-configure-stamp').write_text('stamp')
         daemon=Daemon(rebind=rebind,exit_code=exit_code,body=body);real_load=carrier.load
+        if holder is not None:
+            # Another run's container, labelled as its own owner under `holder`.
+            foreign=daemon.next_foreign();daemon.foreign.add(foreign)
+            daemon.containers[foreign]={'Id':foreign,'Name':holder,'admissions':1,'Config':{'Labels':{'io.checktrail.gcc-staged-owner':holder}},
+                                        'State':{'Status':'running','Running':True,'Pid':4137,'ExitCode':0,'OOMKilled':False,'Error':''}}
         def load(path):
             module=real_load(path)
             if path.name=='gcc-staged-plan.py':module.read_configuration=lambda *args:config
@@ -280,6 +287,11 @@ class Identity(unittest.TestCase):
                 daemon,error,outcome=self.run_carrier(rebind=rebind,exit_code=0)
                 self.assert_contained(daemon,expect_rebinds=rebind)
                 self.assertEqual(str(error),'Synthetic stop after native cleanup')
+                created=[args for args in daemon.calls if args[0]=='create']
+                owner=created[1][created[1].index('--name')+1]
+                self.assertRegex(owner,'^checktrail-gcc-staged-[0-9a-f-]{36}$')
+                self.assertIn('io.checktrail.gcc-staged-owner='+owner,created[1])
+                self.assertEqual(created[0][created[0].index('--name')+1],owner+'-seed')
                 self.assertEqual((outcome['ownedSeedCleanup'],outcome['ownedContainerCleanup']),('removed','removed'))
                 owned=[target for verb,target in daemon.effects if verb=='start']
                 self.assertEqual(len(owned),1);self.assertNotIn(owned[0],daemon.containers)
@@ -294,6 +306,15 @@ class Identity(unittest.TestCase):
                 owned=[target for verb,target in daemon.effects if verb=='start'][0]
                 self.assertEqual([verb for verb,target in daemon.effects if target==owned],['inspect','start','kill','kill','inspect','inspect','rm'])
                 self.assertEqual(outcome['ownedContainerCleanup'],'removed');self.assertNotIn(owned,daemon.containers)
+
+    def test_configure_carrier_never_shares_an_owner_name_with_another_run(self):
+        # The holder name is every fixed control filename, the per-run token's only possible collision.
+        for holder in [*carrier.SOURCE_CONTROLS,'gcc-hosted-stage.py']:
+            with self.subTest(holder=holder):
+                daemon,error,outcome=self.run_carrier(rebind=False,exit_code=3,holder=holder)
+                self.assert_contained(daemon,expect_rebinds=False)
+                self.assertIn('exited nonzero',str(error));self.assertEqual(outcome['ownedContainerCleanup'],'removed')
+                self.assertEqual(daemon.containers[sorted(daemon.foreign)[0]]['Name'],holder)
 
     # SDK reconstruction (standalone and main05 materializer) -------------------
     def sdk_patches(self,module,frame_root,resources):
@@ -458,10 +479,13 @@ class StaticSweep(unittest.TestCase):
     site in any producer-qualification module before a harness reaches it.
     """
     ID_NAMES={'identifier','seed_identifier','returned','observed','actual'}
-    LOOKUPS={('inspect','name'),('inspect','seed'),('inspect','listed[0]')}
+    # Admission reads by name or tag; each is followed by an ID comparison.
+    LOOKUPS={('inspect','name'),('inspect','seed'),('inspect','listed[0]'),('image-inspect','tag'),
+             ('image-inspect','codec.IMAGE'),('image-inspect','image.codec.IMAGE'),("image-inspect","local['localImageId']")}
 
     def reference(self,verb,elements):
         positional=[e for e in elements[1:] if not (isinstance(e,ast.Constant) and str(e.value).startswith('-'))]
+        if verb in ('image-inspect','image-rm'):positional=positional[1:]
         if verb=='cp':
             node=positional[0]
             while isinstance(node,ast.BinOp):node=node.left
@@ -481,32 +505,44 @@ class StaticSweep(unittest.TestCase):
             return len(node.values)==2 and self.identity(node.values[0])
         return (verb,ast.unparse(node)) in self.LOOKUPS
 
-    def test_every_docker_container_effect_addresses_an_id(self):
+    def scan(self,source,label):
+        checked=0;refused=[]
+        for node in ast.walk(ast.parse(source)):
+            if not isinstance(node,ast.List) or not node.elts:continue
+            elements=node.elts;first=elements[0]
+            if isinstance(first,ast.Constant) and first.value=='/usr/bin/docker':elements=elements[1:]
+            if not elements or not isinstance(elements[0],ast.Constant):continue
+            verb=elements[0].value
+            if verb=='image' and len(elements)>1 and isinstance(elements[1],ast.Constant) and elements[1].value in ('rm','inspect'):
+                verb='image-'+elements[1].value
+            elif verb not in TARGETED:continue
+            if verb=='start':elements=[e for e in elements if not (isinstance(e,ast.Constant) and e.value=='--attach')]
+            reference=self.reference(verb,elements)
+            if reference is None:refused.append(label+':'+str(node.lineno)+' '+verb+' <no reference>');continue
+            checked+=1
+            # A literal reference is a fixed name: never an admitted ID.
+            if not self.allowed(verb,reference):refused.append(label+':'+str(node.lineno)+' '+verb+' '+ast.unparse(reference))
+        return checked,refused
+
+    def test_every_docker_container_and_image_effect_addresses_an_id(self):
         checked=0;refused=[]
         for path in sorted(MODULES.glob('*.py')):
-            tree=ast.parse(path.read_bytes())
-            for node in ast.walk(tree):
-                if not isinstance(node,ast.List) or not node.elts:continue
-                elements=node.elts;first=elements[0]
-                if isinstance(first,ast.Constant) and first.value=='/usr/bin/docker':elements=elements[1:]
-                if not elements or not isinstance(elements[0],ast.Constant) or elements[0].value not in TARGETED:continue
-                verb=elements[0].value
-                if verb=='start':elements=[e for e in elements if not (isinstance(e,ast.Constant) and e.value=='--attach')]
-                reference=self.reference(verb,elements)
-                if reference is None or isinstance(reference,ast.Constant):continue
-                checked+=1
-                if not self.allowed(verb,reference):refused.append(path.name+':'+str(node.lineno)+' '+verb+' '+ast.unparse(reference))
-        self.assertGreaterEqual(checked,25);self.assertEqual(refused,[])
+            count,bad=self.scan(path.read_bytes(),path.name);checked+=count;refused+=bad
+        self.assertGreaterEqual(checked,40);self.assertEqual(refused,[])
 
-    def test_scan_refuses_a_name_reference_near_miss(self):
+    def test_scan_refuses_name_tag_and_literal_references_and_admits_id_forms(self):
         for source,ok in [("docker(['rm',name])",False),("docker(['kill','--signal','TERM',name])",False),
                           ("docker(['cp','-a',seed+':'+x,y])",False),("docker(['commit','--pause=true',name,tag])",False),
-                          ("docker(['inspect',name or identifier])",False),
+                          ("docker(['inspect',name or identifier])",False),("docker(['rm','fixed-synthetic-name-137'])",False),
+                          ("docker(['image','rm',tag])",False),("docker(['image','rm','synthetic:137'])",False),
+                          ("subprocess.Popen(['/usr/bin/docker','start','--attach',name])",False),
                           ("docker(['rm',identifier])",True),("docker(['rm','--force',owner['Id']])",True),
-                          ("docker(['cp','-a',seed_identifier+':'+x,y])",True),("docker(['inspect',identifier or name])",True)]:
+                          ("docker(['cp','-a',seed_identifier+':'+x,y])",True),("docker(['inspect',identifier or name])",True),
+                          ("docker(['image','rm',observed],timeout=30)",True),("docker(['image','inspect',tag])",True),
+                          ("subprocess.Popen(['/usr/bin/docker','start','--attach',identifier])",True)]:
             with self.subTest(source=source):
-                node=ast.parse(source).body[0].value.args[0];verb=node.elts[0].value
-                self.assertEqual(self.allowed(verb,self.reference(verb,node.elts)),ok)
+                checked,refused=self.scan(source,'synthetic')
+                self.assertEqual(checked,1);self.assertEqual(refused==[],ok,refused)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

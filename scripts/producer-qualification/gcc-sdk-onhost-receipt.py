@@ -19,7 +19,7 @@ import sys
 import time
 import traceback
 
-POLICY_SHA256='d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089'
+POLICY_SHA256='3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -157,7 +157,8 @@ RUNTIME_SIBLINGS=['scripts/producer-qualification/'+name for name in [
  'gcc-sdk-structured-diagnostics.py','gcc-hosted-sdk.py','gcc-main05-sdk.py','gcc-hosted-carrier.py',
  'gcc-hosted-phase0-capacity.py','gcc-hosted-capacity.py','gcc-phase0-transport.py','gcc-hosted-stage.py',
  'gcc-staged-checkpoint.py','gcc-staged-plan.py','gcc-sdk-material.py','gcc-sdk-derived.py','gcc-sdk-derived-run.py',
- 'binutils-image-identity.mjs']]
+ 'binutils-image-identity.mjs','binutils-acquisition-plan.mjs','binutils-retention-observer.mjs','c-producer-profile.mjs']]+[
+ 'scripts/acquire-binutils-inputs.mjs','scripts/acquire-c-producer-inputs.mjs','scripts/qualify-binutils-producer.mjs']
 SIBLINGS={}
 
 
@@ -488,6 +489,10 @@ def main():
         require(sys.argv==[sys.argv[0],'qualify-on-host','--operator-trust-execution'],'operator-required')
         root=Path(os.environ['RUNNER_TEMP']);require(root.is_absolute() and root==root.resolve(),'runtime-refused')
         private=root/'gcc-sdk-receipt-private';private.mkdir(mode=0o700)
+        # -B stops bytecode writes, not reads: an adjacent __pycache__ entry whose
+        # header matches a pinned source would run instead of the verified bytes.
+        # A prefix inside this run's fresh private namespace holds no cache at all.
+        sys.pycache_prefix=str(private/'no-bytecode-cache')
         value=guarded(lambda:fixed_work(private),private,head)
     except BaseException as error:
         # Even entry/admission failures have no raw exception or traceback channel.

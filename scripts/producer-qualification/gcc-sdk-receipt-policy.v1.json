@@ -33,7 +33,11 @@
   "revisionApproval": {
     "addedRuntimeFiles": [
       "scripts/producer-qualification/gcc-sdk-structured-diagnostics.py",
-      "scripts/producer-qualification/binutils-image-identity.mjs"
+      "scripts/producer-qualification/binutils-image-identity.mjs",
+      "scripts/producer-qualification/binutils-acquisition-plan.mjs",
+      "scripts/producer-qualification/binutils-retention-observer.mjs",
+      "scripts/producer-qualification/c-producer-profile.mjs",
+      "scripts/qualify-binutils-producer.mjs"
     ],
     "approvedBy": "operator",
     "approvedOn": "2026-11-24",
@@ -44,7 +48,7 @@
     "scope": [
       "Live sampling: live capacity samples skip entries unlinked between their parent listing and their own lstat, readlink or listing, bounded by LIVE_VANISHED_CEILING per sample; the sampled root must exist, and stopped admission, checkpoint and relocation scans stay strict.",
       "Container identity: once a create returns its container ID, every start, attach, signal, copy, terminal inspection and removal in the hosted configure carrier and the SDK reconstruction addresses that ID; a name is read only to admit the created container or to reconcile a create that returned no ID, and that reconciliation removes the ID it observed.",
-      "Import order: the on-host receipt entry verifies its policy, the checkout and every runtimeFiles pin with the standard library before loading any sibling, and the structured diagnostics module and the image identity helper it loads or executes are pinned as runtimeFiles.",
+      "Import order: the on-host receipt entry verifies its policy, the checkout and every runtimeFiles pin with the standard library before loading any sibling, reads no adjacent bytecode cache, and every first-party module it loads or executes, including the JavaScript import closure of the two acquisition entry points, is pinned as a runtimeFiles row.",
       "No limit, command, image or other runtime file changes."
     ]
   },
@@ -56,10 +60,10 @@
       "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d"
     },
     {
-      "bytes": 46157,
+      "bytes": 46269,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
-      "sha256": "45c32c28d0772c4d4ca5c3c9609d6cd52936b7b3d21d2c68731428950a2c12da"
+      "sha256": "452afc9bcb6588bb9db88473de42d1ce35ef514932a5cd08feb8989aed1feb2d"
     },
     {
       "bytes": 7231,
@@ -174,6 +178,30 @@
       "mode": 420,
       "path": "scripts/producer-qualification/binutils-image-identity.mjs",
       "sha256": "6288522acb54d96b69d45d9cb636150a511232e81764d8ae93a5c238fb31eb9a"
+    },
+    {
+      "bytes": 10303,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-acquisition-plan.mjs",
+      "sha256": "6614c7d05bff581bc264a0d2cf1337d4569ee3d5a6180d16df4ae4d23b963a66"
+    },
+    {
+      "bytes": 12643,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-retention-observer.mjs",
+      "sha256": "b0a7bea8b8cc982313bbe34fc41d41c6389fb128826f3949b5192adde50e0d91"
+    },
+    {
+      "bytes": 17891,
+      "mode": 420,
+      "path": "scripts/producer-qualification/c-producer-profile.mjs",
+      "sha256": "6a4c6234a378b1c4a2bc4dc41ae7f4d9f0eb28080599591a757a752c43a53b3d"
+    },
+    {
+      "bytes": 40776,
+      "mode": 420,
+      "path": "scripts/qualify-binutils-producer.mjs",
+      "sha256": "dad2118b97a6273a5a43313d081517f2ccf4192f12d60097c60ddc023bd00fbd"
     }
   ],
   "schemaVersion": 1,

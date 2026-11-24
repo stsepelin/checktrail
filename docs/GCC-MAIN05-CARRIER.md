@@ -87,7 +87,8 @@ Its exact-file comparisons do not establish universal information-flow isolation
 Current v4 admission requires SDK policy v6
 (`live-sample-tolerance-and-container-id-v6`). Relative to v5 it changes the
 pinned `gcc-hosted-carrier.py` and `gcc-hosted-sdk.py`, and newly pins
-`gcc-sdk-structured-diagnostics.py` and `binutils-image-identity.mjs`. Live
+`gcc-sdk-structured-diagnostics.py`, `binutils-image-identity.mjs` and the
+relative import closure of the two acquisition entry points. Live
 capacity samples skip an entry unlinked between its parent listing and its own
 read, bounded per sample, while stopped admission, checkpoint and relocation
 scans stay strict. Once a create returns a container ID, every start, signal,
@@ -96,7 +97,8 @@ admit the created container, or to reconcile a create that returned no ID, and
 that reconciliation removes the ID it observed. The on-host receipt entry checks
 its policy, the checkout and every `runtimeFiles` pin with the standard library
 before it loads any sibling, so a changed helper's module code never runs before
-its mismatch is refused. The operator approved these changes on 2026-11-24; the
+its mismatch is refused; it also reads no adjacent bytecode cache, so the
+pinned source is what runs. The operator approved these changes on 2026-11-24; the
 policy records the approval and the changed and added files in
 `revisionApproval`. The historical v3 decoder remains bound to SDK policy v5,
 which retains primary errors and cleanup diagnostics, and the historical v2

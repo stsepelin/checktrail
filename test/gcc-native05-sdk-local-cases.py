@@ -115,7 +115,8 @@ class LocalSdk(unittest.TestCase):
   # The approval names exactly the runtime rows whose bytes differ from the
   # previous revision, and the rows that revision did not pin at all.
   self.assertEqual(approval['changedRuntimeFiles'],[CARRIER,SDK])
-  self.assertEqual(approval['addedRuntimeFiles'],[STRUCTURED,IMAGE_IDENTITY])
+  self.assertEqual(approval['addedRuntimeFiles'],[STRUCTURED,IMAGE_IDENTITY,*['scripts/producer-qualification/'+name for name in
+                   ['binutils-acquisition-plan.mjs','binutils-retention-observer.mjs','c-producer-profile.mjs']],'scripts/qualify-binutils-producer.mjs'])
   paths=[row['path'] for row in policy['runtimeFiles']]
   self.assertEqual(len(paths),len(set(paths)));self.assertLessEqual({*approval['changedRuntimeFiles'],*approval['addedRuntimeFiles']},set(paths))
   self.assertTrue(any('LIVE_VANISHED_CEILING' in line for line in approval['scope']))
