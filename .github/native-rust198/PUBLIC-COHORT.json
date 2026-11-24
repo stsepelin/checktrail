@@ -15,9 +15,9 @@
     "sha256": "2fbf7fe23b11e9ada6aeb345cb50455fbf339bd229f31fce547a3b64ef581934"
   },
   {
-    "bytes": 11184,
+    "bytes": 11038,
     "file": "materializer.py",
-    "sha256": "645d708cc06d910314f47a7995382dda753cf0d76d892198bcc89d2b6452af02"
+    "sha256": "53f4784303c2df2bc22221361b98ff80b2a0d24dd75bc9d88916f1344be55fc6"
   },
   {
     "bytes": 10210,
@@ -60,9 +60,9 @@
     "sha256": "c7d863cf1502600b11754d9d5aed90511481a6959f2a4d3b4a68ad3616eee72f"
   },
   {
-    "bytes": 14988,
+    "bytes": 15199,
     "file": "reused-inventory/inventory.py",
-    "sha256": "509f0ef56d388777b8ded23d5285064e12c0780cd2eb02a0015616dd93629727"
+    "sha256": "7f689abe1aa8a90a6c66107e90f47add20deb963f12d240cfeeaadd3ed432138"
   },
   {
     "bytes": 21071,
@@ -85,9 +85,9 @@
     "sha256": "382e8bbce8ca8ff461e5ca4a1ae61f4aab86670890af32e4df61130258a4a103"
   },
   {
-    "bytes": 10389,
+    "bytes": 10450,
     "file": "test_materializer.py",
-    "sha256": "ba9981b6a5e7860e8d0d84a1459afe9d504cadbbf87321d1e28687f6c8c0ced0"
+    "sha256": "7e99ea6772c0d0ccb89cc67ee55fc2cbb2b06b2c456b2b9a540a47b7d787dd0e"
   },
   {
     "bytes": 19252,

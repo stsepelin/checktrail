@@ -5,7 +5,7 @@ from pathlib import Path
 import hashlib,io,json,os,posixpath,shutil,stat,sys,time,types
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
 from admission import read_once
-REUSE={'inventory.py':'509f0ef56d388777b8ded23d5285064e12c0780cd2eb02a0015616dd93629727','common.py':'c7d863cf1502600b11754d9d5aed90511481a6959f2a4d3b4a68ad3616eee72f','POLICY.json':'b9d8b09325cf578f618adeb896eff7f66c7f1dd15fb24b789a9a8144f9880fe5'}
+REUSE={'inventory.py':'7f689abe1aa8a90a6c66107e90f47add20deb963f12d240cfeeaadd3ed432138','common.py':'c7d863cf1502600b11754d9d5aed90511481a6959f2a4d3b4a68ad3616eee72f','POLICY.json':'b9d8b09325cf578f618adeb896eff7f66c7f1dd15fb24b789a9a8144f9880fe5'}
 def need(v,m):
  if not v:raise ValueError(m)
 def digest(file):
@@ -14,17 +14,15 @@ def digest(file):
   for b in iter(lambda:f.read(65536),b''):n+=len(b);h.update(b)
  return n,h.hexdigest()
 REUSE_BYTES=1024**2
-def verified_module(name,file,body):
- module=types.ModuleType(name);module.__file__=str(file);module.__verifiedSHA256__=hashlib.sha256(body).hexdigest();exec(compile(body,str(file),'exec'),module.__dict__);return module
+def verified_module(name,file,body,preset=None):
+ module=types.ModuleType(name);module.__file__=str(file);module.__verifiedSHA256__=hashlib.sha256(body).hexdigest();module.__dict__.update(preset or {});exec(compile(body,str(file),'exec'),module.__dict__);return module
 def primitives():
  # The reviewed modules run from the bytes that matched their pins, never from a reopened path.
  root=HERE/'reused-inventory';bodies={}
  for name,sha in REUSE.items():bodies[name]=read_once(root/name,REUSE_BYTES,'Reviewed bounded primitive file')[0];need(hashlib.sha256(bodies[name]).hexdigest()==sha,'Reviewed bounded primitive bytes changed')
  if 'common' in sys.modules:need(getattr(sys.modules['common'],'__verifiedSHA256__',None)==REUSE['common.py'] and Path(sys.modules['common'].__file__)==root/'common.py','Wrong cached common module')
  else:sys.modules['common']=verified_module('common',root/'common.py',bodies['common.py'])
- module=verified_module('rust_producer_bounded_tar',root/'inventory.py',bodies['inventory.py'])
- # inventory.py reads POLICY.json itself at import; that read must give the pinned policy.
- need(module.METADATA==set(json.loads(bodies['POLICY.json'])['sourceMetadataPaths']),'Reviewed bounded primitive bytes changed');return module
+ return verified_module('rust_producer_bounded_tar',root/'inventory.py',bodies['inventory.py'],{'POLICY_BYTES':bodies['POLICY.json']})
 
 def safe(path):
  need(isinstance(path,str) and path and len(path.encode())<=2048 and all(ord(c)>=32 and ord(c)!=127 for c in path) and not path.startswith('/') and '\\' not in path and all(x not in ('','.','..') for x in path.split('/')),'Canonical source relative path');return path

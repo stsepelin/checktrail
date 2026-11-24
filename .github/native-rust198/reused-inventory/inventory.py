@@ -5,7 +5,9 @@ HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
 from common import deadline_receipt,encoded,freeze,need,syncdir
 DECODED=8*1024**3;INDEX=256*1024**2;META=128*1024**2;NOTICES=256*1024**2;PHYSICAL=768*1024**2;MEMBERS=500000;SECONDS=1800;CHUNK=65536
-METADATA=set(json.loads((HERE/'POLICY.json').read_bytes())['sourceMetadataPaths'])
+# A caller that already holds the pinned policy bytes sets POLICY_BYTES in this
+# module's namespace before running it, so POLICY.json is not read a second time.
+METADATA=set(json.loads(POLICY_BYTES if 'POLICY_BYTES' in globals() else (HERE/'POLICY.json').read_bytes())['sourceMetadataPaths'])
 BASES=['license','licenses','copying','copyright','notice','notices','authors','unlicense','third_party_notices','third-party-notices','thirdpartynotices']
 CODE_SUFFIXES={'.rs','.py','.c','.h','.cc','.cpp','.js','.mjs','.ts','.go','.sh','.rb','.java','.swift','.cs'}
 

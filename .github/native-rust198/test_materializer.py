@@ -97,13 +97,13 @@ class Controls(unittest.TestCase):
   files=self.reused_copy();swap=SecondOpenSwap({files[name]:files[name].read_bytes()+b'\nSWAPPED_6151=True\n' for name in ['inventory.py','common.py']})
   module,common=self.load_copied_primitives(swap)
   self.assertFalse(hasattr(module,'SWAPPED_6151'));self.assertFalse(hasattr(common,'SWAPPED_6151'));self.assertEqual({str(files['inventory.py']):1,str(files['common.py']):1},swap.opens)
- def test_reused_policy_replaced_before_the_inventory_reads_it_is_refused(self):
-  files=self.reused_copy();policy=json.loads(files['POLICY.json'].read_bytes());policy['sourceMetadataPaths']=['replaced-6151']
-  with self.assertRaisesRegex(ValueError,'^Reviewed bounded primitive bytes changed$'):self.load_copied_primitives(SecondOpenSwap({files['POLICY.json']:json.dumps(policy).encode()}))
+ def test_reused_policy_replaced_after_its_verified_read_has_no_effect(self):
+  files=self.reused_copy();pinned=set(json.loads(files['POLICY.json'].read_bytes())['sourceMetadataPaths']);policy=json.loads(files['POLICY.json'].read_bytes());policy['sourceMetadataPaths']=['replaced-6151']
+  swap=SecondOpenSwap({files['POLICY.json']:json.dumps(policy).encode()});module,_=self.load_copied_primitives(swap)
+  self.assertEqual(pinned,module.METADATA);self.assertNotIn('replaced-6151',module.METADATA);self.assertEqual({str(files['POLICY.json']):1},swap.opens)
  def test_unchanged_reused_primitives_load_with_the_pinned_policy(self):
   files=self.reused_copy();swap=SecondOpenSwap({path:None for path in files.values()})
   module,common=self.load_copied_primitives(swap)
   self.assertEqual(set(json.loads(files['POLICY.json'].read_bytes())['sourceMetadataPaths']),module.METADATA);self.assertEqual(M.REUSE['common.py'],common.__verifiedSHA256__)
-  # inventory.py reads POLICY.json itself at import; that second read is compared with the pinned one.
-  self.assertEqual({str(files['inventory.py']):1,str(files['common.py']):1,str(files['POLICY.json']):2},swap.opens)
+  self.assertEqual({str(files['inventory.py']):1,str(files['common.py']):1,str(files['POLICY.json']):1},swap.opens)
 if __name__=='__main__':unittest.main()
