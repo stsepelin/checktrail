@@ -2387,6 +2387,26 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
       },
     ],
     [
+      "a test source the shard's file-name rule rejects",
+      async (root: string) => {
+        await writeFile(path.join(root, "test/Extra.test.ts"), "");
+      },
+    ],
+    [
+      "more test sources than the shards can partition",
+      async (root: string) => {
+        const present = (await readdir(path.join(root, "test"))).length;
+        await Promise.all(
+          Array.from({ length: 4097 - present }, (_, index) =>
+            writeFile(
+              path.join(root, "test", "padding-6620-" + index + ".test.ts"),
+              "",
+            ),
+          ),
+        );
+      },
+    ],
+    [
       "the test directory replaced by a symlink",
       async (root: string) => {
         await rename(
@@ -2410,6 +2430,20 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
       label,
     );
   }
+  const named = await frozen(t);
+  await writeFile(path.join(named, "test/extra-6620.test.ts"), "");
+  const namedResult = await audit(named, true);
+  assert.equal(namedResult.code, 0, namedResult.stderr);
+  const shardSource = await readFile(
+    path.join(repository, "scripts/ci-full-suite-shards.mjs"),
+    "utf8",
+  );
+  const auditSource = await readFile(script, "utf8");
+  const pattern = (text: string) =>
+    /const (?:fullSuiteFilePattern|filePattern) = (\/[^\n]+\/u);/u.exec(
+      text,
+    )![1];
+  assert.equal(pattern(auditSource), pattern(shardSource));
   const empty = await frozen(t);
   await alter<{ profiles: string[] }>(empty, files[3]!, (value) => {
     value.profiles = [];

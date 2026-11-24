@@ -663,6 +663,8 @@ const resolvable = (file) =>
   file.length <= maxFileCharacters &&
   file.split("/").every((part) => Buffer.byteLength(part) <= maxNameBytes);
 const genericRunner = "scripts/required-test-evidence.mjs";
+// The compiled test file names ci-full-suite-shards.mjs partitions.
+const fullSuiteFilePattern = /^[a-z0-9][a-z0-9-]*\.test\.js$/u;
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const canonical = (value) =>
   JSON.stringify(value, (_key, item) =>
@@ -1134,10 +1136,16 @@ try {
   else
     for (const name of readdirSync(testDirectory))
       if (name.endsWith(".test.ts")) {
+        const compiled = name.replace(/\.ts$/u, ".js");
         if (!lstatSync(path.join(testDirectory, name)).isFile())
           fullSuiteListProblems.push("test-source-not-a-regular-file:" + name);
-        fullSuiteTestFiles.add("dist/test/" + name.replace(/\.ts$/u, ".js"));
+        if (!fullSuiteFilePattern.test(compiled))
+          fullSuiteListProblems.push("test-source-name:" + name);
+        fullSuiteTestFiles.add("dist/test/" + compiled);
       }
+  // partitionFullSuiteFiles needs between 3 and 4096 files for its shards.
+  if (fullSuiteTestFiles.size < 3 || fullSuiteTestFiles.size > 4096)
+    fullSuiteListProblems.push("test-source-count");
   const fullSuiteList = fullSuite.profiles;
   if (fullSuiteList.length === 0 || fullSuiteList.length > 256)
     fullSuiteListProblems.push("list-size");
