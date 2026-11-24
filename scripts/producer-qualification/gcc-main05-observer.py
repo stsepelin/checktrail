@@ -57,7 +57,9 @@ def observe(output,name,identifier,maximum_seconds,service_clock,*,sdk_seconds):
             remaining>=maximum_seconds+policy.FINALIZE_SECONDS+policy.CLEANUP_RESERVE_SECONDS,
             'Prestart inspection consumed promised whole-body/source-service allowance; reobserve before execution')
     started=time.monotonic();status=None;failure=None;samples=[];observed_bytes=0;next_sample=0
-    process=subprocess.Popen(['/usr/bin/docker','start','--attach',name],env=h.HOST_ENV,
+    # The name can be rebound after the prestart inspection. Every effect and the
+    # terminal inspection address only the container whose ID was admitted.
+    process=subprocess.Popen(['/usr/bin/docker','start','--attach',identifier],env=h.HOST_ENV,
                              stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
     selector=selectors.DefaultSelector();selector.register(process.stdout,selectors.EVENT_READ)
     try:
@@ -92,7 +94,7 @@ def observe(output,name,identifier,maximum_seconds,service_clock,*,sdk_seconds):
     except BaseException as error:
         failure=error
         for chosen in ['TERM','KILL']:
-            try:h.docker(['kill','--signal',chosen,name],timeout=5)
+            try:h.docker(['kill','--signal',chosen,identifier],timeout=5)
             except BaseException:pass
             if chosen=='TERM':time.sleep(1)
         # Only an unreaped Popen child still reserves its session-leader PID.
@@ -105,7 +107,7 @@ def observe(output,name,identifier,maximum_seconds,service_clock,*,sdk_seconds):
     finally:
         selector.close();process.stdout.close()
         (output/'resource-samples.json').write_bytes(body.codec.canonical({'samples':samples,'quotaEnforced':False,'physicalHighWaterProven':False}))
-    actual=json.loads(h.docker(['inspect',name],timeout=5))[0]
+    actual=json.loads(h.docker(['inspect',identifier],timeout=5))[0]
     require(actual['Id']==identifier and actual['Config']['Labels']['io.checktrail.gcc-staged-owner']==name,
             'Main05 terminal ownership changed')
     state=actual['State'];quiescent=state['Running'] is False and state['Pid']==0 and state['Status']=='exited'

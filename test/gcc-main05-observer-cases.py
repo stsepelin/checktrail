@@ -18,6 +18,7 @@ spec=importlib.util.spec_from_file_location('observer',ROOT/'scripts/producer-qu
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 NAME='checktrail-gcc-native05-'+'a'*32
 IDENTIFIER='b'*64
+FOREIGN='f'*64
 REAL_POPEN=subprocess.Popen
 CHILD=r'''
 import json,os,signal,subprocess,sys,time
@@ -66,25 +67,44 @@ def owner():
   'NanoCpus':4000000000,'Memory':6*m.h.GIB,'PidsLimit':1024}}
 
 
+def foreign():
+ value=owner();value['Id']=FOREIGN;value['Config']['Labels']={'io.checktrail.synthetic-foreign-owner':'unrelated-137'}
+ value['State']={'Status':'created','Running':False,'Pid':0};return value
+
+
 class Observations(unittest.TestCase):
- def execute(self,mode,*,maximum=10,log_bound=None):
+ def execute(self,mode,*,maximum=10,log_bound=None,rebind=None):
+  """Docker resolves a reference by name or by ID, as the daemon does.
+
+  `rebind` moves the owned name to FOREIGN just before the start request
+  ('before-start') or right after the TERM request ('between-signals').
+  self.effects records the container each start/kill actually reached.
+  """
+  bound={NAME:IDENTIFIER};self.effects=effects=[]
+  def resolve(reference):
+   target=bound.get(reference,reference);self.assertIn(target,(IDENTIFIER,FOREIGN));return target
   with tempfile.TemporaryDirectory() as name:
    root=Path(name).resolve();(root/'state').mkdir();(root/'state/synthetic-object').write_bytes(b'object');(root/'observations').mkdir()
    processes=[];calls=[]
    def popen(args,**kw):
-    self.assertEqual(args,['/usr/bin/docker','start','--attach',NAME]);self.assertEqual(kw['env'],m.h.HOST_ENV)
+    if rebind=='before-start':bound[NAME]=FOREIGN
+    self.assertEqual(args[:3],['/usr/bin/docker','start','--attach']);self.assertEqual(len(args),4);self.assertEqual(kw['env'],m.h.HOST_ENV)
+    effects.append(('start',resolve(args[3])));calls.append(['start','--attach',args[3]])
     p=REAL_POPEN([sys.executable,'-I','-B','-c',CHILD,str(root),json.dumps(m.body.COMMAND),mode],**kw);processes.append(p);return p
    def docker(args,**kw):
     calls.append(args)
-    if args==['inspect',NAME]:
+    if args[0]=='inspect':
+     self.assertEqual(len(args),2)
+     if resolve(args[1])==FOREIGN:return json.dumps([foreign()]).encode()
      value=owner()
      if processes:
       code=processes[0].poll();self.assertIsNotNone(code)
       value['State']=({'Status':'created','Running':False,'Pid':0,'ExitCode':128,'OOMKilled':False,'Error':'Synthetic prestart refusal'} if mode=='prestart' else
                       {'Status':'exited','Running':False,'Pid':0,'ExitCode':code if code>=0 else 128-code,'OOMKilled':False,'Error':''})
      return json.dumps([value]).encode()
-    self.assertEqual(args[:2],['kill','--signal']);self.assertEqual(args[-1],NAME)
-    if processes and running(processes[0],root):os.killpg(processes[0].pid,getattr(signal,'SIG'+args[2]))
+    self.assertEqual(args[:2],['kill','--signal']);self.assertEqual(len(args),4);target=resolve(args[3]);effects.append((args[2],target))
+    if target==IDENTIFIER and processes and running(processes[0],root):os.killpg(processes[0].pid,getattr(signal,'SIG'+args[2]))
+    if rebind=='between-signals' and args[2]=='TERM':bound[NAME]=FOREIGN
     return b''
    try:
     with mock.patch.object(m.h,'docker',side_effect=docker),mock.patch.object(m.subprocess,'Popen',side_effect=popen),\
@@ -117,7 +137,8 @@ class Observations(unittest.TestCase):
     result,calls=self.execute(mode)
     self.assertEqual(result['originalCommandExitCode'],original);self.assertEqual(result['attachExitCode'],wrapper)
     self.assertTrue(result['originalCommandTerminalObserved']);self.assertTrue(result['quiescenceObserved'])
-    self.assertIsNone(result['cutoffOrRetentionError']);self.assertEqual(calls,[['inspect',NAME],['inspect',NAME]])
+    self.assertIsNone(result['cutoffOrRetentionError'])
+    self.assertEqual(calls,[['inspect',NAME],['start','--attach',IDENTIFIER],['inspect',IDENTIFIER]])
     self.assertEqual(result['originalCommandElapsedSeconds'],0.01);self.assertFalse(result['originalCommandWindowPromised'])
     self.assertTrue(result['bodyWindowIncludesAttachStartupPrechecksOriginalCommandPostchecksAndReap'])
 
@@ -133,7 +154,32 @@ class Observations(unittest.TestCase):
   self.assertIsNone(result['originalCommandExitCode']);self.assertFalse(result['originalCommandTerminalObserved'])
   self.assertEqual(result['containerState']['ExitCode'],0)
   self.assertEqual(result['attachExitCode'],0)
-  self.assertIn(['kill','--signal','TERM',NAME],calls);self.assertIn(['kill','--signal','KILL',NAME],calls)
+  self.assertIn(['kill','--signal','TERM',IDENTIFIER],calls);self.assertIn(['kill','--signal','KILL',IDENTIFIER],calls)
+
+ def rebound(self,mode,rebind,**kw):
+  try:outcome=self.execute(mode,rebind=rebind,**kw)
+  except ValueError as error:outcome=error
+  self.assertEqual([effect for effect in self.effects if effect[1]==FOREIGN],[],'An unrelated container was started or signalled')
+  self.assertNotIsInstance(outcome,ValueError,str(outcome));return outcome
+
+ def test_name_rebound_before_start_never_starts_the_foreign_container(self):
+  result,calls=self.rebound('zero','before-start')
+  self.assertEqual(self.effects,[('start',IDENTIFIER)]);self.assertEqual(result['containerId'],IDENTIFIER)
+  self.assertEqual(result['originalCommandExitCode'],0);self.assertTrue(result['quiescenceObserved'])
+  self.assertEqual(calls[-1],['inspect',IDENTIFIER])
+
+ def test_name_rebound_between_term_and_kill_never_signals_the_foreign_container(self):
+  result,calls=self.rebound('timeout','between-signals',maximum=0.2)
+  self.assertEqual(self.effects,[('start',IDENTIFIER),('TERM',IDENTIFIER),('KILL',IDENTIFIER)])
+  self.assertIn('cutoff',result['cutoffOrRetentionError']);self.assertTrue(result['quiescenceObserved'])
+  self.assertEqual(calls[-1],['inspect',IDENTIFIER])
+
+ def test_unchanged_name_runs_the_normal_cutoff_flow_through_the_admitted_id(self):
+  result,calls=self.rebound('timeout',None,maximum=0.2)
+  self.assertEqual(self.effects,[('start',IDENTIFIER),('TERM',IDENTIFIER),('KILL',IDENTIFIER)])
+  self.assertEqual(calls,[['inspect',NAME],['start','--attach',IDENTIFIER],['kill','--signal','TERM',IDENTIFIER],
+                          ['kill','--signal','KILL',IDENTIFIER],['inspect',IDENTIFIER]])
+  self.assertEqual(result['containerState']['Status'],'exited');self.assertEqual(result['containerId'],IDENTIFIER)
 
  def test_pipe_eof_uses_the_same_native_budget_instead_of_an_extra_wait(self):
   result,_=self.execute('early-eof',maximum=0.3)
@@ -186,7 +232,8 @@ class Observations(unittest.TestCase):
    child.wait=mock.Mock(side_effect=wait)
    def docker(args,**kw):
     calls.append(args)
-    if args==['inspect',NAME]:
+    if args[0]=='inspect':
+     self.assertEqual(args,['inspect',NAME] if len(calls)==1 else ['inspect',IDENTIFIER])
      value=owner()
      if child.returncode is not None:value['State']={'Status':'exited','Running':False,'Pid':0,'ExitCode':0,'OOMKilled':False,'Error':''}
      return json.dumps([value]).encode()
@@ -202,14 +249,14 @@ class Observations(unittest.TestCase):
   result,calls,kill,child=self.fake_child_cleanup(reaped=True)
   kill.assert_not_called();self.assertIn('Late main05 wrapper terminal',result['cutoffOrRetentionError'])
   self.assertEqual(result['attachExitCode'],0);self.assertEqual(child.wait.call_count,2)
-  # Owned container cleanup is by the exact name, independent of the group decision.
-  self.assertIn(['kill','--signal','TERM',NAME],calls);self.assertIn(['kill','--signal','KILL',NAME],calls)
+  # Owned container cleanup is by the admitted ID, independent of the group decision.
+  self.assertIn(['kill','--signal','TERM',IDENTIFIER],calls);self.assertIn(['kill','--signal','KILL',IDENTIFIER],calls)
 
  def test_cutoff_with_the_attach_client_still_unreaped_signals_its_reserved_group(self):
   result,calls,kill,child=self.fake_child_cleanup(reaped=False)
   kill.assert_called_once_with(424242,signal.SIGKILL);self.assertIn('native/source-service cutoff',result['cutoffOrRetentionError'])
   self.assertEqual(result['attachExitCode'],-signal.SIGKILL)
-  self.assertIn(['kill','--signal','TERM',NAME],calls);self.assertIn(['kill','--signal','KILL',NAME],calls)
+  self.assertIn(['kill','--signal','TERM',IDENTIFIER],calls);self.assertIn(['kill','--signal','KILL',IDENTIFIER],calls)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
