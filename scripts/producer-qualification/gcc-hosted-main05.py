@@ -154,23 +154,28 @@ def capture(repository,inputs,output):
 
 
 def post_capture(mode,repository,output):
-    frame=output/'native-frame';selected=service.context()
+    frame=output/'native-frame';selected=service.context(os.environ)
     h.verify_repository(repository,selected)
     result=json.loads((output/'CARRIER.json').read_bytes())
     require(result['state']=='original-main05-checkpoint-captured-restored-and-transport-prepared' and
             result['localCheckpointCapturedAndPhysicallyRestored'] is True and result['localLedgerIsProvisionalUntilServiceReplay'] is True,
             'Original complete provisional native transport preparation required before post-capture operations')
-    checkpoint_root=retain.profile.data(frame/'CHECKPOINT-ROOT.json',1024**2)
-    require(checkpoint_root.get('native05EvidenceProfile')==retain.profile.PROFILE,'Fixed driver cannot select legacy post-capture operations')
-    retain.profile.validate_checkpoint(frame/'state',checkpoint_root,deadline=time.monotonic()+min(300,service.policy.POST_CAPTURE_SECONDS))
     try:
+        # The trusted prepared carrier already charged a genuine attempt, so a
+        # later incomplete, changed or late checkpoint is a retention failure.
+        checkpoint_root=retain.profile.data(frame/'CHECKPOINT-ROOT.json',1024**2)
+        require(checkpoint_root.get('native05EvidenceProfile')==retain.profile.PROFILE,'Fixed driver cannot select legacy post-capture operations')
+        retain.profile.validate_checkpoint(frame/'state',checkpoint_root,deadline=time.monotonic()+min(300,service.policy.POST_CAPTURE_SECONDS))
         if mode=='prepare-restore':return transport.prepare_restore(frame,selected,service,codec,os.environ)
-        api=service.GitHub(os.environ.get('CHECKTRAIL_GITHUB_JOB_TOKEN'),frame)
+        require(mode in ('pre-save','verify-restore'),'Unknown fixed native05 post-capture mode')
+        # Every client numbers its raw responses from zero. A fresh directory per
+        # operation keeps the initial admission, pre-save and restore receipts.
+        receipts=frame/('service-'+mode);receipts.mkdir(mode=0o700)
+        api=service.GitHub(os.environ.get('CHECKTRAIL_GITHUB_JOB_TOKEN'),receipts)
         if mode=='pre-save':
             expected=transport.expected_record(frame,selected,service)
             fresh=service.capture_service(api,selected)
             return service.admit_measured_save(fresh,expected['archive']['bytes'],expected['envelope']['envelopeLogicalBytesMeasured'])
-        require(mode=='verify-restore','Unknown fixed native05 post-capture mode')
         replay=transport.verify(frame,selected,service,codec,ledger_builder.planner,api,os.environ)
         result.update(state='original-main05-source-cache-physically-replayed',cacheSaveCompleted=True,cacheRestoreReplayQualified=True,
                       localLedgerIsProvisionalUntilServiceReplay=False,transportReplay=replay)
@@ -196,7 +201,7 @@ def main():
     repository=h.physical(Path(args.repository));output=Path(args.output)
     require(output==Path(os.environ['RUNNER_TEMP']).resolve()/'gcc-main05','Exact owned original native05 frame required')
     if args.mode=='preflight-history':
-        selected=service.context();h.verify_repository(repository,selected)
+        selected=service.context(os.environ);h.verify_repository(repository,selected)
         require(selected['GITHUB_RUN_ATTEMPT']=='1','A rerun requires independently frozen complete native attempt history and a new reviewed action')
         record=start.operator_history.inspect()
         target=Path(os.environ['RUNNER_TEMP']).resolve()/'gcc-main05-operator-history.json'

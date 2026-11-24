@@ -1,10 +1,13 @@
 """Actual local capture/transport bytes with mocked SDK/native and service authority."""
 import copy
+import email.utils
+import hashlib
 import importlib.util
 import json
 import os
 from pathlib import Path
 import stat
+import sys
 import tempfile
 import time
 from types import SimpleNamespace
@@ -18,6 +21,40 @@ def load(path):
 
 m=load(ROOT/'scripts/producer-qualification/gcc-hosted-main05.py')
 r=load(ROOT/'test/gcc-main05-retain-cases.py')
+scope_fixture=load(ROOT/'test/gcc-native05-synthetic-fixture.py')
+# Every key the real hosted-context validator reads. The checkout SHA is the one
+# the synthetic SDK receipt is bound to; the other identities are distinctive.
+HOSTED={'GITHUB_ACTIONS':'true','RUNNER_ENVIRONMENT':'github-hosted','RUNNER_OS':'Linux','RUNNER_ARCH':'X64',
+        'GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REPOSITORY':m.service.base.REPOSITORY,
+        'GITHUB_REF':'refs/heads/diagnostic/synthetic-main05-137','GITHUB_SHA':scope_fixture.HEAD,'GITHUB_RUN_ID':'918273645',
+        'GITHUB_RUN_ATTEMPT':'1','GITHUB_JOB':m.service.base.JOB}
+WRONG_HOSTED=[('GITHUB_ACTIONS','false'),('RUNNER_ENVIRONMENT','self-hosted'),('RUNNER_OS','macOS'),('RUNNER_ARCH','ARM64'),
+              ('GITHUB_EVENT_NAME','push'),('GITHUB_REPOSITORY','synthetic-fork/checktrail'),('GITHUB_REF','refs/heads/main'),
+              ('GITHUB_SHA',scope_fixture.HEAD.upper()),('GITHUB_RUN_ID','0918273645'),('GITHUB_RUN_ATTEMPT','0'),('GITHUB_JOB','gcc-staged-first-shadow'),
+              ('GITHUB_JOB',None)]
+
+
+def hosted(key=None,value=None):
+ environment=dict(HOSTED)
+ if key is not None:
+  if value is None:del environment[key]
+  else:environment[key]=value
+ return environment
+
+
+class SyntheticServiceResponse:
+ def __init__(self,raw):self.raw=raw;self.status=200;self.headers={'Date':email.utils.formatdate(usegmt=True)}
+ def __enter__(self):return self
+ def __exit__(self,*_):return False
+ def read(self,_):return self.raw
+
+
+class SyntheticServiceOpener:
+ """Answers each real GitHub client request with a body naming the operation."""
+ def __init__(self):self.operation=None;self.urls=[]
+ def open(self,request,timeout):
+  self.urls.append(request.full_url)
+  return SyntheticServiceResponse(json.dumps({'syntheticOperation':self.operation,'request':len(self.urls)}).encode())
 
 
 class Driver(unittest.TestCase):
@@ -27,14 +64,14 @@ class Driver(unittest.TestCase):
   observed['containerId']='b'*64
   output=root/'gcc-main05';(output/'NATIVE-PREPARED.json').write_text('{"controls":[]}')
   (frame/'observations/MAIN05-STAGE.json').write_text(json.dumps(stage))
-  selected={'GITHUB_SHA':'a'*40,'GITHUB_RUN_ID':'12','GITHUB_RUN_ATTEMPT':'1','GITHUB_REF':'refs/heads/diagnostic/synthetic'}
+  selected=m.service.h.capacity.context(HOSTED)
   clock={'capturedMonotonic':time.monotonic(),'remainingSeconds':20000,'jobId':123}
   runtime={'output':output,'nativeFrame':frame,'sdkFrame':sdk,'name':'synthetic-owned-name','containerId':'b'*64,
            'root':original,'ledger':ledger,'configuration':config,'resources':{'context':selected},'api':object(),
            'admitted':{'maximumNativeBodyAndAttachSeconds':10},'service':{'clock':clock},'sdkPreparationSecondsCharged':50}
-  scope_fixture=load(ROOT/'test/gcc-native05-synthetic-fixture.py')
   runtime['sdkScope']=scope_fixture.make_scope((frame,sdk))
-  environment={'RUNNER_TEMP':str(root),'SUDO_UID':str(os.getuid() or 1001),'SUDO_GID':str(os.getgid() or 1001)}
+  environment={**HOSTED,'RUNNER_TEMP':str(root),'SUDO_UID':str(os.getuid() or 1001),'SUDO_GID':str(os.getgid() or 1001),
+               'CHECKTRAIL_GITHUB_JOB_TOKEN':'synthetic-job-token-137'}
   return output,runtime,observed,environment
 
  def active(self,root,*,observer_error=None,observer_transform=None,save_error=None):
@@ -126,7 +163,7 @@ class Driver(unittest.TestCase):
    with self.subTest(mode=mode),tempfile.TemporaryDirectory() as name:
     root=Path(name).resolve();output=root/'gcc-main05';(output/'native-frame').mkdir(parents=True)
     (output/'CARRIER.json').write_text(json.dumps({'state':'native05-failed-or-incomplete','localCheckpointCapturedAndPhysicallyRestored':False,'localLedgerIsProvisionalUntilServiceReplay':True}))
-    with mock.patch.object(m.service,'context',return_value={}),mock.patch.object(m.h,'verify_repository'),mock.patch.object(m.transport,'prepare_restore') as restore,mock.patch.object(m.transport,'verify') as verify,mock.patch.object(m.service,'GitHub') as api:
+    with mock.patch.dict(os.environ,hosted()),mock.patch.object(m.h,'verify_repository'),mock.patch.object(m.transport,'prepare_restore') as restore,mock.patch.object(m.transport,'verify') as verify,mock.patch.object(m.service,'GitHub') as api:
      with self.assertRaisesRegex(ValueError,'complete provisional'):m.post_capture(mode,root,output)
      restore.assert_not_called();verify.assert_not_called();api.assert_not_called()
 
@@ -172,8 +209,9 @@ class Driver(unittest.TestCase):
    root=Path(name).resolve();stack,output,runtime,*_=self.active(root)
    with stack:result=m.capture(root,root,output)
    frame=runtime['nativeFrame'];(frame/'controls/EXPECTED-PHASE-LEDGER.json').write_bytes(m.codec.canonical(runtime['ledger']))
-   with mock.patch.object(m.service,'context',return_value=runtime['resources']['context']),mock.patch.object(m.h,'verify_repository'),mock.patch.object(m.service,'GitHub'),mock.patch.object(m.transport,'verify',side_effect=ValueError('Synthetic late service metadata failure')),mock.patch.object(m.ledger_builder.planner,'read_configuration',return_value=runtime['configuration']):
+   with mock.patch.dict(os.environ,hosted()),mock.patch.object(m.h,'verify_repository') as repository,mock.patch.object(m.service,'GitHub'),mock.patch.object(m.transport,'verify',side_effect=ValueError('Synthetic late service metadata failure')),mock.patch.object(m.ledger_builder.planner,'read_configuration',return_value=runtime['configuration']):
     with self.assertRaisesRegex(ValueError,'late service metadata'):m.post_capture('verify-restore',root,output)
+    repository.assert_called_once_with(root,runtime['resources']['context'])
    result=json.loads((output/'CARRIER.json').read_bytes());self.assertTrue(result['localCheckpointCapturedAndPhysicallyRestored'])
    self.assertFalse(result['cacheRestoreReplayQualified']);self.assertFalse(result['cacheSaveCompleted']);self.assertTrue(result['localLedgerIsProvisionalUntilServiceReplay'])
    self.assertEqual(result['state'],'native05-service-retention-incomplete');self.assertIn('failedPhaseLedger',result,result.get('failedLedgerEvidenceError'));row=result['failedPhaseLedger']['attempts'][-1]
@@ -202,6 +240,86 @@ class Driver(unittest.TestCase):
    result=json.loads((output/'CARRIER.json').read_bytes());row=result['failedPhaseLedger']['attempts'][-1]
    self.assertEqual(row['exitCode'],0);self.assertEqual(row['outcome'],'retention-failed');self.assertTrue(row['quiescenceObserved'])
    self.assertTrue(result['observed']['quiescenceWasConfirmedByOwnedCleanup']);self.assertEqual(row['nativeSeconds'],150)
+
+
+ def test_every_service_operation_keeps_its_own_raw_receipts_under_the_real_hosted_context(self):
+  opener=SyntheticServiceOpener();usage='/repos/'+m.service.base.REPOSITORY+'/actions/cache/usage'
+  def fresh(api,selected):
+   self.assertEqual(selected,m.service.h.capacity.context(HOSTED));api.get(usage);now=time.monotonic()
+   return {'clock':{'capturedMonotonic':now,'remainingSeconds':20000,'jobId':123},
+           'cache':{'observedOccupiedBytes':6044189091,'capturedMonotonic':now,'completeUniqueListingObserved':True}}
+  def replay(frame,selected,capacity,codec,planner,api,environment):
+   capacity.capture_service(api,selected);return {'syntheticReplay':'service-cache-restored-137'}
+  with tempfile.TemporaryDirectory() as name:
+   root=Path(name).resolve();stack,output,runtime,*_=self.active(root);frame=runtime['nativeFrame']
+   with stack,mock.patch.object(m.service.base.urllib.request,'build_opener',return_value=opener):
+    stack.enter_context(mock.patch.object(m.service,'capture_service',side_effect=fresh))
+    # The client create_runtime retains for the later capture-time admission.
+    runtime['api']=m.service.GitHub(os.environ['CHECKTRAIL_GITHUB_JOB_TOKEN'],frame)
+    opener.operation='initial-admission';runtime['api'].get(usage)
+    opener.operation='capture-admission';m.capture(root,root,output)
+    with mock.patch.object(m.h,'verify_repository') as repository,mock.patch.object(m.transport,'verify',side_effect=replay):
+     opener.operation='pre-save';admission=m.post_capture('pre-save',root,output)
+     opener.operation='prepare-restore';m.post_capture('prepare-restore',root,output)
+     opener.operation='verify-restore';self.assertEqual(m.post_capture('verify-restore',root,output),{'syntheticReplay':'service-cache-restored-137'})
+    self.assertEqual(repository.call_args_list,[mock.call(root,m.service.h.capacity.context(HOSTED))]*3)
+   self.assertTrue(admission['newCacheSaveRequired']);self.assertEqual(len(opener.urls),4)
+   self.assertEqual(json.loads((output/'CARRIER.json').read_bytes())['state'],'original-main05-source-cache-physically-replayed')
+   self.assertFalse((frame/'FAILED-PHASE-LEDGER.json').exists())
+   retained={}
+   for raw in frame.rglob('service-*.json'):
+    if raw.name.endswith('.receipt.json'):continue
+    receipt=json.loads(raw.with_suffix('.receipt.json').read_bytes())
+    self.assertEqual(receipt['rawSha256'],hashlib.sha256(raw.read_bytes()).hexdigest());self.assertEqual(receipt['url'],'https://api.github.com'+usage)
+    retained[raw.relative_to(frame).as_posix()]=json.loads(raw.read_bytes())['syntheticOperation']
+   self.assertEqual(retained,{'service-000.json':'initial-admission','service-001.json':'capture-admission',
+                              'service-pre-save/service-000.json':'pre-save','service-verify-restore/service-000.json':'verify-restore'})
+
+ def test_one_wrong_hosted_context_key_is_refused_before_any_post_capture_or_history_operation(self):
+  for key,value in [(None,None),*WRONG_HOSTED]:
+   with self.subTest(key=key,value=value),tempfile.TemporaryDirectory() as name:
+    root=Path(name).resolve();output=root/'gcc-main05';(output/'native-frame').mkdir(parents=True)
+    carrier=json.dumps({'state':'native05-failed-or-incomplete','localCheckpointCapturedAndPhysicallyRestored':False,'localLedgerIsProvisionalUntilServiceReplay':True})
+    (output/'CARRIER.json').write_text(carrier);history=root/'gcc-main05-operator-history.json'
+    argv=['gcc-hosted-main05.py','--repository',str(root),'--inputs',str(root),'--output',str(output),'--mode','preflight-history']
+    with mock.patch.dict(os.environ,{**hosted(key,value),'RUNNER_TEMP':str(root)},clear=True),mock.patch.object(m.h,'verify_repository') as repository,\
+         mock.patch.object(m.service,'GitHub') as api,mock.patch.object(m.start.operator_history,'inspect',return_value={'syntheticHistory':'operator-frozen-137'}) as inspect,\
+         mock.patch.object(m.os,'getuid',return_value=0),mock.patch.object(sys,'argv',argv):
+     if key is None:
+      with self.assertRaisesRegex(ValueError,'complete provisional'):m.post_capture('pre-save',root,output)
+      self.assertEqual(m.main(),{'syntheticHistory':'operator-frozen-137'})
+      self.assertEqual(repository.call_args_list,[mock.call(root,m.service.h.capacity.context(HOSTED))]*2)
+      inspect.assert_called_once_with();self.assertEqual(json.loads(history.read_bytes()),{'syntheticHistory':'operator-frozen-137'})
+     else:
+      with self.assertRaises(ValueError):m.post_capture('pre-save',root,output)
+      with self.assertRaises(ValueError):m.main()
+      repository.assert_not_called();inspect.assert_not_called();self.assertFalse(history.exists())
+     api.assert_not_called();self.assertEqual((output/'CARRIER.json').read_text(),carrier)
+
+ def test_incomplete_changed_or_late_checkpoint_after_transport_preparation_writes_the_failed_phase_ledger(self):
+  for kind,mode,message in [('changed','pre-save','Restored GCC evidence bytes'),('missing-root','prepare-restore','No such file.*CHECKPOINT-ROOT'),
+                            ('deadline','verify-restore','V2 restored scope deadline')]:
+   with self.subTest(kind=kind),tempfile.TemporaryDirectory() as name:
+    root=Path(name).resolve();stack,output,runtime,*_=self.active(root);frame=runtime['nativeFrame']
+    with stack:m.capture(root,root,output)
+    (frame/'controls/EXPECTED-PHASE-LEDGER.json').write_bytes(m.codec.canonical(runtime['ledger']))
+    if kind=='changed':
+     with (frame/'state'/m.retain.profile.EVIDENCE/'main-native.log').open('ab') as log:log.write(b'Synthetic late mutation 137\n')
+    if kind=='missing-root':(frame/'CHECKPOINT-ROOT.json').unlink()
+    with mock.patch.dict(os.environ,hosted()),mock.patch.object(m.h,'verify_repository'),mock.patch.object(m.service,'GitHub') as api,\
+         mock.patch.object(m.transport,'prepare_restore') as restore,mock.patch.object(m.transport,'verify') as verify,\
+         mock.patch.object(m.ledger_builder.planner,'read_configuration',return_value=runtime['configuration']),\
+         mock.patch.object(m.service.policy,'POST_CAPTURE_SECONDS',-1 if kind=='deadline' else m.service.policy.POST_CAPTURE_SECONDS):
+     with self.assertRaisesRegex((ValueError,OSError),message):m.post_capture(mode,root,output)
+     api.assert_not_called();restore.assert_not_called();verify.assert_not_called()
+    result=json.loads((output/'CARRIER.json').read_bytes())
+    self.assertEqual(result['state'],'native05-service-retention-incomplete');self.assertEqual(result['serviceFailure']['mode'],mode)
+    self.assertIn('failedPhaseLedger',result,result.get('failedLedgerEvidenceError'))
+    self.assertEqual(json.loads((frame/'FAILED-PHASE-LEDGER.json').read_bytes()),result['failedPhaseLedger'])
+    row=result['failedPhaseLedger']['attempts'][-1]
+    self.assertEqual(row['outcome'],'retention-failed');self.assertEqual(row['retentionStage'],'transport')
+    self.assertEqual(row['exitCode'],0);self.assertEqual(row['nativeSeconds'],150);self.assertIsNone(row['checkpointSha256'])
+    self.assertFalse(result['cacheSaveCompleted']);self.assertTrue(result['localLedgerIsProvisionalUntilServiceReplay'])
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
