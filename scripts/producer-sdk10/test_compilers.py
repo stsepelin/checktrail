@@ -60,4 +60,33 @@ class CompilerControls(unittest.TestCase):
   with mock.patch.object(Path,'stat',changing):seen,events=self.sample(proc)
   self.assertEqual(seen,{});self.assertEqual(events,[]);self.assertEqual(len(calls),3)
 
+ def sampler(self,proc):
+  # Repeated docker-top samples of one live process share seen/events, as
+  # successive iterations of the native polling loop do.
+  c=object.__new__(driver.Controller);c.state={};seen={};events=io.StringIO();path=self.root/'docker-top'
+  def docker(*a,**kw):
+   path.write_text('PID PPID COMMAND ARGS\n222 1 forged-comm a human display mentioning gcc csc.dll\n');n,h=common.hash_file(path);return {'exitCode':0,'stdoutBytes':n,'stdoutSHA256':h},path
+  c.docker=docker
+  def sample():
+   with mock.patch.object(driver,'process_directory',return_value=proc):c.compiler_processes('owned-synthetic',seen,{},events)
+   return seen,[json.loads(x) for x in events.getvalue().splitlines()]
+  return sample
+ def map_assembly(self,proc,assembly):
+  s=assembly.stat();(proc/'maps').write_text('1000-2000 r--p 00000000 '+format(os.major(s.st_dev),'x')+':'+format(os.minor(s.st_dev),'x')+' '+str(s.st_ino)+' /sdk/csc.dll\n')
+ def test_managed_host_sampled_before_its_assembly_mapping_qualifies_on_a_later_sample(self):
+  proc,binary,assembly=self.proc(mapped=False);sample=self.sampler(proc)
+  seen,events=sample();self.assertEqual(seen,{(222,'12345'):False});self.assertEqual([x['actualSourceCompilerProcessObserved'] for x in events],[False])
+  self.map_assembly(proc,assembly);seen,events=sample()
+  self.assertEqual(seen,{(222,'12345'):True});self.assertEqual([(x['pid'],x['processStartTicks'],x['actualSourceCompilerProcessObserved']) for x in events],[(222,'12345',False),(222,'12345',True)])
+  self.assertEqual(events[1]['compilerAssemblyIdentity']['physicalIdentity']['sha256'],common.hash_file(assembly)[1])
+ def test_managed_host_never_mapped_stays_unqualified_and_is_recorded_once(self):
+  proc,binary,assembly=self.proc(mapped=False);sample=self.sampler(proc)
+  for _ in range(3):seen,events=sample()
+  self.assertEqual(seen,{(222,'12345'):False});self.assertEqual([x['actualSourceCompilerProcessObserved'] for x in events],[False])
+ def test_qualified_identity_is_neither_reexamined_nor_recounted(self):
+  proc,binary,assembly=self.proc();sample=self.sampler(proc)
+  with mock.patch.object(driver,'compiler_assembly_identity',wraps=driver.compiler_assembly_identity) as examined:
+   for _ in range(3):seen,events=sample()
+  self.assertEqual(examined.call_count,1);self.assertEqual(seen,{(222,'12345'):True});self.assertEqual([x['actualSourceCompilerProcessObserved'] for x in events],[True])
+
 if __name__=='__main__':unittest.main(verbosity=2)

@@ -168,7 +168,9 @@ class Controller:
    pid=int(fields[0]);comm=fields[2];args=fields[3]
    try:
     proc=process_directory(pid);identity=proc.joinpath('stat').read_text().rsplit(')',1)[1].split()[19];key=(pid,identity)
-    if key in seen:continue
+    # A managed host can be sampled before it maps its compiler assembly, so
+    # only a qualified identity is final; a pending one is examined again.
+    if seen.get(key) is True:continue
     target=os.readlink(proc/'exe')
     with (proc/'cmdline').open('rb') as f:raw_argv=f.read(262145)
     need(len(raw_argv)<=262144 and raw_argv.endswith(b'\0'),'bounded complete native process argv');argv=[os.fsdecode(x) for x in raw_argv[:-1].split(b'\0')];role=compiler_invocation(target,argv)
@@ -191,7 +193,9 @@ class Controller:
       hp=proc/'root'/header.lstrip('/');n,h=hash_file(hp,deadline=observation_deadline);need(n<=16*1024**2,'observed header size');headers.append({'path':header,'bytes':n,'sha256':h,'role':'actual open file descriptor in observed source compiler process'})
      except (OSError,Refusal):continue
     final=(proc/'exe').stat();need((final.st_dev,final.st_ino,final.st_size,final.st_mtime_ns,final.st_ctime_ns)==stamp and proc.joinpath('stat').read_text().rsplit(')',1)[1].split()[19]==identity and os.readlink(proc/'exe')==target,'process identity changed before observation record')
-    event={'pid':pid,'processStartTicks':identity,'comm':comm,'argvObserved':argv,'dockerTopDisplayArguments':args,'containerExecutablePath':target,'actualExecutableSHA256':cache[stamp],'executableIdentityRole':'compiler-executable' if assembly is None else 'managed-runtime-host','compilerInvocation':role,'compilerAssemblyIdentity':assembly,'actualCompilerExecutableSHA256':cache[stamp] if assembly is None else None,'headerOpenObservations':headers,'actualSourceCompilerProcessObserved':qualified,'unmappedOrUnavailableManagedAssemblyGivenCompilerCredit':False,'packageLabelsUsedAsExecutionEvidence':False};file.write(json.dumps(event,sort_keys=True)+'\n');file.flush();seen[key]=qualified
+    event={'pid':pid,'processStartTicks':identity,'comm':comm,'argvObserved':argv,'dockerTopDisplayArguments':args,'containerExecutablePath':target,'actualExecutableSHA256':cache[stamp],'executableIdentityRole':'compiler-executable' if assembly is None else 'managed-runtime-host','compilerInvocation':role,'compilerAssemblyIdentity':assembly,'actualCompilerExecutableSHA256':cache[stamp] if assembly is None else None,'headerOpenObservations':headers,'actualSourceCompilerProcessObserved':qualified,'unmappedOrUnavailableManagedAssemblyGivenCompilerCredit':False,'packageLabelsUsedAsExecutionEvidence':False}
+    if key not in seen or qualified:file.write(json.dumps(event,sort_keys=True)+'\n');file.flush()
+    seen[key]=qualified
    except (OSError,Refusal,IndexError):continue
  def native(self,label,argv,deadline):
   need(stat.S_IMODE(HERE.stat().st_mode)&0o005==0o005 and all(stat.S_IMODE((HERE/n).stat().st_mode)&0o004 for n in ['native_entry.py','common.py','profile.json']),'published first-party readonly supervisor bundle must be traversable/readable without DAC capabilities')

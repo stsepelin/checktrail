@@ -16,9 +16,9 @@
       "sha256": "9076ed5affee0a7ef61c5988cbf947caf6c99901f4cf3b483eeac75065fc4914"
     },
     {
-      "bytes": 57386,
+      "bytes": 57588,
       "path": "driver.py",
-      "sha256": "a1209d46def8a81dd6d53ea31f9f45f94c9793d75c0fe8ff6a19e025379dde31"
+      "sha256": "75f9321f2fc97ea126ae34a1714416b826d82894c78a2f30c0bee2278b28a31d"
     },
     {
       "bytes": 5382,
@@ -106,9 +106,9 @@
       "sha256": "eb40c8699d64aa6d82ed6676598995010e24ebde8c7ddc5b30fdf4d917c0bc9c"
     },
     {
-      "bytes": 8176,
+      "bytes": 10595,
       "path": "test_compilers.py",
-      "sha256": "8c8559b4f0be757f5ebbb8e86d3fcb24d6302d232e27d132537688088f8480ac"
+      "sha256": "c771235575652daa6aabd35cf128e2c9f254621fdd5e393d012ae70b440b9e15"
     },
     {
       "bytes": 7341,
