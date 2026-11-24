@@ -209,7 +209,17 @@ class Body(unittest.TestCase):
             self.assertEqual(result['expandedSha256'],hashlib.sha256(raw).hexdigest())
             self.assertEqual(result['bytes'],path.stat().st_size)
 
+class StandaloneControls(unittest.TestCase):
+    def test_direct_run_copies_controls_only_from_the_attested_checkout(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-sdk-other-checkout-') as name:
+            other=Path(name).resolve();(other/'scripts/producer-qualification').mkdir(parents=True)
+            with mock.patch.object(s,'VERIFIED_COPY',False),self.assertRaisesRegex(ValueError,'attested checkout'):s.controls_directory(other)
+            with mock.patch.object(s,'VERIFIED_COPY',True):self.assertEqual(s.controls_directory(other),s.HERE)
+        with mock.patch.object(s,'VERIFIED_COPY',False):self.assertEqual(s.controls_directory(ROOT),s.HERE)
+
+
 if __name__=='__main__':
-    result=unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([unittest.defaultTestLoader.loadTestsFromTestCase(Hosted),unittest.defaultTestLoader.loadTestsFromTestCase(Body)]))
+    result=unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([unittest.defaultTestLoader.loadTestsFromTestCase(Hosted),unittest.defaultTestLoader.loadTestsFromTestCase(Body),
+                                                                   unittest.defaultTestLoader.loadTestsFromTestCase(StandaloneControls)]))
     print(json.dumps({'tests':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skips':len(result.skipped),
                       'dockerCompilerOrUpstreamExecuted':False,'originalSourceConfigurationReaderInjectedForSyntheticPredecessor':True}));raise SystemExit(not result.wasSuccessful())

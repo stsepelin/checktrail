@@ -21,7 +21,7 @@ import tempfile
 import time
 import traceback
 
-POLICY_SHA256='df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f'
+POLICY_SHA256='dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -497,6 +497,9 @@ def stage_verified(files):
     require(stat.S_ISDIR(info.st_mode) and info.st_uid in (0,os.geteuid()) and
             (info.st_mode&stat.S_ISVTX or not info.st_mode&0o022),'runtime-refused')
     root=Path(tempfile.mkdtemp(prefix='checktrail-gcc-sdk-verified-',dir=parent));VERIFIED['root']=root
+    # -B stops bytecode writes, not reads. A cache prefix inside this private
+    # root names a directory that never exists and nobody else can create.
+    sys.pycache_prefix=str(root/'no-bytecode-cache')
     for relative,(body,mode) in sorted(files.items()):
         target=root/relative;target.parent.mkdir(mode=0o700,parents=True,exist_ok=True)
         with os.fdopen(os.open(target,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600),'wb') as sink:sink.write(body)
@@ -530,7 +533,7 @@ def fixed_work(private):
     require(set(RUNTIME_SIBLINGS)<=set(verified) and policy_relative not in verified,'source-refused')
     staged=stage_verified({**verified,policy_relative:(policy_raw,policy_mode)})
     ADMISSION['runtimeFilesVerified']=True
-    legacy=load('gcc-hosted-sdk.py');independent=load('gcc-main05-sdk.py');structured_diagnostics()
+    legacy=load('gcc-hosted-sdk.py');legacy.VERIFIED_COPY=True;independent=load('gcc-main05-sdk.py');structured_diagnostics()
     runtime=legacy.h.admit_host_node(json.loads(os.environ['CHECKTRAIL_HOST_NODE']),private)
     node=runtime['path'] if 'path' in runtime else json.loads(os.environ['CHECKTRAIL_HOST_NODE'])['path']
     commands=[['/usr/bin/docker','pull','--platform','linux/amd64',legacy.codec.IMAGE],
@@ -636,8 +639,12 @@ def main():
         # Even entry/admission failures have no raw exception or traceback channel.
         value=empty_receipt(head);value['errorId']=error.identifier if isinstance(error,Refusal) else 'runtime-refused'
         value['diagnostics']=failure_diagnostics(None,error)
-    try:os.write(1,PREFIX+canonical(validate_receipt(value)))
-    finally:remove_staged()
+    try:remove_staged()
+    except BaseException:
+        # The receipt is emitted only after cleanup, so it never reports success
+        # beside a failed exit; the observed SDK terminal facts are kept.
+        value=failed_receipt(value,'cleanup-unconfirmed',value['helperSeconds'])
+    os.write(1,PREFIX+canonical(validate_receipt(value)))
     return 0 if value['sdkVerifiedOnHost'] else 1
 
 

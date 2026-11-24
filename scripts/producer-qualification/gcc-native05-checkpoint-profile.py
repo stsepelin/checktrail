@@ -15,7 +15,7 @@ receipt=load('gcc-sdk-onhost-receipt.py')
 h=scope.h
 require=h.require
 PROFILE='gcc-native05-gcc-only-checkpoint-v4'
-SDK_POLICY_SHA256='df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f'
+SDK_POLICY_SHA256='dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b'
 # Historical profiles never follow the current SDK policy: each decodes only a
 # receipt bound to the exact policy it was produced under.
 V3_PROFILE='gcc-native05-gcc-only-checkpoint-v3'

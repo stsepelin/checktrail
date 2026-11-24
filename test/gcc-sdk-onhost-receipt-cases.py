@@ -33,7 +33,7 @@ HEAD='b'*40
 @contextlib.contextmanager
 def private_staging(root):
     """Stage verified runtime files under this test's own directory and remove them after."""
-    with mock.patch.object(m,'STAGING_PARENT',str(root)),mock.patch.dict(m.VERIFIED):
+    with mock.patch.object(m,'STAGING_PARENT',str(root)),mock.patch.dict(m.VERIFIED),mock.patch.object(sys,'pycache_prefix',sys.pycache_prefix):
         try:yield
         finally:m.remove_staged()
 RAW='RAW_SYNTHETIC_SDK_BODY_DO_NOT_EXPORT_17'
@@ -172,6 +172,15 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
                 root,code,calls,value,body=self.run_entry(bad)
                 self.assertEqual((code,calls),(1,1));self.assertFalse(value['sdkVerifiedOnHost']);self.assertEqual(value['errorId'],'sdk-proof-refused')
 
+    def test_staging_cleanup_failure_is_a_closed_failure_receipt_with_the_observed_terminal(self):
+        with mock.patch.object(m,'remove_staged',side_effect=OSError(16,'Synthetic busy staged copy 137')):
+            root,code,calls,value,_=self.run_entry(lambda _:self.facts())
+        self.assertEqual((code,calls),(1,1));self.assertFalse(value['sdkVerifiedOnHost'])
+        self.assertEqual(value['errorId'],'cleanup-unconfirmed')
+        self.assertEqual((value['sdkContainerExitCode'],value['sdkContainerSeconds']),(0,71.5))
+        root,code,_,value,_=self.run_entry(lambda _:self.facts())
+        self.assertEqual((code,value['errorId'],value['sdkVerifiedOnHost']),(0,'none',True))
+
     def test_closed_receipt_type_bounds_required_formats_quiescence_and_limitations_have_no_success_near_match(self):
         root,_,_,good,_=self.run_entry(self.noisy)
         for name,value in [('schemaVersion',True),('sdkContainerQuiescent',False),('ownedSdkCleanupObserved',False),
@@ -185,14 +194,14 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
 
     def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
         root,_,_,good,_=self.run_entry(self.noisy)
-        current='df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f'
+        current='dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b'
         v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
         v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
         self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
         decoders={current:m.validate_receipt,v5:m.validate_historical_v5_receipt,v4:m.validate_historical_v4_receipt}
         # Earlier v6 amendments never authorized a run, so no receipt or
         # checkpoint carries their digests and no decoder keeps them.
-        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261','1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6']
+        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261','1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6','df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f']
         self.assertNotIn(current,retired)
         for digest in retired:
             for decode in decoders.values():
@@ -668,6 +677,22 @@ def verify(repository,policy):
  for relative,body in config['swap'].items():(repository/relative).write_bytes(body.encode())
  armed[0]=True;return value
 m.verify_runtime_files=verify
+real_stage=m.stage_verified
+def stage(files):
+ root=real_stage(files)
+ if config.get('plantCache'):
+  # Plant matching bytecode where a cache prefix under the runner-owned
+  # private directory would look for the staged carrier.
+  source=root/'scripts/producer-qualification/gcc-hosted-carrier.py';info=source.stat();staged_prefix=sys.pycache_prefix
+  sys.pycache_prefix=config['plantCache']['prefix']
+  try:cache=pathlib.Path(importlib.util.cache_from_source(str(source)))
+  finally:sys.pycache_prefix=staged_prefix
+  import marshal
+  code=compile(source.read_bytes()+config['plantCache']['code'].encode(),str(source),'exec');cache.parent.mkdir(parents=True,exist_ok=True)
+  cache.write_bytes(importlib.util.MAGIC_NUMBER+(0).to_bytes(4,'little')+(int(info.st_mtime)&0xFFFFFFFF).to_bytes(4,'little')+
+                    (info.st_size&0xFFFFFFFF).to_bytes(4,'little')+marshal.dumps(code))
+ return root
+m.stage_verified=stage
 real_run=subprocess.run
 def run(command,**kwargs):
  if command[0]=='/usr/bin/docker':return types.SimpleNamespace(returncode=0)
@@ -676,7 +701,7 @@ def run(command,**kwargs):
   # the entry refuses its usage after every import has been evaluated.
   done=real_run([command[0],command[1]],cwd=kwargs.get('cwd'),capture_output=True,timeout=120)
   report['node'].append({'script':command[1],'cwd':str(kwargs.get('cwd')),'code':done.returncode,'stderr':done.stderr.decode()[-400:]})
-  return types.SimpleNamespace(returncode=1)
+  return types.SimpleNamespace(returncode=0 if len(report['node'])<=config.get('nodeSuccesses',0) else 1)
  return real_run(command,**kwargs)
 subprocess.run=run
 sys.argv=['helper','qualify-on-host','--operator-trust-execution'];code=m.entry()
@@ -712,19 +737,21 @@ class VerifiedExecution(unittest.TestCase):
    subprocess.run([*git,*command],cwd=copy,env=env,check=True,capture_output=True,timeout=60)
   head=subprocess.run([*git,'rev-parse','HEAD'],cwd=copy,env=env,check=True,capture_output=True,timeout=10).stdout.decode().strip()
   return base,copy,markers,head
- def entry(self,base,copy,head,swap):
+ def entry(self,base,copy,head,swap,**extra):
   temp=base/'runner-temp';temp.mkdir();staging=base/'staging';staging.mkdir(mode=0o700);report=base/'report.json'
   node=Path(shutil.which('node')).resolve(strict=True)
   record={'path':str(node),'sha256':hashlib.sha256(node.read_bytes()).hexdigest(),
           'version':subprocess.run([str(node),'--version'],capture_output=True,check=True,timeout=30).stdout.decode().strip()}
   env={'RUNNER_TEMP':str(temp),'GITHUB_WORKSPACE':str(copy),'GITHUB_SHA':head,'CHECKTRAIL_HOST_NODE':json.dumps(record),'PATH':'/usr/bin:/bin',
-       'SYNTHETIC_SWAP_CONFIG':json.dumps({'swap':swap,'stagingParent':str(staging),'report':str(report)})}
+       'SYNTHETIC_SWAP_CONFIG':json.dumps({'swap':swap,'stagingParent':str(staging),'report':str(report),**extra})}
   completed=subprocess.run([sys.executable,'-I','-B','-c',SWAP_DRIVER,str(copy/self.RECEIPT)],env=env,capture_output=True,timeout=300)
   self.assertEqual(completed.stderr,b'');self.assertTrue(completed.stdout.startswith(m.PREFIX),completed.stdout[:200])
   value=json.loads(completed.stdout[len(m.PREFIX):]);observed=json.loads(report.read_text())
-  # The run reached the first Node acquisition step and stopped there.
-  self.assertEqual((value['errorId'],value['diagnostics']['stage']),('input-refused','common-input-acquisition'))
-  self.assertEqual(len(observed['node']),1);self.assertEqual(list(staging.iterdir()),[],'The private verified copy was not removed')
+  # The run reached the first Node acquisition step after any synthetic
+  # successes and stopped there.
+  successes=extra.get('nodeSuccesses',0);stage=['common-input-acquisition','gcc-input-acquisition'][successes]
+  self.assertEqual((value['errorId'],value['diagnostics']['stage']),('input-refused',stage))
+  self.assertEqual(len(observed['node']),successes+1);self.assertEqual(list(staging.iterdir()),[],'The private verified copy was not removed')
   return value,observed
  def swaps(self,base,markers):
   helper=(ROOT/self.PYTHON).read_text()+MARKER_CODE.format(marker=str(markers['python']))
@@ -750,6 +777,20 @@ class VerifiedExecution(unittest.TestCase):
   self.assertFalse(markers['node'].exists(),'A Node import swapped after verification ran');not_reopened()
  def test_policy_swapped_after_verification_is_never_reopened(self):
   _,not_reopened=self.swapped_run(self.POLICY);not_reopened()
+ def test_second_acquisition_entry_and_its_import_run_from_the_verified_copy(self):
+  base,copy,markers,head=self.checkout();relative='scripts/producer-qualification/c-producer-profile.mjs'
+  swapped=(ROOT/relative).read_text()+NODE_MARKER_CODE.format(marker=str(markers['node']))
+  _,observed=self.entry(base,copy,head,{relative:swapped},nodeSuccesses=1)
+  second=observed['node'][1];self.assertTrue(second['script'].endswith('/scripts/acquire-c-producer-inputs.mjs'),second)
+  self.assertEqual(second['code'],2,second)
+  self.assertFalse(markers['node'].exists(),'A Node import of the second entry swapped after verification ran')
+  self.assertFalse(second['script'].startswith(str(copy)+'/'),second)
+ def test_bytecode_beside_a_runner_owned_cache_prefix_is_never_read(self):
+  base,copy,markers,head=self.checkout()
+  prefix=str(base/'runner-temp/gcc-sdk-receipt-private/no-bytecode-cache')
+  self.entry(base,copy,head,{},plantCache={'prefix':prefix,'code':MARKER_CODE.format(marker=str(markers['python']))})
+  self.assertTrue(any(Path(prefix).rglob('*.pyc')),'The synthetic cache was not planted')
+  self.assertFalse(markers['python'].exists(),'Planted bytecode ran instead of the verified source')
  def test_policy_is_opened_once_and_the_checked_bytes_are_parsed(self):
   base,copy,markers,head=self.checkout();_,observed=self.entry(base,copy,head,{})
   self.assertEqual(observed['policyOpens'],1)

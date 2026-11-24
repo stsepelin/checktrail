@@ -135,20 +135,25 @@ def remove_owned_tag(tag,observed,layers,docker,result):
     """
     listed=docker(['image','ls','--no-trunc','--quiet',tag]).decode().splitlines()
     require(listed==[observed],'Owned SDK tag no longer names the observed image; refuse removal')
+    def foreign(condition,message):
+        # A removal that may have reached another image is terminal: a later
+        # retry that finds the owned image gone cannot disprove it.
+        if not condition:result['foreignImageDeletionSuspected']=True
+        require(condition,message)
     response=docker(['image','rm','--no-prune',tag],timeout=30).decode().splitlines()
     deleted=[line[len('Deleted: '):].strip() for line in response if line.startswith('Deleted: ')]
     require(not docker(['image','ls','--no-trunc','--quiet',tag]).strip(),'Exact owned SDK tag remains after removal')
     present=set(docker(['image','ls','--all','--no-trunc','--quiet']).decode().splitlines())
     if observed in present:
-        require(not deleted,'Removing the owned SDK tag deleted an image other than the observed one')
+        foreign(not deleted,'Removing the owned SDK tag deleted an image other than the observed one')
         remaining=json.loads(docker(['image','inspect',observed]))[0]
         aliases=remaining.get('RepoTags') or []
         require(remaining['Id']==observed and tag not in aliases,'Owned SDK tag still names the observed image')
-        require(aliases,'Owned SDK image survived removal of its only tag; the tag may have named another image')
+        foreign(aliases,'Owned SDK image survived removal of its only tag; the tag may have named another image')
         result['unrelatedRemainingAliasesProtected']=aliases
     else:
-        require(deleted[:1]==[observed],'Owned SDK tag removal did not delete the observed image')
-        require(set(deleted[1:])<=set(chain_ids(layers)),'Removing the owned SDK tag deleted an image other than the observed one')
+        foreign(deleted[:1]==[observed],'Owned SDK tag removal did not delete the observed image')
+        foreign(set(deleted[1:])<=set(chain_ids(layers)),'Removing the owned SDK tag deleted an image other than the observed one')
 
 
 def cleanup_owned(output,docker=h.docker):
@@ -179,6 +184,11 @@ def cleanup_owned(output,docker=h.docker):
         require(command['command']==request['command'] and command['sourceContainerId']==identifier,'Actual SDK snapshot command ownership differs')
         value=command['returnedLocalImageId']
         if isinstance(value,str) and re.fullmatch('sha256:[a-f0-9]{64}',value):returned=value
+    cleanup_path=output/'SDK-IMAGE-CLEANUP.json'
+    earlier=read(cleanup_path) if os.path.lexists(cleanup_path) else {}
+    if earlier.get('foreignImageDeletionSuspected') is True:
+        cleanup_path.write_bytes(codec.canonical({**earlier,'ownedImageCleanupComplete':False}))
+        raise ValueError('An earlier owned SDK image removal may have deleted another image; cleanup stays unqualified')
     listed=docker(['image','ls','--no-trunc','--quiet',tag]).decode().splitlines()
     require(len(listed)<=1,'Owned SDK image tag is ambiguous')
     result={'schemaVersion':1,'state':'local-sdk-image-cleanup-unqualified','tag':tag,'returnedLocalImageId':returned,

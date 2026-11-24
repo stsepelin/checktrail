@@ -62,7 +62,8 @@ foreign tag is reported, never removed. Removal passes `--no-prune`, so an
 untagged parent image is kept. Docker has no compare-and-delete, so a
 rebind in the instant before removal cannot be prevented; a removal response
 that deleted any image other than the owned one and its own released layers,
-or an owned image left untagged, keeps cleanup unqualified. An untagged owned image is recovered through a fresh
+or an owned image left untagged, keeps cleanup unqualified, including on any
+later retry that finds the owned image gone. An untagged owned image is recovered through a fresh
 unpredictable tag, never by ID and never by rebinding the owned tag. Actual SDK/native elapsed
 time remains charged when later checks or retention fail. A genuine zero with
 an unconfirmed family creates a charged `terminal-incomplete` row with no
@@ -110,9 +111,11 @@ pinned source is what runs. It reads the policy once and parses the bytes it
 checked, then writes every verified `runtimeFiles` row and the policy into a
 fresh private directory under a sticky parent and loads its Python helpers,
 reads the policy and runs the Node acquisition entry points and their imports
-only from there, so a checkout change after verification is never executed.
+only from there, with Python's bytecode cache prefix inside that directory, so
+a checkout change after verification is never executed.
 Every file that staged acquisition code names beside itself is a `runtimeFiles`
-row, and `gcc-hosted-sdk.py` takes its controls from its own directory. The
+row, and `gcc-hosted-sdk.py` takes its controls from its own directory, which
+outside the receipt must be the checkout it attests. The
 same amended v6 also pins
 `gcc-hosted-phase0-capacity.py` and `gcc-sdk-derived-run.py` at changed bytes.
 Phase-0 admission budgets the second uncompressed tree the carrier restores

@@ -41,6 +41,22 @@ PREDECESSOR={
  'configurationSha256':'0c08604bb36390d97a8697dda36f8468f6a7cd90b3fd3ed00c9ee285325b9a35',
  'externalSdkSha256':'248633f163abe316ed8e475bf86a8d56ae2d7c9fb21f7b9abe8abf1867caea46'}
 BODY=['/usr/bin/python3','-I','-B','/controller/gcc-sdk-reconstruct.py','sdk-reconstruct']
+# Set by the on-host receipt after it loads this module from its private copy
+# of the verified bytes; a direct run must use the checkout it attests.
+VERIFIED_COPY=False
+
+
+def controls_directory(repository):
+    """Where the controls copied into the SDK container come from.
+
+    This module's own directory: the private verified copy when the on-host
+    receipt runs it, otherwise the attested checkout itself and no other one.
+    """
+    require(VERIFIED_COPY is True or HERE==Path(repository).resolve()/'scripts/producer-qualification',
+            'SDK controls must come from the attested checkout')
+    return HERE
+
+
 CONTROLS=['gcc-hosted-stage.py','gcc-sdk-material.py','gcc-sdk-reconstruct.py','gcc-staged-checkpoint.py',
           'gcc-sdk-derived.py','gcc-sdk-derived-run.py']
 
@@ -253,9 +269,7 @@ def main():
         result['predecessorCache']=verify_cache_identity(api)
         transport=Path(os.environ['RUNNER_TEMP']).resolve()/'gcc-phase0-transport'
         predecessor,expected=verify_predecessor(transport,output)
-        # Controls come from this module's own directory: the checkout when run
-        # directly, the private verified copy when the on-host receipt runs it.
-        controls=HERE;raw=(controls/'c-producer-profiles.v1.json').read_bytes()
+        controls=controls_directory(repository);raw=(controls/'c-producer-profiles.v1.json').read_bytes()
         require(hashlib.sha256(raw).hexdigest()==codec.CATALOG,'Original producer catalog differs')
         catalog=json.loads(raw);profile=catalog['profiles']['gcc-12']
         require(catalog['image']==codec.IMAGE and catalog['platform']=='linux/amd64' and

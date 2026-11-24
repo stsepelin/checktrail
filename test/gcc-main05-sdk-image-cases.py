@@ -297,6 +297,30 @@ class FailedSnapshotCleanup(unittest.TestCase):
             self.assertNotIn(parent,table.images,'Synthetic daemon did not prune')
             self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
 
+    def test_suspected_foreign_deletion_stays_unqualified_on_retry(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');self.untagged_parent(table)
+            table.prune_always=True
+            with self.assertRaisesRegex(ValueError,'deleted an image other'):m.cleanup_owned(output,docker)
+            # The owned tag and image are now gone; a retry must not read that
+            # absence as a completed cleanup.
+            self.assertNotIn(IMAGE,table.images);self.assertNotIn(TAG,table.tags)
+            with self.assertRaisesRegex(ValueError,'may have deleted another image'):m.cleanup_owned(output,docker)
+            record=json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())
+            self.assertFalse(record['ownedImageCleanupComplete']);self.assertTrue(record['foreignImageDeletionSuspected'])
+
+    def test_retry_after_an_ordinary_refusal_can_still_complete(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure')
+            calls=[0]
+            def flaky(args,**kw):
+                if args[:2]==['image','rm'] and calls[0]==0:
+                    calls[0]+=1;raise ValueError('Fixed Docker operation failed: synthetic daemon timeout 137')
+                return docker(args,**kw)
+            with self.assertRaisesRegex(ValueError,'synthetic daemon timeout 137'):m.cleanup_owned(output,flaky)
+            self.assertNotIn('foreignImageDeletionSuspected',json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes()))
+            self.assertTrue(m.cleanup_owned(output,flaky)['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
+
     def test_released_layers_of_the_owned_image_are_accepted_in_the_response(self):
         layers=['sha256:'+'5'*64,'sha256:'+'6'*64]
         top='sha256:'+hashlib.sha256(('sha256:'+'5'*64+' '+'sha256:'+'6'*64).encode()).hexdigest()

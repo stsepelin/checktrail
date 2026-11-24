@@ -205,7 +205,7 @@ class FixedComposition(unittest.TestCase):
  def test_v4_requires_the_revised_policy_and_v3_still_decodes_only_under_its_own_policy(self):
   with tempfile.TemporaryDirectory() as td:
    args,scope,result,root=captured(Path(td).resolve());state=args[0]/'state'
-   self.assertEqual((V.PROFILE,V.SDK_POLICY_SHA256),('gcc-native05-gcc-only-checkpoint-v4','df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f'))
+   self.assertEqual((V.PROFILE,V.SDK_POLICY_SHA256),('gcc-native05-gcc-only-checkpoint-v4','dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b'))
    self.assertEqual((V.V3_PROFILE,V.V3_SDK_POLICY_SHA256),('gcc-native05-gcc-only-checkpoint-v3','53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'))
    self.assertEqual(V.receipt.POLICY_SHA256,V.SDK_POLICY_SHA256)
    self.assertEqual(root['native05Evidence']['profile'],V.PROFILE)
