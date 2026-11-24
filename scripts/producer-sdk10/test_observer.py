@@ -255,6 +255,24 @@ class ObserverControls(unittest.TestCase):
     (results/'fresh-7741.trx').write_bytes(b'<testsuite tests="1"><testcase name="fresh-after-tests-7741"/></testsuite>')
     row=known_baseline(str(source),time.monotonic()+10,before=before,original_test=passed)
     self.assertIs(row['allCreditedFreshTestsPassed'],case=='regular');self.assertEqual([x['changedSinceProtectedPreTestSnapshot'] for x in row['reports'] if x['path'].endswith('fresh-7741.trx')],[case=='regular'])
+ def test_unobservable_pre_build_archive_records_an_incomplete_snapshot_and_the_build_starts(self):
+  # A symlink with an archive name before the build must leave an incomplete
+  # pre-build snapshot rather than stop the before-build observer; the archive
+  # the build then writes is not attributed to it and earns no credit.
+  for linked in [True,False]:
+   with self.subTest(linked=linked):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name);outside=self.root/'outside-3851.tar.gz';outside.write_bytes(b'not-an-archive-3851')
+    def preexisting(staging):
+     if linked:(staging/'dotnet-sdk-linked-3851.tar.gz').symlink_to(outside)
+    def build(archive):
+     link=archive.parent/'dotnet-sdk-linked-3851.tar.gz'
+     if linked:self.assertTrue(link.is_symlink());link.unlink()
+     self.sdk(path=archive)
+    row,path=self.phases(build,lambda a:None,preexisting=preexisting)
+    before=common.read_json(self.root/'evidence/PRE-BUILD-OUTPUT-IDENTITIES.json')
+    self.assertIs(before['snapshotComplete'],not linked);self.assertEqual(before.get('errorType'),'Refusal' if linked else None);self.assertEqual(before['entries'],{})
+    self.assertEqual([(x['path'],x['changedSinceProtectedPreBuildSnapshot']) for x in row['candidates']],[(path,not linked)])
+    self.assertIs(row['selectedSDKArchiveMetadataAndAttributionObserved'],not linked)
  def test_unobservable_final_sdk_tree_is_incomplete_without_custody_and_does_not_stop_the_observer(self):
   # A symlink with an archive name is refused by the inventory. The final scan
   # must record that, not raise: the after-observer gates stopped capture.
