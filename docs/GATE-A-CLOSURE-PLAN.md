@@ -2,15 +2,20 @@
 
 Status: **open**. Execution baseline: `ca600a2447ca263128b7ab8ad7bfc185774a554b`,
 audited on 2026-11-19. This is the execution order for the existing requirements,
-not a replacement acceptance standard. The primary implementing agent owns this
-plan, its status updates and the final closure decision.
+not a replacement acceptance standard, except for the explicit producer budget
+revision in [section 2a](#2a-producer-budget-revision-2026-11-24). The primary
+implementing agent owns this plan, its status updates and the final closure
+decision.
 
 ## 1. Fixed scope and current position
 
 The completion contract is [Gate A in the roadmap](REVIEWER-ROADMAP.md#three-gates-preserve-the-finish-first-sequence):
 freeze the required inventory, finish its implementation and declared acceptance,
-and prepare the evaluation tooling/protocol. Full selected upstream producer,
-compiler, SDK, bootstrap and original-notice closure remains required. New
+and prepare the evaluation tooling/protocol. Every selected upstream producer,
+compiler, SDK and bootstrap input still needs a closed provenance row and complete
+original notices; [section 2a](#2a-producer-budget-revision-2026-11-24) defines
+which evidence closes a producer whose original build cannot run within the
+free hosted budget. New
 real-project MCP, held-out and model review trials remain closed until Gate A is
 complete and Gate B separately permits the concrete experiment.
 
@@ -46,9 +51,10 @@ does not assess those controllers, so this count alone proves neither missing
 implementation nor acceptance.
 
 Current application checks and controller tests qualify their recorded inputs.
-They do not close an upstream producer. Prepared GCC and .NET SDK continuations
-still need native completion. Existing successful source-build and reconstructed
-payload facets must be reused within their actual scope instead of repeated.
+They do not close an upstream producer. The prepared GCC and .NET SDK
+multi-job continuations are withdrawn from the closure path by section 2a.
+Existing successful source-build and reconstructed payload facets must be
+reused within their actual scope instead of repeated.
 
 ## 2. Completion rules
 
@@ -85,6 +91,51 @@ revision needs its own applicable bindings; a version label or a green job is
 insufficient. Keep source-build completion, historical publisher byte equality
 and current adapter acceptance separate.
 
+## 2a. Producer budget revision (2026-11-24)
+
+This is an explicit requirement change approved by the operator on 2026-11-24.
+Gate A producer work runs only on free standard GitHub-hosted runners for public
+repositories. Multi-hour original builds chained across jobs with checkpoints,
+continuations or large private evidence exports are not available on that
+infrastructure and are removed from the Gate A closure path.
+
+**Budget.** A producer source-build facet is admissible only as one job on a
+standard hosted runner that completes, including preparation, upload and
+cleanup, within **five hours** of the job's six-hour limit. No checkpoint chain,
+continuation round, paid or larger runner, self-hosted machine or evidence
+export above the standard artifact path is part of a Gate A closure.
+
+**Measurement before classification.** Each producer is classified from one
+measured attempt or retained evidence, not from an estimate:
+
+- **Source-built.** The original selected command completes within the budget.
+  Close it with the existing source-build evidence rules.
+- **Publisher-attested.** The original build cannot complete within the budget
+  (measured, or already established by retained interrupted observations, as
+  for GCC 12 and .NET SDK 10.0.401). Close it with publisher-artifact provenance:
+  1. the exact selected upstream release artifact, pinned by size and SHA-256;
+  2. verification against the publisher's own signature, signed checksum
+     manifest or signed package index, with the verifying key's identity pinned;
+  3. the publisher's corresponding source release identity and build recipe
+     reference for that artifact;
+  4. complete original notices extracted from the selected artifact and its
+     corresponding source;
+  5. any reproducible-build attestation or SBOM the publisher provides,
+     recorded as such and not required.
+
+A publisher-attested row **does not claim a source build, reproduction or
+historical byte equality**. The closure record and support matrix label it
+`publisher-attested`, separately from `source-built`, and never merge the two.
+An artifact whose publisher offers no verifiable signature or signed checksum
+stays open; a hash recorded only by this project is not a publisher attestation.
+Source reproduction of publisher-attested producers moves to the post-Gate-A
+queue and is not a Gate A obligation.
+
+Consumers still run with their original admitted input identities. The
+existing hosted carriers, continuation controllers and their synthetic controls
+remain in the repository as diagnostic tooling; their correctness fixes are
+still merged, but no Gate A item waits on a run of them.
+
 ## 3. Ordered work ledger
 
 These IDs are the fixed execution queue. They are work packages, not equal-sized
@@ -93,28 +144,31 @@ revision, evidence location, outcome and remaining child obligations. Public
 records retain permitted aggregate evidence; private inputs and detailed records
 stay outside Git.
 
-| ID  | Work and initial state                                                                                                              | Dependencies                                                       | Evidence required to close                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A01 | Publish this plan and record the inventory baseline. **This change.**                                                               | None                                                               | Audited scope, all existing obligation/profile IDs covered, explicit pending permissions, and a reviewable PR targeting `main`.                                                                                                                                                                                                                                                                                                                           |
-| A02 | Reconcile producer facets already completed and their remaining notice/prerequisite joins. **Open.**                                | A01                                                                | For every group in section 4, distinguish retained build/output evidence from open notices and selected input edges. Close only supported facets; do not rebuild completed producers merely to obtain another receipt.                                                                                                                                                                                                                                    |
-| A03 | Integrate the already qualified producer implementation into the repository. **Prepared work; integration open.**                   | A01                                                                | Exact reviewed source, focused regressions, applicable normal checks, synthetic public fixtures and a non-stacked PR against current `main`. Operator-only helpers and manual producer workflows retain their distinct trust boundary.                                                                                                                                                                                                                    |
-| A04 | Complete original GCC continuation. **Blocked on the concrete evidence-export authorization.**                                      | A03; required SDK reconstruction and stopped-state replay evidence | Finish the selected main bootstrap, JIT/offload/conditional targets, checks, default build/install/package graph. Preserve original languages, multilib, flags, failures and aggregate charges. Independently restore and verify complete checkpoints before each continuation.                                                                                                                                                                           |
-| A05 | Complete original .NET SDK 10.0.401 build/test and authenticated recovery. **Blocked on encrypted-evidence authorization.**         | A03; current platform/capacity admission                           | Original selected official-mode build/test commands and required outputs, genuine exits and cleanup, complete authenticated archive/member recovery and notices. Preserve the existing source/key/attempt state; no blind redispatch.                                                                                                                                                                                                                     |
-| A06 | Complete selected Rust 1.98/bootstrap and required SDK/tool/notice inputs. **Open; remaining input permissions must be respected.** | A02; actual stock-host admission                                   | Selected bootstrap/source/tool identities, original native build outcomes and outputs, original notices and required SDK provenance. Earlier Rust 1.90 evidence does not substitute for this producer.                                                                                                                                                                                                                                                    |
-| A07 | Complete Binaryen 132's selected original ARM64 phases. **Open.**                                                                   | A02; actual hosted SDK/source admission                            | Original configure/build-install/strip/package phases, complete selected sources/Gitlinks, outputs and notices on the explicitly admitted hosted environment. Preserve the distinction from historical runner/SDK/binary equality.                                                                                                                                                                                                                        |
-| A08 | Complete WASI SDK 34 and its selected support producers. **Open.**                                                                  | A02; declared compiler/runtime inputs                              | Actual original build/capture/runtime adapters, selected Wasmtime producer, and the actual original unlocked Cargo resolution where required. Reuse completed source materialization; do not guess dependency resolution from a packaged lockfile.                                                                                                                                                                                                        |
-| A09 | Close Scala/JDK/JLine/ASM and selected component producer edges. **Open.**                                                          | A02; selected native/header/compiler inputs                        | Whole selected JAR/component/native packaging and notices, with original JNI/test participation. Reuse completed JDK source-build/capture evidence. Decoded-cache cleanup and class-payload byte matches alone do not close whole producers.                                                                                                                                                                                                              |
-| A10 | Close Fantomas and the selected .NET 11 producer/input graph. **Open.**                                                             | A02; selected compiler/reference/native inputs                     | Reconcile original default-pipeline outcomes, generated/core/reference/package inputs and notices. Separate observed compilation/Pack facets from any unfinished required default producer.                                                                                                                                                                                                                                                               |
-| A11 | Integrate and execute the Tree-sitter 0.27.0 producer. **Open.**                                                                    | A03; actual original tool/input admission                          | Integrate the focused process-lifecycle repair into its real driver/carrier bindings, then qualify permissions/capacity and execute original stages with complete capture/notices. Join selected Rust/emsdk/WASI producer edges in A12 without artificially waiting for unrelated source builds. Respect its separate export authorization. Do not substitute 0.27.1 web artifacts.                                                                       |
-| A12 | Close original notices/provenance and finish acceptance of `native-license-provenance`. **Open.**                                   | A02, A04–A11 and all actual selected child edges                   | Complete original texts, copied/generated/component obligations and artifact-to-producer associations; all nine declared acceptance cases, source and offline installed behavior; unknown or changed input refusal. Reuse existing code and wire only genuinely missing behavior. A generic synthetic license fixture cannot stand for actual upstream closure.                                                                                           |
-| A13 | Complete the final current-source/native/installed matrix. **Open.**                                                                | A03, A12; final code candidate                                     | Every selected profile in its declared slots, every preserved required callback, exact OS/tool/dependency identities and a fresh offline installation from the exact built package. Reconcile all expected and terminal events; no optional skip closes a required slot. Execute the fixed candidate selections before certifying their completed freeze.                                                                                                 |
-| A14 | Finish evaluation implementation/readiness and release/resource obligations. **Partially evidenced; current closure open.**         | A02, A03, A13 for current-source acceptance                        | Synthetic independent-session/stage/attempt/archive/label-hiding/scoring controls, effective configuration bindings and the selected cohort/protocol readiness; applicable performance/package/release/tag obligations. Plain Codex and Claude baselines remain separate; additional operator-selected private configurations stay private. No actual comparison, held-out source inspection or model review trial runs here.                             |
-| A15 | Resolve both inventory freeze decisions. **Open.**                                                                                  | A12, A13, A14                                                      | All selected artifact/build/license closures bound; exact acceptance mapping for every preserved/extension profile, including the six externally bound cases. Remove a freeze blocker only with its completed evidence, preserving the original selection and callbacks.                                                                                                                                                                                  |
-| A16 | Implement and perform final Gate A acceptance; publish the closure record. **Open.**                                                | A01–A15 verified and required changes merged                       | Recompute the structural audit and completed freeze; verify a separate closure record against actual obligation/profile/producer evidence, exact merged source and installed artifacts; reject all missing/stale/unknown required bindings; reconcile the ledger/roadmap/support documents. Preserve the selection auditor's prohibition on claiming acceptance. Declare Gate A complete only from the verified closure record. Gate B/C remain separate. |
+| ID  | Work and initial state                                                                                                              | Dependencies                                     | Evidence required to close                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A01 | Publish this plan and record the inventory baseline. **Closed** (#210, merged 2026-11-19).                                          | None                                             | Audited scope, all existing obligation/profile IDs covered, explicit pending permissions, and a reviewable PR targeting `main`.                                                                                                                                                                                                                                                                                                                                                                                                               |
+| A02 | Reconcile producer facets already completed and their remaining notice/prerequisite joins. **Open.**                                | A01                                              | For every group in section 4, distinguish retained build/output evidence from open notices and selected input edges. Close only supported facets; do not rebuild completed producers merely to obtain another receipt.                                                                                                                                                                                                                                                                                                                        |
+| A03 | Integrate the already qualified producer implementation into the repository. **Prepared work; integration open.**                   | A01                                              | Exact reviewed source, focused regressions, applicable normal checks, synthetic public fixtures and a non-stacked PR against current `main`. Operator-only helpers and manual producer workflows retain their distinct trust boundary.                                                                                                                                                                                                                                                                                                        |
+| A04 | Close GCC 12 as a publisher-attested producer (section 2a). **Open.**                                                               | A02                                              | The selected Debian GCC 12.2.0-14+deb12u1 binary packages and their source package pinned by size and SHA-256; verification through the signed Debian `InRelease`/`Release` and `Packages`/`Sources` indexes with the archive key identity pinned; the source package identity and `debian/rules` recipe reference; complete original notices (`copyright` files and the GCC runtime library exception) from the binary and source packages. Retained interrupted build observations stay historical records and are not reported as a build. |
+| A05 | Close .NET SDK 10.0.401 as a publisher-attested producer (section 2a). **Open.**                                                    | A02                                              | The selected official SDK 10.0.401 archive pinned by size and SHA-256 and verified against the publisher's signed release metadata or signed package repository with the key identity pinned; the corresponding `dotnet/dotnet` source release tag and build recipe reference; complete original notices (`LICENSE.txt`, `ThirdPartyNotices.txt`) from the archive. The prepared source/key/attempt state is retained unused; no build or encrypted export runs for Gate A.                                                                   |
+| A06 | Complete selected Rust 1.98/bootstrap and required SDK/tool/notice inputs. **Open; remaining input permissions must be respected.** | A02; actual stock-host admission                 | Selected bootstrap/source/tool identities, original native build outcomes and outputs, original notices and required SDK provenance. Earlier Rust 1.90 evidence does not substitute for this producer.                                                                                                                                                                                                                                                                                                                                        |
+| A07 | Complete Binaryen 132's selected original ARM64 phases. **Open.**                                                                   | A02; actual hosted SDK/source admission          | Original configure/build-install/strip/package phases, complete selected sources/Gitlinks, outputs and notices on the explicitly admitted hosted environment. Preserve the distinction from historical runner/SDK/binary equality.                                                                                                                                                                                                                                                                                                            |
+| A08 | Complete WASI SDK 34 and its selected support producers. **Open.**                                                                  | A02; declared compiler/runtime inputs            | Actual original build/capture/runtime adapters, selected Wasmtime producer, and the actual original unlocked Cargo resolution where required. Reuse completed source materialization; do not guess dependency resolution from a packaged lockfile.                                                                                                                                                                                                                                                                                            |
+| A09 | Close Scala/JDK/JLine/ASM and selected component producer edges. **Open.**                                                          | A02; selected native/header/compiler inputs      | Whole selected JAR/component/native packaging and notices, with original JNI/test participation. Reuse completed JDK source-build/capture evidence. Decoded-cache cleanup and class-payload byte matches alone do not close whole producers.                                                                                                                                                                                                                                                                                                  |
+| A10 | Close Fantomas and the selected .NET 11 producer/input graph. **Open.**                                                             | A02; selected compiler/reference/native inputs   | Reconcile original default-pipeline outcomes, generated/core/reference/package inputs and notices. Separate observed compilation/Pack facets from any unfinished required default producer.                                                                                                                                                                                                                                                                                                                                                   |
+| A11 | Integrate and execute the Tree-sitter 0.27.0 producer. **Open.**                                                                    | A03; actual original tool/input admission        | Integrate the focused process-lifecycle repair into its real driver/carrier bindings, then qualify permissions/capacity and execute original stages with complete capture/notices. Join selected Rust/emsdk/WASI producer edges in A12 without artificially waiting for unrelated source builds. Respect its separate export authorization. Do not substitute 0.27.1 web artifacts.                                                                                                                                                           |
+| A12 | Close original notices/provenance and finish acceptance of `native-license-provenance`. **Open.**                                   | A02, A04–A11 and all actual selected child edges | Complete original texts, copied/generated/component obligations and artifact-to-producer associations; all nine declared acceptance cases, source and offline installed behavior; unknown or changed input refusal. Reuse existing code and wire only genuinely missing behavior. A generic synthetic license fixture cannot stand for actual upstream closure.                                                                                                                                                                               |
+| A13 | Complete the final current-source/native/installed matrix. **Open.**                                                                | A03, A12; final code candidate                   | Every selected profile in its declared slots, every preserved required callback, exact OS/tool/dependency identities and a fresh offline installation from the exact built package. Reconcile all expected and terminal events; no optional skip closes a required slot. Execute the fixed candidate selections before certifying their completed freeze.                                                                                                                                                                                     |
+| A14 | Finish evaluation implementation/readiness and release/resource obligations. **Partially evidenced; current closure open.**         | A02, A03, A13 for current-source acceptance      | Synthetic independent-session/stage/attempt/archive/label-hiding/scoring controls, effective configuration bindings and the selected cohort/protocol readiness; applicable performance/package/release/tag obligations. Plain Codex and Claude baselines remain separate; additional operator-selected private configurations stay private. No actual comparison, held-out source inspection or model review trial runs here.                                                                                                                 |
+| A15 | Resolve both inventory freeze decisions. **Open.**                                                                                  | A12, A13, A14                                    | All selected artifact/build/license closures bound; exact acceptance mapping for every preserved/extension profile, including the six externally bound cases. Remove a freeze blocker only with its completed evidence, preserving the original selection and callbacks.                                                                                                                                                                                                                                                                      |
+| A16 | Implement and perform final Gate A acceptance; publish the closure record. **Open.**                                                | A01–A15 verified and required changes merged     | Recompute the structural audit and completed freeze; verify a separate closure record against actual obligation/profile/producer evidence, exact merged source and installed artifacts; reject all missing/stale/unknown required bindings; reconcile the ledger/roadmap/support documents. Preserve the selection auditor's prohibition on claiming acceptance. Declare Gate A complete only from the verified closure record. Gate B/C remain separate.                                                                                     |
 
-A02 and the authorized portions of A03/A14 run while long producer jobs execute
-or a specific permission is pending. Start independent A04/A05 work when their
-permissions and admission pass. Then execute the remaining producer DAG according
+A06–A11 each start with one measured attempt under the section 2a budget and are
+then closed as source-built or publisher-attested; the "Evidence required" text
+above applies to the source-built classification. A02 and the authorized
+portions of A03/A14 run while producer jobs execute or a specific permission is
+pending. A04/A05 need no build, export or capacity admission and can start
+immediately. Then execute the remaining producer DAG according
 to actual input dependencies; A06–A11 are not an artificial serial queue. Each
 consumer must use its original admitted input identities. A12–A16 close the evidence,
 inventory and final application boundary.
@@ -165,9 +219,9 @@ explicit plan update. Unrelated optional features go to the later queue.
    selected macOS/Windows profiles. Follow the hosted producer plan's actual
    SDK/image admission. A runner label, preinstalled compiler smoke or historical
    metadata result does not qualify a full producer. If a required build cannot
-   fit or run on the permitted infrastructure, retain the measured blocker and
-   its affected task; do not hide it behind a completion date or shrink the
-   required source/features/tests.
+   fit the section 2a budget, retain the measured attempt and classify the
+   producer as publisher-attested; do not shrink the selected source, features
+   or tests to make a source build fit, and do not report a partial build as one.
 2. **Schedule independent work in parallel.** At most two long producer jobs and
    twelve verification workers at once, reduced further for other account jobs.
    Allow at most two producer macOS jobs and three verification macOS jobs.
@@ -178,9 +232,10 @@ explicit plan update. Unrelated optional features go to the later queue.
    intake and broad application runs paused while an exclusive SDK recovery
    admission requires them stopped; small independent reconciliation can proceed.
 3. **Keep producer builds manual.** GitHub-hosted jobs have a six-hour execution
-   limit. Include preparation, checkpoint/recovery, upload and cleanup in the
-   same budget. Use preserved original continuation boundaries and aggregate
-   charges. Ordinary PRs must not start compiler/SDK source rebuilds. These limits
+   limit; a Gate A source-build facet must finish within the five-hour section 2a
+   budget, including preparation, upload and cleanup, in one job. No checkpoint
+   or continuation chain counts toward Gate A. Ordinary PRs must not start
+   compiler/SDK source rebuilds. These limits
    are documented by [GitHub](https://docs.github.com/en/actions/reference/limits);
    `strategy.max-parallel` controls an individual matrix as described in the
    [matrix documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations#defining-the-maximum-number-of-concurrent-jobs).
@@ -224,15 +279,14 @@ The detailed prepared operations remain private and reviewable. This table
 records the type of missing authorization; it does not grant any of it or copy
 private reports, paths, keys or payloads into Git.
 
-| Task        | Concrete scope needing an answer                                                                                                                                                                               | Behavior while pending                                                                                                             |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| A04         | Original GCC run; up to 4 GiB original-state checkpoint plus 8 MiB envelope, including historical SDK-derived inventory; one-day public fixed diagnostics up to 64 MiB plus 256 KiB closed outcome metadata    | Retain original state and rejection; continue A02/A03/A14. Earlier small SDK-receipt permission is insufficient.                   |
-| A05         | One original SDK build/test with up to 12 GiB encrypted source/input/output/log recovery, bounded artifact windows, exact owned-artifact deletion after durable custody and final authenticated acknowledgment | Preserve existing source/key/unused dispatch state. Earlier metadata and derived-copy-cleanup permissions are insufficient.        |
-| A06/A07/A11 | Any still-unapproved original notice bodies, native execution or producer-specific encrypted export                                                                                                            | Check the existing exact request and retained authorization before the action; do not infer permission or repeat completed intake. |
+| Task        | Concrete scope needing an answer                                                                    | Behavior while pending                                                                                                             |
+| ----------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| A06/A07/A11 | Any still-unapproved original notice bodies, native execution or producer-specific encrypted export | Check the existing exact request and retained authorization before the action; do not infer permission or repeat completed intake. |
 
-The two currently prepared GCC/SDK operations are only part of this plan.
-Approving and completing them does not close A06–A16. Storage cleanup is a
-separate lifecycle decision and contributes no producer-build acceptance.
+The earlier A04 GCC checkpoint export and A05 encrypted SDK recovery requests
+are withdrawn by section 2a; they are no longer needed for Gate A and remain
+unapproved. Their retained state is preserved, not deleted. Storage cleanup is a
+separate lifecycle decision and contributes no producer acceptance.
 
 ## 6. Final acceptance and reporting
 
