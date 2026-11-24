@@ -62,15 +62,15 @@ class Target(unittest.TestCase):
         self.assertEqual(calls, [])
     def test_physical_image_proof_refusal_precedes_volume_creation(self):
         profile = common.bundle_json(Path(__file__).parent / 'profile.json'); root = self.root / 'refused-image'
-        capacity = self.root / 'capacity-image'; capacity.write_text('"amd64" 4\n'); calls = []
+        capacity = self.root / 'capacity-image'; capacity.write_text('"amd64" 4 '+json.dumps(str(self.root))+'\n'); calls = []
         def make_controller(path, ctx, selected):
             return SimpleNamespace(root=path, ctx=ctx, profile=selected, state=None, save=lambda:None, publish_observer=lambda:None, docker=lambda args, **kw:(calls.append(args) or GOOD, capacity))
         env = {'RUNNER_OS':'Linux','RUNNER_ARCH':'X64','GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REPOSITORY':profile['repository'],'GITHUB_RUN_ATTEMPT':'1','GITHUB_RUN_ID':'123','GITHUB_SHA':'a'*40}
         with patch.dict(os.environ, env), patch.object(t.sys,'platform','linux'), patch.object(t,'manifest_check',return_value=profile), patch.object(t,'Controller',side_effect=make_controller), patch.object(t,'prove_control_image',side_effect=common.Refusal('synthetic physical proof refusal')), patch.object(t.time,'monotonic',return_value=0), patch.object(t.platform,'machine',return_value='x86_64'), patch.object(Path,'stat',autospec=True,side_effect=lambda path,**kw:SimpleNamespace(st_size=32) if str(path)=='/etc/os-release' else os.stat(path,**kw)), patch.object(Path,'read_bytes',autospec=True,side_effect=lambda path:b'ID=ubuntu\nVERSION_ID="26.04"\n' if str(path)=='/etc/os-release' else path.open('rb').read()):
             self.assertEqual(t.run(root,'synthetic-target','b'*64),1)
-        row=common.read_json(root/'RESULT.json');self.assertFalse(row['complete']);self.assertFalse(row['originalSdkBuildTestQuotaOrGateAQualified']);self.assertEqual(calls,[['info','--format','{{json .Architecture}} {{json .NCPU}}']])
+        row=common.read_json(root/'RESULT.json');self.assertFalse(row['complete']);self.assertFalse(row['originalSdkBuildTestQuotaOrGateAQualified']);self.assertEqual(calls,[['info','--format','{{json .Architecture}} {{json .NCPU}} {{json .DockerRootDir}}']])
     def test_ambiguous_volume_create_is_reserved_for_owned_cleanup_before_transport(self):
-        profile=common.bundle_json(Path(__file__).parent/'profile.json');root=self.root/'ambiguous-create';capacity=self.root/'capacity';capacity.write_text('"amd64" 4\n')
+        profile=common.bundle_json(Path(__file__).parent/'profile.json');root=self.root/'ambiguous-create';capacity=self.root/'capacity';capacity.write_text('"amd64" 4 '+json.dumps(str(self.root))+'\n')
         image={'Id':'sha256:'+profile['image']['configSHA256'],'Architecture':'amd64','Os':'linux','RootFS':{'Layers':['sha256:'+x for x in profile['image']['diffIDs']]}}
         calls=[];cleanup=[]
         def make_controller(path,ctx,selected):
@@ -83,6 +83,41 @@ class Target(unittest.TestCase):
         with patch.dict(os.environ,env),patch.object(t.sys,'platform','linux'),patch.object(t,'manifest_check',return_value=profile),patch.object(t,'Controller',side_effect=make_controller),patch.object(t.time,'monotonic',return_value=0),patch.object(t.platform,'machine',return_value='x86_64'),patch.object(Path,'stat',autospec=True,side_effect=lambda path,**kw:SimpleNamespace(st_size=32) if str(path)=='/etc/os-release' else os.stat(path,**kw)),patch.object(Path,'read_bytes',autospec=True,side_effect=lambda path:b'ID=ubuntu\nVERSION_ID="26.04"\n' if str(path)=='/etc/os-release' else path.open('rb').read()),patch.object(t,'prove_control_image',return_value={'actualRuntimeImageID':image['Id'],'originalConfigSHA256':profile['image']['configSHA256']}),patch.object(t,'remove_control_volume',side_effect=lambda c,name,deadline:cleanup.append(name) or True):
             self.assertEqual(t.run(root,'synthetic-target','b'*64),1)
         self.assertEqual(cleanup,['ct-sdk10-123-synthetic-target-work']);row=common.read_json(root/'RESULT.json');self.assertEqual(row['failureType'],'TimeoutError');self.assertFalse(row['complete']);self.assertEqual(row['cleanupErrors'],[])
+    def full_run(self, docker_root):
+        # Every lifecycle stage after admission is synthetic, except that the
+        # integrated sample reads the Docker root the way live_resource does.
+        import capacity_admission
+        profile=common.bundle_json(Path(__file__).parent/'profile.json');base=Path(tempfile.mkdtemp(dir=self.root));root=base/'full-run-5521';capacity=base/'capacity-5521';capacity.write_text('"amd64" 4 '+json.dumps(docker_root)+'\n')
+        calls=[];observed=[];paused=[False];outcomes=iter([{'outcome':'refused','pauseAttempted':False,'samplingComplete':False},{'outcome':'refused','lifecycleVerified':True},{'outcome':'producer-cleanup-unproven','forcedRemovalAttempted':False},{'outcome':'producer-terminal-no-sample','pauseAttempted':False,'samplingComplete':False}])
+        api=SimpleNamespace(inspect_id=lambda identity,deadline:{'State':{'Paused':paused[0]}},unpause_id=lambda identity,deadline:paused.__setitem__(0,False) or GOOD)
+        class FakeAPI:
+            def __init__(inner,c,name):pass
+        def protocol_run(binding,used,scan,end,deadline):
+            value=next(outcomes)
+            if value['outcome']=='producer-cleanup-unproven':paused[0]=True
+            return value
+        def observe(c,label,deadline,producer_binding=None):
+            observed.append(capacity_admission.observe_space(c.root,c.state['capacityAdmission']['DockerRootDir'],c.profile,'paused-native-sample'))
+            return {'complete':True,'producerLifecycle':{'outcome':'complete-sample-lifecycle'}}
+        def make_controller(path,ctx,selected):
+            def docker(args,**kwargs):calls.append(args);return GOOD,capacity
+            return SimpleNamespace(root=path,ctx=ctx,profile=selected,state=None,save=lambda:None,publish_observer=lambda:None,observer=lambda:None,docker=docker,inspect=lambda kind,name:None,volume_owned=lambda name:True,helper=lambda *args,**kwargs:None,stop_owned=lambda name:True)
+        churn={'hookInvoked':True,'samplingComplete':False,'incompleteCode':'entry-vanished-during-sample','sampledWorkOrQuotaCredit':False};real_read=t.read_json
+        env={'RUNNER_OS':'Linux','RUNNER_ARCH':'X64','GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REPOSITORY':profile['repository'],'GITHUB_RUN_ATTEMPT':'1','GITHUB_RUN_ID':'123','GITHUB_SHA':'a'*40}
+        with patch.dict(os.environ,env),patch.object(t.sys,'platform','linux'),patch.object(t,'manifest_check',return_value=profile),patch.object(t,'Controller',side_effect=make_controller),patch.object(t.time,'monotonic',return_value=0),patch.object(t.platform,'machine',return_value='x86_64'),patch.object(Path,'stat',autospec=True,side_effect=lambda path,**kw:SimpleNamespace(st_size=32) if str(path)=='/etc/os-release' else os.stat(path,**kw)),patch.object(Path,'read_bytes',autospec=True,side_effect=lambda path:b'ID=ubuntu\nVERSION_ID="26.04"\n' if str(path)=='/etc/os-release' else path.open('rb').read()),patch.object(t,'prove_control_image',return_value={'synthetic':5521}),patch.object(t,'remove_control_volume',return_value=True),patch.object(t,'create_producer',side_effect=lambda c,role,deadline:({'id':('5' if role=='build' else '6')*64,'name':c.state['prefix']+'-original-'+role},api)),patch.object(t,'read_json',side_effect=lambda path,*a:churn if str(path).endswith('CONTROLLED-CHURN.json') else real_read(path,*a)),patch.object(t.live_resource,'observe',side_effect=observe),patch.object(t.protocol,'run',side_effect=protocol_run),patch.object(t,'ProducerAPI',FakeAPI),patch('builtins.print'):
+            code=t.run(root,'synthetic-target','b'*64)
+        return code,common.read_json(root/'RESULT.json'),calls,observed
+    def test_pause_controls_record_the_actual_docker_root_and_reach_every_lifecycle_case(self):
+        code,result,calls,observed=self.full_run(str(self.root))
+        self.assertEqual(code,0,result);self.assertTrue(result['complete'])
+        self.assertEqual([x['case'] for x in result['cases']][-5:],['actual-integrated-strict-sample-and-lifecycle','actual-reserve-before-pause','actual-resume-after-measurement-refusal','actual-preservation-failure-blocks-removal-and-inverse-settles','actual-terminal-before-pause-no-sample'])
+        self.assertEqual(calls[0],['info','--format','{{json .Architecture}} {{json .NCPU}} {{json .DockerRootDir}}'])
+        self.assertEqual(len(observed),1);self.assertTrue(observed[0]['observationComplete']);self.assertTrue(observed[0]['sameFilesystem'])
+    def test_pause_controls_refuse_an_unusable_docker_root_before_any_image_or_volume_action(self):
+        for root in ['relative/docker-5521',str(self.root/'absent-docker-5521')]:
+            with self.subTest(root=root):
+                code,result,calls,observed=self.full_run(root)
+                self.assertEqual(code,1);self.assertEqual(result['failureType'],'Refusal');self.assertEqual(len(calls),1);self.assertEqual(observed,[])
     def test_controlled_churn_output_is_runner_readable_and_restored_under_umask077(self):
         evidence=self.root/'worker-output';evidence.mkdir(mode=0o770);evidence.chmod(0o770);(evidence/'churn-delete.ack').write_bytes(b'inert ack')
         actual_path=Path;uid=os.getuid();gid=os.getgid();calls=[]

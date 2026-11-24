@@ -186,9 +186,9 @@
       "sha256": "36affb335d28e1a41c897652549d214e0b932bb18ca8c39427faf6bed3933c11"
     },
     {
-      "bytes": 22521,
+      "bytes": 23150,
       "path": "target_pause_controls.py",
-      "sha256": "98fcece8a57d6e0310edc1353d56070f3150258c4a4086b3737a672a15d43fbe"
+      "sha256": "9d45ba62aaf4cf78a77380964175ca5fddf6512e11d89390642764d0df55a3d2"
     },
     {
       "bytes": 4156,
@@ -196,9 +196,9 @@
       "sha256": "41998071c7f98dd082dcc249b7400b953b3ec332b3c61c78187f6c86f20f66f3"
     },
     {
-      "bytes": 56169,
+      "bytes": 61138,
       "path": "test_target_pause_controls.py",
-      "sha256": "d9f608c40d51ac3d360319023adc5e8d24c9d911078af37b4cb3df2ff46fdb14"
+      "sha256": "0b82f5c068ba23f2858f42d14a67e1ccc98f2f42b7a06846365c30bcea9b62b9"
     },
     {
       "bytes": 3492,

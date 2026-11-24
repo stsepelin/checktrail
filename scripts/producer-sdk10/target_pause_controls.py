@@ -192,11 +192,18 @@ def run(root, nonce, pin):
         fields = dict(line.split('=', 1) for line in os_release.decode('utf8').splitlines() if '=' in line)
         observations['osID'] = fields.get('ID', '').strip(chr(34))[:32]; observations['osVersion'] = fields.get('VERSION_ID', '').strip(chr(34))[:32]; observations['machine'] = platform.machine()[:32]
         need(fields.get('ID', '').strip(chr(34)) == 'ubuntu' and fields.get('VERSION_ID', '').strip(chr(34)) == '26.04' and platform.machine() == 'x86_64', 'actual Ubuntu26 AMD64 target')
-        capacity_row, capacity_path = c.docker(['info', '--format', '{{json .Architecture}} {{json .NCPU}}'], seconds=10, check=False)
+        capacity_row, capacity_path = c.docker(['info', '--format', '{{json .Architecture}} {{json .NCPU}} {{json .DockerRootDir}}'], seconds=10, check=False)
         command_ok(capacity_row)
-        capacity_text = capacity_path.read_text().strip(); decoder = json.JSONDecoder(); arch, used = decoder.raw_decode(capacity_text); remaining = capacity_text[used:].strip(); cpus, consumed = decoder.raw_decode(remaining); need(not remaining[consumed:].strip(), 'only exact selected Docker capacity fields')
+        capacity_text = capacity_path.read_text().strip(); decoder = json.JSONDecoder(); fields = []
+        while capacity_text:
+            value, used = decoder.raw_decode(capacity_text); fields.append(value); need(len(fields) <= 3, 'only exact selected Docker capacity fields'); capacity_text = capacity_text[used:].lstrip()
+        need(len(fields) == 3, 'only exact selected Docker capacity fields'); arch, cpus, docker_root = fields
         observations['dockerArchitecture'] = arch if type(arch) is str and len(arch) <= 32 else None; observations['dockerCPUs'] = cpus if type(cpus) is int else None
         need(arch in ['amd64', 'x86_64'] and type(cpus) is int and cpus >= 4, 'actual Docker AMD64 and four CPU helper binding')
+        # The integrated sample observes physical free space against this root,
+        # under the same state contract the original producer runner sets.
+        need(type(docker_root) is str and os.path.isabs(docker_root) and os.path.isdir(docker_root) and os.stat(docker_root).st_dev == os.stat(root).st_dev, 'actual Docker root on the controls filesystem')
+        c.state['capacityAdmission'] = {'architecture': arch, 'CPUs': cpus, 'DockerRootDir': docker_root}; c.save()
         events.append({'case': 'actual-Ubuntu26-AMD64-four-CPU-metadata', 'passed': True})
         # Same immutable input and byte-identical physical config/layer proof.
         observations.update(prove_control_image(c, native_end))
