@@ -63,12 +63,10 @@ class Controller:
         self.calls.append(('docker', args, seconds))
         self.clock.advance(self.startup_seconds)
         return {'exitCode': 0}, None
-    def own_container(self, name):
+    def create_owned(self, name, args, seconds):
+        self.docker(args, seconds)
         self.clock.advance(0.2)
-        return {'Id': '6' * 64, 'Name': name}
-    def bind_owned_id(self, name, obj):
-        self.calls.append(('bind', name, obj['Id']))
-        return obj['Id']
+        return {'Id': '6' * 64, 'Name': '/' + name}
     def validate_container(self, *args):
         pass
     def cmd(self, args, seconds, check=False):

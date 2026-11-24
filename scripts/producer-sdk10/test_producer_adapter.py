@@ -273,14 +273,15 @@ class DockerTable(unittest.TestCase):
         self.name = 'ct-sdk10-synthetic-table-original-tests'; self.id = '4' * 64; self.foreign = 'f' * 64
         c = object.__new__(driver.Controller); c.root = root; c.ctx = self.ctx; c.save = lambda: None
         c.state = {'prefix': 'ct-sdk10-synthetic-table', 'containers': [self.name], 'phaseDeadline': time.monotonic() + 600, 'cleanupDeadline': time.monotonic() + 600}
-        self.table = {}; self.effects = []; self.counter = 0; self.commands = []; self.created = []; self.receipts = None
+        self.table = {}; self.effects = []; self.counter = 0; self.commands = []; self.created = []; self.receipts = None; self.on_create = None
         def find(key): return [x for x in self.table.values() if x['Id'] == key or x['Name'] == '/' + key]
         self.find = find
         def cmd(args, seconds=60, check=True, cap=2 * 1024 ** 2):
             self.assertEqual(args[0], 'docker'); args = args[1:]; self.counter += 1; self.commands.append(list(args))
             out = root / ('transport-' + str(self.counter)); out.write_bytes(b''); row = copy.deepcopy(GOOD)
             if args[0] == 'create':
-                identity, name = self.created.pop(0); self.container(identity, name, running=False)
+                identity, name = self.created.pop(0); self.container(identity, name, running=False); out.write_bytes((identity + '\n').encode())
+                if self.on_create is not None: self.on_create(identity, name)
             elif args[0] == 'start':
                 target = args[-1]; self.effects.append(('start', target)); found = find(target)
                 # An attached start returns once the container exits.
@@ -394,7 +395,8 @@ class DockerTable(unittest.TestCase):
         self.assertEqual((row['exitCode'], row['stopReason'], row['protectedReceiptErrors']), (0, None, []))
         self.assertEqual(self.effects, [('start', self.id), ('top', self.id), ('cp', self.id), ('cp', self.id), ('cp', self.id), ('rm', self.id)])
         inspected = [x[2] for x in self.commands if x[:2] == ['container', 'inspect']]
-        self.assertEqual(inspected[:2], [self.name, self.name]); self.assertEqual(set(inspected[2:]) - {self.name}, {self.id}); self.assertEqual(self.table, {})
+        # The name is looked up only to prove it starts absent; the creation is inspected by its printed ID.
+        self.assertEqual(inspected[:2], [self.name, self.id]); self.assertEqual(set(inspected[2:]) - {self.name}, {self.id}); self.assertEqual(self.table, {})
     def helper_phase(self, case=None, labels=True):
         self.table.clear(); self.rebound_at = None; helper = '5' * 64; self.name_under_test = self.c.state['prefix'] + '-materialize'
         self.c.container_args = lambda name, *rest: self.created.append((helper, name)) or ['create', '--name', name]
@@ -442,5 +444,36 @@ class DockerTable(unittest.TestCase):
     def test_meter_with_an_unchanged_name_is_attached_and_reaped_by_its_id(self):
         record, meter = self.meter_phase()
         self.assertTrue(record['helperPositivelyAbsent']); self.assertEqual(self.effects, [('start', meter), ('rm', meter)])
+
+    CREATE_RACES = [('renamed', True), ('renamed', False), ('removed', True)]
+    def race_create(self, case, labels):
+        # Between docker create and the first lookup, the new container is
+        # renamed or removed and the foreign container takes its name.
+        self.on_create = lambda identity, name: self.rebind(identity, name, case, labels)
+    def assert_never_adopted(self, name, owned):
+        self.assertEqual(self.effects, []); self.assertEqual(self.c.state['ownedContainerIDs'][name], owned)
+        self.assertNotIn(self.foreign, json.dumps(self.c.state)); self.assertTrue(self.table[self.foreign]['State']['Running'])
+        # Cleanup of the registered name refuses rather than acting on the foreign container.
+        with self.assertRaises((common.Refusal, p.Refusal, a.MetadataUnavailable)): self.c.stop_owned(name)
+        self.assertEqual(self.effects, []); self.assertTrue(self.table[self.foreign]['State']['Running'])
+    def test_helper_whose_name_moves_between_create_and_lookup_is_never_adopted(self):
+        for case, labels in self.CREATE_RACES:
+            with self.subTest(case=case, labels=labels):
+                self.setUp(); self.race_create(case, labels)
+                with self.assertRaisesRegex(common.Refusal, 'created container still holds its owned name and labels'): self.helper_phase()
+                self.assert_never_adopted(self.name_under_test, '5' * 64)
+    def test_meter_whose_name_moves_between_create_and_lookup_is_never_adopted(self):
+        import live_resource
+        for case, labels in self.CREATE_RACES:
+            with self.subTest(case=case, labels=labels):
+                self.setUp(); self.race_create(case, labels)
+                with self.assertRaises(live_resource.ObservationIncomplete): self.meter_phase()
+                self.assert_never_adopted(self.name_under_test, '6' * 64)
+    def test_native_producer_whose_name_moves_between_create_and_lookup_is_never_registered(self):
+        for case, labels in self.CREATE_RACES:
+            with self.subTest(case=case, labels=labels):
+                self.setUp(); self.race_create(case, labels)
+                with self.assertRaisesRegex(common.Refusal, 'created container still holds its owned name and labels'): self.native_phase()
+                self.assertEqual(self.c.state['nativeProducers'], {}); self.assert_never_adopted(self.name, self.id)
 
 if __name__ == '__main__': unittest.main()

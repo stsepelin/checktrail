@@ -137,10 +137,20 @@ class Controller:
    need(not body.read_bytes().strip(),'failed inspect conflicts with existing identity; no absence credit')
    return None
   data=json.loads(p.read_bytes());need(type(data) is list and len(data)==1 and type(data[0]) is dict and data[0].get('Id')==container_id,'one exact Docker identity by immutable ID');return data[0]
- def bind_owned_id(self,name,obj):
-  """Record the immutable ID of a just-created owned helper; later effects target only it."""
-  need(name in self.state['containers'] and type(obj) is dict and re.fullmatch('[0-9a-f]{64}',str(obj.get('Id'))) is not None,'owned helper immutable ID')
-  ids=self.state.setdefault('ownedContainerIDs',{});need(ids.get(name,obj['Id'])==obj['Id'],'owned helper ID is bound once');ids[name]=obj['Id'];self.save();return obj['Id']
+ def create_owned(self,name,args,seconds=60):
+  """Create an owned container and return it as inspected by the ID docker create printed.
+
+  The ID is recorded before any lookup, so cleanup acts on this container even
+  if its name has moved. A container that no longer holds its owned name and
+  labels when inspected by that ID is refused, never adopted.
+  """
+  need(name in self.state['containers'],'only registered owned container name')
+  row,p=self.docker(args,seconds=seconds);raw=p.read_bytes();container_id=raw.decode('ascii','replace').strip()
+  need(len(raw)<=80 and re.fullmatch('[0-9a-f]{64}',container_id) is not None,'docker create printed one full immutable container ID')
+  ids=self.state.setdefault('ownedContainerIDs',{});need(ids.get(name,container_id)==container_id,'owned container ID is bound once');ids[name]=container_id;self.save()
+  obj=self.inspect_container_id(container_id)
+  need(obj is not None and obj.get('Name')=='/'+name and labels_match((obj.get('Config') or {}).get('Labels'),self.ctx),'created container still holds its owned name and labels')
+  return obj
  def own_container(self,name):
   need(name in self.state['containers'],'only registered owned container name');obj=self.inspect('container',name)
   if obj is not None:need(obj['Name'].lstrip('/')==name and labels_match(obj['Config'].get('Labels'),self.ctx),'positive owned container label binding')
@@ -148,7 +158,8 @@ class Controller:
  def stop_owned(self,name):
   obj=self.own_container(name)
   native=name in [self.state['prefix']+'-original-build',self.state['prefix']+'-original-tests']
-  helper_id=None if native else self.state.get('ownedContainerIDs',{}).get(name)
+  # A native producer refused before registration is tracked by its create ID like a helper.
+  helper_id=None if native and name in self.state.get('nativeProducers',{}) else self.state.get('ownedContainerIDs',{}).get(name)
   if obj is None:
    # A renamed producer leaves its name absent while its registered ID still
    # runs and writes the volume; only absence of that exact ID is quiescence.
@@ -196,7 +207,7 @@ class Controller:
   for m in volumes:need(m.get('Source')==targets[m['Target']] and (m.get('VolumeOptions') or {}).get('NoCopy') is True,'actual owned volume must disable image-directory copy-up')
   return True
  def helper(self,label,script_args,deadline,read_only=False,capture=False):
-  name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned helper name must start absent');self.state['containers'].append(name);self.save();args=self.container_args(name,['/usr/bin/python3','-I','-S','-B',*script_args],read_only,True,capture);self.docker(args);obj=self.own_container(name);container_id=self.bind_owned_id(name,obj);self.validate_container(obj,name,script_args,read_only,True,capture);row,p=self.cmd(['docker','start','-a',container_id],max(1,deadline-time.monotonic()),check=False);self.stop_owned(name);need(row['exitCode']==0 and row['reason'] is None,'first-party '+label+' incomplete');return row
+  name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned helper name must start absent');self.state['containers'].append(name);self.save();args=self.container_args(name,['/usr/bin/python3','-I','-S','-B',*script_args],read_only,True,capture);obj=self.create_owned(name,args);container_id=obj['Id'];self.validate_container(obj,name,script_args,read_only,True,capture);row,p=self.cmd(['docker','start','-a',container_id],max(1,deadline-time.monotonic()),check=False);self.stop_owned(name);need(row['exitCode']==0 and row['reason'] is None,'first-party '+label+' incomplete');return row
  def compiler_processes(self,container_id,seen,cache,file):
   row,p=self.docker(['top',container_id,'-eo','pid,ppid,comm,args'],seconds=5,check=False)
   if row['exitCode']!=0 or row.get('reason') is not None:return
@@ -243,7 +254,7 @@ class Controller:
    except (OSError,Refusal,IndexError):continue
  def native(self,label,argv,deadline):
   need(stat.S_IMODE(HERE.stat().st_mode)&0o005==0o005 and all(stat.S_IMODE((HERE/n).stat().st_mode)&0o004 for n in ['native_entry.py','common.py','profile.json']),'published first-party readonly supervisor bundle must be traversable/readable without DAC capabilities')
-  self.helper('before-'+label,['/observer/observer.py','before-build' if label=='original-build' else 'before-test','--profile','/observer/profile.json','--evidence','/evidence','--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid'])],deadline,True);need(time.monotonic()<deadline,'original command budget before container action');name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned original producer starts absent');self.state['containers'].append(name);self.save();phase='build' if label=='original-build' else 'test';binding={'context':self.ctx,'manifestSHA256':self.state['manifestSHA256']};protected=self.root/'protected'/name;protected.mkdir(mode=0o700);wrapped=['/usr/bin/python3','-I','-S','-B','/observer/native_entry.py','--profile','/observer/profile.json','--phase',phase,'--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid']),'--binding-json',json.dumps(binding,sort_keys=True)];self.docker(self.container_args(name,wrapped));obj=self.own_container(name);producer_binding=ProducerAPI.register(self,name,obj,{**binding,'phase':phase,'profileSHA256':hash_file(HERE/'profile.json')[1],'supervisorSHA256':hash_file(HERE/'native_entry.py')[1]},argv);retain_native_identity(self.root/'evidence',label,'admission',obj);native_identity_contract(obj);self.validate_container(obj,name,wrapped);need(obj['HostConfig'].get('PidMode') in ['',None] and obj['HostConfig'].get('Privileged') is False,'own private PID namespace and unprivileged original process');need(obj['HostConfig']['Memory']==self.profile['limits']['nativeMemory'],'exact native memory cap');logs=self.root/'evidence';stdout=logs/(label+'.stdout');stderr=logs/(label+'.stderr');observed=logs/(label+'-actual-compiler-processes.jsonl');started=time.monotonic();started_wall=time.time();reason=None;seen={};cache={};last_sample=started;resource_failure=None;previous_log_bytes=sum(p.stat().st_size for phase in ['original-build','original-tests'] for suffix in ['.stdout','.stderr'] for p in [logs/(phase+suffix)] if p.exists());remaining_log_bytes=self.profile['limits']['logBytes']-previous_log_bytes;need(remaining_log_bytes>0,'remaining cumulative original log budget')
+  self.helper('before-'+label,['/observer/observer.py','before-build' if label=='original-build' else 'before-test','--profile','/observer/profile.json','--evidence','/evidence','--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid'])],deadline,True);need(time.monotonic()<deadline,'original command budget before container action');name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned original producer starts absent');self.state['containers'].append(name);self.save();phase='build' if label=='original-build' else 'test';binding={'context':self.ctx,'manifestSHA256':self.state['manifestSHA256']};protected=self.root/'protected'/name;protected.mkdir(mode=0o700);wrapped=['/usr/bin/python3','-I','-S','-B','/observer/native_entry.py','--profile','/observer/profile.json','--phase',phase,'--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid']),'--binding-json',json.dumps(binding,sort_keys=True)];obj=self.create_owned(name,self.container_args(name,wrapped));producer_binding=ProducerAPI.register(self,name,obj,{**binding,'phase':phase,'profileSHA256':hash_file(HERE/'profile.json')[1],'supervisorSHA256':hash_file(HERE/'native_entry.py')[1]},argv);retain_native_identity(self.root/'evidence',label,'admission',obj);native_identity_contract(obj);self.validate_container(obj,name,wrapped);need(obj['HostConfig'].get('PidMode') in ['',None] and obj['HostConfig'].get('Privileged') is False,'own private PID namespace and unprivileged original process');need(obj['HostConfig']['Memory']==self.profile['limits']['nativeMemory'],'exact native memory cap');logs=self.root/'evidence';stdout=logs/(label+'.stdout');stderr=logs/(label+'.stderr');observed=logs/(label+'-actual-compiler-processes.jsonl');started=time.monotonic();started_wall=time.time();reason=None;seen={};cache={};last_sample=started;resource_failure=None;previous_log_bytes=sum(p.stat().st_size for phase in ['original-build','original-tests'] for suffix in ['.stdout','.stderr'] for p in [logs/(phase+suffix)] if p.exists());remaining_log_bytes=self.profile['limits']['logBytes']-previous_log_bytes;need(remaining_log_bytes>0,'remaining cumulative original log budget')
   need(time.monotonic()<deadline,'original remaining budget before Docker start')
   # From registration on, every Docker action of this phase names the captured
   # immutable ID: a container later given this name is never started, observed,

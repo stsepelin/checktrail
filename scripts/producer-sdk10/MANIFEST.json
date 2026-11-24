@@ -16,9 +16,9 @@
       "sha256": "9076ed5affee0a7ef61c5988cbf947caf6c99901f4cf3b483eeac75065fc4914"
     },
     {
-      "bytes": 62113,
+      "bytes": 62846,
       "path": "driver.py",
-      "sha256": "aef81f497d3bcb89b803db88f91640a3cfb5aaa85b78f784ca99f12e9b79b9db"
+      "sha256": "794851904a42cb290ac102f0ab084bda4e3a544a37d0affb1568ae7d1c9138fb"
     },
     {
       "bytes": 5382,
@@ -76,9 +76,9 @@
       "sha256": "7fb69d008586d751f9b343cb8de0486df351adb0b2a8a39a870074a0b2876e63"
     },
     {
-      "bytes": 7792,
+      "bytes": 8216,
       "path": "make_workflow.py",
-      "sha256": "424e0b9f613bd45dbede43132579db6b8f89090ff76ee96a5b5ad16cf1faf28e"
+      "sha256": "9851853d88bea0ca997fd8a10390ad4ad7c43cc1cf15d24da927af3015d1ed5c"
     },
     {
       "bytes": 6848,
@@ -86,9 +86,9 @@
       "sha256": "0e5d3c3605762764704ce49a5c09fcf8f6f7611897fd4021d7b12a5633a74a5e"
     },
     {
-      "bytes": 32829,
+      "bytes": 35897,
       "path": "test_core.py",
-      "sha256": "06af56074dc9685379e899307b781b92068d6745ce6bf2b9183faa15772f566d"
+      "sha256": "4d668921c25e2e7b040742a16b2ea88477f4e3b7587bf8818df9ff07ce2b561d"
     },
     {
       "bytes": 46841,
@@ -96,9 +96,9 @@
       "sha256": "562352af55d40a8259238e1b196b9c99d4d473948b9a39609a8fa408da8b8ccb"
     },
     {
-      "bytes": 27735,
+      "bytes": 27794,
       "path": "test_integration.py",
-      "sha256": "04a7320d91fa8f22ed960828a679e5c5ee2ddcec00dcdeb7f91efa9b470a2a2c"
+      "sha256": "8121d761a5e1b3e650e64cd6e6ee69ec1d72e5794c66a307f7610c75d402a733"
     },
     {
       "bytes": 7723,
@@ -146,9 +146,9 @@
       "sha256": "fb3b491d713d4d43d23e7c6f143325d5625ab6870a676726ce2cb723be924279"
     },
     {
-      "bytes": 13412,
+      "bytes": 13377,
       "path": "live_resource.py",
-      "sha256": "4f6a863ba69aa39d1f10104de911b939e27f6aec654cc75fd1b9b8335af21795"
+      "sha256": "a8694b235a232dc67c2102a54f58fad996f3266df23d6888c990979387b9dabd"
     },
     {
       "bytes": 6327,
@@ -156,9 +156,9 @@
       "sha256": "a044adf614b68bc36705ee14c75428246d52e7b86f43738921026094cb741663"
     },
     {
-      "bytes": 13469,
+      "bytes": 13406,
       "path": "test_live_resource.py",
-      "sha256": "7de69291d4763c76f282410e9cd034206637774e5b69b9e03043076ff1656d4e"
+      "sha256": "c3d38d2a3813e98fca12c0782d7fe7466939640d981761248f2a9a0a141750b0"
     },
     {
       "bytes": 7213,
@@ -181,14 +181,14 @@
       "sha256": "0710423aa82734158a835b4ad5919219694403a2f5f2ebc2d4695577b6f9adaa"
     },
     {
-      "bytes": 35891,
+      "bytes": 38531,
       "path": "test_producer_adapter.py",
-      "sha256": "2d027d4781076ab1e66678da05f059fbe39b64aea9bf0f30746f0e27b2d02b54"
+      "sha256": "5d01f22664111aa0ff7a32d028ec4a4fdd1fc6ef2748205dfdb8ccd1aad9d00c"
     },
     {
-      "bytes": 22378,
+      "bytes": 22364,
       "path": "target_pause_controls.py",
-      "sha256": "061d956277d656ae9dfdc4107836c3a21d0b91b32c9724bbd2bbb0a3d804f9dd"
+      "sha256": "91d53df2225d1d000bd31a1920f4f2b50f22ba388d7dead0626ab6a0828621a8"
     },
     {
       "bytes": 4156,
@@ -196,14 +196,14 @@
       "sha256": "41998071c7f98dd082dcc249b7400b953b3ec332b3c61c78187f6c86f20f66f3"
     },
     {
-      "bytes": 55418,
+      "bytes": 55615,
       "path": "test_target_pause_controls.py",
-      "sha256": "04a610c9cda9723970913f804756e8df57ce0f217f0d1802ec528b4f88301732"
+      "sha256": "ded7d0eda400d6fa8e8529885751ee5eee15adfdd71beae27bc5ef0ab7b30bba"
     },
     {
-      "bytes": 3460,
+      "bytes": 3476,
       "path": "make_pause_workflow.py",
-      "sha256": "3190d472c709199d978078e2bcbe4ba8cbd6fb26772a264e3143e66eaff812b0"
+      "sha256": "602d09b19de6a6f3ecea33e078bb58877be47d78d3ca85e22b4002f0c770f08c"
     },
     {
       "bytes": 6778,
@@ -228,7 +228,7 @@
     {
       "bytes": 570,
       "path": "PROTECTED-CONTROLS.json",
-      "sha256": "3d6150382c1a12078fe0817418a27dab9b645dec87a7f24ca87f425dfaf48993"
+      "sha256": "5e8ab9fcb98a42b68eeed5afbd96c4164bd0597cf12c4df92352644939ca1c83"
     }
   ],
   "firstPartyCodeOnly": true,

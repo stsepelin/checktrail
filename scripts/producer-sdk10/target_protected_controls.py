@@ -81,8 +81,7 @@ def canary(c, case, deadline):
     if case=='denied-kill-tests':
         # Deliberate negative admission, only for this inert first-party case.
         index=next(i for i in range(len(args)-1) if args[i:i+2]==['--cap-add','KILL']);del args[index:index+2]
-    c.docker(args,seconds=15)
-    obj=c.own_container(name);captured=ProducerAPI.register(c,name,obj,binding,argv);api=ProducerAPI(c,name)
+    obj=c.create_owned(name,args,seconds=15);captured=ProducerAPI.register(c,name,obj,binding,argv);api=ProducerAPI(c,name)
     c.validate_container(obj,name,wrapped)
     if case=='denied-kill-tests':
         caps=obj['HostConfig'].get('CapAdd')

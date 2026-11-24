@@ -112,9 +112,8 @@ def observe(controller, label, native_deadline, clock=time.monotonic, producer_b
         c.save()
         script = ['/observer/meter_runner.py', '--uid', str(c.state['uid']), '--gid', str(c.state['gid'])]
         entry = ['/usr/bin/python3', '-I', '-S', '-B', *script]
-        c.docker(c.container_args(name, entry, True, True, False), seconds=LIMITS['startupSeconds'])
-        obj = c.own_container(name)
-        meter_id = c.bind_owned_id(name, obj)
+        obj = c.create_owned(name, c.container_args(name, entry, True, True, False), seconds=LIMITS['startupSeconds'])
+        meter_id = obj['Id']
         c.validate_container(obj, name, script, True, True, False)
         need(clock() < c.state['phaseDeadline'], 'live startup deadline')
         protocol_deadline = deadline - LIMITS['helperReapReserveSeconds']

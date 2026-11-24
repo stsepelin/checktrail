@@ -4,14 +4,14 @@ import hashlib
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from make_workflow import generate as generate_native, launcher_check, CHECKOUT, ENTRY, UPLOAD
+from make_workflow import generate as generate_native, guarded, launcher, CHECKOUT, ENTRY_ARGS, UPLOAD
 
 def generate(folder, destination):
     # Same exact source manifest; native workflow stays a distinct ungranted
     # local proposal and is never the controls-only remote entry point.
     inert = destination.with_name('ORIGINAL-NATIVE-UNGRANTED.yml')
     data = generate_native(folder, inert)
-    pin = data['manifestSHA256']; entry = launcher_check(folder) + ENTRY
+    pin = data['manifestSHA256']; entry = launcher(folder) + ENTRY_ARGS
     lines = ['# FIRST-PARTY CONTROLS ONLY. No original SDK/source/key/export execution.',
              'name: SDK10 owned pause controls', 'on:', '  workflow_dispatch:', '    inputs:',
              '      nonce:', '        description: Exact reviewed fresh controls-only nonce',
@@ -39,7 +39,7 @@ def generate(folder, destination):
              '          path: ${{ runner.temp }}/ct-sdk10-controls-${{ inputs.nonce }}/RESULT.json',
              '          if-no-files-found: error', '          retention-days: 1',
              '          compression-level: 0', '          overwrite: false']
-    raw = ('\n'.join(lines) + '\n').encode(); destination.write_bytes(raw)
+    raw = ('\n'.join(guarded(lines)) + '\n').encode(); destination.write_bytes(raw)
     return {'manifestSHA256': pin, 'workflowSHA256': hashlib.sha256(raw).hexdigest(), 'workflowBytes': len(raw),
             'originalNativeWorkflowNotAuthorizedOrDispatched': True,
             'runner': 'ubuntu-26.04', 'controlsOnly': True, 'hostedJobSeconds': 720}

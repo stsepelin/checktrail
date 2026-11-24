@@ -25,6 +25,7 @@ class IntegrationControls(unittest.TestCase):
    if owned_abort and count[0]>0:return None
    value=copy.deepcopy(obj);value['HostConfig']['CapAdd']=caps if count[0]==0 and caps is not None else terminal_caps if count[0]>0 and terminal_caps is not None else obj['HostConfig']['CapAdd'];count[0]+=1;return value
   c.own_container=own_container
+  c.create_owned=lambda name,args,**kw:own_container(name)
   self.inspected_ids=[]
   def cmd(args,seconds=60,check=True,cap=0):
    # Terminal inspection goes through the registered producer ID only.

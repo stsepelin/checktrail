@@ -241,32 +241,33 @@ class Controls(unittest.TestCase):
   if launcher is not None:(folder/'run_checks.py').write_bytes(launcher)
   make_pause_workflow.generate(folder,checkout/'pause.yml')
   commands={workflow:[x.strip().removeprefix('run: ') for x in (checkout/workflow).read_text().splitlines() if 'python' in x or '.py' in x] for workflow in ['pause.yml','ORIGINAL-NATIVE-UNGRANTED.yml']}
-  return checkout,folder,commands,make_workflow.launcher_check(folder)
+  return checkout,folder,commands,make_workflow.launcher(folder)
  def test_every_generated_first_party_step_enters_through_the_pinned_verifier(self):
   import make_workflow
-  _,folder,generated,check=self.generated()
-  entry='python3 -I -S -B scripts/producer-sdk10/run_checks.py --manifest-sha256 "$CHECKTRAIL_MANIFEST_SHA256" --entry '
-  self.assertIn(hashlib.sha256((ROOT/'run_checks.py').read_bytes()).hexdigest()+' || exit 1; ',check)
+  _,folder,generated,boot=self.generated()
+  entry='--manifest-sha256 "$CHECKTRAIL_MANIFEST_SHA256" --entry '
+  self.assertTrue(boot.endswith(' scripts/producer-sdk10/run_checks.py '+hashlib.sha256((ROOT/'run_checks.py').read_bytes()).hexdigest()+' '))
   for workflow,controls,entries in [('pause.yml',0,5),('ORIGINAL-NATIVE-UNGRANTED.yml',1,1+49*3+1)]:
    with self.subTest(workflow=workflow):
     commands=generated[workflow]
-    # Every first-party command is preceded, in the same shell command, by the launcher byte check.
-    self.assertEqual([x for x in commands if not x.startswith(check)],[]);commands=[x[len(check):] for x in commands]
-    routed=[x for x in commands if x.startswith(entry)];checked=[x for x in commands if x.startswith('python3 -I -S -B scripts/producer-sdk10/run_checks.py --out ')]
+    # Every first-party command starts run_checks.py only through the bootstrap, in one
+    # interpreter, and a failure ends the whole shell.
+    self.assertEqual([x for x in commands if not x.startswith(boot) or not x.endswith(' || exit 1') or x.count('python3 ')!=1],[]);commands=[x[len(boot):-len(' || exit 1')] for x in commands]
+    routed=[x for x in commands if x.startswith(entry)];checked=[x for x in commands if x.startswith('--out ')]
     self.assertEqual(sorted(routed+checked),sorted(commands));self.assertEqual((len(checked),len(routed)),(controls,entries))
     for command in routed:self.assertIn(command[len(entry):].split()[0],make_workflow.FILES)
  def run_generated(self,checkout,commands,markers):
   # One command of every distinct shape, as the hosted bash step runs it.
   shapes={}
   for command in commands:
-   words=command.split(' || exit 1; ')[-1].split();shapes.setdefault(tuple(words[words.index('--entry')+1:words.index('--entry')+3]) if '--entry' in words else 'controls',command)
+   words=command.split();shapes.setdefault(tuple(words[words.index('--entry')+1:words.index('--entry')+3]) if '--entry' in words else 'controls',command)
   env={**os.environ,'CHECKTRAIL_MANIFEST_SHA256':'5'*64,'CHECKTRAIL_NONCE':'synthetic-6421','EXACT_ARTIFACT_IDS':'61,62','RUNNER_TEMP':str(self.root/'runner-6421')}
   results=[]
   for command in shapes.values():
    done=subprocess.run(['bash','--noprofile','--norc','-eo','pipefail','-c',command],cwd=checkout,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60);results.append((done.returncode,done.stdout.decode('utf8','replace')))
   return results
  def marker_launcher(self,markers):
-  return ('import pathlib,sys\npathlib.Path('+repr(str(markers))+').joinpath(str(len(list(pathlib.Path('+repr(str(markers))+').iterdir())))).write_text(" ".join(sys.argv[1:]))\n').encode()
+  return ('import pathlib,sys\npathlib.Path('+repr(str(markers))+').joinpath(str(len(list(pathlib.Path('+repr(str(markers))+').iterdir())))).write_text(" ".join(sys.argv[1:]))\nraise SystemExit(7 if "--exit-7" in sys.argv else 0)\n').encode()
  def test_generated_steps_run_the_launcher_whose_bytes_were_pinned_at_generation(self):
   markers=self.root/'markers-6421';markers.mkdir();checkout,folder,generated,_=self.generated(self.marker_launcher(markers))
   for workflow,commands in generated.items():
@@ -279,10 +280,43 @@ class Controls(unittest.TestCase):
   markers=self.root/'markers-6421';markers.mkdir();checkout,folder,generated,check=self.generated(self.marker_launcher(markers))
   block=[x for x in generated['pause.yml'] if 'test_' in x];self.assertEqual(len(block),4)
   # Only the first line's pin is wrong, so later lines alone would pass.
-  pin=hashlib.sha256((folder/'run_checks.py').read_bytes()).hexdigest();block[0]=block[0].replace(pin,'0'*64,1);self.assertNotIn(pin,block[0].split(' || ')[0])
+  pin=hashlib.sha256((folder/'run_checks.py').read_bytes()).hexdigest();block[0]=block[0].replace(pin,'0'*64,1);self.assertNotIn(pin,block[0])
   env={**os.environ,'CHECKTRAIL_MANIFEST_SHA256':'5'*64}
   done=subprocess.run(['bash','--noprofile','--norc','-eo','pipefail','-c','\n'.join(block)],cwd=checkout,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
   self.assertNotEqual(done.returncode,0,done.stdout);self.assertIn(b'run_checks.py differs from its generated launcher pin',done.stdout);self.assertEqual(list(markers.iterdir()),[])
+ def bootstrap(self,launcher,pin,*argv,wrapper=''):
+  import make_workflow
+  code=wrapper+'exec('+repr(make_workflow.BOOTSTRAP)+')'
+  done=subprocess.run(['python3','-I','-S','-B','-c',code,str(launcher),pin,*argv],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
+  return done.returncode,done.stdout.decode('utf8','replace')
+ def test_bootstrap_executes_the_bytes_it_hashed_and_never_reopens_the_launcher(self):
+  markers=self.root/'markers-6421';markers.mkdir();launcher=self.root/'run_checks.py';original=self.marker_launcher(markers);launcher.write_bytes(original)
+  swapped=('import pathlib\npathlib.Path('+repr(str(markers/'swapped'))+').write_text("swapped-6421")\n').encode();count=self.root/'opens-6421'
+  # The hook swaps the file the moment the verified bytes are compiled and
+  # counts every open of it; a bootstrap that reopened it would run the swap.
+  wrapper=('import atexit,sys\nopens=[];path='+repr(str(launcher))+'\nbusy=[]\n'
+   'def hook(event,args):\n'
+   ' if busy:return\n'
+   ' if event=="open" and str(args[0])==path:opens.append(args[1])\n'
+   ' if event=="compile" and args[1]==path:\n'
+   '  busy.append(1)\n'
+   '  with open(path,"wb") as f:f.write('+repr(swapped)+')\n'
+   '  busy.clear()\n'
+   'sys.addaudithook(hook)\n'
+   'atexit.register(lambda:open('+repr(str(count))+',"w").write(str(len(opens))))\n')
+  code,log=self.bootstrap(launcher,hashlib.sha256(original).hexdigest(),'--entry','driver.py','finalize','--exit-7',wrapper=wrapper)
+  self.assertEqual(code,7,log);self.assertEqual(launcher.read_bytes(),swapped);self.assertFalse((markers/'swapped').exists())
+  self.assertEqual([x.read_text() for x in markers.iterdir()],['--entry driver.py finalize --exit-7']);self.assertEqual(count.read_text(),'1')
+ def test_bootstrap_runs_the_real_launcher_with_its_arguments_and_exit_status(self):
+  bundle,markers,pin=self.entry_bundle();launcher=bundle/'run_checks.py'
+  code,log=self.bootstrap(launcher,hashlib.sha256(launcher.read_bytes()).hexdigest(),'--manifest-sha256',pin,'--entry','entry_marker.py','finalize','--nonce','synthetic-6421','--exit-7')
+  self.assertEqual(code,7,log);self.assertEqual((markers/'helper').read_text(),'imported-4421');self.assertEqual((markers/'entry').read_text(),'finalize --nonce synthetic-6421 --exit-7')
+  code,log=self.bootstrap(launcher,hashlib.sha256(launcher.read_bytes()).hexdigest(),'--manifest-sha256','0'*64,'--entry','entry_marker.py')
+  self.assertNotEqual(code,0);self.assertIn('operator-reviewed first-party bundle manifest',log)
+ def test_bootstrap_refuses_a_changed_launcher_without_running_it(self):
+  markers=self.root/'markers-6421';markers.mkdir();launcher=self.root/'run_checks.py';original=self.marker_launcher(markers);launcher.write_bytes(original+b'# changed-6421\n')
+  code,log=self.bootstrap(launcher,hashlib.sha256(original).hexdigest(),'--entry','driver.py')
+  self.assertEqual(code,1);self.assertIn('run_checks.py differs from its generated launcher pin',log);self.assertEqual(list(markers.iterdir()),[])
  def test_generated_steps_refuse_a_changed_launcher_before_it_runs(self):
   markers=self.root/'markers-6421';markers.mkdir();checkout,folder,generated,_=self.generated(self.marker_launcher(markers))
   (folder/'run_checks.py').write_bytes((folder/'run_checks.py').read_bytes()+b'# changed-6421\n')

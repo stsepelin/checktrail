@@ -129,6 +129,7 @@ class Target(unittest.TestCase):
             if args[0]=='start':model['obj']['State']['Running']=True
             return GOOD,None
         c.docker=docker;c.own_container=lambda _:copy.deepcopy(model['obj'])
+        c.create_owned=lambda name,args,seconds=60:(docker(args),copy.deepcopy(model['obj']))[1]
         sequence=[0]
         def command(argv,seconds,check,cap):
             sequence[0]+=1;args=argv[1:];model['calls'].append(args);body=root/'control'/('command-'+str(sequence[0]));body.write_bytes(b'')
@@ -170,6 +171,7 @@ class Target(unittest.TestCase):
         self.c.state.update(prefix=prefix,gid=gid,containers=[],imageAlias='synthetic-pinned-image',imageID='sha256:'+'9'*64);self.c.save=lambda:None;self.c.inspect=lambda *args:None
         obj={'Id':'b'*64,'Name':'/'+name,'Config':{'Labels':common.owned_labels(self.ctx)},'State':{'Running':False,'Paused':False},'HostConfig':{'NetworkMode':'none','ReadonlyRootfs':True,'Privileged':False,'Memory':256*1024**2,'CapDrop':['ALL'],'GroupAdd':[str(gid)]}}
         self.c.own_container=lambda _:copy.deepcopy(obj);calls=[]
+        self.c.create_owned=lambda name,args,seconds=60:(self.c.docker(args),copy.deepcopy(obj))[1]
         def docker(args,**kwargs):
             calls.append(args)
             if args[0]=='create':obj['Mounts']=self.declared_mounts(args)
