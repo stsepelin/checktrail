@@ -30,9 +30,9 @@
     "sha256": "c3ad47c07f0c55eb5f623851c2759b52e92a96ef54328ae457bdce998bc28459"
   },
   {
-    "bytes": 24190,
+    "bytes": 24927,
     "file": "producer.py",
-    "sha256": "7f7a82fdccc70624c9c6b70f116cdcc7f8f3ce4865c401fd74012ae484dd0ef2"
+    "sha256": "292871733643e6475fe5baa75bafc741c39db273b619f139d267b2fefc1012ac"
   },
   {
     "bytes": 5257,
@@ -100,9 +100,9 @@
     "sha256": "d66b3f58cee416a79f731be0af6b4a2d3a6c547bdc8cb65d7364e336c03f393b"
   },
   {
-    "bytes": 12947,
+    "bytes": 17148,
     "file": "test_volume_lifecycle.py",
-    "sha256": "e3e21a40490bc30087a227b6a135c89826b2827b17ac508956070cc2ddd78fc0"
+    "sha256": "f2e95c000ff28be41ad2cb879411cd65bbebe35862d14049bae9ac54769d44d2"
   },
   {
     "bytes": 8851,

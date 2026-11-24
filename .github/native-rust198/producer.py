@@ -86,11 +86,20 @@ def retain_generated_configuration(source,capture):
  # Exact bytes are retained for root semantic/default review, not declared equal.
  selected=next((source/name for name in ['bootstrap.toml','config.toml'] if os.path.lexists(source/name)),None);need(selected is not None,'Actual original generated bootstrap configuration absent');before=selected.lstat();need(stat.S_ISREG(before.st_mode) and before.st_nlink==1 and 0<before.st_size<=1024**2,'Physical bounded generated bootstrap configuration');body=selected.read_bytes();after=selected.lstat();need((before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns,before.st_ctime_ns)==(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_ctime_ns) and len(body)==before.st_size,'Generated bootstrap configuration changed during capture');file=capture/'generated-original-bootstrap.toml';need(not file.exists(),'Fresh generated configuration capture');file.write_bytes(body);file.chmod(0o400);return {'originalWorkingPath':str(selected),'privateCapture':str(file),'bytes':len(body),'sha256':hashlib.sha256(body).hexdigest(),'semanticEqualityToPublisherBuilderConfigClaimed':False,'rootSemanticAndDefaultReviewStillRequired':True}
 
+def phase_journal_failures(runners):
+ # Native.run() keeps a journal append failure only on its in-memory receipt,
+ # so every phase runner is read here, not only the one whose receipts are retained.
+ rows=[];seen=[]
+ for runner in runners:
+  if runner is None or any(runner is other for other in seen):continue
+  seen.append(runner);rows.extend({'phase':row.get('phase'),**row['phaseJournalFailure']} for row in runner.receipts if 'phaseJournalFailure' in row)
+ return rows
+
 class Operations:
- def __init__(self,profile):self.profile=profile;self.volume_native=None
+ def __init__(self,profile):self.profile=profile;self.volume_native=None;self.runners=[]
  def materialize(self,pins,archives,destination):return M.materialize(pins[0],pins[1:],archives,destination,self.profile['bounds'])
  def activate(self,source,host):activate_owned_working_tree(source,host['buildUid'],host['buildGid'])
- def native(self,work,host):N.LIMITS.update(wholeSeconds=self.profile['bounds']['nativeSeconds'],logBytes=self.profile['bounds']['logBytes'],minimumFreeBytes=self.profile['bounds']['minimumFreeBytes'],sampledRssBytes=self.profile['bounds']['sampledRssBytes']);return N.Native(work,host)
+ def native(self,work,host):N.LIMITS.update(wholeSeconds=self.profile['bounds']['nativeSeconds'],logBytes=self.profile['bounds']['logBytes'],minimumFreeBytes=self.profile['bounds']['minimumFreeBytes'],sampledRssBytes=self.profile['bounds']['sampledRssBytes']);runner=N.Native(work,host);self.runners.append(runner);return runner
  def volume(self,work,context,host):
   self.volume_native=self.native(work,host);volume_context={'run':context['GITHUB_RUN_ID'],'attempt':context['GITHUB_RUN_ATTEMPT'],'head':context['GITHUB_SHA']};expected=V.plan(work,volume_context)
   def command(argv,seconds):
@@ -131,14 +140,14 @@ def observe(p,host,archives,work,context,ops):
    try:child=read_child_report(child_file,p);failure_child_report={'accepted':True}
    except Exception as error:failure_child_report={'accepted':False,'type':type(error).__name__,'reason':str(error)[:512]}
   if time.monotonic()>=deadline:complete=False;failure={'type':'TimeoutError','reason':'Whole original producer deadline exhausted'}
-  result={'originalCommandBuildWitnessComplete':complete,'phaseAccounting':phase_summary(child,complete),'failurePathChildReport':failure_child_report,'childFailure':{'type':child['failure']['type'][:128],'reason':child['failure']['reason'][:512]} if child.get('failure') else None,'failure':failure,'quiescence':quiescence,'runContext':context,'sourceCommit':p['sourceCommit'],'nativePhases':native.receipts if native else [],'producedDistInventory':inventory,'generatedOriginalConfiguration':configuration,'originalStableGuardNoOps':{'enzymePackaging':'original-stable-guard-no-pass-credit','miriPackaging':'original-stable-guard-no-pass-credit','craneliftPackaging':'original-stable-guard-no-pass-credit; configured compiler backend remains selected','allOtherDefaultComponentActualSelection':'not-independently-accepted; root original trace/config review required'},'ownedVolume':volume_record,'ownedVolumeState':volume_state,'sourceWorkspace':str(source) if 'source' in locals() else None,'elapsedSeconds':time.monotonic()-started,'allOriginalDefaultComponentCoverageStillRequiresRootReview':True,'upstreamTestsOrModelBenchmarkTrialsPassedClaimed':False,'wholeProducerSDKLegalHistoricalEqualityOrGateAClosureClaimed':False,'exportOrEncryptionPerformed':False};N.atomic_json(work/'capture/RESULT.json',result,mode=0o400)
+  result={'originalCommandBuildWitnessComplete':complete,'phaseAccounting':phase_summary(child,complete),'failurePathChildReport':failure_child_report,'childFailure':{'type':child['failure']['type'][:128],'reason':child['failure']['reason'][:512]} if child.get('failure') else None,'failure':failure,'quiescence':quiescence,'runContext':context,'sourceCommit':p['sourceCommit'],'nativePhases':native.receipts if native else [],'phaseJournalFailures':phase_journal_failures([*getattr(ops,'runners',[]),native]),'producedDistInventory':inventory,'generatedOriginalConfiguration':configuration,'originalStableGuardNoOps':{'enzymePackaging':'original-stable-guard-no-pass-credit','miriPackaging':'original-stable-guard-no-pass-credit','craneliftPackaging':'original-stable-guard-no-pass-credit; configured compiler backend remains selected','allOtherDefaultComponentActualSelection':'not-independently-accepted; root original trace/config review required'},'ownedVolume':volume_record,'ownedVolumeState':volume_state,'sourceWorkspace':str(source) if 'source' in locals() else None,'elapsedSeconds':time.monotonic()-started,'allOriginalDefaultComponentCoverageStillRequiresRootReview':True,'upstreamTestsOrModelBenchmarkTrialsPassedClaimed':False,'wholeProducerSDKLegalHistoricalEqualityOrGateAClosureClaimed':False,'exportOrEncryptionPerformed':False};N.atomic_json(work/'capture/RESULT.json',result,mode=0o400)
  return result
 
 def finish_private(p,result,work,context,host,ops):
  """Retain only quiescent generated outputs/logs privately, then detach owned image.
  Image bytes remain in the owned namespace. A failed or live build is never erased.
  """
- marker=json.loads((work/'control/OWNERSHIP.json').read_bytes());need(marker['runContext']==context and marker['work']==str(work) and marker['selection']==p['selection'],'Owned lifecycle marker/context');lifecycle={'privateRetentionComplete':False,'ownedImageDetached':False,'attachmentCleanupComplete':False,'workAndFailureEvidencePreserved':True,'remoteExportOrStockHostChangePerformed':False};failure=None
+ marker=json.loads((work/'control/OWNERSHIP.json').read_bytes());need(marker['runContext']==context and marker['work']==str(work) and marker['selection']==p['selection'],'Owned lifecycle marker/context');lifecycle={'privateRetentionComplete':False,'ownedImageDetached':False,'attachmentCleanupComplete':False,'workAndFailureEvidencePreserved':True,'remoteExportOrStockHostChangePerformed':False};failure=None;runners=len(getattr(ops,'runners',[]))
  try:
   need(result['elapsedSeconds']<p['bounds']['wholeSeconds'] and (result.get('failure') or {}).get('type')!='WholeDeadline','Whole deadline exhausted; private work preserved without further native actions')
   need(result['quiescence']['allBuildUidProcessesStopped'] is True and not [r for r in ops.processes() if r['uid']==host['buildUid']],'Live/unknown build UID refuses packaging and detach');roots={'controller-capture':work/'capture'}
@@ -154,7 +163,7 @@ def finish_private(p,result,work,context,host,ops):
    lifecycle.update(attachmentCleanupComplete=True,noAttachmentWasAttempted=True,noOwnedImageWasEstablished=image_outcome=='not-attempted',ownedImagePreservedWithoutAttachment=image_outcome=='created')
   else:raise ValueError('Unknown image/attachment outcome: cleanup-incomplete, no detach authority')
  except Exception as error:failure={'type':type(error).__name__,'reason':str(error)[:1024]}
- lifecycle.update(failure=failure,controllerLifecycleComplete=result['originalCommandBuildWitnessComplete'] is True and lifecycle['privateRetentionComplete'] and lifecycle['attachmentCleanupComplete'],wholeProducerSDKLegalHistoricalEqualityOrGateAClosureClaimed=False);N.atomic_json(work/'LIFECYCLE.json',lifecycle,mode=0o400);return lifecycle
+ lifecycle.update(failure=failure,phaseJournalFailures=phase_journal_failures(getattr(ops,'runners',[])[runners:]),controllerLifecycleComplete=result['originalCommandBuildWitnessComplete'] is True and lifecycle['privateRetentionComplete'] and lifecycle['attachmentCleanupComplete'],wholeProducerSDKLegalHistoricalEqualityOrGateAClosureClaimed=False);N.atomic_json(work/'LIFECYCLE.json',lifecycle,mode=0o400);return lifecycle
 
 class WholeDeadline(TimeoutError):pass
 

@@ -1,8 +1,8 @@
 """Synthetic image lifecycle family: no hdiutil, mounts, SDK or source code runs."""
 from pathlib import Path
-import copy,json,os,stat,tempfile,unittest
+import copy,json,os,stat,sys,tempfile,unittest
 from unittest.mock import patch
-import producer as P,volume as V
+import process_supervisor as N,producer as P,volume as V
 from test_controller import profile,qualified
 
 class LifecycleTests(unittest.TestCase):
@@ -139,5 +139,53 @@ class LifecycleTests(unittest.TestCase):
   def substituted(path,flags,mode=0o777):return opened(other if flags&os.O_DIRECTORY else path,flags,mode)
   with patch.object(V.os,'open',substituted),self.assertRaisesRegex(ValueError,'Exact physical journal parent'):V.save_state(work,value)
   self.assertEqual('unknown',V.load_state(work,self.vc)['attachmentOutcome'])
+
+class FirstPartyNative(N.Native):
+ """The real phase runner and journal, with each hdiutil request replaced by a first-party child that exits 41."""
+ def run(self,name,args,env,cwd,seconds,as_build=True):return super().run(name,[sys.executable,'-I','-c','import sys;sys.exit(41)'],env,cwd,min(seconds,10),as_build)
+
+class PhaseJournalFailureTests(unittest.TestCase):
+ context={'GITHUB_RUN_ID':'7','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40};vc={'run':'7','attempt':'1','head':'a'*40}
+ def setUp(self):
+  self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name).resolve();self.p=profile();self.h=qualified(self.p)
+  self.p['bounds'].update(minimumFreeBytes=0,logBytes=4096,sampledRssBytes=1024**3,nativeSeconds=60)
+ def tearDown(self):self.tmp.cleanup()
+ def lifecycle(self,label,ops,journal_error):
+  work=self.root/('rust198-7-1-journal-'+label);patches=[patch.dict(N.LIMITS,dict(N.LIMITS)),patch.object(N,'ps_rows',return_value=[]),patch.object(N,'Native',FirstPartyNative)]
+  if journal_error:patches.append(patch.object(N,'append_phase_receipt',side_effect=OSError(28,'synthetic journal disk full 6151')))
+  for item in patches:item.start()
+  try:result=P.observe(self.p,self.h,{},work,self.context,ops);lifecycle=P.finish_private(self.p,result,work,self.context,self.h,ops)
+  finally:
+   for item in reversed(patches):item.stop()
+  return work,json.loads((work/'capture/RESULT.json').read_bytes()),json.loads((work/'LIFECYCLE.json').read_bytes())
+ def test_volume_phase_journal_failure_is_retained_beside_the_phase_failure(self):
+  work,result,lifecycle=self.lifecycle('volume',P.Operations(self.p),True)
+  self.assertEqual([{'phase':'owned-volume-0','type':'OSError','reason':None}],result['phaseJournalFailures'])
+  self.assertEqual({'type':'ValueError','reason':'Native phase failed: owned-volume-0'},result['failure'])
+  self.assertFalse(os.path.lexists(work/'capture/PHASES.json'));self.assertEqual([],lifecycle['phaseJournalFailures'])
+ def test_volume_phase_failure_with_an_intact_journal_records_no_journal_failure(self):
+  work,result,lifecycle=self.lifecycle('volume-intact',P.Operations(self.p),False)
+  self.assertEqual([],result['phaseJournalFailures']);self.assertEqual({'type':'ValueError','reason':'Native phase failed: owned-volume-0'},result['failure'])
+  self.assertEqual([('owned-volume-0',41)],[(row['phase'],row['exitCode']) for row in json.loads((work/'capture/PHASES.json').read_bytes())])
+ def detach_operations(self):
+  vc=self.vc
+  class SyntheticVolumeOperations(P.Operations):
+   def volume(self,work,context,host):
+    def run(argv,seconds):
+     if argv[1]=='create':Path(argv[-1]).write_bytes(b'synthetic inert image 6151')
+     return {'imagePath':str(work/'source-work.sparseimage'),'mountPoint':str(work/'case-work'),'device':'/dev/disk61s1'}
+    return V.prepare(work,vc,run,lambda _:{'caseSensitive':True})
+   def materialize(self,*args):raise ValueError('synthetic stop before any source materialization 6151')
+  return SyntheticVolumeOperations(self.p)
+ def test_detach_phase_journal_failure_is_retained_beside_the_detach_failure(self):
+  work,result,lifecycle=self.lifecycle('detach',self.detach_operations(),True)
+  self.assertEqual('proven',result['ownedVolumeState']['attachmentOutcome']);self.assertEqual([],result['phaseJournalFailures'])
+  self.assertEqual([{'phase':'owned-volume-detach-identity','type':'OSError','reason':None}],lifecycle['phaseJournalFailures'])
+  self.assertEqual({'type':'ValueError','reason':'Native phase failed: owned-volume-detach-identity'},lifecycle['failure'])
+  self.assertTrue(lifecycle['privateRetentionComplete']);self.assertFalse(lifecycle['ownedImageDetached'])
+ def test_detach_phase_failure_with_an_intact_journal_records_no_journal_failure(self):
+  work,result,lifecycle=self.lifecycle('detach-intact',self.detach_operations(),False)
+  self.assertEqual([],lifecycle['phaseJournalFailures']);self.assertEqual({'type':'ValueError','reason':'Native phase failed: owned-volume-detach-identity'},lifecycle['failure'])
+  self.assertEqual([('owned-volume-detach-identity',41)],[(row['phase'],row['exitCode']) for row in json.loads((work/'capture/PHASES.json').read_bytes())])
 
 if __name__=='__main__':unittest.main()
