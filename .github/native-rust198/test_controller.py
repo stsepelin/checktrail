@@ -1,6 +1,6 @@
 """Synthetic first-party controls only: no upstream source/SDK/compiler execution."""
 from pathlib import Path
-import _io,ast,builtins,subprocess,contextlib,copy,hashlib,io,json,os,plistlib,re,signal,stat,sys,tempfile,types,unittest
+import _io,ast,builtins,importlib.machinery,subprocess,contextlib,copy,hashlib,io,json,os,plistlib,re,signal,stat,sys,tempfile,types,unittest
 from contextlib import redirect_stdout
 from unittest import mock
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
@@ -707,29 +707,49 @@ class InputCustodyTests(unittest.TestCase):
   with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache):
    with self.assertRaises(SystemExit) as raised:L.run_verified(root,{**bodies,'producer.py':producer},['observe'])
   self.assertEqual('refused-6151',raised.exception.code)
- def test_launch_never_searches_a_controller_directory_reached_through_a_link(self):
-  root,manifest,bodies=self.cohort();root.chmod(0o755);(root/'synthetic_planted_6151.py').write_bytes(b"VALUE='planted-through-link-6151'\n");link=self.root/'linked-controller-6151';link.symlink_to(root)
-  # The link is already on sys.path before verification, so only its resolved target refuses it.
+ def linked_controller(self,primed):
+  root,manifest,bodies=self.cohort();root.chmod(0o755);(root/'synthetic_planted_6151.py').write_bytes(b"VALUE='planted-through-link-6151'\n");link=self.root/('linked-controller-6151-'+str(primed));link.symlink_to(root)
+  # The link is on sys.path before verification, so only its resolved target refuses it.
   producer=b"try:\n import synthetic_planted_6151\nexcept ImportError:\n raise SystemExit('refused-6151')\nraise SystemExit('imported-'+synthetic_planted_6151.VALUE)\n"
   with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',[str(link),*sys.path]),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache):
+   if primed:
+    sys.path_importer_cache[str(link)]=importlib.machinery.FileFinder.path_hook((importlib.machinery.SourceFileLoader,['.py']))(str(link))
+    self.assertIsNotNone(sys.path_importer_cache[str(link)].find_spec('synthetic_planted_6151'))
+   with self.assertRaises(SystemExit) as raised:L.run_verified(root,{**bodies,'producer.py':producer},['observe'])
+  return raised.exception.code
+ def test_launch_never_searches_a_controller_directory_reached_through_a_link(self):
+  self.assertEqual('refused-6151',self.linked_controller(False))
+ def test_launch_replaces_a_finder_cached_for_a_linked_controller_directory(self):
+  self.assertEqual('refused-6151',self.linked_controller(True))
+ def test_launch_never_searches_a_directory_added_inside_a_searchable_one(self):
+  # A directory below one that was searchable at launch, such as site-packages below
+  # the standard library, is still a directory added after verification.
+  root,manifest,bodies=self.cohort();searchable=self.root/'searchable-6151';nested=searchable/'site-packages-6151';nested.mkdir(parents=True);(nested/'synthetic_nested_6151.py').write_bytes(b"VALUE='nested-6151'\n")
+  producer=("import sys\nsys.path.insert(0,%r)\ntry:\n import synthetic_nested_6151\nexcept ImportError:\n raise SystemExit('refused-6151')\nraise SystemExit('imported-'+synthetic_nested_6151.VALUE)\n" % str(nested)).encode()
+  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',[str(searchable),*sys.path]),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache):
    with self.assertRaises(SystemExit) as raised:L.run_verified(root,{**bodies,'producer.py':producer},['observe'])
   self.assertEqual('refused-6151',raised.exception.code)
+ def test_admitted_entry_finder_is_bound_to_the_directory_that_was_checked(self):
+  root,manifest,bodies=self.cohort();real=self.root/'real-6151';other=self.root/'other-6151';real.mkdir();other.mkdir();link=self.root/'entry-link-6151';link.symlink_to(real)
+  (real/'synthetic_bound_6151.py').write_bytes(b"VALUE='checked-6151'\n");(other/'synthetic_bound_6151.py').write_bytes(b"VALUE='retargeted-6151'\n")
+  hook=L.search_only([str(link)],{str(root)});finder=hook(str(link));link.unlink();link.symlink_to(other)
+  self.assertEqual(str(real/'synthetic_bound_6151.py'),finder.find_spec('synthetic_bound_6151').origin)
  def test_launch_refuses_a_cohort_module_imported_before_verification(self):
   root,manifest,bodies=self.cohort();stale=types.ModuleType('synthetic_helper_6151');stale.VALUE='unverified-6151'
   with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules,{'synthetic_helper_6151':stale}),mock.patch.dict(sys.path_importer_cache):
    with self.assertRaisesRegex(ValueError,'^Controller module imported before cohort verification$'):L.run_verified(root,bodies,['observe'])
 
 LAUNCH_DRIVER="""
-import importlib.util,sys
+import importlib.util,json,sys
 from pathlib import Path
 here=Path(sys.argv[1])
 spec=importlib.util.spec_from_file_location('verified_launcher_6151',here/'launch.py');L=importlib.util.module_from_spec(spec);spec.loader.exec_module(L)
-bodies={p.relative_to(here).as_posix():p.read_bytes() for p in here.rglob('*') if p.is_file() and '__pycache__' not in p.parts}
+bodies={row['file']:(here/row['file']).read_bytes() for row in json.loads((here/'PUBLIC-COHORT.json').read_bytes())}
 if len(sys.argv)>2:bodies['producer.py']=sys.argv[2].encode();L.run_verified(here,bodies,['observe'])
 else:L.run_verified(here,bodies,['plan',str(here/'profile.json')])
 """
 def through_launcher(*body):
- """Run the launcher in a fresh isolated interpreter over the checked-in controller files."""
+ """Run the launcher in a fresh isolated interpreter over the files the cohort manifest lists."""
  return subprocess.run([sys.executable,'-I','-S','-B','-c',LAUNCH_DRIVER,str(HERE),*body],cwd='/',input=b'',capture_output=True,env={'PATH':'/usr/bin:/bin','LC_ALL':'C'},timeout=120,check=False)
 def first_party_imports():
  """(module, imported name) for every absolute import in a cohort Python file."""

@@ -3,7 +3,7 @@ The manifest hash must come from a separately reviewed workflow startup. This
 helper cannot infer operator authorization or turn a model argument into trust.
 """
 from pathlib import Path
-import argparse,hashlib,importlib.util,json,os,re,stat,sys,sysconfig,types
+import argparse,hashlib,importlib.util,json,os,re,stat,sys,types
 
 def need(value,message):
  if not value:raise ValueError(message)
@@ -50,21 +50,26 @@ class Unsearchable:
  def find_spec(self,name,target=None):return None
  def invalidate_caches(self):pass
 
-def standard_library_roots():
- """Directories of this interpreter's standard library, resolved at launch."""
- paths=sysconfig.get_paths();return {os.path.realpath(path) for path in [paths['stdlib'],paths['platstdlib'],os.path.join(paths['platstdlib'],'lib-dynload')]}
+def within(path,roots):return any(path==root or path.startswith(root.rstrip(os.sep)+os.sep) for root in roots)
 
-def search_only(entries,trusted,refused):
- """Path hook that lets path-based finders search only the given sys.path entries and
- directories within the trusted roots. A standard-library package's submodules are
- found through its __path__ entries, which are never on sys.path itself. Nothing
- within a refused directory is searched."""
+def search_only(entries,refused):
+ """Path hook for the verified controller. A path entry is searched only if it was on
+ sys.path before verification or belongs to the __path__ of an imported package, which
+ is how a standard-library package such as xml finds xml.parsers. An entry inside a
+ refused directory, resolved through links, is never searched. An admitted entry gets
+ a finder for the resolved directory that was checked, so a link changed later is
+ never followed."""
  allowed=frozenset(entries)
- def within(path,roots):return any(path==root or path.startswith(root.rstrip(os.sep)+os.sep) for root in roots)
+ def package_entry(entry):
+  return any(entry in list(getattr(module,'__path__',None) or ()) for module in list(sys.modules.values()))
  def hook(entry):
   real=os.path.realpath(entry)
-  if not within(real,refused) and (entry in allowed or within(real,trusted)):raise ImportError('searched by the next path hook')
-  return Unsearchable()
+  if within(real,refused) or not (entry in allowed or package_entry(entry)):return Unsearchable()
+  for other in sys.path_hooks:
+   if other is hook:continue
+   try:return other(real)
+   except ImportError:continue
+  raise ImportError('no finder for '+real)
  return hook
 
 def run_verified(root,bodies,arguments):
@@ -72,18 +77,17 @@ def run_verified(root,bodies,arguments):
  need(not [name for name in bodies if name.endswith('.py') and '/' not in name and name!='producer.py' and name[:-3] in sys.modules],'Controller module imported before cohort verification')
  modules=VerifiedModules(root,bodies);main=types.ModuleType('__main__');main.__file__=str(root/'producer.py');main.__loader__=modules
  # Controller modules add directories to sys.path, resolved against the live filesystem.
- # Only entries present before verification and the standard library stay searchable,
- # never the controller's own directories, so no file outside the verified bytes or
- # the interpreter's standard library is imported.
- folders={str((root/name).parent) for name in bodies};trusted=standard_library_roots();refused={os.path.realpath(folder) for folder in folders}
- hook=search_only([entry for entry in sys.path if entry not in folders],trusted,refused)
+ # Only entries present before verification and the __path__ of imported packages stay
+ # searchable, never the controller's own directories, so no file outside the verified
+ # bytes or the interpreter's own import roots is imported.
+ folders={str((root/name).parent) for name in bodies};refused={os.path.realpath(folder) for folder in folders}
+ hook=search_only([entry for entry in sys.path if entry not in folders],refused)
  # Finders cached before this point, such as for a sys.path entry that links to a
- # controller directory, are decided again by the same rule.
+ # controller directory, are replaced by what the same rule gives.
  for entry in [*folders,*sys.path_importer_cache]:
   if isinstance(entry,str):
-   try:hook(entry)
-   except ImportError:continue
-   sys.path_importer_cache[entry]=Unsearchable()
+   try:sys.path_importer_cache[entry]=hook(entry)
+   except ImportError:sys.path_importer_cache[entry]=None
  sys.path_hooks.insert(0,hook)
  sys.meta_path.insert(0,modules);sys.argv=[main.__file__,*arguments];sys.modules['__main__']=main
  exec(compile(bodies['producer.py'],main.__file__,'exec'),main.__dict__)
