@@ -48,10 +48,36 @@ class Fixture(unittest.TestCase):
             ancestors[str(path)] = (value.st_uid, value.st_gid, stat.S_IMODE(value.st_mode))
         self.patches = [mock.patch.object(N, 'APP', self.app), mock.patch.object(N, 'FILES', SMALL),
                         mock.patch.object(N, 'ANCESTORS', ancestors),
-                        mock.patch.object(N, 'FILE_IDENTITY', ((self.app / 'Contents/Info.plist').stat().st_uid, (self.app / 'Contents/Info.plist').stat().st_gid, 0o644))]
+                        mock.patch.object(N, 'FILE_IDENTITY', ((self.app / 'Contents/Info.plist').stat().st_uid, (self.app / 'Contents/Info.plist').stat().st_gid, 0o644)),
+                        *self.frozen_shared_ancestors()]
         for patch in self.patches:
             patch.start()
             self.addCleanup(patch.stop)
+
+    def frozen_shared_ancestors(self):
+        """Hold the directories above the fixture root at their setUp status.
+
+        physical_read() compares every ancestor up to '/', including mtime,
+        ctime and link count. Above self.root those are shared directories
+        (the temporary root, a home directory) that other processes change at
+        any moment. The fixture root and everything below it are created and
+        changed only by this test, so the change detection under test still
+        sees their real status.
+        """
+        self.shared_ancestors = {}
+        for path in [Path('/'), *self.root.parents]:
+            value = os.stat(path, follow_symlinks=False)
+            self.shared_ancestors[(value.st_dev, value.st_ino)] = value
+        real_stat, real_fstat = os.stat, os.fstat
+        def held(value):
+            if stat.S_ISDIR(value.st_mode):
+                return self.shared_ancestors.get((value.st_dev, value.st_ino), value)
+            return value
+        def frozen_stat(*args, **kwargs):
+            return held(real_stat(*args, **kwargs))
+        def frozen_fstat(fd):
+            return held(real_fstat(fd))
+        return [mock.patch.object(N.os, 'stat', frozen_stat), mock.patch.object(N.os, 'fstat', frozen_fstat)]
 
     def original(self):
         return N.original_members(N.Budget(5))
@@ -234,8 +260,52 @@ class DataControls(Fixture):
             with self.assertRaises(OSError):
                 os.fstat(fd)
 
+    def test_shared_parent_churn_during_read_leaves_the_fixture_read_intact(self):
+        # The fixture's temporary parent is an ancestor that physical_read()
+        # compares; unrelated workers create and remove entries in it at any time.
+        shared = self.root.parent
+        self.assertIn(shared, self.app.parents)
+        file = self.app / SMALL[0][0]
+        unrelated = shared / ('unrelated-worker-entry-%d-7193' % os.getpid())
+        original = os.read
+        created = []
+        def reading(fd, size):
+            body = original(fd, size)
+            if body and not created:
+                unrelated.write_bytes(b'unrelated 7193'); created.append(True)
+            return body
+        try:
+            with mock.patch.object(N.os, 'read', side_effect=reading):
+                body, row = N.physical_read(file, SMALL[0][1], N.Budget(5), SMALL[0][1])
+            self.assertEqual([True], created)
+            self.assertEqual(b'A' * SMALL[0][1], body)
+            self.assertEqual({'bytes': len(body), 'sha256': hashlib.sha256(body).hexdigest()}, row)
+        finally:
+            if unrelated.exists():
+                unrelated.unlink()
+
+    def test_held_ancestors_end_above_the_fixture_root(self):
+        owned = [self.root, self.app, *self.app.rglob('*')]
+        held = set(self.shared_ancestors)
+        for path in owned:
+            value = os.lstat(path)
+            self.assertNotIn((value.st_dev, value.st_ino), held, str(path))
+        # A change in the fixture root itself is still a real ancestor change.
+        file = self.app / SMALL[0][0]
+        sibling = self.root / 'owned-root-sibling-4417'
+        original = os.read
+        changed = []
+        def reading(fd, size):
+            body = original(fd, size)
+            if body and not changed:
+                sibling.mkdir(); changed.append(True)
+            return body
+        with mock.patch.object(N.os, 'read', side_effect=reading):
+            with self.assertRaisesRegex(Refusal, '^notice-ancestor-read-changed$'):
+                N.physical_read(file, SMALL[0][1], N.Budget(5), SMALL[0][1])
+        self.assertEqual([True], changed)
+
     def test_unrelated_system_tmp_churn_preserves_owned_fixture_read(self):
-        # The public test wrapper supplies an isolated, repository-owned TMPDIR.
         # /tmp is shared by unrelated workers, unlike the selected stock tree.
         shared = Path('/tmp').resolve()
         self.assertNotIn(shared, self.app.parents)
