@@ -35,10 +35,15 @@ interface SelectedInventory {
   frozen: boolean;
   gateAComplete: boolean;
 }
+// The full-suite shard inventory is the set of test sources; empty
+// placeholders carry their names into each fixture.
+const testSourceNames = async () =>
+  (await readdir(path.join(repository, "test")))
+    .filter((name) => name.endsWith(".test.ts"))
+    .sort();
 async function source(t: TestContext) {
-  return fixture(
-    t,
-    Object.fromEntries(
+  return fixture(t, {
+    ...Object.fromEntries(
       await Promise.all(
         files.map(async (file) => [
           file,
@@ -46,7 +51,10 @@ async function source(t: TestContext) {
         ]),
       ),
     ),
-  );
+    ...Object.fromEntries(
+      (await testSourceNames()).map((name) => ["test/" + name, ""]),
+    ),
+  });
 }
 async function alter<T>(root: string, file: string, edit: (input: T) => void) {
   const value = JSON.parse(await readFile(path.join(root, file), "utf8"));
@@ -2294,27 +2302,63 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
     "multi-candidate-workflow",
     "tasks-matrix",
   ];
-  const broken: [string, (list: string[]) => string[]][] = [
-    ["a profile named twice", (list) => [...list, "gate-inventory"]],
+  const broken: [string, (list: string[]) => string[], string[]][] = [
+    ["a profile named twice", (list) => [...list, "gate-inventory"], []],
+    [
+      "a native mutation cohort added",
+      (list) => [...list, "mutation-jest"],
+      ["mutation-jest"],
+    ],
+    [
+      "an unknown profile added",
+      (list) => [...list, "unknown-profile-4410"],
+      [],
+    ],
   ];
-  for (const [label, edit] of broken) {
+  for (const [label, edit, alsoBlocked] of broken) {
     const root = await frozen(t);
     await alter<{ profiles: string[] }>(root, files[3]!, (value) => {
       value.profiles = edit(value.profiles);
     });
     const result = await audit(root, true);
     assert.equal(result.code, 2, label + ": " + result.stderr);
-    const refusals = JSON.parse(result.stdout).controllerAdmission
-      .refusals as AdmissionRefusal[];
+    const admission = JSON.parse(result.stdout).controllerAdmission;
+    assert.equal(admission.fullSuiteListAdmitted, false, label);
     assert.deepEqual(
-      refusals
-        .filter((row) => row.reason === "full-suite-selection-differs")
-        .map((row) => [row.profile, row.controller])
-        .sort(),
-      selected.map((profile) => [profile, "scripts/ci-full-suite-shards.mjs"]),
+      [...admission.fullSuiteBlockedProfiles].sort(),
+      [...selected, ...alsoBlocked].sort(),
       label,
     );
   }
+  for (const [label, list] of [
+    ["only a native mutation cohort", ["mutation-jest"]],
+    ["an empty list", []],
+  ] as const) {
+    const root = await frozen(t);
+    await alter<{ profiles: string[] }>(root, files[3]!, (value) => {
+      value.profiles = [...list];
+    });
+    const result = await audit(root, true);
+    assert.equal(result.code, 2, label + ": " + result.stderr);
+    assert.equal(
+      JSON.parse(result.stdout).controllerAdmission.fullSuiteListAdmitted,
+      false,
+      label,
+    );
+  }
+  const outside = await frozen(t);
+  await alter<RequiredNative>(outside, files[2]!, (rows) => {
+    rows["gate-inventory"]!.push({
+      file: "dist/test/absent-from-the-suite-4410.test.js",
+      name: "a callback in a file the shard inventory lacks 4410",
+    });
+  });
+  const outsideResult = await audit(outside, true);
+  assert.equal(outsideResult.code, 2, outsideResult.stderr);
+  assert.deepEqual(
+    JSON.parse(outsideResult.stdout).controllerAdmission.fullSuiteListProblems,
+    ["file-outside-test-inventory:gate-inventory"],
+  );
   const empty = await frozen(t);
   await alter<{ profiles: string[] }>(empty, files[3]!, (value) => {
     value.profiles = [];
@@ -2339,6 +2383,58 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
     JSON.parse(reordered.stdout).controllerAdmission.fullSuiteListAdmitted,
     true,
   );
+});
+
+test("finite inventory full-suite list admission agrees with the real shard selector", async (t) => {
+  const { selectFullSuiteRequirements } = (await import(
+    path.join(repository, "scripts/ci-full-suite-shards.mjs")
+  )) as {
+    selectFullSuiteRequirements: (
+      profiles: RequiredNative,
+      selection: string[],
+      inventory: { file: string }[],
+      assignedFiles: string[],
+    ) => unknown;
+  };
+  const names = (await testSourceNames()).map((name) =>
+    name.replace(/\.ts$/u, ".js"),
+  );
+  const variants: [string, (list: string[]) => string[], boolean][] = [
+    ["as written", (list) => list, true],
+    ["reordered", (list) => [...list].reverse(), true],
+    ["empty", () => [], false],
+    ["a profile named twice", (list) => [...list, list[0]!], false],
+    ["a native mutation cohort", (list) => [...list, "mutation-jest"], false],
+    ["an unknown profile", (list) => [...list, "unknown-profile-4410"], false],
+  ];
+  for (const [label, edit, expected] of variants) {
+    const root = await frozen(t);
+    let selection: string[] = [];
+    await alter<{ profiles: string[] }>(root, files[3]!, (value) => {
+      value.profiles = selection = edit(value.profiles);
+    });
+    const manifest = JSON.parse(
+      await readFile(path.join(root, files[2]!), "utf8"),
+    ) as RequiredNative;
+    let admitted = true;
+    try {
+      selectFullSuiteRequirements(
+        manifest,
+        selection,
+        names.map((file) => ({ file })),
+        names,
+      );
+    } catch {
+      admitted = false;
+    }
+    assert.equal(admitted, expected, label + " (real selector)");
+    const result = await audit(root, true);
+    assert.equal(
+      JSON.parse(result.stdout).controllerAdmission.fullSuiteListAdmitted,
+      admitted,
+      label,
+    );
+  }
 });
 
 test("finite inventory strict freeze refuses rows a cache, installed context or full-suite controller cannot run", async (t) => {

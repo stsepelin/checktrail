@@ -5,8 +5,10 @@ import {
   constants,
   closeSync,
   fstatSync,
+  lstatSync,
   openSync,
   readFileSync,
+  readdirSync,
   realpathSync,
 } from "node:fs";
 import path from "node:path";
@@ -1121,19 +1123,49 @@ try {
   // when it is empty, longer than 256 or names a profile twice. That fails the
   // full-suite job even when no selected profile is in the list, so strict
   // freeze also refuses the list itself.
-  const fullSuiteListAdmitted =
-    fullSuite.profiles.length > 0 &&
-    fullSuite.profiles.length <= 256 &&
-    new Set(fullSuite.profiles).size === fullSuite.profiles.length;
-  if (!fullSuiteListAdmitted)
-    for (const owner of admissionProfiles.filter((profile) =>
-      fullSuite.profiles.includes(profile),
-    ))
-      admissionRefusals.push({
-        profile: owner,
-        controller: "scripts/ci-full-suite-shards.mjs",
-        reason: "full-suite-selection-differs",
-      });
+  // The same whole-list checks selectFullSuiteRequirements makes, in order;
+  // the shard inventory is the test/*.test.ts sources it compiles from.
+  const fullSuiteTestFiles = new Set();
+  const testDirectory = path.join(root, "test");
+  if (lstatSync(testDirectory, { throwIfNoEntry: false })?.isDirectory())
+    for (const name of readdirSync(testDirectory))
+      if (name.endsWith(".test.ts"))
+        fullSuiteTestFiles.add("dist/test/" + name.replace(/\.ts$/u, ".js"));
+  const fullSuiteListProblems = [];
+  const fullSuiteList = fullSuite.profiles;
+  if (fullSuiteList.length === 0 || fullSuiteList.length > 256)
+    fullSuiteListProblems.push("list-size");
+  if (new Set(fullSuiteList).size !== fullSuiteList.length)
+    fullSuiteListProblems.push("duplicate-profile");
+  if (
+    fullSuiteList.some((profile) =>
+      [
+        "mutation-runners",
+        "mutation-vitest",
+        "mutation-jest",
+        "mutation-pytest",
+        "mutation-phpunit",
+      ].includes(profile),
+    )
+  )
+    fullSuiteListProblems.push("native-mutation-profile");
+  for (const profile of new Set(fullSuiteList)) {
+    if (!Object.hasOwn(current, profile)) {
+      fullSuiteListProblems.push("unknown-profile:" + profile);
+      continue;
+    }
+    const rows = current[profile];
+    if (rows.length === 0 || rows.length > 256)
+      fullSuiteListProblems.push("profile-row-limit:" + profile);
+    if (new Set(rows.map((row) => address(row))).size !== rows.length)
+      fullSuiteListProblems.push("duplicate-callback:" + profile);
+    if (rows.some((row) => !fullSuiteTestFiles.has(row.file)))
+      fullSuiteListProblems.push("file-outside-test-inventory:" + profile);
+  }
+  const fullSuiteListAdmitted = fullSuiteListProblems.length === 0;
+  const fullSuiteBlockedProfiles = fullSuiteListAdmitted
+    ? []
+    : admissionProfiles.filter((profile) => fullSuiteList.includes(profile));
   for (const owner of admissionProfiles) {
     const rows = current[owner] ?? [];
     const refuse = (controller, reason) =>
@@ -1244,6 +1276,8 @@ try {
         maxNameBytes,
         installedHarness,
         fullSuiteListAdmitted,
+        fullSuiteListProblems,
+        fullSuiteBlockedProfiles,
         refusedProfiles: new Set(admissionRefusals.map((row) => row.profile))
           .size,
         refusals: admissionRefusals,

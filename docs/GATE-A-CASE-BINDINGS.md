@@ -115,7 +115,12 @@ when:
     so its rows must also be filed in the harness files;
   - `ci-full-suite-shards.mjs` admits every profile in
     `scripts/ci-full-suite-profiles.json`, which the audit reads, before any
-    shard runs. Each selected profile in that list depends on all the others;
+    shard runs. Each selected profile in that list depends on all the others.
+    The list itself must also pass the selector's whole-list checks: 1 to 256
+    unique names, no native mutation cohort, every name a known profile of 1
+    to 256 unique rows whose files are test sources. The report records the
+    outcome as `fullSuiteListAdmitted`, with its problems and the selected
+    profiles it blocks, and strict freeze fails when it is false;
   - the ARM64 Tasks runtime command runs `lifecycle-runtime-bindings` under
     `set -eu` before the lifecycle and evaluation controllers, and the ARM64
     provenance command runs only after that command succeeds;
