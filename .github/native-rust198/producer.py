@@ -30,6 +30,11 @@ def phase_summary(child,outer):
  for row in child.get('phases',[]):
   key='prepare' if row['phase'].startswith('prepare-attempt-') else row['phase']
   if key in result:result[key]={'status':row['status'],'exitCode':row['exitCode']}
+ prepare=[row for row in child.get('phases',[]) if row['phase'].startswith('prepare-attempt-')]
+ if prepare and prepare[-1]['status']=='command-failed':
+  # Earlier failed attempts are retried; a lower final attempt means the next retry
+  # was refused or interrupted without an exit row, not that this exit ended the build.
+  attempt=int(prepare[-1]['phase'].rsplit('-',1)[1]);result['prepare']['attempt']=attempt;result['prepare']['laterAttemptWithoutExitCode']=attempt<PREPARE_ATTEMPTS
  if outer is not True or child.get('originalCommandsComplete') is not True:
   for row in result.values():
    if row['status']=='command-passed':row.update(status='incomplete',reason='outer completion/quiescence not qualified')
@@ -38,14 +43,29 @@ def phase_summary(child,outer):
 # The build account writes this report, so its rows can name command exits but
 # never grant pass credit: phase_summary() revokes passes without outer completion.
 CHILD_REPORT_BYTES=256*1024
-CHILD_PHASES=frozenset(['configure','original-dist',*('prepare-attempt-'+str(n) for n in range(1,6))])
+PREPARE_ATTEMPTS=5
+CHILD_PHASES=frozenset(['configure','original-dist',*('prepare-attempt-'+str(n) for n in range(1,PREPARE_ATTEMPTS+1))])
+def possible_history(rows,complete):
+ # Exactly the row orders sequence.py can write: configure, consecutive prepare
+ # attempts until one passes, then dist; a complete report has all of them passing.
+ names=[r['phase'] for r in rows];codes=[r['exitCode'] for r in rows]
+ if not rows:return not complete
+ if names[0]!='configure':return False
+ if codes[0]!=0:return len(rows)==1 and not complete
+ k=1;prepared=False
+ while k<len(rows) and names[k]=='prepare-attempt-'+str(k):
+  k+=1
+  if codes[k-1]==0:prepared=True;break
+ if not prepared or k==len(rows):return len(rows)==k and not complete
+ return names[k]=='original-dist' and len(rows)==k+1 and (codes[k]==0 or not complete)
 def read_child_report(file):
  before=file.lstat();need(stat.S_ISREG(before.st_mode) and before.st_nlink==1 and 0<before.st_size<=CHILD_REPORT_BYTES,'Physical bounded child phase report');fd=os.open(file,os.O_RDONLY|os.O_NOFOLLOW)
  with os.fdopen(fd,'rb') as stream:
   opened=os.fstat(stream.fileno());need((opened.st_dev,opened.st_ino)==(before.st_dev,before.st_ino),'Opened child phase report endpoint');body=stream.read(CHILD_REPORT_BYTES+1)
  need(len(body)==before.st_size,'Child phase report changed while reading');value=json.loads(body);need(isinstance(value,dict) and isinstance(value.get('phases'),list) and len(value['phases'])<=len(CHILD_PHASES),'Child phase report shape')
  for row in value['phases']:need(isinstance(row,dict) and row.get('phase') in CHILD_PHASES and type(row.get('exitCode')) is int and row.get('status')==('command-passed' if row['exitCode']==0 else 'command-failed'),'Child phase row shape')
- return value
+ failure=value.get('failure');need(type(value.get('originalCommandsComplete')) is bool and (failure is None or (isinstance(failure,dict) and isinstance(failure.get('type'),str) and isinstance(failure.get('reason'),str))),'Child completion/failure shape')
+ need(possible_history(value['phases'],value['originalCommandsComplete']),'Child phase history impossible');return value
 
 def retain_generated_configuration(source,capture):
  # Original bootstrap.py1346..1361 selects bootstrap.toml before config.toml.
@@ -97,7 +117,7 @@ def observe(p,host,archives,work,context,ops):
    try:child=read_child_report(child_file);failure_child_report={'accepted':True}
    except Exception as error:failure_child_report={'accepted':False,'type':type(error).__name__,'reason':str(error)[:512]}
   if time.monotonic()>=deadline:complete=False;failure={'type':'TimeoutError','reason':'Whole original producer deadline exhausted'}
-  result={'originalCommandBuildWitnessComplete':complete,'phaseAccounting':phase_summary(child,complete),'failurePathChildReport':failure_child_report,'failure':failure,'quiescence':quiescence,'runContext':context,'sourceCommit':p['sourceCommit'],'nativePhases':native.receipts if native else [],'producedDistInventory':inventory,'generatedOriginalConfiguration':configuration,'originalStableGuardNoOps':{'enzymePackaging':'original-stable-guard-no-pass-credit','miriPackaging':'original-stable-guard-no-pass-credit','craneliftPackaging':'original-stable-guard-no-pass-credit; configured compiler backend remains selected','allOtherDefaultComponentActualSelection':'not-independently-accepted; root original trace/config review required'},'ownedVolume':volume_record,'ownedVolumeState':volume_state,'sourceWorkspace':str(source) if 'source' in locals() else None,'elapsedSeconds':time.monotonic()-started,'allOriginalDefaultComponentCoverageStillRequiresRootReview':True,'upstreamTestsOrModelBenchmarkTrialsPassedClaimed':False,'wholeProducerSDKLegalHistoricalEqualityOrGateAClosureClaimed':False,'exportOrEncryptionPerformed':False};N.atomic_json(work/'capture/RESULT.json',result,mode=0o400)
+  result={'originalCommandBuildWitnessComplete':complete,'phaseAccounting':phase_summary(child,complete),'failurePathChildReport':failure_child_report,'childFailure':{'type':child['failure']['type'][:128],'reason':child['failure']['reason'][:512]} if child.get('failure') else None,'failure':failure,'quiescence':quiescence,'runContext':context,'sourceCommit':p['sourceCommit'],'nativePhases':native.receipts if native else [],'producedDistInventory':inventory,'generatedOriginalConfiguration':configuration,'originalStableGuardNoOps':{'enzymePackaging':'original-stable-guard-no-pass-credit','miriPackaging':'original-stable-guard-no-pass-credit','craneliftPackaging':'original-stable-guard-no-pass-credit; configured compiler backend remains selected','allOtherDefaultComponentActualSelection':'not-independently-accepted; root original trace/config review required'},'ownedVolume':volume_record,'ownedVolumeState':volume_state,'sourceWorkspace':str(source) if 'source' in locals() else None,'elapsedSeconds':time.monotonic()-started,'allOriginalDefaultComponentCoverageStillRequiresRootReview':True,'upstreamTestsOrModelBenchmarkTrialsPassedClaimed':False,'wholeProducerSDKLegalHistoricalEqualityOrGateAClosureClaimed':False,'exportOrEncryptionPerformed':False};N.atomic_json(work/'capture/RESULT.json',result,mode=0o400)
  return result
 
 def finish_private(p,result,work,context,host,ops):

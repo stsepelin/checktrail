@@ -169,7 +169,7 @@ class PermissionAccessRestore(unittest.TestCase):
  def test_every_failure_kind_restores_private_output_and_keeps_request_root_only(self):
   refusal=H.InnerPermissionProbeRefusal({'stage':'synthetic-inner-refusal','exitCode':77})
   small=SimpleNamespace(**{**vars(self.module),'MAX_CAPTURE_BYTES':7})
-  cases=[('inner-refusal',refusal,self.module,H.InnerPermissionProbeRefusal,'inner permission'),('endpoint-mismatch',{'metadataEndpointSha256':'0'*64},self.module,ValueError,'endpoint changed'),('compression-bound',{'metadataEndpointSha256':self.endpoint},small,ValueError,'metadata-carrier-byte-bound')]
+  cases=[('inner-refusal',refusal,self.module,H.InnerPermissionProbeRefusal,'inner permission'),('endpoint-mismatch',{'metadataEndpointSha256':'0'*64},self.module,ValueError,'endpoint changed'),('compression-bound',{'metadataEndpointSha256':self.endpoint},small,ValueError,'metadata-carrier-byte-bound'),('result-shape',{'metadataEndpointSha256':self.endpoint},self.module,KeyError,'controllerProtected')]
   for label,result,module,kind,message in cases:
    with self.subTest(case=label):
     self.fresh(label);self.module=module
