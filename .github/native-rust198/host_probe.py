@@ -126,14 +126,24 @@ def permission_observation(developer,sdk,toolchain,tools,output,context):
  for row in tools.values():
   file=Path(row['path'])
   if not covered(file):roots.append(file)
- frame=module.snapshot(roots,bounds);encoded=module.encoded(frame);D.need(len(encoded)<=module.MAX_DECODED_METADATA-module.MAX_COMMAND_BYTES-65536,'Permission metadata bound');output.chmod(0o755);request=output/'permission-request.json';module.write_json(request,{'frame':frame,'controller':{'file':str(HERE/'reused_admission.py'),'sha256':module.digest((HERE/'reused_admission.py').read_bytes()),'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444)
- command=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i','PATH=/usr/bin:/bin:/usr/sbin:/sbin','LC_ALL=C','/usr/bin/python3','-I','-S','-B',str(HERE/'reused_admission.py'),'--inner',str(request)]
- # The inner invocation is reviewed first-party metadata code, not an SDK producer.
- value=observe_inner(module,command,clean,receipts,timeout=min(300,bounds.deadline-bounds.clock()));end=module.current_endpoint(frame);D.need(value['metadataEndpointSha256']==module.digest(module.encoded(end)),'Physical frame endpoint changed');compressed=output/'selected-sdk-tool-controller-frame.json.gz'
- with compressed.open('xb') as f:
-  os.fchmod(f.fileno(),0o400)
-  with gzip.GzipFile(filename='',fileobj=module.LimitedCarrier(f,module.MAX_CAPTURE_BYTES),mode='wb',mtime=0) as z:z.write(encoded)
- request.unlink();output.chmod(0o700)
+ frame=module.snapshot(roots,bounds);encoded=module.encoded(frame);D.need(len(encoded)<=module.MAX_DECODED_METADATA-module.MAX_COMMAND_BYTES-65536,'Permission metadata bound');request=output/'permission-request.json';accepted=False
+ # The build account may read the output directory and request only while the
+ # inner probe runs. Every exit restores private access; a failed request stays
+ # behind as root-only evidence of what was probed.
+ try:
+  output.chmod(0o755);module.write_json(request,{'frame':frame,'controller':{'file':str(HERE/'reused_admission.py'),'sha256':module.digest((HERE/'reused_admission.py').read_bytes()),'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444)
+  command=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i','PATH=/usr/bin:/bin:/usr/sbin:/sbin','LC_ALL=C','/usr/bin/python3','-I','-S','-B',str(HERE/'reused_admission.py'),'--inner',str(request)]
+  # The inner invocation is reviewed first-party metadata code, not an SDK producer.
+  value=observe_inner(module,command,clean,receipts,timeout=min(300,bounds.deadline-bounds.clock()));end=module.current_endpoint(frame);D.need(value['metadataEndpointSha256']==module.digest(module.encoded(end)),'Physical frame endpoint changed');compressed=output/'selected-sdk-tool-controller-frame.json.gz'
+  with compressed.open('xb') as f:
+   os.fchmod(f.fileno(),0o400)
+   with gzip.GzipFile(filename='',fileobj=module.LimitedCarrier(f,module.MAX_CAPTURE_BYTES),mode='wb',mtime=0) as z:z.write(encoded)
+  accepted=True
+ finally:
+  try:
+   if accepted:request.unlink()
+   elif os.path.lexists(request):request.chmod(0o400)
+  finally:output.chmod(0o700)
  return {'buildUid':account.pw_uid,'buildGid':account.pw_gid,'buildUser':'nobody','runnerUid':int(os.environ['CHECKTRAIL_CONTROLLER_UID']),'sudoDenied':True,'firstPartyAccessCanary':canary,'buildUidProcesses':active,'controllerProtected':value['controllerProtected'],'sdkAndToolsProtectedFromBuildUid':value['allSelectedEntriesReadableExecutableAndProtected'],'allDeclaredSDKToolBytesHashed':set(tools)==set(D.TOOLS),'permissionObservation':value,'permissionCommands':receipts,'selectedFrame':{'file':str(compressed),'bytes':compressed.stat().st_size,'sha256':hashlib.sha256(compressed.read_bytes()).hexdigest(),'entries':len(frame),'hashReadBytes':bounds.bytes},'permissionEndpointEqualityIsNotContinuousImmutability':True,'nativeAdmissionGranted':False,'runContext':context}
 
 def main():

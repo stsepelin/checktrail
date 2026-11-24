@@ -217,6 +217,96 @@ class ControlTests(unittest.TestCase):
    native=N.Native(self.root,h)
    with self.assertRaisesRegex(ValueError,'capacity'):native.run('synthetic-disk',[sys.executable,'-I','-c','pass'],{},self.root,5,as_build=False)
 
+class SyntheticProducerOps:
+ """Synthetic stand-in for the build-UID child; it only writes fixture files."""
+ def __init__(self,p,h,report,artifacts,exit_failure=None,survivor=False):self.p=p;self.h=h;self.report=report;self.artifacts=artifacts;self.exit_failure=exit_failure;self.survivor=survivor;self.started=False;self.detached=False
+ def processes(self):return [{'uid':self.h['buildUid'],'pid':7}] if self.survivor and self.started else []
+ def volume(self,work,ctx,host):
+  vc={'run':ctx['GITHUB_RUN_ID'],'attempt':ctx['GITHUB_RUN_ATTEMPT'],'head':ctx['GITHUB_SHA']}
+  def run(args,seconds):
+   if args[1]=='create':Path(args[-1]).write_bytes(b'synthetic inert image')
+   return {'imagePath':str(work/'source-work.sparseimage'),'mountPoint':str(work/'case-work'),'device':'/dev/disk42s1'}
+  return V.prepare(work,vc,run,probe=lambda _:{'caseSensitive':True})
+ def materialize(self,pins,archives,destination):
+  destination.mkdir();source=destination/'source';source.mkdir();file=source/'original.txt';file.write_bytes(b'synthetic source fixture');file.chmod(0o644);records=[{'path':'original.txt','type':'regular','mode':0o644,'bytes':file.stat().st_size,'sha256':hashlib.sha256(file.read_bytes()).hexdigest()}];membermap=destination/'original-source-members.json';membermap.write_text(json.dumps(records));return {'source':str(source),'memberMap':str(membermap)}
+ def activate(self,source,host):pass
+ def native(self,work,host):
+  outer=self
+  class SyntheticNative:
+   receipts=[{'syntheticOnly':True}]
+   def run(self,name,argv,env,cwd,seconds):
+    outer.started=True;(cwd/'bootstrap.toml').write_text("profile='dist'\n# synthetic configuration only\n");dist=cwd/'build/dist';dist.mkdir(parents=True)
+    for filename,body in outer.artifacts.items():(dist/filename).write_bytes(body)
+    Path(argv[-1]).write_bytes(outer.report)
+    # Native.run() raises on any nonzero child exit, after the child wrote its report.
+    if outer.exit_failure:raise ValueError(outer.exit_failure)
+  return SyntheticNative()
+ def source_matches(self,source,records):return P.M.original_frame_matches(source,records)
+ def detach(self,record,ctx,host,work):
+  self.detached=True;vc={'run':ctx['GITHUB_RUN_ID'],'attempt':ctx['GITHUB_RUN_ATTEMPT'],'head':ctx['GITHUB_SHA']};current={'imagePath':record['image'],'mountPoint':record['mount'],'device':record['device']};return V.detach_owned(record,vc,lambda *_:{'ownedAttachmentAbsent':True},current)
+
+class ProducerEvidenceTests(unittest.TestCase):
+ context={'GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40}
+ def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.p=profile();self.h=qualified(self.p);self.count=0
+ def tearDown(self):self.temp.cleanup()
+ def report(self,rows,complete=False):return json.dumps({'originalCommandsComplete':complete,'phases':[{'phase':n,'argv':['synthetic'],'exitCode':c,'status':'command-passed' if c==0 else 'command-failed'} for n,c in rows],'failure':None if complete else {'type':'ValueError','reason':'synthetic'}}).encode()
+ def artifacts(self,empty=None):return {name:(b'' if name==empty else ('synthetic archive %d for %s' % (4096+i,name)).encode()) for i,name in enumerate(self.p['minimumSDKArtifactNames'])}
+ def observe(self,ops):
+  self.count+=1;work=self.root/('rust198-1-1-synthetic-evidence-'+str(self.count));old_umask=os.umask(0o077)
+  try:result=P.observe(self.p,self.h,{},work,self.context,ops)
+  finally:os.umask(old_umask)
+  return result,P.finish_private(self.p,result,work,self.context,self.h,ops)
+ def test_failed_sequence_keeps_actual_command_exit_and_stays_failed(self):
+  for rows,failed,code in [([('configure',0),('prepare-attempt-1',0),('original-dist',137)],'original-dist',137),([('configure',23)],'configure',23)]:
+   with self.subTest(failed=failed):
+    ops=SyntheticProducerOps(self.p,self.h,self.report(rows),self.artifacts(),exit_failure='Native phase failed: original-source-producer');result,lifecycle=self.observe(ops);phases=result['phaseAccounting']
+    self.assertEqual({'status':'command-failed','exitCode':code},phases[failed]);self.assertEqual({'accepted':True},result['failurePathChildReport'])
+    self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertIn('Native phase failed',result['failure']['reason']);self.assertFalse(lifecycle['controllerLifecycleComplete']);self.assertNotIn('command-passed',[row['status'] for row in phases.values()])
+    for name,_ in rows:
+     key='prepare' if name.startswith('prepare') else name
+     if key!=failed:self.assertEqual({'status':'incomplete','exitCode':0,'reason':'outer completion/quiescence not qualified'},phases[key])
+    if failed=='configure':self.assertEqual({'status':'incomplete','reason':'not-established'},phases['original-dist'])
+ def test_failure_path_report_refused_when_malformed_oversized_forged_or_not_quiescent(self):
+  valid=self.report([('configure',0),('prepare-attempt-1',0),('original-dist',137)]);padding=P.CHILD_REPORT_BYTES+1-len(valid)
+  cases={'malformed':(b'{"phases":[{"phase":"original-dist"',False),'oversized':(valid[:-1]+b',"padding":"'+b'x'*(padding-13)+b'"}',False),'string-exit':(valid.replace(b'"exitCode": 137',b'"exitCode": "137"'),False),'pass-with-failed-exit':(valid.replace(b'"command-failed"',b'"command-passed"'),False),'unknown-phase':(valid.replace(b'original-dist',b'synthetic-extra'),False),'build-uid-still-live':(valid,True)}
+  self.assertGreater(len(cases['oversized'][0]),P.CHILD_REPORT_BYTES);self.assertIn(b'"exitCode": "137"',cases['string-exit'][0]);self.assertIn(b'"exitCode": 137',valid)
+  for label,(body,survivor) in cases.items():
+   with self.subTest(case=label):
+    ops=SyntheticProducerOps(self.p,self.h,body,self.artifacts(),exit_failure='Native phase failed: original-source-producer',survivor=survivor);result,lifecycle=self.observe(ops)
+    self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertFalse(lifecycle['controllerLifecycleComplete']);self.assertIn('Native phase failed',result['failure']['reason'])
+    self.assertEqual({name:{'status':'incomplete','reason':'not-established'} for name in ['configure','prepare','original-dist']},result['phaseAccounting'])
+    if survivor:self.assertIsNone(result['failurePathChildReport'])
+    else:self.assertFalse(result['failurePathChildReport']['accepted'])
+ def test_failure_path_report_at_exact_byte_bound_is_still_read(self):
+  valid=self.report([('configure',0),('prepare-attempt-1',0),('original-dist',137)]);body=valid[:-1]+b',"padding":"'+b'x'*(P.CHILD_REPORT_BYTES-len(valid)-13)+b'"}';self.assertEqual(P.CHILD_REPORT_BYTES,len(body))
+  ops=SyntheticProducerOps(self.p,self.h,body,self.artifacts(),exit_failure='Native phase failed: original-source-producer');result,lifecycle=self.observe(ops)
+  self.assertEqual({'status':'command-failed','exitCode':137},result['phaseAccounting']['original-dist']);self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertFalse(lifecycle['controllerLifecycleComplete'])
+ def test_successful_sequence_records_passes_without_failure_path_read(self):
+  ops=SyntheticProducerOps(self.p,self.h,self.report([('configure',0),('prepare-attempt-1',0),('original-dist',0)],complete=True),self.artifacts());result,lifecycle=self.observe(ops)
+  self.assertTrue(result['originalCommandBuildWitnessComplete']);self.assertIsNone(result['failure']);self.assertIsNone(result['failurePathChildReport']);self.assertEqual({name:{'status':'command-passed','exitCode':0} for name in ['configure','prepare','original-dist']},result['phaseAccounting']);self.assertTrue(lifecycle['controllerLifecycleComplete'])
+  self.assertEqual(sorted(len(body) for body in self.artifacts().values()),sorted(r['bytes'] for r in result['producedDistInventory']))
+ def test_empty_required_archive_beside_nonempty_siblings_is_not_a_witness(self):
+  for empty in self.p['minimumSDKArtifactNames']:
+   with self.subTest(empty=empty):
+    ops=SyntheticProducerOps(self.p,self.h,self.report([('configure',0),('prepare-attempt-1',0),('original-dist',0)],complete=True),self.artifacts(empty));result,lifecycle=self.observe(ops)
+    self.assertFalse(result['originalCommandBuildWitnessComplete']);self.assertIn('outputs empty',result['failure']['reason']);self.assertFalse(lifecycle['controllerLifecycleComplete'])
+    self.assertEqual(1,sum(1 for body in self.artifacts(empty).values() if body==b''))
+
+class RetentionTraversalTests(unittest.TestCase):
+ limits={'captureBytes':2*1024**2,'captureFiles':16}
+ def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.outputs=self.root/'outputs';self.outputs.mkdir();(self.outputs/'visible.txt').write_bytes(b'readable sibling 4217');self.nested=self.outputs/'nested';self.nested.mkdir();(self.nested/'hidden.bin').write_bytes(b'n'*137)
+ def tearDown(self):self.nested.chmod(0o700);self.temp.cleanup()
+ @unittest.skipIf(os.geteuid()==0,'root reads a mode-000 directory, so no traversal error can be produced')
+ def test_unreadable_directory_beside_readable_sibling_fails_retention(self):
+  self.nested.chmod(0)
+  with self.assertRaises(PermissionError):os.listdir(self.nested)
+  with self.assertRaisesRegex(ValueError,'traversal failed: PermissionError'):R.catalog({'dist':self.outputs},self.limits)
+  with self.assertRaisesRegex(ValueError,'traversal failed'):R.retain_private({'dist':self.outputs},self.root/'out.tar',self.limits,{'allBuildUidProcessesStopped':True})
+  self.assertFalse((self.root/'out.tar').exists());self.assertFalse((self.root/'out.tar.unaccepted').exists())
+ def test_readable_nested_directory_is_cataloged_in_full(self):
+  rows=R.catalog({'dist':self.outputs},self.limits);self.assertEqual({'dist/visible.txt':21,'dist/nested/hidden.bin':137},{r['member']:r['bytes'] for r in rows})
+  result=R.retain_private({'dist':self.outputs},self.root/'out.tar',self.limits,{'allBuildUidProcessesStopped':True});self.assertEqual(2,result['membersVerified'])
+
 class ToolTelemetryTests(unittest.TestCase):
  def setUp(self):self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name).resolve()
  def tearDown(self):self.tmp.cleanup()

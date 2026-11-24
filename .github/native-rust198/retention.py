@@ -6,12 +6,16 @@ from admission import need
 def identity(s):
  return (s.st_dev,s.st_ino,s.st_mode,s.st_uid,s.st_gid,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns)
 
+def traversal_failed(error):
+ # os.walk() otherwise skips an unreadable directory and its whole subtree.
+ raise ValueError('Private output traversal failed: '+type(error).__name__) from error
+
 def catalog(roots,limits,clock=time.monotonic,deadline=None):
  rows=[];seen=set();total=0
  for label,root in roots.items():
   need(re.fullmatch('[a-z][a-z0-9-]{0,63}',label),'Fixed safe private-output label')
   need(root==root.resolve(strict=True) and root.is_dir(),'Physical private output root')
-  for folder,dirs,files in os.walk(root,followlinks=False):
+  for folder,dirs,files in os.walk(root,onerror=traversal_failed,followlinks=False):
    for name in dirs:need(not (Path(folder)/name).is_symlink(),'Output directory symlink refused')
    for name in files:
     need(deadline is None or clock()<deadline,'Private output catalog deadline')

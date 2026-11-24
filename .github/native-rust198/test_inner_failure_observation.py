@@ -137,4 +137,49 @@ class InnerFailure(unittest.TestCase):
     if kind=='symlink':selected.symlink_to(app/'Resources/English.lproj/License.rtf')
     else:selected.mkdir()
     result=self.observed_license(root,developer);self.assertIsNone(result['originalSLA']);self.assertFalse(result['originalSLATextRetained']);self.assertFalse((root/'observation/original-Xcode-license.rtf').exists())
+class PermissionAccessRestore(unittest.TestCase):
+ """The build account may read the private output only while the inner probe runs."""
+ def setUp(self):
+  self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.fresh('metadata');self.frame=[{'synthetic':'firstparty-frame-entry-5813'}]
+  class Bounds:
+   bytes=5813
+   def __init__(self):self.deadline=H.time.monotonic()+5;self.clock=H.time.monotonic
+   def tick(self):pass
+  def command(argv,env,receipts,codes=(0,),timeout=30):
+   if argv[0]=='/usr/bin/id':return subprocess.CompletedProcess(argv,0,b'20\n',b'')
+   if argv[:3]==['/usr/bin/sudo','-n','-l']:return subprocess.CompletedProcess(argv,1,b'synthetic-policy',b'')
+   if argv[0]=='/bin/ps':return subprocess.CompletedProcess(argv,0,b'',b'')
+   raise AssertionError('unexpected synthetic command')
+  encoded=lambda value:json.dumps(value).encode();digest=lambda value:hashlib.sha256(value).hexdigest()
+  self.module=SimpleNamespace(Bounds=Bounds,command=command,group_id=int,sudo_denial=lambda value:True,snapshot=lambda roots,bounds:self.frame,encoded=encoded,digest=digest,current_endpoint=lambda frame:frame,LimitedCarrier=H.guard().LimitedCarrier,MAX_CAPTURE_BYTES=32*1024**2,MAX_DECODED_METADATA=128*1024**2,MAX_COMMAND_BYTES=1024**2,write_json=lambda path,value:path.write_text(json.dumps(value)))
+  self.endpoint=digest(encoded(self.frame))
+ def tearDown(self):self.temp.cleanup()
+ def fresh(self,label):self.output=self.root/label;self.output.mkdir(mode=0o700);self.output.chmod(0o700);self.during=[]
+ def mode(self,path):return path.lstat().st_mode&0o777
+ def observed(self,result):
+  def inner(module,argv,env,receipts,timeout):
+   request=Path(argv[-1]);self.during.append((self.mode(self.output),self.mode(request)))
+   if isinstance(result,Exception):raise result
+   return result
+  return inner
+ def probe(self,inner):
+  account=SimpleNamespace(pw_uid=os.getuid()+1,pw_gid=20)
+  with mock.patch.object(H,'guard',return_value=self.module),mock.patch.object(H.pwd,'getpwnam',return_value=account),mock.patch.dict(os.environ,{'CHECKTRAIL_CONTROLLER_UID':str(os.getuid())}),mock.patch.object(H.PL,'access_canary',return_value={'firstPartyOnlyNonemptyAccessCanaryObserved':True,'payloadReadBytesVerifiedByLegacyHashCheck':1,'SDKFrameOrNativeAdmissionCredit':False}),mock.patch.object(H,'observe_inner',side_effect=inner),redirect_stdout(io.StringIO()):
+   return H.permission_observation(self.root/'Developer',self.root/'SDK',self.root/'Toolchain',{},self.output,{'synthetic':True})
+ def test_every_failure_kind_restores_private_output_and_keeps_request_root_only(self):
+  refusal=H.InnerPermissionProbeRefusal({'stage':'synthetic-inner-refusal','exitCode':77})
+  small=SimpleNamespace(**{**vars(self.module),'MAX_CAPTURE_BYTES':7})
+  cases=[('inner-refusal',refusal,self.module,H.InnerPermissionProbeRefusal,'inner permission'),('endpoint-mismatch',{'metadataEndpointSha256':'0'*64},self.module,ValueError,'endpoint changed'),('compression-bound',{'metadataEndpointSha256':self.endpoint},small,ValueError,'metadata-carrier-byte-bound')]
+  for label,result,module,kind,message in cases:
+   with self.subTest(case=label):
+    self.fresh(label);self.module=module
+    with self.assertRaisesRegex(kind,message):self.probe(self.observed(result))
+    self.assertEqual([(0o755,0o444)],self.during);self.assertEqual(0o700,self.mode(self.output))
+    request=self.output/'permission-request.json';self.assertEqual(0o400,self.mode(request));self.assertEqual(self.frame,json.loads(request.read_bytes())['frame'])
+ def test_success_removes_request_and_restores_private_output(self):
+  value=self.probe(self.observed({'metadataEndpointSha256':self.endpoint,'controllerProtected':True,'allSelectedEntriesReadableExecutableAndProtected':True,'failureCount':0}))
+  self.assertEqual([(0o755,0o444)],self.during);self.assertEqual(0o700,self.mode(self.output));self.assertFalse(os.path.lexists(self.output/'permission-request.json'))
+  frame=Path(value['selectedFrame']['file']);self.assertEqual(0o400,self.mode(frame));self.assertEqual(1,value['selectedFrame']['entries']);self.assertEqual(5813,value['selectedFrame']['hashReadBytes']);self.assertTrue(value['controllerProtected'])
+  import gzip;self.assertEqual(self.frame,json.loads(gzip.decompress(frame.read_bytes())))
+
 if __name__=='__main__':unittest.main()
