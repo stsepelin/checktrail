@@ -48,6 +48,18 @@ else:
 '''
 
 
+def running(process):
+ """Report a live leader without reaping it; poll() would release its PID.
+
+ The observer may signal the attach group only while its own Popen child is
+ unreaped, so a harness that reaps here would hide whether that group is closed.
+ """
+ if process.returncode is not None:return False
+ probe=REAL_POPEN(['ps','-o','stat=','-p',str(process.pid)],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
+ state=probe.communicate(timeout=5)[0].strip()
+ return bool(state) and not state.startswith('Z')
+
+
 def owner():
  return {'Id':IDENTIFIER,'Config':{'Labels':{'io.checktrail.gcc-staged-owner':NAME},'Entrypoint':['/usr/bin/env'],
   'Cmd':['-i',*[k+'='+v for k,v in m.body.stage.FIXED_ENVIRONMENT.items()],*m.BODY]},
@@ -73,7 +85,7 @@ class Observations(unittest.TestCase):
                       {'Status':'exited','Running':False,'Pid':0,'ExitCode':code if code>=0 else 128-code,'OOMKilled':False,'Error':''})
      return json.dumps([value]).encode()
     self.assertEqual(args[:2],['kill','--signal']);self.assertEqual(args[-1],NAME)
-    if processes and processes[0].poll() is None:os.killpg(processes[0].pid,getattr(signal,'SIG'+args[2]))
+    if processes and running(processes[0]):os.killpg(processes[0].pid,getattr(signal,'SIG'+args[2]))
     return b''
    try:
     with mock.patch.object(m.h,'docker',side_effect=docker),mock.patch.object(m.subprocess,'Popen',side_effect=popen),\
@@ -95,8 +107,9 @@ class Observations(unittest.TestCase):
     return result,calls
    finally:
     for process in processes:
-     try:os.killpg(process.pid,signal.SIGKILL)
-     except ProcessLookupError:pass
+     if process.returncode is None:
+      try:os.killpg(process.pid,signal.SIGKILL)
+      except (ProcessLookupError,PermissionError):pass
      process.wait(timeout=5)
 
  def test_real_original_zero_and_nonzero_are_separate_from_wrapper_exit(self):
@@ -157,6 +170,47 @@ class Observations(unittest.TestCase):
    with mock.patch.object(m.h,'docker') as docker,mock.patch.object(m.subprocess,'Popen') as start:
     with self.assertRaisesRegex(ValueError,'Fresh actual'):m.observe(root,NAME,IDENTIFIER,10,{'capturedMonotonic':time.monotonic()-31,'remainingSeconds':20000},sdk_seconds=50)
     docker.assert_not_called();start.assert_not_called()
+
+
+ def fake_child_cleanup(self,*,reaped):
+  """A late refusal after wait() reaped the client, or a cutoff while it is unreaped."""
+  with tempfile.TemporaryDirectory() as name:
+   root=Path(name).resolve();(root/'state').mkdir();(root/'observations').mkdir()
+   reader,writer=os.pipe();os.close(writer);stream=os.fdopen(reader,'rb',buffering=0)
+   child=SimpleNamespace(pid=424242,returncode=None,stdout=stream);clock=[5000.0];calls=[]
+   def wait(timeout):
+    if timeout!=5 and not reaped:raise subprocess.TimeoutExpired('docker',timeout)
+    if child.returncode is None:
+     child.returncode=0 if reaped else -signal.SIGKILL
+     clock[0]+=137 # The wrapper terminal arrives after the native window.
+    return child.returncode
+   child.wait=mock.Mock(side_effect=wait)
+   def docker(args,**kw):
+    calls.append(args)
+    if args==['inspect',NAME]:
+     value=owner()
+     if child.returncode is not None:value['State']={'Status':'exited','Running':False,'Pid':0,'ExitCode':0,'OOMKilled':False,'Error':''}
+     return json.dumps([value]).encode()
+    return b''
+   with mock.patch.object(m.h,'docker',side_effect=docker),mock.patch.object(m.subprocess,'Popen',return_value=child),\
+        mock.patch.object(m.shutil,'disk_usage',return_value=SimpleNamespace(free=200*m.h.GIB)),mock.patch.object(m.os,'killpg') as kill,\
+        mock.patch.object(m.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(m.time,'sleep'):
+    try:result=m.observe(root,NAME,IDENTIFIER,10,{'capturedMonotonic':5000.0,'remainingSeconds':20000},sdk_seconds=50)
+    finally:stream.close()
+   return result,calls,kill,child
+
+ def test_late_deadline_after_reaping_the_attach_client_never_signals_its_reusable_group(self):
+  result,calls,kill,child=self.fake_child_cleanup(reaped=True)
+  kill.assert_not_called();self.assertIn('Late main05 wrapper terminal',result['cutoffOrRetentionError'])
+  self.assertEqual(result['attachExitCode'],0);self.assertEqual(child.wait.call_count,2)
+  # Owned container cleanup is by the exact name, independent of the group decision.
+  self.assertIn(['kill','--signal','TERM',NAME],calls);self.assertIn(['kill','--signal','KILL',NAME],calls)
+
+ def test_cutoff_with_the_attach_client_still_unreaped_signals_its_reserved_group(self):
+  result,calls,kill,child=self.fake_child_cleanup(reaped=False)
+  kill.assert_called_once_with(424242,signal.SIGKILL);self.assertIn('native/source-service cutoff',result['cutoffOrRetentionError'])
+  self.assertEqual(result['attachExitCode'],-signal.SIGKILL)
+  self.assertIn(['kill','--signal','TERM',NAME],calls);self.assertIn(['kill','--signal','KILL',NAME],calls)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

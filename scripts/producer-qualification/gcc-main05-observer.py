@@ -95,8 +95,12 @@ def observe(output,name,identifier,maximum_seconds,service_clock,*,sdk_seconds):
             try:h.docker(['kill','--signal',chosen,name],timeout=5)
             except BaseException:pass
             if chosen=='TERM':time.sleep(1)
-        try:os.killpg(process.pid,signal.SIGKILL)
-        except ProcessLookupError:pass
+        # Only an unreaped Popen child still reserves its session-leader PID.
+        # After a late deadline refusal following wait(), that group may be reused.
+        # Darwin answers EPERM, not ESRCH, when only the zombie leader is left.
+        if process.returncode is None:
+            try:os.killpg(process.pid,signal.SIGKILL)
+            except (ProcessLookupError,PermissionError):pass
         status=process.wait(timeout=5)
     finally:
         selector.close();process.stdout.close()
