@@ -266,23 +266,24 @@ class DataControls(Fixture):
         shared = self.root.parent
         self.assertIn(shared, self.app.parents)
         file = self.app / SMALL[0][0]
-        unrelated = shared / ('unrelated-worker-entry-%d-7193' % os.getpid())
         original = os.read
         created = []
         def reading(fd, size):
             body = original(fd, size)
             if body and not created:
-                unrelated.write_bytes(b'unrelated 7193'); created.append(True)
+                descriptor, name = tempfile.mkstemp(prefix='unrelated-worker-entry-7193-', dir=shared)
+                os.close(descriptor); created.append(name)
             return body
         try:
             with mock.patch.object(N.os, 'read', side_effect=reading):
                 body, row = N.physical_read(file, SMALL[0][1], N.Budget(5), SMALL[0][1])
-            self.assertEqual([True], created)
+            self.assertEqual(1, len(created))
+            self.assertEqual(shared, Path(created[0]).parent)
             self.assertEqual(b'A' * SMALL[0][1], body)
             self.assertEqual({'bytes': len(body), 'sha256': hashlib.sha256(body).hexdigest()}, row)
         finally:
-            if unrelated.exists():
-                unrelated.unlink()
+            for name in created:
+                os.unlink(name)
 
     def test_held_ancestors_end_above_the_fixture_root(self):
         owned = [self.root, self.app, *self.app.rglob('*')]

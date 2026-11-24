@@ -25,8 +25,8 @@
     "sha256": "2c777f1d1a4a5135a8aaaaedd0971bbe54e60367bba7bb2425fd4d82b6169a0d"
   },
   {
-    "bytes": 33144,
+    "bytes": 33206,
     "file": "test_notice_custody.py",
-    "sha256": "3badd431fb690937c66d19db004c07536f22012fe2b3b9f274fdfa48fa3acd68"
+    "sha256": "d21dad502bb20efb32b81591b78bf2fb7da71ae4f34bd7b456db0baf6cdf4eff"
   }
 ]

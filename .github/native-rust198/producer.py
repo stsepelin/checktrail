@@ -115,6 +115,17 @@ class Operations:
  def processes(self):return N.ps_rows()
  def source_matches(self,source,records):return M.original_frame_matches(source,records)
 
+CHILD_SOURCES=('sequence.py','admission.py')
+def stage_child_sources(folder):
+ # The build child is a separate interpreter. It runs copies written from the bytes
+ # this module's loader holds into a fresh root-created directory, not the controller
+ # paths, so a controller file replaced after launch verification never reaches it.
+ folder.mkdir(mode=0o755);folder.chmod(0o755)
+ for name in CHILD_SOURCES:
+  body=__loader__.get_data(str(HERE/name));fd=os.open(folder/name,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o444)
+  with os.fdopen(fd,'wb') as stream:os.fchmod(stream.fileno(),0o444);stream.write(body);stream.flush();os.fsync(stream.fileno())
+ return folder/'sequence.py'
+
 # The top-level lifecycle is independent of transport: no download, key or export calls.
 def observe(p,host,archives,work,context,ops):
  validate_profile(p);assessment=A.assess(p,host,include_workspace=False);need(assessment['nativeEligible'],'Native admission incomplete: '+','.join(assessment['failures']));need(work.parent==work.parent.resolve(strict=True) and re.fullmatch(r'rust198-'+re.escape(context['GITHUB_RUN_ID'])+'-'+re.escape(context['GITHUB_RUN_ATTEMPT'])+r'-[a-z0-9-]{8,64}',work.name),'Exact owned Rust run namespace');need(not os.path.lexists(work),'Fresh owned original producer namespace');work.mkdir(mode=0o755);work.chmod(0o755);(work/'control').mkdir(mode=0o755);(work/'control').chmod(0o755);(work/'capture').mkdir(mode=0o700);(work/'capture').chmod(0o700);(work/'state').mkdir(mode=0o700);(work/'state').chmod(0o700);started=time.monotonic();deadline=started+p['bounds']['wholeSeconds'];marker={'selection':p['selection'],'runContext':context,'work':str(work),'upstreamSourceCommit':p['sourceCommit'],'volumeControllerEntered':False};N.atomic_json(work/'control/OWNERSHIP.json',marker,mode=0o444);volume_record=None;native=None;child={};complete=False;failure=None;quiescence={'allBuildUidProcessesStopped':False};inventory=None;configuration=None;child_file=None;failure_child_report=None
@@ -122,7 +133,7 @@ def observe(p,host,archives,work,context,ops):
   need(not [r for r in ops.processes() if r['uid']==host['buildUid']],'Exclusive fresh build account is not quiescent');marker['volumeControllerEntered']=True;N.atomic_json(work/'control/OWNERSHIP.json',marker,mode=0o444);volume_record=ops.volume(work,context,host);host={**host,'caseSensitiveWorkspace':volume_record['caseProbe']['caseSensitive'],'capacityRoots':[volume_record['mount']]};need(A.assess(p,host)['nativeEligible'],'Measured owned workspace admission failed');materialized=ops.materialize(p['inputs'],archives,Path(volume_record['mount'])/'payload');Path(volume_record['mount']).chmod(0o755);Path(materialized['source']).parent.chmod(0o755);source=Path(materialized['source']);records=json.loads(Path(materialized['memberMap']).read_bytes());ops.activate(source,host)
   for name in ['home','tmp','cargo','sccache']:(work/'state'/name).mkdir(mode=0o700)
   activate_owned_working_tree(work/'state',host['buildUid'],host['buildGid']) if isinstance(ops,Operations) else None
-  profile_file=work/'control/profile.json';N.atomic_json(profile_file,p,mode=0o444);(work/'control/empty-git.config').write_bytes(b'');(work/'control/empty-git.config').chmod(0o444);child_file=work/'state/original-phases.json';env=clean_environment(work,source,host,p);native=ops.native(work,host);native.run('original-source-producer',[host['tools']['python3']['path'],'-I','-B',str(HERE/'sequence.py'),str(profile_file),str(source),host['sccache']['path'],str(child_file)],env,source,min(p['bounds']['nativeSeconds'],deadline-time.monotonic()-300));child=read_child_report(child_file,p);need(child.get('originalCommandsComplete') is True,'Child original command sequence not complete');need(not [r for r in ops.processes() if r['uid']==host['buildUid']],'Build UID not quiescent after native command');quiescence={'allBuildUidProcessesStopped':True};ops.source_matches(source,records);configuration=retain_generated_configuration(source,work/'capture')
+  profile_file=work/'control/profile.json';N.atomic_json(profile_file,p,mode=0o444);(work/'control/empty-git.config').write_bytes(b'');(work/'control/empty-git.config').chmod(0o444);child_file=work/'state/original-phases.json';env=clean_environment(work,source,host,p);sequence=stage_child_sources(work/'control/child');native=ops.native(work,host);native.run('original-source-producer',[host['tools']['python3']['path'],'-I','-B',str(sequence),str(profile_file),str(source),host['sccache']['path'],str(child_file)],env,source,min(p['bounds']['nativeSeconds'],deadline-time.monotonic()-300));child=read_child_report(child_file,p);need(child.get('originalCommandsComplete') is True,'Child original command sequence not complete');need(not [r for r in ops.processes() if r['uid']==host['buildUid']],'Build UID not quiescent after native command');quiescence={'allBuildUidProcessesStopped':True};ops.source_matches(source,records);configuration=retain_generated_configuration(source,work/'capture')
   dist=source/'build/dist';need(dist.is_dir() and all((dist/name).is_file() and not (dist/name).is_symlink() for name in p['minimumSDKArtifactNames']),'Selected rustc/cargo/std originaldist outputs absent');inventory=R.catalog({'original-dist':dist},p['bounds']);sizes={r['member']:r['bytes'] for r in inventory};need(all(sizes.get('original-dist/'+name,0)>0 for name in p['minimumSDKArtifactNames']),'Selected rustc/cargo/std originaldist outputs empty');need(time.monotonic()<deadline,'Late original producer result');complete=True
  except Exception as error:failure={'type':type(error).__name__,'reason':str(error)[:1024]}
  finally:
@@ -175,16 +186,17 @@ PROFILE_BYTES=1024**2
 HOST_RECEIPT_BYTES=16*1024**2
 ARCHIVE_MAPPING_BYTES=64*1024
 def controller_code():
- # launch.py runs this module through a loader that returns the bytes it verified.
- return __loader__.get_data(__file__)
+ # Python's own loader rereads this path, which may no longer hold the running code;
+ # launch.py's loader returns the bytes it verified and then executed.
+ need(getattr(__loader__,'controllerBytesVerified',False) is True,'Observe requires the launch.py verified controller loader');return __loader__.get_data(__file__)
 
 def main():
  parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('mode',choices=['plan','observe']);parser.add_argument('profile');parser.add_argument('--operator-grant');parser.add_argument('--grant-sha256');parser.add_argument('--host-receipt');parser.add_argument('--archives');parser.add_argument('--work');args=parser.parse_args();profile_body,_=A.read_once(Path(args.profile),PROFILE_BYTES,'Physical bounded single-link profile');p=json.loads(profile_body);validate_profile(p)
  if args.mode=='plan':print(json.dumps({'profileValidated':True,'nativeExecutionGranted':False,'originalCommands':[p['configure'],p['prepare'],p['dist']],'unassessed':['SDK262/SLA/toolphysicalprotection','sourcecasevolume','originalsccache/Rosetta/IPC','buildmemory/disk/time/capturefit'],'anySDKOrSourceExecuted':False}));return 0
- need(os.getuid()==0 and all([args.operator_grant,args.grant_sha256,args.host_receipt,args.archives,args.work]),'Explicit root startup grant/host/archive/work inputs required');context={k:os.environ.get(k,'') for k in ['GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_SHA']};need(all(context.values()),'Actual hosted run context');PL.require_native_work(context,HERE,Path(args.work))
+ need(os.getuid()==0 and all([args.operator_grant,args.grant_sha256,args.host_receipt,args.archives,args.work]),'Explicit root startup grant/host/archive/work inputs required');context={k:os.environ.get(k,'') for k in ['GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_SHA']};need(all(context.values()),'Actual hosted run context');PL.require_native_work(context,HERE,Path(args.work));code=controller_code()
  # Each input the grant binds is read once; its hash and the value used come from those bytes.
  host_body,_=A.read_once(Path(args.host_receipt),HOST_RECEIPT_BYTES,'Physical bounded single-link host receipt');archives_body,_=A.read_once(Path(args.archives),ARCHIVE_MAPPING_BYTES,'Physical bounded single-link archive mapping')
- A.validate_operator_grant(Path(args.operator_grant),args.grant_sha256,hashlib.sha256(profile_body).hexdigest(),context,hashlib.sha256(controller_code()).hexdigest(),hashlib.sha256(host_body).hexdigest(),hashlib.sha256(archives_body).hexdigest(),Path(args.work));host=json.loads(host_body);need(host['runContext']==context,'Fresh same-run host receipt');archives=json.loads(archives_body);work=Path(args.work);ops=Operations(p);previous=enforce_whole_deadline(p['bounds']['wholeSeconds'])
+ A.validate_operator_grant(Path(args.operator_grant),args.grant_sha256,hashlib.sha256(profile_body).hexdigest(),context,hashlib.sha256(code).hexdigest(),hashlib.sha256(host_body).hexdigest(),hashlib.sha256(archives_body).hexdigest(),Path(args.work));host=json.loads(host_body);need(host['runContext']==context,'Fresh same-run host receipt');archives=json.loads(archives_body);work=Path(args.work);ops=Operations(p);previous=enforce_whole_deadline(p['bounds']['wholeSeconds'])
  try:
   result=observe(p,host,archives,work,context,ops);lifecycle=finish_private(p,result,work,context,host,ops);return 0 if lifecycle['controllerLifecycleComplete'] else 1
  finally:signal.setitimer(signal.ITIMER_REAL,0);signal.signal(signal.SIGALRM,previous)

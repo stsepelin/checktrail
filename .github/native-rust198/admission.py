@@ -36,14 +36,15 @@ def read_once(file,maximum,refusal):
  try:fd=os.open(file,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
  except OSError as error:raise ValueError(refusal) from error
  try:
-  before=os.fstat(fd);need(stat.S_ISREG(before.st_mode) and before.st_nlink==1 and 0<before.st_size<=maximum,refusal);body=bytearray()
-  while len(body)<=maximum:
-   piece=os.read(fd,min(65536,maximum+1-len(body)))
+  before=os.fstat(fd);need(stat.S_ISREG(before.st_mode) and before.st_nlink==1 and 0<before.st_size<=maximum,refusal);pieces=[];count=0
+  # One read normally returns the whole file, so a large pinned archive is held once, not copied.
+  while count<=maximum:
+   piece=os.read(fd,maximum+1-count)
    if not piece:break
-   body.extend(piece)
-  after=os.fstat(fd);need(len(body)==before.st_size and (before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns,before.st_ctime_ns)==(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_ctime_ns),refusal+': changed while reading')
+   pieces.append(piece);count+=len(piece)
+  body=pieces[0] if len(pieces)==1 else b''.join(pieces);after=os.fstat(fd);need(len(body)==before.st_size and (before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns,before.st_ctime_ns)==(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_ctime_ns),refusal+': changed while reading')
  finally:os.close(fd)
- return bytes(body),before
+ return body,before
 
 def validate_operator_grant(file,expected_sha,profile_sha,context,code_sha,host_sha,archives_sha,work):
  need(file==file.resolve(strict=True),'Physical root-owned startup operator grant required');body,s=read_once(file,65536,'Physical root-owned startup operator grant required');need(s.st_uid==0 and stat.S_IMODE(s.st_mode)==0o400,'Physical root-owned startup operator grant required');need(hashlib.sha256(body).hexdigest()==expected_sha,'Operator grant exact bytes');v=json.loads(body);need(v.get('authority')=='explicit-reviewed-workflow-startup' and v.get('profileSHA256')==profile_sha and v.get('controllerCodeSHA256')==code_sha and v.get('runContext')==context and v.get('allowedOperation')=='original-rust198-producer' and v.get('hostReceiptSHA256')==host_sha and v.get('archiveMappingSHA256')==archives_sha and v.get('workNamespace')==str(work),'Operator startup context/profile/code binding');need(v.get('MCPOrModelArgumentAuthority') is False,'A model argument cannot grant execution');return v
