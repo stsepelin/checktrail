@@ -17,7 +17,7 @@ import test_live_resource as fixtures
 HERE = Path(__file__).resolve().parent
 
 def profile():
-    return json.loads((HERE / 'profile.json').read_bytes())
+    return common.bundle_json(HERE / 'profile.json')
 
 def node(dev=4, inode=10):
     return SimpleNamespace(st_dev=dev, st_ino=inode, st_mode=stat.S_IFDIR | 0o700)

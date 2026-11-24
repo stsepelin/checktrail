@@ -65,7 +65,10 @@ class ProducerAPI:
         if row.get('exitCode') != 0:
             listing, path = self.observe(['container', 'ls', '-aq', '--no-trunc', '--filter', 'id=' + container_id], deadline, 'exact-id-listing-refused')
             if not complete_command(listing): raise MetadataUnavailable('exact-id-listing-incomplete')
-            value = path.read_bytes()
+            try:
+                value = path.read_bytes()
+            except OSError as error:
+                raise MetadataUnavailable('exact-id-listing-unreadable') from error
             if value == b'': return None
             if value != (container_id + '\n').encode(): raise MetadataUnavailable('exact-id-listing-unexpected')
             raise MetadataUnavailable('inspect-conflicts-with-existing-id')

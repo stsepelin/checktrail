@@ -23,6 +23,12 @@ class Controls(unittest.TestCase):
   for field,value in [('id',35),('name','foreign'),('size_in_bytes',16),('digest','sha256:'+'c'*64),('workflow_run',{'id':13,'head_sha':'a'*40})]:
    changed=copy.deepcopy(self.meta);changed[field]=value
    with self.subTest(field=field),self.assertRaises(m.Refusal):m.wait_exact_absence(self.calls([changed]),self.row,self.ctx,100,self.expected)
+ def test_service_digest_seen_at_custody_must_be_reported_again_before_delete(self):
+  observed={**self.row,'serviceDigest':'sha256:'+'b'*64};vanished={**self.meta,'digest':None}
+  with self.assertRaisesRegex(m.Refusal,'same original immutable owned ZIP descriptor'):m.expected_descriptor(vanished,observed,self.ctx)
+  self.assertEqual(m.expected_descriptor(self.meta,observed,self.ctx)['digest'],'sha256:'+'b'*64)
+  # Never reported by the service at custody: an absent digest stays acceptable.
+  self.assertIsNone(m.expected_descriptor(vanished,self.row,self.ctx)['digest'])
  def test_persistent200_never_becomes_absence_and_has_exact_request_bound(self):
   c=self.calls([self.meta]*16)
   with mock.patch.object(m.time,'sleep'),self.assertRaisesRegex(m.Refusal,'consistency wait exhausted'):m.wait_exact_absence(c,self.row,self.ctx,100,self.expected)

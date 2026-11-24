@@ -104,7 +104,7 @@ class IntegrationControls(unittest.TestCase):
   with self.assertRaises(common.Refusal):common.process([sys.executable,'-I','-c',"print('x'*100)"],self.root/'flood',time.monotonic()+5,cap=16)
   row=common.read_json(self.root/'flood.receipt.json');self.assertEqual(row['reason'],'terminal command output bound');self.assertTrue(row['ownedChildReaped']);self.assertGreater(row['stdoutBytes'],16)
  def test_producer_build_and_test_keep_original_argv_and_one_shared_14400_second_deadline(self):
-  profile=json.loads((Path(driver.__file__).parent/'profile.json').read_bytes());calls=[];clock=[1000.0];instances=[]
+  profile=common.bundle_json(Path(driver.__file__).parent/'profile.json');calls=[];clock=[1000.0];instances=[]
   class Controller:
    def __init__(inner,root,ctx,selected):inner.root=root;inner.ctx=ctx;inner.profile=selected;inner.state=None;instances.append(inner)
    def save(inner):pass

@@ -15,7 +15,7 @@ import sys
 import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from unittest.mock import patch
-from common import context, digest, encoded, freeze, hash_file, need, owned_labels, read_json
+from common import bundle_bytes, context, digest, encoded, freeze, hash_file, need, owned_labels, read_json
 from driver import Controller, HERE, manifest_check, prove_image
 from owned_image import cleanup_image_inputs
 from producer_adapter import ProducerAPI
@@ -259,7 +259,7 @@ def run(root, nonce, pin):
             try: cleanup_image_inputs(c, end)
             except BaseException as error: cleanup_errors.append({'kind': 'image-inputs', 'errorType': type(error).__name__})
         success = failure is None and not cleanup_errors and time.monotonic() < end
-        result = {'schemaVersion': 1, 'context': ctx, 'firstPartyControlsOnly': True, 'manifestSHA256': pin, 'observations': observations, 'complete': success, 'failureType': failure, 'cases': events, 'cleanupErrors': cleanup_errors, 'elapsedSeconds': time.monotonic() - started, 'nativeSecondsMaximum': 300, 'wholeSecondsMaximum': 480, 'originalSdkSourceSeedBuildTestsKeysOrPayloadExportExecuted': False, 'originalSdkBuildTestQuotaOrGateAQualified': False, 'strictMeterSHA256': hash_file(HERE / 'meter.py')[1]}
+        result = {'schemaVersion': 1, 'context': ctx, 'firstPartyControlsOnly': True, 'manifestSHA256': pin, 'observations': observations, 'complete': success, 'failureType': failure, 'cases': events, 'cleanupErrors': cleanup_errors, 'elapsedSeconds': time.monotonic() - started, 'nativeSecondsMaximum': 300, 'wholeSecondsMaximum': 480, 'originalSdkSourceSeedBuildTestsKeysOrPayloadExportExecuted': False, 'originalSdkBuildTestQuotaOrGateAQualified': False, 'strictMeterSHA256': digest(bundle_bytes(HERE / 'meter.py'))}
         need(len(encoded(result)) <= 65536, 'finite controls-only result metadata bound')
         freeze(root / 'RESULT.json', encoded(result))
         # This result alone is the finite first-party metadata export candidate.

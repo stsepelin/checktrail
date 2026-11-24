@@ -6,7 +6,7 @@ HERE=pathlib.Path(__file__).resolve().parent
 # baseline; an unavailable baseline withholds all credit.
 def known_baseline(*args,**kwargs):return observer.reports(*args,tracked_contents=frozenset(),**kwargs)
 class ModeControls(unittest.TestCase):
- def profile(self):return json.loads((HERE/'profile.json').read_bytes())
+ def profile(self):return common.bundle_json(HERE/'profile.json')
  def test_both_original_argv_vectors_only_add_the_same_supported_operator_id(self):
   profile=self.profile();suffix=['--official-build-id','20261117.1']
   self.assertEqual(profile['buildArgv'],common.ORIGINAL_BUILD_ARGV+suffix);self.assertEqual(profile['testArgv'],common.ORIGINAL_TEST_ARGV+suffix)

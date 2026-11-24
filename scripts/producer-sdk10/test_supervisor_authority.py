@@ -83,7 +83,7 @@ class SupervisorAuthority(unittest.TestCase):
                 groups.assert_called_once_with([]);gid.assert_called_once_with(10001);uid.assert_called_once_with(10001)
 
     def test_only_native_supervisor_receives_kill_helpers_keep_existing_caps_and_nnp(self):
-        profile=json.loads((Path(driver.__file__).parent/'profile.json').read_bytes())
+        profile=driver.bundle_json(Path(driver.__file__).parent/'profile.json')
         c=driver.Controller(self.root,{'run':123,'attempt':1,'nonce':'inert','head':'a'*40},profile)
         c.state={'volume':'inert-work','tempVolume':'inert-tmp','imageAlias':'inert-alias','imageID':'sha256:'+'8'*64,'uid':10001,'gid':10001}
         for helper in [False,True]:

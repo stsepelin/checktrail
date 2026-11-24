@@ -102,6 +102,7 @@ class Controls(unittest.TestCase):
    with self.subTest(listed=listed,by_id=by_id):
     row=self.collector_worker(listed,by_id)
     self.assertEqual(row['state'],'INCOMPLETE' if error else 'CUSTODIED',row['error']);self.assertEqual(row['error'],None if error is None else 'Refusal: '+error)
+    if error is None:self.assertEqual(row['serviceDigest'],None if by_id is None else 'sha256:'+row['carrierSHA256'])
  def test_meter_exact_regular_unlink_race_retries_without_counter_credit(self):
   (self.root/'temporary').write_bytes(b'123');(self.root/'stable').write_bytes(b'4567');removed=[]
   def hook(stage,fd,name,value):
@@ -275,7 +276,7 @@ class Controls(unittest.TestCase):
   (bundle/'entry_marker.py').write_text('import pathlib,sys\nsys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))\nimport helper_marker\npathlib.Path('+repr(str(markers/'entry'))+').write_text(" ".join(sys.argv[1:]))\nraise SystemExit(7 if "--exit-7" in sys.argv else 0)\n')
   # A second entry also reads a pinned data file the way first-party code does.
   (bundle/'data_marker.json').write_text('{"data":"verified-5813"}')
-  (bundle/'reading_marker.py').write_text('import pathlib,sys\nsys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))\nimport helper_marker,common\ndata=common.bundle_bytes(pathlib.Path(__file__).resolve().parent/"data_marker.json").decode()\ntry:import planted_marker\nexcept ModuleNotFoundError:planted="absent"\nelse:planted="imported"\npathlib.Path('+repr(str(markers/'entry'))+').write_text(" ".join(sys.argv[1:])+"|"+data+"|"+planted)\nraise SystemExit(7 if "--exit-7" in sys.argv else 0)\n')
+  (bundle/'reading_marker.py').write_text('import pathlib,sys\nsys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))\nimport helper_marker,common\ndata=common.bundle_bytes(pathlib.Path(__file__).resolve().parent/"data_marker.json").decode()\ntry:import planted_marker\nexcept ModuleNotFoundError:planted="absent"\nelse:planted="imported"\nsys.path.insert(0,'+repr(str(markers.parent/'elsewhere'))+')\ntry:import elsewhere_marker\nexcept ModuleNotFoundError:planted+=",absent"\nelse:planted+=",imported"\npathlib.Path('+repr(str(markers/'entry'))+').write_text(" ".join(sys.argv[1:])+"|"+data+"|"+planted)\nraise SystemExit(7 if "--exit-7" in sys.argv else 0)\n')
   (bundle/'PROTECTED-CONTROLS.json').write_bytes(common.encoded({'schemaVersion':1,'firstPartyControlsOnly':True,'files':[{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in ['test_protected_marker.py']]}))
   names=['run_checks.py','common.py','test_listed_marker.py','test_crypto.mjs','envelope.mjs','PROTECTED-CONTROLS.json','entry_marker.py','reading_marker.py','data_marker.json']+(['helper_marker.py'] if listed else [])
   raw=common.encoded({'schemaVersion':1,'files':[{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in names]});(bundle/'MANIFEST.json').write_bytes(raw)
@@ -307,6 +308,9 @@ class Controls(unittest.TestCase):
   # tries to import, then counts every later open or listing of the bundle; a
   # reopen would run or read a swapped file.
   bundle,markers,pin=self.entry_bundle();folder=os.path.realpath(bundle);count=self.root/'opens-5813'
+  # A directory the entry adds to sys.path after verification, as a replaced
+  # entry resolving elsewhere would, is never searched either.
+  elsewhere=markers.parent/'elsewhere';elsewhere.mkdir();(elsewhere/'elsewhere_marker.py').write_bytes(self.swapped(markers,'elsewhere'))
   swaps={'reading_marker.py':self.swapped(markers,'entry'),'helper_marker.py':self.swapped(markers,'helper'),'common.py':common.bundle_bytes(ROOT/'common.py')+b'\n'+self.swapped(markers,'common'),'data_marker.json':b'{"data":"foreign-5813"}','planted_marker.py':self.swapped(markers,'planted')}
   wrapper=('import atexit,os,sys\nfolder='+repr(folder)+';entry=os.path.join(folder,"reading_marker.py");swaps='+repr(swaps)+'\nopens=[];busy=[];done=[]\n'
    'def inside(path):\n'
@@ -328,7 +332,7 @@ class Controls(unittest.TestCase):
   self.assertEqual({name:(bundle/name).read_bytes() for name in swaps},swaps)
   self.assertEqual(code,7,log);self.assertEqual(count.read_text(),'[]')
   self.assertEqual(sorted(x.name for x in markers.iterdir()),['entry','helper']);self.assertEqual((markers/'helper').read_text(),'imported-4421')
-  self.assertEqual((markers/'entry').read_text(),'finalize --nonce synthetic-5813 --exit-7|{"data":"verified-5813"}|absent')
+  self.assertEqual((markers/'entry').read_text(),'finalize --nonce synthetic-5813 --exit-7|{"data":"verified-5813"}|absent,absent')
  def test_crypto_operation_runs_a_private_copy_of_the_verified_envelope(self):
   # The checkout's envelope.mjs is replaced after verification; the operation
   # runs the verified bytes, copied into its own fresh folder.

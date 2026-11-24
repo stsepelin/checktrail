@@ -31,13 +31,14 @@ def worker(folder,ctx,ordinal,meta,deadline,stop):
   target.chmod(0o400);need(hash_file(target)==(part['bytes'],part['sha256']),'independent physical retained part readback');fd=os.open(carrier,os.O_RDONLY)
   try:os.fsync(fd)
   finally:os.close(fd)
-  candidate={**row,'state':'CUSTODIED','carrierFile':str(carrier),'carrierSHA256':h,'carrierBytes':n,'physicalPartFile':str(target),'part':part,'series':series,'localZIPAndPartFsyncedAndRoundtripped':True,'ownedChildrenReaped':all(p in calls.reapedPIDs for p in calls.startedPIDs)};freeze(folder/'CUSTODY.json',encoded(candidate));sync_chain(folder,row['durabilityAnchor']);row.update(candidate,custodyReceiptSHA256=hash_file(folder/'CUSTODY.json')[1])
+  candidate={**row,'state':'CUSTODIED','serviceDigest':actual.get('digest'),'carrierFile':str(carrier),'carrierSHA256':h,'carrierBytes':n,'physicalPartFile':str(target),'part':part,'series':series,'localZIPAndPartFsyncedAndRoundtripped':True,'ownedChildrenReaped':all(p in calls.reapedPIDs for p in calls.startedPIDs)};freeze(folder/'CUSTODY.json',encoded(candidate));sync_chain(folder,row['durabilityAnchor']);row.update(candidate,custodyReceiptSHA256=hash_file(folder/'CUSTODY.json')[1])
  except BaseException as e:error=type(e).__name__+': '+str(e) if isinstance(e,Refusal) else type(e).__name__
  finally:
   row.update(error=error,APIEvents=calls.events,ownedChildrenReaped=all(p in calls.reapedPIDs for p in calls.startedPIDs));freeze(folder/'DOWNLOAD-RESULT.json',encoded(row));syncdir(folder)
  return row
 def expected_descriptor(value,row,ctx):
- owned(value,ctx,row['ordinal']);need(value['id']==row['artifactID'] and value['size_in_bytes']==row['carrierBytes'] and (value.get('digest') is None or value['digest']=='sha256:'+row['carrierSHA256']),'same original immutable owned ZIP descriptor')
+ # A digest the service reported at custody must still be reported before delete.
+ owned(value,ctx,row['ordinal']);need(value['id']==row['artifactID'] and value['size_in_bytes']==row['carrierBytes'] and (value.get('digest') is None or value['digest']=='sha256:'+row['carrierSHA256']) and (row.get('serviceDigest') is None or value.get('digest')==row['serviceDigest']),'same original immutable owned ZIP descriptor')
  return {k:value.get(k) for k in ['id','name','size_in_bytes','digest']}
 def wait_exact_absence(calls,row,ctx,deadline,expected):
  for attempt in range(16):
@@ -72,8 +73,10 @@ def without_deleted(listing,deleted):
  anything else stays in the listing and is judged like any other entry.
  """
  items=listing.get('artifacts');total=listing.get('total_count');need(type(items) is list and type(total) is int,'bounded two-slot listing schema')
- lingering=[x for x in items if type(x) is dict and x.get('id') in deleted and x.get('name')==deleted[x['id']]]
- return {**listing,'total_count':total-len(lingering),'artifacts':[x for x in items if x not in lingering]},len(lingering)
+ lingering=[x for x in items if type(x) is dict and x.get('id') in deleted and x.get('name')==deleted[x['id']]];rest=[x for x in items if x not in lingering]
+ # The count can drop before the rows do. A listing that still shows a deleted
+ # member is waited out anyway, so only its other rows are judged.
+ return {**listing,'total_count':len(rest) if lingering else total,'artifacts':rest},len(lingering)
 def collect(a):
  ctx=context(a.nonce,a.run,a.head);key_stat=a.private_key.lstat();need(stat.S_ISREG(key_stat.st_mode) and not a.private_key.is_symlink() and stat.S_IMODE(key_stat.st_mode)&0o077==0,'local-only protected operator private key file');need(not a.out.exists(),'fresh private operator collection root');need(shutil.disk_usage(a.out.parent).free>=3*12*1024**3+10*1024**3+2*128*1024**2,'private ZIP/parts/full-archive independent capacity admission');a.out.mkdir(mode=0o700);control=a.out/'control';control.mkdir(mode=0o700);start=time.monotonic();whole=start+a.seconds-10;calls=Calls(control,whole,a.stop);rows=[];windows=[];series=None;error=None;result={'schemaVersion':1,'state':'INCOMPLETE','context':ctx,'sourceOrNativeExecutedLocally':False,'GateAClosureClaimed':False};executor=concurrent.futures.ThreadPoolExecutor(max_workers=2,thread_name_prefix='sdk10-owned-part');window=1;recovery_deadline=None;last_run_status=start;deleted={}
  try:

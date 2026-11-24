@@ -139,7 +139,8 @@ class CollectorLingeringDeletion(unittest.TestCase):
      if state['recovered']:items=[]
      elif state['phase']==1:items=[test.artifact(ctx,1),test.artifact(ctx,2)]
      else:state['second']+=1;items=second_window(state['second'])
-     listings.append((state['phase'],[x['id'] for x in items]));return {'total_count':len(items),'artifacts':items}
+     items,total=items if type(items) is tuple else (items,len(items))
+     listings.append((state['phase'],[x['id'] for x in items]));return {'total_count':total,'artifacts':items}
     if path.endswith('/jobs?per_page=100'):return {'total_count':1,'jobs':[{'head_sha':ctx['head'],'name':'sdk10-original','id':7300}]}
     return {'head_sha':ctx['head'],'event':'workflow_dispatch','run_attempt':1,'path':args.workflow,'status':'completed' if state['recovered'] else 'in_progress'}
    def run(inner,tail,cap,seconds):
@@ -158,10 +159,13 @@ class CollectorLingeringDeletion(unittest.TestCase):
   return code,common.read_json(args.out/'RESULT.json'),listings,ctx
  def test_deleted_member_still_listed_is_waited_out_and_recovery_continues(self):
   ctx={'run':7300,'head':'a'*40,'nonce':'synthetic-7300','attempt':1}
-  def second(n):return ([self.artifact(ctx,1)] if n<=3 else [])+[self.artifact(ctx,3),self.artifact(ctx,4)]
+  # The count may already exclude the deleted row (listings 1-2) or count it (listing 3).
+  def second(n):
+   if n<=2:return [self.artifact(ctx,1)],0
+   return ([self.artifact(ctx,1)] if n<=3 else [])+[self.artifact(ctx,3),self.artifact(ctx,4)]
   code,result,listings,_=self.collect(second)
   self.assertEqual(code,0,result.get('error'));self.assertEqual(result['completedWindows'],[1,2]);self.assertEqual([x['artifactID'] for x in result['parts']],[7301,7302,7303,7304])
-  self.assertEqual([ids for phase,ids in listings if phase==2][:4],[[7301,7303,7304]]*3+[[7303,7304]])
+  self.assertEqual([ids for phase,ids in listings if phase==2][:4],[[7301]]*2+[[7301,7303,7304],[7303,7304]])
   self.assertEqual(len(list((self.root/'collection'/'window-02').glob('INCOMPLETE-LISTING-*.json'))),3)
  def test_unrelated_artifact_beside_a_lingering_deleted_member_is_refused(self):
   ctx={'run':7300,'head':'a'*40,'nonce':'synthetic-7300','attempt':1}

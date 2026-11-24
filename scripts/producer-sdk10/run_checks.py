@@ -92,17 +92,19 @@ def bound_tests(files):
  tests=sorted(x[:-3] for x in files if x.startswith('test_') and x.endswith('.py'));need(tests,'nonempty reviewed Python controls');return tests
 
 class OutsideBundle:
- """The standard path finder over sys.path without the bundle directory.
+ """The standard path finder over the search path at verification, without the bundle directory.
 
- Entry scripts and controls put their own directory first on sys.path; a
- name the bundle does not pin must still never load from there.
+ Entry scripts and controls put their own resolved directory first on
+ sys.path after verification; a replaced entry can resolve that elsewhere.
+ A top-level name the bundle does not pin therefore searches only the
+ isolated startup path, never an entry added later.
  """
- def __init__(self,folder):self.folder=folder
+ def __init__(self,folder):self.folder=folder;self.trusted=[x for x in sys.path if self.outside(x)]
  def outside(self,entry):
   try:return os.path.realpath(entry or os.getcwd())!=self.folder
   except (TypeError,ValueError,OSError):return False
  def find_spec(self,fullname,path=None,target=None):
-  return importlib.machinery.PathFinder.find_spec(fullname,[x for x in (sys.path if path is None else path) if self.outside(x)],target)
+  return importlib.machinery.PathFinder.find_spec(fullname,list(self.trusted) if path is None else [x for x in path if self.outside(x)],target)
  def invalidate_caches(self):importlib.machinery.PathFinder.invalidate_caches()
 
 class Bundle:
@@ -131,8 +133,8 @@ class Bundle:
   module=types.ModuleType(name);module.__file__=self.path(name+'.py');module.__loader__=self;exec(self.code(name+'.py'),module.__dict__);return module
  def install(self):
   """Make this bundle the only source of first-party code in this process."""
-  sys.path[:]=[x for x in sys.path if OutsideBundle(self.folder).outside(x)]
-  sys.meta_path[:]=[self]+[OutsideBundle(self.folder) if x is importlib.machinery.PathFinder else x for x in sys.meta_path]
+  outside=OutsideBundle(self.folder);sys.path[:]=outside.trusted
+  sys.meta_path[:]=[self]+[outside if x is importlib.machinery.PathFinder else x for x in sys.meta_path]
   return self
  def run_main(self,script,args):
   """Run one pinned script as __main__ with its arguments, as runpy.run_path would."""

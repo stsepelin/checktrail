@@ -60,7 +60,7 @@ class Target(unittest.TestCase):
         with patch.object(t.time, 'monotonic', return_value=100), self.assertRaises(common.Refusal): t.remove_control_volume(self.c, 'inert-work', 100)
         self.assertEqual(calls, [])
     def test_physical_image_proof_refusal_precedes_volume_creation(self):
-        profile = common.read_json(Path(__file__).parent / 'profile.json'); root = self.root / 'refused-image'
+        profile = common.bundle_json(Path(__file__).parent / 'profile.json'); root = self.root / 'refused-image'
         capacity = self.root / 'capacity-image'; capacity.write_text('"amd64" 4\n'); calls = []
         def make_controller(path, ctx, selected):
             return SimpleNamespace(root=path, ctx=ctx, profile=selected, state=None, save=lambda:None, docker=lambda args, **kw:(calls.append(args) or GOOD, capacity))
@@ -69,7 +69,7 @@ class Target(unittest.TestCase):
             self.assertEqual(t.run(root,'synthetic-target','b'*64),1)
         row=common.read_json(root/'RESULT.json');self.assertFalse(row['complete']);self.assertFalse(row['originalSdkBuildTestQuotaOrGateAQualified']);self.assertEqual(calls,[['info','--format','{{json .Architecture}} {{json .NCPU}}']])
     def test_ambiguous_volume_create_is_reserved_for_owned_cleanup_before_transport(self):
-        profile=common.read_json(Path(__file__).parent/'profile.json');root=self.root/'ambiguous-create';capacity=self.root/'capacity';capacity.write_text('"amd64" 4\n')
+        profile=common.bundle_json(Path(__file__).parent/'profile.json');root=self.root/'ambiguous-create';capacity=self.root/'capacity';capacity.write_text('"amd64" 4\n')
         image={'Id':'sha256:'+profile['image']['configSHA256'],'Architecture':'amd64','Os':'linux','RootFS':{'Layers':['sha256:'+x for x in profile['image']['diffIDs']]}}
         calls=[];cleanup=[]
         def make_controller(path,ctx,selected):
