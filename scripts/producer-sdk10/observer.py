@@ -268,7 +268,8 @@ def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
       if not item.isfile():continue
       if name.endswith('/.version'):
        need(item.size<=4096,'embedded SDK version metadata size');body=t.extractfile(item).read(4097);row['versionFiles'].append({'path':name,'sha256':hashlib.sha256(body).hexdigest(),'lines':body.decode().splitlines()})
-      if name=='dotnet':row['targetDotnetARM64MuslELFMetadataMatched']=arm64_musl_elf(t.extractfile(item),item.size)
+      # The host runs dotnet directly, so a non-executable one is not the selected SDK entry point.
+      if name=='dotnet':row['dotnetMode']=oct(item.mode&0o7777);row['targetDotnetARM64MuslELFMetadataMatched']=item.mode&0o111==0o111 and arm64_musl_elf(t.extractfile(item),item.size)
       if item.size>0:
        if re.fullmatch(r'host/fxr/[^/]+/libhostfxr\.so',name):layout.add('hostfxr')
        if re.fullmatch(r'shared/Microsoft\.NETCore\.App/[^/]+/libcoreclr\.so',name):layout.add('coreclr')

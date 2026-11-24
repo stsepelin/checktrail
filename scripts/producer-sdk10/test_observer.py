@@ -71,13 +71,13 @@ class ObserverControls(unittest.TestCase):
  def elf(self,machine=183,interpreter=b'/lib/ld-musl-aarch64.so.1\0'):
   ident=b'\x7fELF\x02\x01\x01'+b'\0'*9;start=64+112;size=start+len(interpreter)
   return struct.pack('<16sHHIQQQIHHHHHH',ident,3,machine,1,0,64,0,0,64,56,2,0,0,0)+struct.pack('<IIQQQQQQ',1,5,0,0,0,size,size,4096)+struct.pack('<IIQQQQQQ',3,4,start,0,0,len(interpreter),len(interpreter),1)+interpreter
- def sdk(self,path=None,changes=None,prefix=''):
+ def sdk(self,path=None,changes=None,prefix='',dotnet_mode=0o755):
   path=path or self.root/'dotnet-sdk-synthetic.tar.gz';members={'dotnet':self.elf(),'sdk/10.0.401/.version':b'a'*40+b'\n10.0.401\nlinux-musl-arm64\n','sdk/10.0.401/dotnet.dll':b'synthetic-sdk-assembly','host/fxr/10.0.1/libhostfxr.so':b'synthetic-hostfxr','shared/Microsoft.NETCore.App/10.0.1/libcoreclr.so':b'synthetic-coreclr','shared/Microsoft.NETCore.App/10.0.1/System.Private.CoreLib.dll':b'synthetic-corelib'}
   for key,value in (changes or {}).items():
    if value is None:members.pop(key,None)
    else:members[key]=value
   with tarfile.open(path,'w:gz') as tar:
-   for name,body in members.items():item=tarfile.TarInfo(prefix+name);item.size=len(body);item.mode=0o755 if name=='dotnet' else 0o644;tar.addfile(item,io.BytesIO(body))
+   for name,body in members.items():item=tarfile.TarInfo(prefix+name);item.size=len(body);item.mode=dotnet_mode if name=='dotnet' else 0o644;tar.addfile(item,io.BytesIO(body))
   return path
  def fresh(self,before=None,command=None):
   profile={'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'}
@@ -86,6 +86,14 @@ class ObserverControls(unittest.TestCase):
   return observer.fresh_sdks([self.root],profile,time.monotonic()+10,before,command)
  def test_complete_fresh_selected_sdk_packaging_qualified_as_metadata_only(self):
   self.sdk();row=self.fresh();self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertFalse(row['productOrBuildQualificationClaimed']);self.assertFalse(row['historicalPublisherBinaryEqualityClaimed'])
+ def test_dotnet_entry_point_must_be_executable(self):
+  # The same ELF bytes with only the mode changed: executable for everyone
+  # is credited, a mode without every execute bit is not.
+  for mode,credited in [(0o755,True),(0o644,False),(0o744,False)]:
+   with self.subTest(mode=oct(mode)):
+    for x in self.root.glob('*.tar.gz'):x.unlink()
+    self.sdk(dotnet_mode=mode);row=self.fresh();candidate=row['candidates'][0]
+    self.assertEqual(candidate['dotnetMode'],oct(mode));self.assertIs(candidate['targetDotnetARM64MuslELFMetadataMatched'],credited);self.assertIs(row['selectedSDKArchiveMetadataAndAttributionObserved'],credited)
  def test_single_dot_prefix_preserves_valid_package_layout_and_full_gzip_integrity(self):
   self.sdk(prefix='./');row=self.fresh();self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertTrue(row['candidates'][0]['fullGzipStreamIntegrityVerified'])
  def test_seed_arch_wrong_rid_version_source_and_missing_runtime_layout_no_credit(self):
