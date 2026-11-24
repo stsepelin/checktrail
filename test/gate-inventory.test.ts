@@ -43,11 +43,16 @@ interface SelectedInventory {
   frozen: boolean;
   gateAComplete: boolean;
 }
-// The full-suite shard inventory is the set of test sources; empty
-// placeholders carry their names into each fixture.
+// The full-suite shard inventory is the set of test sources, and its compiled
+// snapshot holds the outputs of every test/**/*.ts; empty placeholders carry
+// their names into each fixture.
 const testSourceNames = async () =>
   (await readdir(path.join(repository, "test")))
     .filter((name) => name.endsWith(".test.ts"))
+    .sort();
+const compiledTestSources = async () =>
+  (await readdir(path.join(repository, "test"), { recursive: true }))
+    .filter((name) => name.endsWith(".ts") && !name.endsWith(".d.ts"))
     .sort();
 async function source(t: TestContext) {
   return fixture(t, {
@@ -60,7 +65,11 @@ async function source(t: TestContext) {
       ),
     ),
     ...Object.fromEntries(
-      (await testSourceNames()).map((name) => ["test/" + name, ""]),
+      (await compiledTestSources()).map((name) => ["test/" + name, ""]),
+    ),
+    "tsconfig.json": await readFile(
+      path.join(repository, "tsconfig.json"),
+      "utf8",
     ),
   });
 }
@@ -2395,7 +2404,9 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
     [
       "more test sources than the shards can partition",
       async (root: string) => {
-        const present = (await readdir(path.join(root, "test"))).length;
+        const present = (await readdir(path.join(root, "test"))).filter(
+          (name) => name.endsWith(".test.ts"),
+        ).length;
         await Promise.all(
           Array.from({ length: 4097 - present }, (_, index) =>
             writeFile(
@@ -2427,6 +2438,28 @@ test("finite inventory strict freeze refuses a full-suite profile list its shard
     assert.equal(
       JSON.parse(result.stdout).controllerAdmission.fullSuiteListAdmitted,
       false,
+      label,
+    );
+  }
+  const sources = (await compiledTestSources()).length;
+  for (const [label, total, code] of [
+    ["test sources whose compiled outputs fill the snapshot", 2048, 0],
+    ["test sources whose compiled outputs overflow the snapshot", 2049, 2],
+  ] as const) {
+    const root = await frozen(t);
+    await Promise.all(
+      Array.from({ length: total - sources }, (_, index) =>
+        writeFile(
+          path.join(root, "test", "compiled-6620-" + index + ".test.ts"),
+          "",
+        ),
+      ),
+    );
+    const result = await audit(root, true);
+    assert.equal(result.code, code, label + ": " + result.stderr);
+    assert.deepEqual(
+      JSON.parse(result.stdout).controllerAdmission.fullSuiteListProblems,
+      code === 0 ? [] : ["compiled-test-file-count"],
       label,
     );
   }

@@ -1146,6 +1146,30 @@ try {
   // partitionFullSuiteFiles needs between 3 and 4096 files for its shards.
   if (fullSuiteTestFiles.size < 3 || fullSuiteTestFiles.size > 4096)
     fullSuiteListProblems.push("test-source-count");
+  // The shard snapshots all of dist/test, which holds every output the
+  // compiler emits for test/**/*.ts, and captureCompiledEngine refuses more
+  // than 4096 files.
+  if (testDirectoryStat?.isDirectory()) {
+    const options = JSON.parse(
+      readFileSync(path.join(root, "tsconfig.json"), "utf8"),
+    ).compilerOptions;
+    const outputsPerSource =
+      1 +
+      (options.declaration === true ? 1 : 0) +
+      (options.sourceMap === true ? 1 : 0) +
+      (options.declarationMap === true ? 1 : 0);
+    let sources = 0;
+    const walk = (directory) => {
+      for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        if (entry.isDirectory()) walk(path.join(directory, entry.name));
+        else if (entry.name.endsWith(".ts") && !entry.name.endsWith(".d.ts"))
+          sources++;
+      }
+    };
+    walk(testDirectory);
+    if (sources * outputsPerSource > 4096)
+      fullSuiteListProblems.push("compiled-test-file-count");
+  }
   const fullSuiteList = fullSuite.profiles;
   if (fullSuiteList.length === 0 || fullSuiteList.length > 256)
     fullSuiteListProblems.push("list-size");
