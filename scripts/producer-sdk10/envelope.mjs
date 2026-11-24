@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import {performance} from 'node:perf_hooks';
 import {Buffer} from 'node:buffer';
 import process from 'node:process';
-import {URL} from 'node:url';
+import {fileURLToPath} from 'node:url';
 const MAGIC=Buffer.from('CT10AEAD1\n');
 export const MAX_BYTES=12*1024**3, MAX_HEADER=60*1024;
 export function need(v,m){if(!v)throw Error(m);}
@@ -38,4 +38,7 @@ export async function decrypt(a){
 export function signAck(a){context(a.payload.context);const key=crypto.createPrivateKey(fs.readFileSync(a.privateKey));const signature=crypto.sign('sha256',Buffer.from(canonical(a.payload)),{key,padding:crypto.constants.RSA_PKCS1_PSS_PADDING,saltLength:32});return {payload:a.payload,algorithm:'RSA-PSS-SHA256-salt32',signature:b64(signature)};}
 export function verifyAck(a){need(a.ack.algorithm==='RSA-PSS-SHA256-salt32'&&same(a.ack.payload,a.expected),'exact signed durable recovery ACK payload');need(crypto.verify('sha256',Buffer.from(canonical(a.expected)),{key:publicKey(a.publicJWK),padding:crypto.constants.RSA_PKCS1_PSS_PADDING,saltLength:32},un64(a.ack.signature,512)),'operator durable recovery ACK signature');return {operatorSignatureVerified:true,payload:a.expected};}
 async function main(){const a=JSON.parse(fs.readFileSync(process.argv[3]));const modes={'validate-recipient':a=>{publicKey(a.publicJWK);return {validPublicRecipient:true};},encrypt,decrypt,'sign-ack':signAck,'verify-ack':verifyAck};need(modes[process.argv[2]],'exact envelope operation');let v=await modes[process.argv[2]](a);process.stdout.write(JSON.stringify(v)+'\n');}
-if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname)){main().catch(e=>{process.stderr.write(JSON.stringify({state:'INCOMPLETE',errorType:e.name,reason:e.message})+'\n');process.exitCode=1;});}
+// argv[1] is a filesystem path as typed; import.meta.url is a percent-encoded URL
+// of the real path. Compare both as real paths so spaces and symlinks still run main().
+function invokedAsMain(){if(!process.argv[1])return false;try{return fs.realpathSync(process.argv[1])===fs.realpathSync(fileURLToPath(import.meta.url));}catch{return false;}}
+if(invokedAsMain()){main().catch(e=>{process.stderr.write(JSON.stringify({state:'INCOMPLETE',errorType:e.name,reason:e.message})+'\n');process.exitCode=1;});}
