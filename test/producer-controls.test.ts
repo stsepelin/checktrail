@@ -3,7 +3,6 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash, generateKeyPairSync } from "node:crypto";
 import {
-  copyFileSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -285,65 +284,102 @@ test("both reused crypto envelope copies stay byte-identical", () => {
   assert.ok(first.equals(second));
 });
 
-for (const copy of envelopeCopies) {
-  test(
-    "envelope CLI runs main from a spaced or symlinked path: " + copy,
-    posix,
-    () => {
-      const temporary = mkdtempSync(
-        path.join(tmpdir(), "checktrail-envelope-cli-"),
-      );
-      try {
-        // A directory name with a space is percent-encoded in import.meta.url
-        // but not in argv[1]; a symlinked directory differs from the real path
-        // import.meta.url reports. Both must still be recognised as main.
-        const spaced = path.join(temporary, "operator evidence 4127");
-        mkdirSync(spaced);
-        copyFileSync(
-          path.join(repository, copy),
-          path.join(spaced, "envelope.mjs"),
-        );
-        const linked = path.join(temporary, "linked-crypto-4127");
-        symlinkSync(spaced, linked);
-        const { publicKey } = generateKeyPairSync("rsa", {
-          modulusLength: 3072,
-        });
-        const { kty, n, e } = publicKey.export({ format: "jwk" });
-        const request = path.join(spaced, "REQUEST 4127.json");
-        writeFileSync(request, JSON.stringify({ publicJWK: { kty, n, e } }));
-        const run = (script: string) =>
-          spawnSync(process.execPath, [script, "validate-recipient", request], {
-            encoding: "utf8",
-            timeout: 30_000,
-          });
-        for (const script of [
-          path.join(spaced, "envelope.mjs"),
-          path.join(linked, "envelope.mjs"),
-        ]) {
-          const result = run(script);
-          assert.equal(result.error, undefined);
-          assert.equal(result.status, 0, result.stderr);
-          assert.equal(result.stderr, "");
-          assert.deepEqual(JSON.parse(result.stdout), {
-            validPublicRecipient: true,
-          });
-        }
-        // An importing module given the same operation arguments must not
-        // run the CLI body as a side effect of the import.
-        const importer = path.join(spaced, "importer 4127.mjs");
-        writeFileSync(
-          importer,
-          "import {canonical} from './envelope.mjs';\n" +
-            "process.stdout.write(canonical({importedOnly:4127})+'\\n');\n",
-        );
-        const imported = run(importer);
-        assert.equal(imported.error, undefined);
-        assert.equal(imported.status, 0, imported.stderr);
-        assert.equal(imported.stderr, "");
-        assert.equal(imported.stdout, '{"importedOnly":4127}\n');
-      } finally {
-        rmSync(temporary, { recursive: true, force: true });
-      }
+// The second variant hides import.meta.main so the real-path fallback used by
+// Node releases without it runs on this Node too.
+const entrySignal = "typeof import.meta.main==='boolean'";
+const entryVariants = [
+  ["entry signal", (source: string) => source],
+  [
+    "real-path fallback",
+    (source: string) => {
+      assert.equal(source.split(entrySignal).length, 2);
+      return source.replace(entrySignal, "false");
     },
-  );
+  ],
+] as const;
+
+for (const copy of envelopeCopies) {
+  for (const [variant, rewrite] of entryVariants) {
+    test(
+      "envelope CLI runs main only as the entry point (" +
+        variant +
+        "): " +
+        copy,
+      posix,
+      () => {
+        const temporary = mkdtempSync(
+          path.join(tmpdir(), "checktrail-envelope-cli-"),
+        );
+        try {
+          // A directory name with a space is percent-encoded in
+          // import.meta.url but not in argv[1]; a symlinked directory differs
+          // from the real path import.meta.url reports.
+          const spaced = path.join(temporary, "operator evidence 4127");
+          mkdirSync(spaced);
+          const source = readFileSync(path.join(repository, copy), "utf8");
+          const envelope = path.join(spaced, "envelope.mjs");
+          writeFileSync(envelope, rewrite(source));
+          const linked = path.join(temporary, "linked-crypto-4127");
+          symlinkSync(spaced, linked);
+          const { publicKey } = generateKeyPairSync("rsa", {
+            modulusLength: 3072,
+          });
+          const { kty, n, e } = publicKey.export({ format: "jwk" });
+          const request = path.join(spaced, "REQUEST 4127.json");
+          writeFileSync(request, JSON.stringify({ publicJWK: { kty, n, e } }));
+          const node = (args: string[]) =>
+            spawnSync(process.execPath, args, {
+              encoding: "utf8",
+              timeout: 30_000,
+            });
+          for (const script of [envelope, path.join(linked, "envelope.mjs")]) {
+            const result = node([script, "validate-recipient", request]);
+            assert.equal(result.error, undefined);
+            assert.equal(result.status, 0, result.stderr);
+            assert.equal(result.stderr, "");
+            assert.deepEqual(JSON.parse(result.stdout), {
+              validPublicRecipient: true,
+            });
+          }
+          // Importers are given operation arguments that would make a wrongly
+          // started CLI body print a result, so a false entry match is visible.
+          const importer = path.join(spaced, "importer 4127.mjs");
+          writeFileSync(
+            importer,
+            "import {canonical} from './envelope.mjs';\n" +
+              "process.stdout.write(canonical({importedOnly:4127})+'\\n');\n",
+          );
+          const evaluated =
+            "import {pathToFileURL} from 'node:url';" +
+            "await import(pathToFileURL(process.argv[1]).href);" +
+            "process.stdout.write('eval-imported-4127\\n');";
+          for (const [args, expected] of [
+            [
+              [importer, envelope, "validate-recipient", request],
+              '{"importedOnly":4127}\n',
+            ],
+            [
+              [
+                "--input-type=module",
+                "-e",
+                evaluated,
+                envelope,
+                "validate-recipient",
+                request,
+              ],
+              "eval-imported-4127\n",
+            ],
+          ] as const) {
+            const imported = node([...args]);
+            assert.equal(imported.error, undefined);
+            assert.equal(imported.status, 0, imported.stderr);
+            assert.equal(imported.stderr, "");
+            assert.equal(imported.stdout, expected);
+          }
+        } finally {
+          rmSync(temporary, { recursive: true, force: true });
+        }
+      },
+    );
+  }
 }

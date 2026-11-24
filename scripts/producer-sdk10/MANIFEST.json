@@ -41,9 +41,9 @@
       "sha256": "39bba5b8b24e96f3c7982d0d9af1869f12e0990fcea5932831d33e5438f350ce"
     },
     {
-      "bytes": 10181,
+      "bytes": 10476,
       "path": "envelope.mjs",
-      "sha256": "ef3856e70839b640252bdcc957950227c11e925e8e32725e66c6198cf96e2876"
+      "sha256": "725af1d7d28cccdc8fd448ad83f7dcd36fce3ec77d77ef3667de30977933dba1"
     },
     {
       "bytes": 5187,
