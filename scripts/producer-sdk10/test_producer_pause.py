@@ -1,16 +1,18 @@
 """Synthetic controller state + inert filesystem churn; no Docker/native SDK."""
 import copy
-import importlib.util
 from pathlib import Path
 import sys
 import tempfile
+import types
 import unittest
 from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import producer_pause as p
+import common
 FROZEN = Path(__file__).resolve().parent / 'meter.py'
-spec = importlib.util.spec_from_file_location('unchanged_sdk_meter', FROZEN)
-meter = importlib.util.module_from_spec(spec); spec.loader.exec_module(meter)
+# A second, unchanged instance of the meter, from the same verified bytes the bundle runs.
+meter = types.ModuleType('unchanged_sdk_meter'); meter.__file__ = str(FROZEN)
+exec(compile(common.bundle_bytes(FROZEN), str(FROZEN), 'exec'), meter.__dict__)
 BINDING = {'id': 'a' * 64, 'name': 'ct-sdk10-synthetic-original-build', 'labels': {'run': '1', 'nonce': 'synthetic', 'head': 'b' * 40}}
 
 class API:

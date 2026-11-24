@@ -1,5 +1,5 @@
 """First-party SDK10 controller primitives. Imports perform no project work."""
-import hashlib,json,os,pathlib,re,signal,stat,subprocess,time,urllib.error,urllib.request,ssl,email.utils
+import hashlib,json,os,pathlib,re,signal,stat,subprocess,tempfile,time,urllib.error,urllib.request,ssl,email.utils
 class Refusal(RuntimeError):pass
 def need(value,message):
  if not value:raise Refusal(message)
@@ -42,6 +42,20 @@ def deadline_receipt(path,row,deadline,expired_fields,started):
  return row
 def read_json(path,maximum=64*1024**2):
  path=pathlib.Path(path);need(not path.is_symlink() and path.stat().st_size<=maximum,'bounded regular metadata file');return json.loads(path.read_bytes())
+def verified_bundle():
+ """The run_checks.Bundle this module was imported from, or None.
+
+ Under the launcher every first-party module is loaded from the bundle's
+ verified in-memory bytes, and so are the data files read through it.
+ """
+ return __loader__ if type(getattr(__loader__,'pin',None)) is str else None
+def bundle_bytes(path):
+ """One first-party bundle file: its verified bytes under the launcher, else the file read now."""
+ bundle=verified_bundle();return bundle.get_data(str(path)) if bundle is not None else pathlib.Path(path).read_bytes()
+def bundle_json(path,maximum=64*1024**2):
+ bundle=verified_bundle()
+ if bundle is None:return read_json(path,maximum)
+ raw=bundle.get_data(str(path));need(len(raw)<=maximum,'bounded regular metadata file');return json.loads(raw)
 def safe_relative(name):
  need(type(name) is str and name and not name.startswith('/') and '\\' not in name and '\0' not in name,'relative member path')
  need(all(x not in ['','.','..'] for x in name.split('/')) and len(name.encode())<=4096,'member path boundary');return name
@@ -64,9 +78,12 @@ def fresh_env(additions):
  need(set(additions)<=allowed and all(type(v) is str for v in additions.values()),'project environment literal allowlist');return [v for k in sorted(additions) for v in ['--env',k+'='+additions[k]]]
 def owned_labels(ctx):return {'org.checktrail.sdk10.run':str(ctx['run']),'org.checktrail.sdk10.nonce':ctx['nonce'],'org.checktrail.sdk10.head':ctx['head']}
 def labels_match(labels,ctx):return type(labels) is dict and all(labels.get(k)==v for k,v in owned_labels(ctx).items())
-def process(argv,out,deadline,cap=2*1024**2,environment=None):
- """Own, bound and reap one first-party command; never prints error bodies."""
- out=pathlib.Path(out);stdout=out.with_suffix('.stdout');stderr=out.with_suffix('.stderr');start=time.monotonic();reason=None;p=None;start_error=None
+def process(argv,out,deadline,cap=2*1024**2,environment=None,stdin=None):
+ """Own, bound and reap one first-party command; never prints error bodies.
+
+ stdin, if given, is the child's whole input, from an unlinked private file.
+ """
+ out=pathlib.Path(out);stdout=out.with_suffix('.stdout');stderr=out.with_suffix('.stderr');start=time.monotonic();reason=None;p=None;start_error=None;source=None
  # A budget is an admission condition, not permission to spawn then kill.
  if start>=deadline:
   row={'argv':argv,'exitCode':None,'reason':'owned command deadline expired before start','elapsedSeconds':0,'ownedPID':None,'ownedChildStarted':False,'ownedChildReaped':False}
@@ -74,8 +91,9 @@ def process(argv,out,deadline,cap=2*1024**2,environment=None):
  with stdout.open('xb') as so,stderr.open('xb') as se:
   env=dict(os.environ) if environment is None else dict(environment);env.pop('GH_DEBUG',None);env.pop('DEBUG',None)
   try:
+   if stdin is not None:source=tempfile.TemporaryFile();source.write(stdin);source.seek(0)
    need(time.monotonic()<deadline,'owned command deadline expired before start')
-   p=subprocess.Popen(argv,stdout=so,stderr=se,start_new_session=True,env=env)
+   p=subprocess.Popen(argv,stdin=source,stdout=so,stderr=se,start_new_session=True,env=env)
    while p.poll() is None:
     if time.monotonic()>=deadline:reason='owned command deadline';break
     if stdout.stat().st_size>cap or stderr.stat().st_size>65536:reason='owned command output bound';break
@@ -87,6 +105,7 @@ def process(argv,out,deadline,cap=2*1024**2,environment=None):
      try:os.killpg(p.pid,signal.SIGKILL)
      except ProcessLookupError:pass
     p.wait(timeout=5)
+   if source is not None:source.close()
  n,h=hash_file(stdout);en,eh=hash_file(stderr)
  if n>cap or en>65536:reason='terminal command output bound'
  row={'argv':argv,'exitCode':p.returncode if p else None,'reason':reason,'elapsedSeconds':time.monotonic()-start,'ownedPID':p.pid if p else None,'ownedChildStarted':p is not None,'ownedChildReaped':p is not None and p.poll() is not None,'stdoutBytes':n,'stdoutSHA256':h,'stderrBytes':en,'stderrSHA256':eh,'startOrSupervisionErrorType':start_error};stderr.unlink();row=deadline_receipt(out.with_suffix('.receipt.json'),row,deadline,{'reason':reason or 'owned command deadline exhausted before completion credit'},start)

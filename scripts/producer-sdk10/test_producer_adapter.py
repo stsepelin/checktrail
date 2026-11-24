@@ -382,7 +382,8 @@ class DockerTable(unittest.TestCase):
                 for x in inner.found: x['State'].update(Running=False, ExitCode=0)
                 return 0 if inner.found else 1
             def wait(inner, timeout=None): return inner.poll()
-        with patch.object(driver, 'HERE', bundle), patch.object(driver.subprocess, 'Popen', Client), patch.object(a.ProducerAPI, 'register', side_effect=register), patch.object(driver.time, 'sleep'):
+        # The synthetic directory stands in for the verified bundle the launcher holds in memory.
+        with patch.object(driver, 'HERE', bundle), patch.object(driver, 'bundle_bytes', side_effect=lambda path: Path(path).read_bytes()), patch.object(driver.subprocess, 'Popen', Client), patch.object(a.ProducerAPI, 'register', side_effect=register), patch.object(driver.time, 'sleep'):
             return self.c.native('original-tests', argv, time.monotonic() + 600)
     def test_native_phase_never_starts_observes_inspects_or_copies_a_container_given_its_name(self):
         for case, labels in [('renamed', True), ('renamed', False), ('removed', True)]:

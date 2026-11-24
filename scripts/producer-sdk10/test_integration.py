@@ -54,7 +54,8 @@ class IntegrationControls(unittest.TestCase):
     return 0
    def wait(self,**kw):return 0
   deadline=time.monotonic()+deadline_seconds
-  with mock.patch.object(driver,'HERE',bundle),mock.patch.object(driver.subprocess,'Popen',Child):result=c.native(label,argv,deadline)
+  # The synthetic directory stands in for the verified bundle the launcher holds in memory.
+  with mock.patch.object(driver,'HERE',bundle),mock.patch.object(driver,'bundle_bytes',side_effect=lambda path:Path(path).read_bytes()),mock.patch.object(driver.subprocess,'Popen',Child):result=c.native(label,argv,deadline)
   return result,helper_calls,deadline
  def test_source_preservation_refusal_still_reaps_client_and_retains_both_cleanup_errors(self):
   for role in ['original-build','original-tests']:
@@ -108,7 +109,7 @@ class IntegrationControls(unittest.TestCase):
    def __init__(inner,root,ctx,selected):inner.root=root;inner.ctx=ctx;inner.profile=selected;inner.state=None;instances.append(inner)
    def save(inner):pass
    def inspect(inner,*args):return None
-   def cmd(inner,*args):pass
+   def cmd(inner,*args,**kwargs):pass
    def docker(inner,*args):pass
    def volume_owned(inner,*args):return True
    def helper(inner,label,args,deadline,*flags):
@@ -157,20 +158,28 @@ class IntegrationControls(unittest.TestCase):
   with mock.patch.object(driver.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(driver.time,'sleep'),mock.patch.object(driver,'observe_live_resource',side_effect=driver.ObservationIncomplete(projection)):
    result,calls,deadline=self.native(live_poll=lambda:clock.__setitem__(0,121),deadline_seconds=360)
   self.assertEqual(result['exitCode'],0);self.assertEqual(result['stopReason'],'live resource observation incomplete');self.assertEqual(result['liveResourceFailure']['privacySafeProjection'],projection);self.assertTrue((self.root/'evidence'/'original-build-LIVE-RESOURCE-FAILURE.json').exists())
- def test_input_preparation_child_leaves_no_bytecode_cache_in_the_reviewed_directory(self):
-  # Any cache entry in the reviewed directory makes every later --entry step
-  # refuse it, finalize included. Runs the real command shape over a scratch
-  # copy of input_prep.py and common.py, where importing common writes the cache.
+ def test_input_preparation_child_runs_the_verified_bundle_without_reading_its_directory(self):
+  # The child gets the bundle on stdin. With every file removed after
+  # verification it still runs input_prep.py, reads the profile from the
+  # verified bytes (a synthetic one input_prep refuses by its schema, so no
+  # network is used) and leaves no bytecode cache behind.
+  import run_checks
   bundle=self.root/'bundle-3359';bundle.mkdir()
-  for name in ['input_prep.py','common.py']:(bundle/name).write_bytes((Path(driver.__file__).parent/name).read_bytes())
-  argv=driver.input_prep_command(self.root/'owned-3359',1234.5)
-  self.assertEqual(argv[-6:],['--profile',str(driver.HERE/'profile.json'),'--out',str(self.root/'owned-3359'/'inputs'),'--deadline','1234.5'])
-  script=argv.index(str(driver.HERE/'input_prep.py'));command=[*argv[:script],str(bundle/'input_prep.py'),'--help']
+  for name in ['input_prep.py','common.py','run_checks.py']:(bundle/name).write_bytes(common.bundle_bytes(Path(driver.__file__).parent/name))
+  (bundle/'profile.json').write_bytes(b'{"schemaVersion":3359}')
+  raw=common.encoded({'schemaVersion':1,'files':[{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in ['input_prep.py','common.py','run_checks.py','profile.json']]});(bundle/'MANIFEST.json').write_bytes(raw);pin=hashlib.sha256(raw).hexdigest()
+  verified=run_checks.Bundle(bundle,run_checks.reviewed_bundle(bundle,pin),pin);owned=self.root/'owned-3359';(owned/'inputs').mkdir(parents=True)
+  with mock.patch.object(driver,'verified_bundle',return_value=verified),mock.patch.object(driver,'HERE',bundle):argv,stdin=driver.input_prep_command(owned,1234.5)
+  self.assertEqual(argv[:4],[sys.executable,'-I','-S','-B']);self.assertEqual(argv[6:9],[str(verified.path('run_checks.py')),pin,'--manifest-sha256'])
+  self.assertEqual(argv[argv.index('--entry'):],['--entry','input_prep.py','prepare','--profile',str(bundle/'profile.json'),'--out',str(owned/'inputs'),'--deadline','1234.5'])
+  for x in bundle.iterdir():x.unlink()
   # Some builds (macOS system Python) default to a cache prefix outside the
   # script directory; a scratch prefix makes any bytecode write observable.
   prefix=self.root/'pycache-prefix-3359';env={**{k:v for k,v in os.environ.items() if k!='PYTHONDONTWRITEBYTECODE'},'PYTHONPYCACHEPREFIX':str(prefix)}
-  done=__import__('subprocess').run(command,stdout=__import__('subprocess').PIPE,stderr=__import__('subprocess').STDOUT,timeout=60,env=env)
-  self.assertEqual(done.returncode,0,done.stdout);self.assertEqual(sorted(x.name for x in bundle.iterdir()),['common.py','input_prep.py']);self.assertFalse(prefix.exists())
+  done=__import__('subprocess').run(argv,input=stdin,stdout=__import__('subprocess').PIPE,stderr=__import__('subprocess').PIPE,timeout=60,env=env)
+  self.assertEqual(done.returncode,1,done.stderr);result=json.loads(done.stdout)
+  self.assertEqual((result['errorType'],result['controlledReason']),('Refusal','profile schema'),done.stderr)
+  self.assertEqual(list(bundle.iterdir()),[]);self.assertFalse(prefix.exists())
  def test_resource_cutoff_stops_the_registered_producer_id_not_its_name(self):
   # The first poll is still running, so the loop sees the log flood and cuts off.
   result,_,_=self.native(limit=4,body=b'flood-7741 beyond the remaining log budget',live_poll=lambda:None)

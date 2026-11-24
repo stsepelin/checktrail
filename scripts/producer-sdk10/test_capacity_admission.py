@@ -10,6 +10,7 @@ import unittest
 from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import capacity_admission as space
+import common
 import live_resource as live
 import test_live_resource as fixtures
 
@@ -113,7 +114,7 @@ class Capacity(unittest.TestCase):
         self.assertTrue(result['privacySafeProjection']['physicalReserveAccepted'])
 
     def test_actual_driver_wires_post_materialization_before_native_and_final_capture(self):
-        tree=ast.parse((HERE/'driver.py').read_bytes())
+        tree=ast.parse(common.bundle_bytes(HERE/'driver.py'))
         function=next(x for x in tree.body if isinstance(x,ast.FunctionDef) and x.name=='produce')
         calls=[x for x in ast.walk(function) if isinstance(x,ast.Call)]
         observations={x.args[-1].value:(x.lineno,x.col_offset) for x in calls if isinstance(x.func,ast.Name) and x.func.id=='observe_space'}

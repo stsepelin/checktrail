@@ -150,14 +150,17 @@ class Controls(unittest.TestCase):
   # Real run_checks.py/common.py beside synthetic controls. Each control's
   # import writes a marker, so an absent marker proves it was never imported.
   base=pathlib.Path(tempfile.mkdtemp(dir=self.root,prefix='controls-'));bundle=base/'bundle';bundle.mkdir();markers=base/'markers';markers.mkdir()
-  for name in ['run_checks.py','common.py']:(bundle/name).write_bytes((ROOT/name).read_bytes())
+  for name in ['run_checks.py','common.py']:(bundle/name).write_bytes(common.bundle_bytes(ROOT/name))
   def control(name,label):
    (bundle/name).write_text('import pathlib,unittest\npathlib.Path('+repr(str(markers/label))+').write_text("imported-7319")\nclass Synthetic(unittest.TestCase):\n def test_'+label.replace('-','_')+'(self):self.assertEqual(7319,7319)\n')
   control('test_listed_marker.py','listed');control('test_protected_marker.py','protected')
+  # Synthetic Node controls: the crypto child imports ./envelope.mjs beside its script.
+  (bundle/'envelope.mjs').write_text("export const label='verified-5813';\n")
+  (bundle/'test_crypto.mjs').write_text("import fs from 'node:fs';import path from 'node:path';import {label} from './envelope.mjs';const root=process.argv[2];fs.mkdirSync(root,{mode:0o700});fs.writeFileSync("+json.dumps(str(markers/'crypto'))+",label);fs.writeFileSync(path.join(root,'RESULT.json'),JSON.stringify({controls:[{name:label,passed:true}],skips:0}));\n")
   def rows(names):return [{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in names]
   def pin(protected=True,manifest_protected=True):
    if protected:(bundle/'PROTECTED-CONTROLS.json').write_bytes(common.encoded({'schemaVersion':1,'firstPartyControlsOnly':True,'files':rows(['test_protected_marker.py'])}))
-   raw=common.encoded({'schemaVersion':1,'files':rows(['run_checks.py','common.py','test_listed_marker.py']+(['PROTECTED-CONTROLS.json'] if manifest_protected else []))});(bundle/'MANIFEST.json').write_bytes(raw);return hashlib.sha256(raw).hexdigest()
+   raw=common.encoded({'schemaVersion':1,'files':rows(['run_checks.py','common.py','test_listed_marker.py','test_crypto.mjs','envelope.mjs']+(['PROTECTED-CONTROLS.json'] if manifest_protected else []))});(bundle/'MANIFEST.json').write_bytes(raw);return hashlib.sha256(raw).hexdigest()
   return bundle,markers,control,pin
  def control_worker(self,bundle,pin,write_bytecode=False):
   out=pathlib.Path(tempfile.mkdtemp(dir=self.root,prefix='out-'));args=[str(bundle/'run_checks.py'),'--python-worker','--out',str(out),'--manifest-sha256',pin]
@@ -174,7 +177,7 @@ class Controls(unittest.TestCase):
   bundle,markers,control,pin=self.control_bundle();value=pin()
   for attempt in range(2):
    code,log,out=self.control_worker(bundle,value,True);self.assertEqual(code,0,(attempt,log));self.assertIn('test_listed',log)
-  self.assertEqual(sorted(x.name for x in bundle.iterdir()),sorted(['MANIFEST.json','PROTECTED-CONTROLS.json','common.py','run_checks.py','test_listed_marker.py','test_protected_marker.py']))
+  self.assertEqual(sorted(x.name for x in bundle.iterdir()),sorted(['MANIFEST.json','PROTECTED-CONTROLS.json','common.py','envelope.mjs','run_checks.py','test_crypto.mjs','test_listed_marker.py','test_protected_marker.py']))
  def test_unreviewed_directory_entry_is_refused_before_any_control_import(self):
   # An unlisted helper is importable by name just like an unlisted test, and
   # a stale bytecode cache can stand in for a pinned module.
@@ -202,15 +205,15 @@ class Controls(unittest.TestCase):
   bundle,markers,control,pin=self.control_bundle();value=pin();control('test_unlisted_marker.py','unlisted');out=self.root/'controller-out'
   with patch.object(run_checks,'HERE',bundle),patch.object(run_checks.subprocess,'run') as child,self.assertRaisesRegex(run_checks.Unreviewed,'unreviewed entry in executed control directory: test_unlisted_marker.py'):run_checks.run(out,value)
   child.assert_not_called();self.assertFalse(out.exists());self.assertEqual(list(markers.iterdir()),[])
-  (bundle/'test_unlisted_marker.py').unlink();self.assertEqual(run_checks.bound_tests(bundle,value),['test_listed_marker','test_protected_marker'])
- def controller_run(self,swap=False):
+  (bundle/'test_unlisted_marker.py').unlink();self.assertEqual(run_checks.bound_tests(run_checks.reviewed_bundle(bundle,value)),['test_listed_marker','test_protected_marker'])
+ def controller_run(self,change=None,crypto=False):
   import run_checks
   bundle,markers,control,pin=self.control_bundle();value=pin();out=self.root/'controller-out-6421';real=subprocess.run;children=[]
   class CryptoNotRun(BaseException):pass
   def child(args,**kwargs):
-   if '--python-worker' not in args:raise CryptoNotRun()
-   # The launcher changes after the parent verified the bundle, before its worker starts.
-   if swap:(bundle/'run_checks.py').write_bytes(('import pathlib\npathlib.Path('+repr(str(markers/'swapped'))+').write_text("swapped-6421")\n').encode())
+   if '--python-worker' not in args and not crypto:raise CryptoNotRun()
+   # The bundle changes after the parent verified it, before each child starts.
+   if change:change(bundle,markers)
    done=real(args,**kwargs);children.append(done.returncode);return done
   with patch.object(run_checks,'HERE',bundle),patch.object(run_checks.subprocess,'run',side_effect=child):
    try:run_checks.run(out,value);error=None
@@ -219,18 +222,42 @@ class Controls(unittest.TestCase):
  def test_controls_worker_runs_the_verified_launcher_bytes(self):
   out,markers,children,error,crypto=self.controller_run()
   self.assertEqual(children,[0]);self.assertIsInstance(error,crypto);self.assertEqual(common.read_json(out/'PYTHON.json')['tests'],2);self.assertEqual(sorted(x.name for x in markers.iterdir()),['listed','protected'])
- def test_controls_worker_refuses_a_launcher_changed_after_verification(self):
-  out,markers,children,error,_=self.controller_run(swap=True)
-  self.assertEqual(len(children),1);self.assertNotEqual(children[0],0);self.assertRegex(str(error),'synthetic control failed')
-  self.assertIn('run_checks.py differs from its pinned SHA256',(out/'python.log').read_text());self.assertEqual(list(markers.iterdir()),[])
+ def swapped(self,markers,label):
+  return ('import pathlib\npathlib.Path('+repr(str(markers/('swapped-'+label)))+').write_text("swapped-6421")\n').encode()
+ def test_controls_worker_runs_the_verified_bytes_after_the_bundle_changes_on_disk(self):
+  # The worker gets the bundle on stdin. A launcher, sibling or control
+  # changed on disk never runs, and with every file removed the worker still
+  # runs, so it never reads the directory at all.
+  def removed(bundle,markers):
+   for x in bundle.iterdir():x.unlink()
+  cases={'launcher':lambda b,m:(b/'run_checks.py').write_bytes(self.swapped(m,'launcher')),'sibling':lambda b,m:(b/'common.py').write_bytes((b/'common.py').read_bytes()+b'\n'+self.swapped(m,'sibling')),
+   'control':lambda b,m:(b/'test_listed_marker.py').write_bytes(self.swapped(m,'control')+b'import unittest\nclass Swapped(unittest.TestCase):\n def test_swapped(self):self.fail("swapped-6421")\n'),'removed':removed}
+  for case,change in cases.items():
+   with self.subTest(case=case):
+    self.tmp.cleanup();self.tmp=tempfile.TemporaryDirectory(prefix='ct-sdk10-synthetic-');self.root=pathlib.Path(self.tmp.name)
+    changed=[]
+    def recorded(bundle,markers):before=sorted((x.name,x.read_bytes()) for x in bundle.iterdir());change(bundle,markers);changed.append(before!=sorted((x.name,x.read_bytes()) for x in bundle.iterdir()))
+    out,markers,children,error,crypto=self.controller_run(recorded)
+    self.assertEqual(changed,[True]);self.assertEqual(children,[0],(out/'python.log').read_text());self.assertIsInstance(error,crypto)
+    self.assertEqual(common.read_json(out/'PYTHON.json')['tests'],2);self.assertEqual(sorted(x.name for x in markers.iterdir()),['listed','protected'])
+ def test_crypto_controls_run_private_copies_of_the_verified_node_files(self):
+  def swap(bundle,markers):
+   if (bundle/'envelope.mjs').read_bytes().startswith(b'export const label=\'verified'):(bundle/'envelope.mjs').write_text("export const label='swapped-5813';\n");(bundle/'test_crypto.mjs').write_text("import fs from 'node:fs';fs.writeFileSync("+json.dumps(str(markers/'swapped-crypto'))+",'swapped-5813');\n")
+  out,markers,children,error,_=self.controller_run(swap,crypto=True)
+  self.assertIsNone(error);self.assertEqual(children,[0,0]);self.assertEqual((markers.parent/'bundle'/'envelope.mjs').read_text(),"export const label='swapped-5813';\n")
+  self.assertEqual((markers/'crypto').read_text(),'verified-5813');self.assertFalse((markers/'swapped-crypto').exists())
+  self.assertEqual(sorted(x.name for x in (out/'crypto-code').iterdir()),['envelope.mjs','test_crypto.mjs']);self.assertTrue(common.read_json(out/'RESULT.json')['complete'])
  def entry_bundle(self,listed=True):
   # An entry script that, like driver.py, puts its directory on sys.path and
   # imports a sibling at module level; both imports write marker files.
   bundle,markers,control,pin=self.control_bundle()
   (bundle/'helper_marker.py').write_text('import pathlib\npathlib.Path('+repr(str(markers/'helper'))+').write_text("imported-4421")\n')
   (bundle/'entry_marker.py').write_text('import pathlib,sys\nsys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))\nimport helper_marker\npathlib.Path('+repr(str(markers/'entry'))+').write_text(" ".join(sys.argv[1:]))\nraise SystemExit(7 if "--exit-7" in sys.argv else 0)\n')
+  # A second entry also reads a pinned data file the way first-party code does.
+  (bundle/'data_marker.json').write_text('{"data":"verified-5813"}')
+  (bundle/'reading_marker.py').write_text('import pathlib,sys\nsys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))\nimport helper_marker,common\ndata=common.bundle_bytes(pathlib.Path(__file__).resolve().parent/"data_marker.json").decode()\ntry:import planted_marker\nexcept ModuleNotFoundError:planted="absent"\nelse:planted="imported"\npathlib.Path('+repr(str(markers/'entry'))+').write_text(" ".join(sys.argv[1:])+"|"+data+"|"+planted)\nraise SystemExit(7 if "--exit-7" in sys.argv else 0)\n')
   (bundle/'PROTECTED-CONTROLS.json').write_bytes(common.encoded({'schemaVersion':1,'firstPartyControlsOnly':True,'files':[{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in ['test_protected_marker.py']]}))
-  names=['run_checks.py','common.py','test_listed_marker.py','PROTECTED-CONTROLS.json','entry_marker.py']+(['helper_marker.py'] if listed else [])
+  names=['run_checks.py','common.py','test_listed_marker.py','test_crypto.mjs','envelope.mjs','PROTECTED-CONTROLS.json','entry_marker.py','reading_marker.py','data_marker.json']+(['helper_marker.py'] if listed else [])
   raw=common.encoded({'schemaVersion':1,'files':[{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in names]});(bundle/'MANIFEST.json').write_bytes(raw)
   return bundle,markers,hashlib.sha256(raw).hexdigest()
  def entry(self,bundle,pin,*argv):
@@ -254,10 +281,50 @@ class Controls(unittest.TestCase):
     if case=='verifier-entry':script='run_checks.py'
     code,log=self.entry(bundle,pin,script,'finalize','--nonce','synthetic-4421')
     self.assertNotEqual(code,0);self.assertIn(expected,log);self.assertEqual(list(markers.iterdir()),[])
+ def test_entry_runs_only_verified_bytes_when_the_bundle_changes_after_verification(self):
+  # The hook swaps the entry, a sibling it imports, common.py and a data file
+  # the moment the verified entry is compiled, and plants a module the entry
+  # tries to import, then counts every later open or listing of the bundle; a
+  # reopen would run or read a swapped file.
+  bundle,markers,pin=self.entry_bundle();folder=os.path.realpath(bundle);count=self.root/'opens-5813'
+  swaps={'reading_marker.py':self.swapped(markers,'entry'),'helper_marker.py':self.swapped(markers,'helper'),'common.py':common.bundle_bytes(ROOT/'common.py')+b'\n'+self.swapped(markers,'common'),'data_marker.json':b'{"data":"foreign-5813"}','planted_marker.py':self.swapped(markers,'planted')}
+  wrapper=('import atexit,os,sys\nfolder='+repr(folder)+';entry=os.path.join(folder,"reading_marker.py");swaps='+repr(swaps)+'\nopens=[];busy=[];done=[]\n'
+   'def inside(path):\n'
+   ' try:path=os.path.realpath(os.fsdecode(path))\n'
+   ' except TypeError:return False\n'
+   ' return path==folder or path.startswith(folder+os.sep)\n'
+   'def hook(event,args):\n'
+   ' if busy:return\n'
+   ' if done and event in ("open","os.listdir","os.scandir") and args and inside(args[0]):opens.append((event,args[0]))\n'
+   ' if event=="compile" and args[1]==entry and not done:\n'
+   '  busy.append(1)\n'
+   '  for name,body in swaps.items():\n'
+   '   with open(os.path.join(folder,name),"wb") as f:f.write(body)\n'
+   '  busy.clear();done.append(1)\n'
+   'sys.addaudithook(hook)\n'
+   'atexit.register(lambda:open('+repr(str(count))+',"w").write(repr(opens)))\n')
+  launcher=bundle/'run_checks.py'
+  code,log=self.bootstrap(launcher,hashlib.sha256(launcher.read_bytes()).hexdigest(),'--manifest-sha256',pin,'--entry','reading_marker.py','finalize','--nonce','synthetic-5813','--exit-7',wrapper=wrapper)
+  self.assertEqual({name:(bundle/name).read_bytes() for name in swaps},swaps)
+  self.assertEqual(code,7,log);self.assertEqual(count.read_text(),'[]')
+  self.assertEqual(sorted(x.name for x in markers.iterdir()),['entry','helper']);self.assertEqual((markers/'helper').read_text(),'imported-4421')
+  self.assertEqual((markers/'entry').read_text(),'finalize --nonce synthetic-5813 --exit-7|{"data":"verified-5813"}|absent')
+ def test_crypto_operation_runs_a_private_copy_of_the_verified_envelope(self):
+  # The checkout's envelope.mjs is replaced after verification; the operation
+  # runs the verified bytes, copied into its own fresh folder.
+  import crypto_bridge
+  folder=self.root/'checkout-5813';folder.mkdir();markers=self.root/'markers-5813';markers.mkdir()
+  (folder/'envelope.mjs').write_text("import fs from 'node:fs';fs.writeFileSync("+json.dumps(str(markers/'swapped'))+",'swapped-5813');process.stdout.write('{\"swapped\":5813}\\n');\n")
+  verified=("import fs from 'node:fs';const [mode,file]=process.argv.slice(2);process.stdout.write(JSON.stringify({mode,request:JSON.parse(fs.readFileSync(file)).label})+'\\n');\n").encode()
+  def reviewed(path):
+   self.assertEqual(path,folder/'envelope.mjs');return verified
+  with patch.object(crypto_bridge,'HERE',folder),patch.object(crypto_bridge,'bundle_bytes',side_effect=reviewed):
+   value=crypto_bridge.operation(self.root/'op-5813','validate-recipient',{'label':'verified-5813'},time.monotonic()+30)
+  self.assertEqual(value,{'mode':'validate-recipient','request':'verified-5813'});self.assertEqual(list(markers.iterdir()),[]);self.assertEqual((self.root/'op-5813'/'envelope.mjs').read_bytes(),verified)
  def generated(self,launcher=None):
   import make_pause_workflow,make_workflow
   checkout=self.root/'generated';folder=checkout/'scripts'/'producer-sdk10';folder.mkdir(parents=True)
-  for name in make_workflow.FILES:(folder/name).write_bytes((ROOT/name).read_bytes())
+  for name in make_workflow.FILES:(folder/name).write_bytes(common.bundle_bytes(ROOT/name))
   if launcher is not None:(folder/'run_checks.py').write_bytes(launcher)
   data=make_pause_workflow.generate(folder,checkout/'pause.yml')
   commands={workflow:[x.strip().removeprefix('run: ') for x in (checkout/workflow).read_text().splitlines() if 'python' in x or '.py' in x] for workflow in ['pause.yml','ORIGINAL-NATIVE-UNGRANTED.yml']}
@@ -265,7 +332,7 @@ class Controls(unittest.TestCase):
  def test_generated_launcher_digest_is_the_manifest_row_even_if_the_launcher_changes_during_generation(self):
   import make_pause_workflow,make_workflow
   checkout=self.root/'generated-race-7314';folder=checkout/'scripts'/'producer-sdk10';folder.mkdir(parents=True)
-  for name in make_workflow.FILES:(folder/name).write_bytes((ROOT/name).read_bytes())
+  for name in make_workflow.FILES:(folder/name).write_bytes(common.bundle_bytes(ROOT/name))
   launcher_path=folder/'run_checks.py';swapped=launcher_path.read_bytes()+b'# swapped-during-generation-7314\n';real_read=pathlib.Path.read_bytes;reads=[]
   def racing_read(path):
    if path==launcher_path:
@@ -283,7 +350,7 @@ class Controls(unittest.TestCase):
   import make_workflow
   _,folder,generated,boot=self.generated()
   entry='--manifest-sha256 "$CHECKTRAIL_MANIFEST_SHA256" --entry '
-  self.assertTrue(boot.endswith(' scripts/producer-sdk10/run_checks.py '+hashlib.sha256((ROOT/'run_checks.py').read_bytes()).hexdigest()+' '))
+  self.assertTrue(boot.endswith(' scripts/producer-sdk10/run_checks.py '+hashlib.sha256(common.bundle_bytes(ROOT/'run_checks.py')).hexdigest()+' '))
   for workflow,controls,entries in [('pause.yml',0,5),('ORIGINAL-NATIVE-UNGRANTED.yml',1,1+49*3+1)]:
    with self.subTest(workflow=workflow):
     commands=generated[workflow]

@@ -10,7 +10,7 @@ import stat
 import sys
 import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import context, encoded, freeze, hash_file, need, owned_labels, read_json
+from common import bundle_bytes, context, digest, encoded, freeze, hash_file, need, owned_labels, read_json
 from driver import Controller, HERE, NATIVE_CAP_ALIASES, manifest_check, native_identity_contract
 from owned_image import cleanup_image_inputs
 from producer_adapter import ProducerAPI
@@ -74,7 +74,7 @@ def canary(c, case, deadline):
     c.helper('prepare-'+case,['/observer/protected_control_worker.py','prepare','--case',case,'--uid',str(c.state['uid']),'--gid',str(c.state['gid'])],deadline)
     need(c.inspect('container',name) is None, 'fresh-protected-canary-container')
     c.state['containers'].append(name);c.save();protected=c.root/'protected'/name;protected.mkdir(mode=0o700)
-    binding={'context':c.ctx,'case':case,'syntheticControlOnly':True,'originalSDKCommandStarted':False,'phase':phase,'profileSHA256':hash_file(HERE/'profile.json')[1],'supervisorSHA256':hash_file(HERE/'native_entry.py')[1]}
+    binding={'context':c.ctx,'case':case,'syntheticControlOnly':True,'originalSDKCommandStarted':False,'phase':phase,'profileSHA256':digest(bundle_bytes(HERE/'profile.json')),'supervisorSHA256':digest(bundle_bytes(HERE/'native_entry.py'))}
     argv=child_argv(case,binding,deadline)
     wrapped=['/usr/bin/python3','-I','-S','-B','/observer/protected_control_worker.py','supervisor','--case',case,'--binding-json',json.dumps(binding,sort_keys=True),'--deadline',str(deadline),'--uid',str(c.state['uid']),'--gid',str(c.state['gid'])]
     args=c.container_args(name,wrapped)

@@ -24,7 +24,7 @@ import urllib.request
 import zlib
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import Refusal, encoded, freeze, git_blob, need, safe_relative
+from common import Refusal, encoded, freeze, git_blob, need, safe_relative, verified_bundle
 
 
 def tick(deadline):
@@ -52,6 +52,16 @@ def read_json(path, maximum=96 * 1024 ** 2):
         need(stat.S_ISREG(st.st_mode) and st.st_size <= maximum, 'bounded regular JSON')
         raw = stream.read(maximum + 1)
     need(len(raw) == st.st_size, 'complete JSON input')
+    return json.loads(raw)
+
+
+def profile_json(path):
+    """The reviewed profile: the launcher's verified bytes, else the bounded regular file."""
+    bundle = verified_bundle()
+    if bundle is None:
+        return read_json(path, 1024 * 1024)
+    raw = bundle.get_data(path)
+    need(len(raw) <= 1024 * 1024, 'bounded regular JSON')
     return json.loads(raw)
 
 
@@ -888,7 +898,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     new_output = not Path(args.out).exists() if args.command == 'prepare' else Path(args.evidence).is_dir() and not Path(args.evidence).is_symlink() and not any(Path(args.evidence).iterdir())
     try:
-        profile = read_json(args.profile, 1024 * 1024)
+        profile = profile_json(args.profile)
         if args.command == 'prepare':
             result = prepare(profile, args.out, args.deadline)
         else:
