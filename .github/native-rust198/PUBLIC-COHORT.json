@@ -5,9 +5,9 @@
     "sha256": "7c1e07d63128ba32aedaa8f261d488585fddab820a8d75cdb42d75997920468c"
   },
   {
-    "bytes": 21296,
+    "bytes": 19793,
     "file": "host_probe.py",
-    "sha256": "2c50fe4f607ed25e1ab82341d2b56972c3de6b68119e459de515c4131001bdea"
+    "sha256": "fc952dde2fb25a8c4463c07e853406b793bf9c69304173114f32bb9bb1149a61"
   },
   {
     "bytes": 2779,
@@ -20,14 +20,14 @@
     "sha256": "3d6725e34cf7d1fed49165bfdf0c17cdc624cf460dc3708ece97104521ebde31"
   },
   {
-    "bytes": 6075,
+    "bytes": 9956,
     "file": "placement.py",
-    "sha256": "6d81759c68b4e5d671e4dccbd1cfff363acd3f747c936babcae13394077742a3"
+    "sha256": "0ae15980fbd55e231de286eb91ea85c95aba0d62440b56f10302f474bbe23427"
   },
   {
-    "bytes": 16842,
+    "bytes": 17227,
     "file": "process_supervisor.py",
-    "sha256": "39753d3ab2c0461a1325486f8a12c389b185286c22dc3248ca08d06c46ce463c"
+    "sha256": "b0f80535b36f2718bf11df7665dae3d5486c91196182d4c09d5a16baa817281a"
   },
   {
     "bytes": 24190,
@@ -75,14 +75,14 @@
     "sha256": "c415de7356e9232818dae9cb6a3230a127c08fe21f2d82b7ddf4093111413159"
   },
   {
-    "bytes": 54341,
+    "bytes": 58202,
     "file": "test_controller.py",
-    "sha256": "7a7e22ee2bac1a08d09d14ae56791c2a85de653c05fdc25da1adce77c4215a37"
+    "sha256": "46dffa1e29fa6a0c52eac31da41e4b5e3b1355a0616d7b981c7c220142c7bf58"
   },
   {
-    "bytes": 30149,
+    "bytes": 35578,
     "file": "test_inner_failure_observation.py",
-    "sha256": "33c48a96b73d721d0dea667443a3758805f737cda1404ced404b75c5b22a5f3e"
+    "sha256": "7a0be5e8c0977bef4cc81b4a74e9516014d5e453785809e3bfaca9940fb9aa9e"
   },
   {
     "bytes": 6348,
@@ -90,14 +90,14 @@
     "sha256": "e6db6f546d5b09479ee13be0448823c496342ced82e2cc7d5f31c839b6a61584"
   },
   {
-    "bytes": 16007,
+    "bytes": 19252,
     "file": "test_placement.py",
-    "sha256": "ebab627e116ab6007864164aa60a302a12088ea4e27e788ca21fc4268898c2d2"
+    "sha256": "0a36657141b50e64d7b65c8dc962a1f5a9218ee9f9260074c6d923b6df6f394c"
   },
   {
-    "bytes": 25181,
+    "bytes": 27751,
     "file": "test_process_lifecycle.py",
-    "sha256": "71ead7cd011504e249a31b1b85f3cc585dce7144cfe7691f61ff5b5ec1d071dc"
+    "sha256": "bc18a47d661e26717b19778ada39bace8f968571209aff78de4f8a5277cc93bf"
   },
   {
     "bytes": 12947,

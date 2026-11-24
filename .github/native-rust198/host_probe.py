@@ -109,19 +109,10 @@ def observe_inner(module,argv,env,receipts,timeout):
   observation['classification']={'kind':'unknown-firstparty-inner-result-format','reasonIdentifier':None};raise InnerPermissionProbeRefusal(observation) from None
  return value
 
-# Exactly the result reused_admission.inspect_as_build() returns: it raises unless
-# the controller is protected, checks every request frame entry once, and sets the
-# all-protected flag from a zero failure count with at most 100 listed failures.
-INNER_RESULT_FIELDS=frozenset(('identity','selectedEntriesChecked','failureCount','firstFailures','allSelectedEntriesReadableExecutableAndProtected','controllerProtected','metadataEndpointSha256','permissionProbeOnly','projectCodeExecuted'))
-INNER_LISTED_FAILURES=100
-def require_consistent_inner_result(value,frame,identity):
- D.need(set(value)==INNER_RESULT_FIELDS and all(type(value[key]) is bool for key in ['controllerProtected','allSelectedEntriesReadableExecutableAndProtected','permissionProbeOnly','projectCodeExecuted']) and all(type(value[key]) is int for key in ['failureCount','selectedEntriesChecked']) and type(value['firstFailures']) is list,'First-party inner result fields')
- checked=value['selectedEntriesChecked'];failures=value['failureCount']
- D.need(frame and checked==len(frame),'First-party inner result inconsistent: entries checked differ from request frame')
- D.need(0<=failures<=checked and len(value['firstFailures'])==min(failures,INNER_LISTED_FAILURES),'First-party inner result inconsistent: failure count')
- D.need(value['allSelectedEntriesReadableExecutableAndProtected'] is (failures==0),'First-party inner result inconsistent: all-protected flag and failure count')
- D.need(value['controllerProtected'] is True and value['permissionProbeOnly'] is True and value['projectCodeExecuted'] is False,'First-party inner result inconsistent: controller/probe-only claims')
- D.need(value['identity']==identity,'First-party inner result inconsistent: build identity')
+# The SDK permission probe and the first-party access canary share one validator.
+INNER_RESULT_FIELDS=PL.INNER_RESULT_FIELDS
+INNER_LISTED_FAILURES=PL.INNER_LISTED_FAILURES
+require_consistent_inner_result=PL.require_consistent_inner_result
 
 def permission_observation(developer,sdk,toolchain,tools,output,context):
  """Read/hash and actual build-UID access probes only. Never chmod stock trees."""

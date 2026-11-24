@@ -35,11 +35,16 @@ class Placement(unittest.TestCase):
     now=metadata(Path(row['path']));self.assertEqual(now,{k:row[k] for k in now});result.append({'path':row['path'],**now})
    return result
   return SimpleNamespace(metadata=metadata,snapshot=snapshot,encoded=encoded,current_endpoint=current,digest=lambda b:hashlib.sha256(b).hexdigest()),Bounds()
- def observe(self,*,deny=False,blank=False,change_parent=False):
+ def observe(self,*,deny=False,blank=False,change_parent=False,changed=None):
   def run(module,argv,env,receipts,timeout):
    self.assertEqual('--inner',argv[-2]);self.assertEqual('/usr/bin/sudo',argv[0]);self.assertGreater(timeout,0);self.assertLessEqual(timeout,30);request=Path(argv[-1]);data=json.loads(request.read_text());body=Path(data['controller']['file']).read_bytes();self.assertGreater(len(body),0);self.assertLessEqual(len(body),4096);self.assertEqual({'firstPartyAccessCanary':1,'runContext':self.context},json.loads(body));self.assertEqual(hashlib.sha256(body).hexdigest(),data['controller']['sha256']);self.assertEqual(self.identity,data['identity']);self.assertFalse(any('/SDK' in r['path'] for r in data['frame']));self.assertTrue(any(r['type']=='directory' for r in data['frame']));receipts.append({'syntheticFirstPartyOnly':True})
    if change_parent:request.parent.chmod(0o750)
-   end=module.current_endpoint(data['frame']);return {'metadataEndpointSha256':module.digest(module.encoded(end)),'controllerProtected':not deny,'allSelectedEntriesReadableExecutableAndProtected':not deny,'selectedEntriesChecked':len(data['frame'])}
+   end=module.current_endpoint(data['frame'])
+   # The full shape inspect_as_build() returns; a denial is the canary entry
+   # failing its read check, since an unprotected controller raises instead.
+   denied=[{'path':r['path'],'readable':False,'executableWhenRequired':True,'writablePaths':[]} for r in data['frame'] if r['path'].endswith('/FIRSTPARTY-ACCESS-CANARY')] if deny else []
+   value={'identity':data['identity'],'selectedEntriesChecked':len(data['frame']),'failureCount':len(denied),'firstFailures':denied,'allSelectedEntriesReadableExecutableAndProtected':not denied,'controllerProtected':True,'metadataEndpointSha256':module.digest(module.encoded(end)),'permissionProbeOnly':True,'projectCodeExecuted':False}
+   return changed(value,data['frame']) if changed else value
   return run
  def test_exact_shared_paths_context_and_native_work(self):
   p=P.paths(self.context,self.parent);self.assertEqual(p['base']/'controller',p['controller']);self.assertEqual(p['base']/'host',p['host']);self.assertEqual('rust198-123-1-aaaaaaaaaaaa',p['nativeWork'].name);self.assertNotIn('RUNNER_TEMP',str(p));self.assertEqual(4,len({p[k] for k in ['controller','host','nativeWork','base']}))
@@ -105,6 +110,22 @@ class Placement(unittest.TestCase):
   p=self.layout();module,bounds=self.fake_module()
   with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view),self.assertRaisesRegex(ValueError,'^firstparty-canary-access-refused$'):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),self.observe(deny=True))
   self.assertEqual([],list(p['host'].iterdir()));self.assertEqual(0o700,stat.S_IMODE(p['host'].stat().st_mode))
+ def test_contradictory_canary_reply_earns_no_canary_credit(self):
+  # Every case keeps both protection flags true, the matching endpoint digest
+  # and the full entry count: the reply contradicts only itself.
+  def canary_row(frame):return {'path':next(r['path'] for r in frame if r['path'].endswith('/FIRSTPARTY-ACCESS-CANARY')),'readable':False,'executableWhenRequired':True,'writablePaths':[]}
+  def without(key):return lambda v,f:{k:x for k,x in v.items() if k!=key}
+  cases={'seven-failures-none-listed':(lambda v,f:{**v,'failureCount':7},'inconsistent: failure count$'),'one-listed-failure-all-protected':(lambda v,f:{**v,'failureCount':1,'firstFailures':[canary_row(f)]},'inconsistent: all-protected flag and failure count$'),'listed-row-outside-frame':(lambda v,f:{**v,'failureCount':1,'firstFailures':[{**canary_row(f),'path':'/synthetic/foreign-9137'}],'allSelectedEntriesReadableExecutableAndProtected':False},'inconsistent: listed failure outside request frame order$'),'other-build-identity':(lambda v,f:{**v,'identity':{**v['identity'],'uid':v['identity']['uid']+9137}},'inconsistent: build identity$'),'project-code-executed':(lambda v,f:{**v,'projectCodeExecuted':True},'inconsistent: controller/probe-only claims$'),'probe-only-claim-absent':(without('permissionProbeOnly'),'fields$'),'boolean-failure-count':(lambda v,f:{**v,'failureCount':False},'fields$')}
+  for label,(changed,message) in cases.items():
+   with self.subTest(case=label):
+    self.tmp.cleanup();self.setUp();p=self.layout();module,bounds=self.fake_module()
+    with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view),self.assertRaisesRegex(ValueError,'^First-party inner result '+message):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),self.observe(changed=changed))
+    self.assertEqual([],list(p['host'].iterdir()));self.assertEqual(0o700,stat.S_IMODE(p['host'].stat().st_mode))
+ def test_consistent_canary_reply_with_a_reordered_copy_earns_canary_credit(self):
+  # A reply rebuilt field by field, not the observer's own object, still passes.
+  p=self.layout();module,bounds=self.fake_module()
+  with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view):r=P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),self.observe(changed=lambda v,f:{k:copy.deepcopy(v[k]) for k in sorted(v,reverse=True)}))
+  self.assertTrue(r['firstPartyOnlyNonemptyAccessCanaryObserved']);self.assertEqual(self.identity,r['identity']);self.assertGreater(r['selectedFirstpartyAndAncestorEntries'],2);self.assertEqual([],list(p['host'].iterdir()))
  def test_parent_change_refuses_and_still_closes_owned_request_descriptor(self):
   p=self.layout();module,bounds=self.fake_module()
   with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view),self.assertRaises(AssertionError):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),self.observe(change_parent=True))

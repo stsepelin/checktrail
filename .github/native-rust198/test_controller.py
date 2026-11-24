@@ -1,6 +1,6 @@
 """Synthetic first-party controls only: no upstream source/SDK/compiler execution."""
 from pathlib import Path
-import contextlib,copy,hashlib,io,json,os,plistlib,stat,sys,tempfile,unittest
+import ast,contextlib,copy,hashlib,io,json,os,plistlib,re,stat,sys,tempfile,unittest
 from contextlib import redirect_stdout
 from unittest import mock
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
@@ -472,5 +472,41 @@ class ClangMeasurementPolicyTests(unittest.TestCase):
   def changed(fd):
    value=original(fd);values=list(value);values[1]+=1;return os.stat_result(values)
   with mock.patch.object(H.os,'fstat',changed),self.assertRaisesRegex(ValueError,'endpoint changed'):H.hash_tool(file,float('inf'),'clang++')
+
+
+# Sibling producers admitted a container, volume or image by its immutable ID and
+# then acted on it by name, so a rebound name reached a foreign object. These
+# producers issue no container-engine command at all; any that is added must
+# address the admitted ID and be reviewed against that rename/rebind race.
+ENGINES=('docker','podman','nerdctl','docker-compose')
+ENGINE_WORD=re.compile(r'(?:^|[/\s])(?:'+'|'.join(map(re.escape,ENGINES))+r')(?=$|\s)')
+QUOTED=re.compile(r'(["\'`])((?:\\.|(?!\1)[^\\\n])*)\1')
+def engine_literals(source,suffix):
+ if suffix=='.mjs':return [m.group(2) for m in QUOTED.finditer(source) if ENGINE_WORD.search(m.group(2))]
+ tree=ast.parse(source);docstrings=set()
+ for node in ast.walk(tree):
+  if isinstance(node,(ast.Module,ast.ClassDef,ast.FunctionDef,ast.AsyncFunctionDef)) and node.body and isinstance(node.body[0],ast.Expr) and isinstance(node.body[0].value,ast.Constant):docstrings.add(id(node.body[0].value))
+ return [node.value for node in ast.walk(tree) if isinstance(node,ast.Constant) and type(node.value) is str and id(node) not in docstrings and ENGINE_WORD.search(node.value)]
+def producer_sources():
+ return [f for d in [HERE,HERE.parent/'native-rust198-notices'] for f in sorted(d.rglob('*')) if f.suffix in ('.py','.mjs') and not f.name.startswith('test_')]
+
+class ContainerEngineGuard(unittest.TestCase):
+ def test_no_producer_source_names_a_container_engine_command(self):
+  files=producer_sources();names={f.relative_to(HERE.parent).as_posix() for f in files}
+  # The scan must reach every executable module, including the reused pinned copies.
+  for expected in ['native-rust198/process_supervisor.py','native-rust198/producer.py','native-rust198/host_probe.py','native-rust198/placement.py','native-rust198/retention.py','native-rust198/materializer.py','native-rust198/volume.py','native-rust198/reused_admission.py','native-rust198/reused-inventory/common.py','native-rust198-notices/notice_custody.py','native-rust198-notices/reused-crypto/common.py','native-rust198-notices/reused-crypto/envelope.mjs']:self.assertIn(expected,names)
+  self.assertEqual({},{f.relative_to(HERE.parent).as_posix():found for f in files for found in [engine_literals(f.read_text(),f.suffix)] if found})
+ def test_engine_detector_finds_every_command_form_by_name_or_path(self):
+  broken={'argv-list':"subprocess.run(['docker','start',name])",'absolute-path':"argv=['/usr/local/bin/docker','rm','-f',ident]",'shell-string':"command='docker container kill '+name",'podman':"run(['podman','exec',name,'true'])",'f-string':"cmd=f'docker logs {name}'",'compose':"run(['docker-compose','down'])",'nerdctl-path':"run(['/opt/bin/nerdctl','inspect',name])"}
+  for label,source in broken.items():
+   with self.subTest(case=label):self.assertTrue(engine_literals(source,'.py'),source)
+  for label,source in {'mjs-argv':"spawn('docker', ['start', name]);",'mjs-template':"execSync(`docker rm ${id}`);"}.items():
+   with self.subTest(case=label):self.assertTrue(engine_literals(source,'.mjs'),source)
+ def test_engine_detector_ignores_prose_and_lookalike_names(self):
+  near={'comment':"# Docker's original public image ENV remains\nx=1",'docstring':'def f():\n """Mirrors docker start semantics without running it."""\n return 1','module-docstring':'"""Never runs docker."""\nx=1','capitalised':"label='Docker image ENV'",'label-key':"key='org.dockerproject.name'",'file-name':"name='dockerfile'",'hyphenated-note':"name='docker-ce-notes-9137.txt'",'suffix-word':"word='undocker'"}
+  for label,source in near.items():
+   with self.subTest(case=label):self.assertEqual([],engine_literals(source,'.py'))
+  for label,source in {'mjs-comment':"// docker is never started here\nconst a = 1;",'mjs-lookalike':"const n = 'dockerfile-9137';"}.items():
+   with self.subTest(case=label):self.assertEqual([],engine_literals(source,'.mjs'))
 
 if __name__=='__main__':unittest.main()

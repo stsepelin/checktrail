@@ -197,6 +197,30 @@ class LifecycleTests(unittest.TestCase):
     with mock.patch.dict(N.LIMITS,{**N.LIMITS,'minimumFreeBytes':0,'logBytes':64}),mock.patch.object(N,'ps_rows',return_value=[]),mock.patch.object(N.subprocess,'Popen',side_effect=AssertionError('phase started without a usable journal')):
      with self.assertRaisesRegex(ValueError,'phase journal shape'):N.Native(work,self.host()).run('firstparty',firstparty("print('synthetic')"),{'PATH':'/usr/bin:/bin'},work,5,as_build=False)
     self.assertEqual(body,journal.read_text());self.assertFalse((work/'capture/firstparty.log').exists())
+ def journal_corrupted_by_phase(self,label,exit_code,body):
+  # The phase itself rewrites the journal after the pre-spawn check passed.
+  work=self.root/('corrupted-'+label);(work/'capture').mkdir(parents=True);journal=work/'capture/PHASES.json'
+  code='import pathlib,sys;pathlib.Path(%r).write_text(%r);sys.exit(%d)'%(str(journal),body,exit_code)
+  with mock.patch.dict(N.LIMITS,{**N.LIMITS,'minimumFreeBytes':0,'logBytes':64}),mock.patch.object(N,'ps_rows',return_value=[]):
+   instance=N.Native(work,self.host())
+   try:instance.run('firstparty',firstparty(code),{'PATH':'/usr/bin:/bin'},work,5,as_build=False)
+   except BaseException as error:raised=error
+   else:raised=None
+  self.assertEqual(1,len(instance.receipts));return raised,instance.receipts[0],json.loads(journal.read_text()) if label=='intact' else journal.read_text()
+ def test_journal_corrupted_during_failed_phase_keeps_the_phase_failure_primary(self):
+  for label,body,journal_type in [('object','{"phase":"synthetic-5813"}','ValueError'),('not-json','synthetic-journal-9137','JSONDecodeError')]:
+   with self.subTest(case=label):
+    raised,record,journal=self.journal_corrupted_by_phase('failed-'+label,37,body);self.assertEqual(body,journal)
+    self.assertIsInstance(raised,ValueError);self.assertEqual('Native phase failed: firstparty',str(raised))
+    self.assertEqual(37,record['exitCode']);self.assertFalse(record['success']);self.assertEqual('Native phase failed: firstparty',record['primaryFailure']['reason'])
+    self.assertEqual(journal_type,record['phaseJournalFailure']['type']);self.assertIsInstance(record['phaseJournalFailure']['reason'],str)
+ def test_journal_corrupted_during_passing_phase_fails_with_the_journal_error(self):
+  raised,record,journal=self.journal_corrupted_by_phase('passed',0,'{"phase":"synthetic-5813"}');self.assertEqual('{"phase":"synthetic-5813"}',journal)
+  self.assertIsInstance(raised,ValueError);self.assertEqual('Native phase journal shape',str(raised))
+  self.assertEqual(0,record['exitCode']);self.assertFalse(record['success']);self.assertNotIn('primaryFailure',record);self.assertEqual({'type':'ValueError','reason':'Native phase journal shape'},record['phaseJournalFailure'])
+ def test_failed_phase_with_an_intact_journal_records_no_journal_failure(self):
+  raised,record,journal=self.journal_corrupted_by_phase('intact',37,'[{"phase":"synthetic-earlier-5813"}]')
+  self.assertEqual('Native phase failed: firstparty',str(raised));self.assertNotIn('phaseJournalFailure',record);self.assertEqual([{'phase':'synthetic-earlier-5813'},record],journal)
  def test_capture_nonzero_exit_and_output_limit_keep_original_contract(self):
   work=self.root/'nonzero';work.mkdir();code,stdout,stderr=N.capture_control_query(work,'firstparty',firstparty('import sys;sys.exit(7)'),{'PATH':'/usr/bin:/bin'},5);self.assertEqual(7,code);self.assertEqual(b'',stdout);self.assertEqual(b'',stderr)
   r=self.query("import os;os.write(1,b'x'*70000)",'output limit');self.assertGreaterEqual(r['streams'][0]['bytes'],65536);self.assertIsNotNone(r['primaryFailure'])

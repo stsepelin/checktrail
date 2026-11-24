@@ -1,6 +1,6 @@
 """Closed first-party failed-inner metadata, synthetic only; no SDK operations."""
 from pathlib import Path
-import ast,hashlib,io,json,os,plistlib,subprocess,sys,tempfile,unittest
+import ast,hashlib,io,json,os,plistlib,re,subprocess,sys,tempfile,unittest
 from contextlib import redirect_stdout
 from types import SimpleNamespace
 from unittest import mock
@@ -140,7 +140,7 @@ class InnerFailure(unittest.TestCase):
 class PermissionAccessRestore(unittest.TestCase):
  """The build account may read the private output only while the inner probe runs."""
  def setUp(self):
-  self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.fresh('metadata');self.frame=[{'synthetic':'firstparty-frame-entry-5813'}]
+  self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.fresh('metadata');self.frame=[{'path':'/synthetic/entry-5813','type':'file','mode':0o644,'bytes':5813}]
   class Bounds:
    bytes=5813
    def __init__(self):self.deadline=H.time.monotonic()+5;self.clock=H.time.monotonic
@@ -201,6 +201,39 @@ class PermissionAccessRestore(unittest.TestCase):
   row={'path':'/synthetic/entry-5813','readable':False,'executableWhenRequired':True,'writablePaths':[]}
   value=self.probe(self.observed({**self.accepted(),'failureCount':1,'firstFailures':[row],'allSelectedEntriesReadableExecutableAndProtected':False}))
   self.assertFalse(value['sdkAndToolsProtectedFromBuildUid']);self.assertTrue(value['controllerProtected']);self.assertEqual(1,value['permissionObservation']['failureCount']);self.assertEqual([(0o700,0o400)],self.after)
+ def two_entry_frame(self):
+  self.frame=[{'path':'/synthetic/entry-5813','type':'file','mode':0o644,'bytes':5813},{'path':'/synthetic/tool-9137','type':'file','mode':0o755,'bytes':9137}];self.endpoint=hashlib.sha256(json.dumps(self.frame).encode()).hexdigest()
+ def test_malformed_or_out_of_frame_failure_rows_are_refused_and_not_retained(self):
+  # The count, flags and length all agree in every case; only the rows are wrong.
+  def entry(**changed):return {'path':'/synthetic/entry-5813','readable':False,'executableWhenRequired':True,'writablePaths':[],**changed}
+  def tool(**changed):return {'path':'/synthetic/tool-9137','readable':True,'executableWhenRequired':False,'writablePaths':[],**changed}
+  shape='listed failure row shape';outside='listed failure outside request frame order';ancestry='writable path is not the entry or its ancestor'
+  cases={'null-row':([None],shape),'list-row':([['/synthetic/entry-5813',False,True,[]]],shape),'empty-object':([{}],shape),'missing-writable-paths':([{k:v for k,v in entry().items() if k!='writablePaths'}],shape),'extra-field':([entry(sourceBody='synthetic-9137')],shape),'integer-readable':([entry(readable=0)],shape),'string-writable-paths':([entry(writablePaths='/synthetic')],shape),'non-string-writable-path':([entry(writablePaths=[9137])],shape),'path-outside-frame':([entry(path='/synthetic/foreign-9137')],outside),'relative-frame-path':([entry(path='synthetic/entry-5813')],outside),'unnormalized-frame-path':([entry(path='/synthetic//entry-5813')],outside),'duplicate-row':([entry(),entry()],outside),'rows-out-of-frame-order':([tool(),entry()],outside),'writable-path-outside-ancestry':([entry(writablePaths=['/elsewhere-9137'])],ancestry),'writable-sibling-in-frame':([entry(writablePaths=['/synthetic/tool-9137'])],ancestry),'writable-ancestors-root-first':([entry(writablePaths=['/','/synthetic'])],ancestry),'duplicate-writable-ancestor':([entry(writablePaths=['/synthetic','/synthetic'])],ancestry),'non-executable-file-reported-not-executable':([entry(readable=True,executableWhenRequired=False)],'execution not required for listed entry'),'listed-entry-passed-every-check':([tool(executableWhenRequired=True)],'listed entry did not fail')}
+  for label,(rows,message) in cases.items():
+   with self.subTest(case=label):
+    self.fresh(label);self.two_entry_frame()
+    self.assert_refused_privately({**self.accepted(),'failureCount':len(rows),'firstFailures':rows,'allSelectedEntriesReadableExecutableAndProtected':False},'^First-party inner result inconsistent: '+re.escape(message)+'$')
+    self.assertFalse(os.path.lexists(self.output/'selected-sdk-tool-controller-frame.json.gz'))
+ def test_consistent_failure_rows_naming_ancestors_outside_the_frame_are_retained(self):
+  self.two_entry_frame()
+  rows=[{'path':'/synthetic/entry-5813','readable':True,'executableWhenRequired':True,'writablePaths':['/synthetic','/']},{'path':'/synthetic/tool-9137','readable':True,'executableWhenRequired':False,'writablePaths':[]}]
+  value=self.probe(self.observed({**self.accepted(),'failureCount':2,'firstFailures':rows,'allSelectedEntriesReadableExecutableAndProtected':False}))
+  self.assertEqual(rows,value['permissionObservation']['firstFailures']);self.assertFalse(value['sdkAndToolsProtectedFromBuildUid']);self.assertEqual([(0o700,0o400)],self.after)
+ def test_real_pinned_failure_rows_name_ancestors_outside_the_frame_and_symlink_targets(self):
+  # The writable directory is an ancestor of the snapshot root, so the pinned
+  # producer names a path the frame does not contain; that row is still valid.
+  module=H.guard();controller=next((Path(c) for c in ['/usr/bin/true','/bin/true'] if os.path.isfile(c) and Path(c).resolve(strict=True)==Path(c) and os.stat(c).st_uid==0),None)
+  self.assertIsNotNone(controller,'a root-owned regular controller stand-in is required')
+  tree=self.root/'selected-9137';(tree/'nested').mkdir(parents=True);(tree/'tool-9137').write_bytes(b'synthetic tool 9137');(tree/'tool-9137').chmod(0o755);(tree/'notes-5813').write_bytes(b'synthetic notes 5813');(tree/'notes-5813').chmod(0o644);(tree/'nested'/'entry-137').write_bytes(b'synthetic nested 137');os.symlink('tool-9137',tree/'link-to-tool')
+  frame=module.snapshot([tree],module.Bounds());identity={'uid':os.getuid()+1,'gid':20,'groups':[20]};request={'file':str(controller),'sha256':module.digest(controller.read_bytes()),'uid':os.getuid()}
+  def access(path,mode):return Path(path)==self.root if mode==os.W_OK else mode==os.R_OK
+  value=module.inspect_as_build(frame,request,identity,access=access,identity=identity);rows={Path(r['path']).name:r for r in value['firstFailures']}
+  self.assertEqual(len(frame),value['failureCount']);self.assertNotIn(str(self.root),{r['path'] for r in frame})
+  self.assertTrue(all(r['writablePaths']==[str(self.root)] for r in value['firstFailures']))
+  self.assertEqual({'selected-9137':False,'nested':False,'tool-9137':False,'link-to-tool':False,'notes-5813':True,'entry-137':True},{k:r['executableWhenRequired'] for k,r in rows.items()})
+  self.assertIsNone(H.require_consistent_inner_result(value,frame,identity))
+  changed=json.loads(json.dumps(value));next(r for r in changed['firstFailures'] if r['path'].endswith('/notes-5813'))['executableWhenRequired']=False
+  with self.assertRaisesRegex(ValueError,'execution not required for listed entry'):H.require_consistent_inner_result(changed,frame,identity)
  def test_real_pinned_inner_results_satisfy_the_consistency_rules(self):
   # The pinned producer, not a fixture, decides which result shapes are reachable.
   module=H.guard();controller=next((Path(c) for c in ['/usr/bin/true','/bin/true'] if os.path.isfile(c) and Path(c).resolve(strict=True)==Path(c) and os.stat(c).st_uid==0),None)

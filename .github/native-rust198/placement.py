@@ -5,6 +5,44 @@ PARENT=Path('/opt')
 def need(value,reason):
  if not value:raise ValueError(reason)
 def status(path):return Path(path).lstat()
+
+# Exactly the result reused_admission.inspect_as_build() returns: it raises unless
+# the controller is protected, checks every request frame entry once, and sets the
+# all-protected flag from a zero failure count with at most 100 listed failures.
+INNER_RESULT_FIELDS=frozenset(('identity','selectedEntriesChecked','failureCount','firstFailures','allSelectedEntriesReadableExecutableAndProtected','controllerProtected','metadataEndpointSha256','permissionProbeOnly','projectCodeExecuted'))
+INNER_LISTED_FAILURES=100
+INNER_FAILURE_FIELDS=frozenset(('path','readable','executableWhenRequired','writablePaths'))
+def require_consistent_failure_rows(rows,frame):
+ """Each listed row names one frame entry, in frame order, that failed a check.
+ A symlink's execution requirement comes from its bound physical target record,
+ and a non-executable file reports executableWhenRequired true. protected_path()
+ names only the entry and its ancestors, nearest first; an ancestor may lie
+ outside the frame, because snapshot() records roots and their descendants only.
+ """
+ records={row['path']:row for row in frame};position={}
+ for index,row in enumerate(frame):position.setdefault(str(Path(row['path'])),index)
+ previous=-1
+ for row in rows:
+  need(type(row) is dict and set(row)==INNER_FAILURE_FIELDS and type(row['path']) is str and type(row['readable']) is bool and type(row['executableWhenRequired']) is bool and type(row['writablePaths']) is list and all(type(p) is str for p in row['writablePaths']),'First-party inner result inconsistent: listed failure row shape')
+  index=position.get(row['path']);need(index is not None and index>previous,'First-party inner result inconsistent: listed failure outside request frame order');previous=index
+  entry=frame[index];target=records.get(entry.get('physicalPath')) if entry['type']=='symlink' else entry
+  need(target is not None and target['type'] in ('file','directory'),'First-party inner result inconsistent: listed failure without bound physical target')
+  need(target['type']=='directory' or target['mode']&0o111 or row['executableWhenRequired'] is True,'First-party inner result inconsistent: execution not required for listed entry')
+  path=Path(row['path']);named=[str(path),*map(str,path.parents)];k=0
+  for name in row['writablePaths']:
+   while k<len(named) and named[k]!=name:k+=1
+   need(k<len(named),'First-party inner result inconsistent: writable path is not the entry or its ancestor');k+=1
+  need(not (row['readable'] and row['executableWhenRequired'] and not row['writablePaths']),'First-party inner result inconsistent: listed entry did not fail')
+
+def require_consistent_inner_result(value,frame,identity):
+ need(type(value) is dict and set(value)==INNER_RESULT_FIELDS and all(type(value[key]) is bool for key in ['controllerProtected','allSelectedEntriesReadableExecutableAndProtected','permissionProbeOnly','projectCodeExecuted']) and all(type(value[key]) is int for key in ['failureCount','selectedEntriesChecked']) and type(value['firstFailures']) is list,'First-party inner result fields')
+ checked=value['selectedEntriesChecked'];failures=value['failureCount']
+ need(frame and checked==len(frame),'First-party inner result inconsistent: entries checked differ from request frame')
+ need(0<=failures<=checked and len(value['firstFailures'])==min(failures,INNER_LISTED_FAILURES),'First-party inner result inconsistent: failure count')
+ need(value['allSelectedEntriesReadableExecutableAndProtected'] is (failures==0),'First-party inner result inconsistent: all-protected flag and failure count')
+ need(value['controllerProtected'] is True and value['permissionProbeOnly'] is True and value['projectCodeExecuted'] is False,'First-party inner result inconsistent: controller/probe-only claims')
+ need(value['identity']==identity,'First-party inner result inconsistent: build identity')
+ require_consistent_failure_rows(value['firstFailures'],frame)
 def paths(context,parent=None):
  parent=PARENT if parent is None else Path(parent);run=context['GITHUB_RUN_ID'];attempt=context['GITHUB_RUN_ATTEMPT'];head=context['GITHUB_SHA'];need(re.fullmatch(r'[1-9][0-9]{0,19}',run) and re.fullmatch(r'[1-9][0-9]{0,9}',attempt) and re.fullmatch('[0-9a-f]{40}',head),'closed-host-placement-context')
  base=parent/('checktrail-rust198-'+run+'-'+attempt+'-'+head[:12]);return {'parent':parent,'base':base,'controller':base/'controller','host':base/'host','nativeWork':base/('rust198-'+run+'-'+attempt+'-'+head[:12])}
@@ -50,7 +88,8 @@ def access_canary(module,bounds,controller,output,identity,context,runner_uid,ob
   body=module.encoded({'frame':frame,'controller':{'file':str(canary),'sha256':hashlib.sha256(payload).hexdigest(),'uid':runner_uid},'identity':identity});need(len(body)<=65536,'small-firstparty-canary-request')
   with os.fdopen(descriptor,'wb') as f:descriptor=None;f.write(body);f.flush();os.fsync(f.fileno())
   command=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i','PATH=/usr/bin:/bin:/usr/sbin:/sbin','LC_ALL=C','/usr/bin/python3','-I','-S','-B',str(script),'--inner',str(request)];receipts=[];bounds.tick();value=observe(module,command,{'PATH':'/usr/bin:/bin:/usr/sbin:/sbin','LC_ALL':'C'},receipts,timeout=min(30,bounds.deadline-bounds.clock()));bounds.tick();end=module.current_endpoint(frame)
-  need(value['metadataEndpointSha256']==module.digest(module.encoded(end)) and value['controllerProtected'] is True and value['allSelectedEntriesReadableExecutableAndProtected'] is True and value['selectedEntriesChecked']==len(frame),'firstparty-canary-access-refused')
+  require_consistent_inner_result(value,frame,identity)
+  need(value['metadataEndpointSha256']==module.digest(module.encoded(end)) and value['allSelectedEntriesReadableExecutableAndProtected'] is True,'firstparty-canary-access-refused')
   return {'firstPartyOnlyNonemptyAccessCanaryObserved':True,'payloadReadBytesVerifiedByLegacyHashCheck':len(payload),'payloadSHA256':hashlib.sha256(payload).hexdigest(),'selectedFirstpartyAndAncestorEntries':len(frame),'allAncestorsTraversableReadableAndProtected':True,'identity':identity,'commands':receipts,'secondsLimit':30,'costChargedInsideExistingPermissionPhase':True,'SDKBytesReadByThisCanary':0,'SDKFrameOrNativeAdmissionCredit':False}
  finally:
   if descriptor is not None:os.close(descriptor)
