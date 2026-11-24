@@ -82,6 +82,15 @@ when:
     profiles 39, `laravel-cache-runtime-bindings` 1, `laravel` with
     `laravel-cache` 9 sharing no pair, `frameworks` 8 and `nuxt` 7. A batch
     counts a pair filed in two of its profiles once;
+  - other extension containers run a baseline batch whose receipt they compare
+    with the sum of its profile lengths, so its profiles may share no pair:
+    `review` with `review-probe` and `review-scoring` (confidence-provenance),
+    the .NET format and F# format baselines, `java` with `spotbugs` and
+    `detekt`, `java` with `maven` and `gradle`, `kotlin` with `java`, `scala`
+    with `java`, `kubeconform` with `kustomize` and `swift` with
+    `swift-tools`. The C++, Helm and Terraform containers run `cpp-tools`,
+    `helm` and `terraform` under the runner's own admission only, as the Go
+    workflow step does for `go-installed-harness` and `review-context-limits`;
   - the lifecycle controller runs its platform's foundation batch,
     `posix-cleanup` with `posix-owner` or `windows-process` with
     `physical-process-output`, and requires every row's file to belong to
@@ -96,27 +105,30 @@ when:
   the profile through the generic runner (`row-count-differs`). The runner
   admits extra rows, so an unselected row in, for example, `context-go` passes
   it and fails `verify-consumer-witness-profile.mjs`, which expects 9. The
-  report lists these controllers under `rowCountControllers`.
+  report lists these controllers under `rowCountControllers`;
+- the installed acceptance callback in the profile's selected test file
+  requires an exact count (`installed-count-differs`). It runs the whole
+  profile from a fresh package and expects nine passes. Every selected
+  profile's callback does so except those of `assembly-nuxt`, `cpp-extensions`,
+  `helm-extensions`, `native-license-provenance`, `resource-release-readiness`,
+  `tasks-matrix` and `terraform-extensions`. The report lists these callbacks
+  under `installedCountCallbacks`.
 
 The audit reproduces these rules from data and never imports a controller. A
 test runs each exported selector against the same manifest variants and requires
-the same verdict. For the inline checks, the runner bound and the container
-counts, it pins their source text instead. Another test scans `scripts/` for
-every script that reads the manifest, or is a selection or runtime-evidence
-module, and applies an exact count or exact row set. Each must appear in the
-audit's tables or in a short list of scripts whose rule concerns only profiles
-no selected case runs under. A new selector outside both fails that test.
+the same verdict. For the inline checks, the runner bounds, the baseline batches
+and the counts, it pins their source text instead: it reads each batch a
+controller passes to `verify-required-native-tests.mjs` and the check applied to
+its receipt, and each count from the block that checks that profile's receipt,
+so a count in another profile's block cannot stand in for it. The batch and
+installed-callback tables must equal what it reads.
+
+Another test scans `scripts/` for every script that reads the manifest, or is a
+selection or runtime-evidence module, and applies an exact count or exact row
+set. Each must appear in the audit's tables or in a short list of scripts whose
+rule concerns only profiles no selected case runs under. A new selector outside
+both, a new baseline batch or a new installed-callback count fails that test.
 `--require-frozen` exits 2 on any admission refusal.
-
-Rules the audit does not yet model:
-
-- controllers that compare a batch's required count with the sum of its profile
-  lengths, such as the confidence-provenance review baseline and the Swift tools
-  baseline, refuse a pair filed in two of those profiles; baseline batches
-  without an exact count also refuse a repeated pair within one profile;
-- the selected acceptance files' installed callbacks, for example in
-  `test/gate-go-extensions.test.ts`, require exactly nine passes from their
-  whole copied profile, so an extra row in `go-extensions` fails there.
 
 The existing Terraform and Helm extension container controllers select these
 manifest profiles through `verify-required-native-tests.mjs`. The C++ container

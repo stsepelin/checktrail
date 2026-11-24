@@ -220,6 +220,90 @@ const companionCohorts = [
     cohort: ["nuxt"],
     rows: 7,
   },
+  // Containers that first run a preserved baseline batch through the generic
+  // runner, which refuses a repeated pair within any one of its profiles. A
+  // `disjoint` batch is compared with the sum of its profile lengths.
+  ...[
+    ["cpp-extensions", "verify-cpp-extensions-container", ["cpp-tools"]],
+    ["helm-extensions", "verify-helm-extensions-container", ["helm"]],
+    [
+      "terraform-extensions",
+      "verify-terraform-extensions-container",
+      ["terraform"],
+    ],
+    [
+      "confidence-provenance",
+      "verify-confidence-provenance",
+      ["review", "review-probe", "review-scoring"],
+      true,
+    ],
+    [
+      "dotnet-format-extensions",
+      "verify-dotnet-format-extensions-container",
+      ["dotnet-build", "dotnet-format", "dotnet-generated"],
+      true,
+    ],
+    [
+      "dotnet-fsharp-format",
+      "verify-fsharp-format-container",
+      ["dotnet-build", "dotnet-format"],
+      true,
+    ],
+    [
+      "jvm-analyzer-extensions",
+      "verify-jvm-analyzer-extensions-container",
+      ["java", "spotbugs", "detekt"],
+      true,
+    ],
+    [
+      "jvm-wrappers",
+      "verify-jvm-wrappers-container",
+      ["java", "maven", "gradle"],
+      true,
+    ],
+    [
+      "kotlin-extensions",
+      "verify-kotlin-extensions-container",
+      ["kotlin", "java"],
+      true,
+    ],
+    [
+      "kubernetes-extensions",
+      "verify-kubernetes-extensions-container",
+      ["kubeconform", "kustomize"],
+      true,
+    ],
+    [
+      "kustomize-extensions",
+      "verify-kustomize-extensions-container",
+      ["kubeconform", "kustomize"],
+      true,
+    ],
+    [
+      "scala-extensions",
+      "verify-scala-extensions-container",
+      ["scala", "java"],
+      true,
+    ],
+    [
+      "swift-extensions",
+      "verify-swift-extensions-container",
+      ["swift", "swift-tools"],
+      true,
+    ],
+  ].map(([profile, script, cohort, disjoint]) => ({
+    profile,
+    controller: "scripts/" + script + ".mjs",
+    cohort,
+    ...(disjoint ? { disjoint } : {}),
+  })),
+  // The Go workflow step runs these two profiles in one batch with the Go and
+  // host-session profiles.
+  ...["go-extensions", "host-session-readiness"].map((profile) => ({
+    profile,
+    controller: ".github/workflows/ci.yml",
+    cohort: ["go-installed-harness", "review-context-limits"],
+  })),
   // The lifecycle controller runs its platform's foundation batch, whose files
   // must belong to lifecycleHarnessFiles in lifecycle-runtime-evidence.mjs.
   ...[
@@ -350,6 +434,19 @@ const rowCountControllers = Object.fromEntries(
     ],
   ].map(([controller, profiles]) => [controller, { rows: 9, profiles }]),
 );
+// The installed acceptance callback in each of these profiles' selected test
+// file runs the whole profile from a fresh package and requires exactly nine
+// passes, so an extra row fails it. The callbacks of the profiles listed
+// first assert no such count.
+const uncountedInstalledProfiles = [
+  "assembly-nuxt",
+  "cpp-extensions",
+  "helm-extensions",
+  "native-license-provenance",
+  "resource-release-readiness",
+  "tasks-matrix",
+  "terraform-extensions",
+];
 // resolveRequirements in required-test-evidence.mjs runs a profile only when it
 // holds 1 to 256 rows, each with a file path of at most 4096 characters.
 const maxProfileRows = 256;
@@ -751,6 +848,14 @@ try {
       );
     });
   });
+  const installedCountCallbacks = Object.fromEntries(
+    inventory.extensionProfiles
+      .filter((profile) => !uncountedInstalledProfiles.includes(profile.id))
+      .map((profile) => [
+        "test/gate-" + profile.id + ".test.ts",
+        { rows: 9, profiles: controllerProfiles[profile.id] ?? [profile.id] },
+      ]),
+  );
   const admissionRefusals = [];
   for (const owner of admissionProfiles) {
     const rows = current[owner] ?? [];
@@ -794,6 +899,9 @@ try {
     for (const [controller, rule] of Object.entries(rowCountControllers))
       if (rule.profiles.includes(owner) && rows.length !== rule.rows)
         refuse(controller, "row-count-differs");
+    for (const [controller, rule] of Object.entries(installedCountCallbacks))
+      if (rule.profiles.includes(owner) && rows.length !== rule.rows)
+        refuse(controller, "installed-count-differs");
   }
   process.stdout.write(
     JSON.stringify({
@@ -844,6 +952,9 @@ try {
           },
         ],
         rowCountControllers: Object.entries(rowCountControllers).map(
+          ([controller, rule]) => ({ controller, ...rule }),
+        ),
+        installedCountCallbacks: Object.entries(installedCountCallbacks).map(
           ([controller, rule]) => ({ controller, ...rule }),
         ),
         maxProfileRows,

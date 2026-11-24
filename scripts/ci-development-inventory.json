@@ -819,7 +819,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d937fffb608dd2fd517ffe41c049edeef5c35031"
+      "hash": "233f50aa5a9ad7a4f34b4e563a9b3a204b25c2bc"
     },
     {
       "path": "docs/GATE-A-CLOSURE-PLAN.md",
@@ -8358,7 +8358,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "993346d873a4212476276df3c5a3464ece6c3a04"
+      "hash": "97bde8cfe360a29f13c4903eab3070d8abed2bc3"
     },
     {
       "path": "scripts/audit-php-review-tools.mjs",
@@ -18130,7 +18130,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d35c9d3d9ceee3db4929a28d730fe48826d693a7"
+      "hash": "7d19e64ac57f2e0bdfb7c4e59e4ede3994f62813"
     },
     {
       "path": "test/gate-javascript-extensions.test.ts",

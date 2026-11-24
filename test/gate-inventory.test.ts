@@ -533,6 +533,11 @@ interface AdmissionRefusal {
 const admissionRefusals = (stdout: string) =>
   JSON.parse(stdout).controllerAdmission.refusals as AdmissionRefusal[];
 const genericRunner = "scripts/required-test-evidence.mjs";
+const installedCount = (profile: string) => ({
+  profile,
+  controller: `test/gate-${profile}.test.ts`,
+  reason: "installed-count-differs",
+});
 
 test("finite inventory strict freeze refuses a profile its dedicated controller selector rejects", async (t) => {
   const complete = await audit(await frozen(t), true);
@@ -619,6 +624,7 @@ test("finite inventory strict freeze refuses a profile its dedicated controller 
             controller: "scripts/dotnet-generator-shards.mjs",
             reason: "selector-rows-differ",
           },
+          installedCount("dotnet-generator-extensions"),
         ],
       ],
     ];
@@ -716,6 +722,11 @@ interface Admission {
     dependents: string[];
   }[];
   rowCountControllers: {
+    controller: string;
+    rows: number;
+    profiles: string[];
+  }[];
+  installedCountCallbacks: {
     controller: string;
     rows: number;
     profiles: string[];
@@ -936,14 +947,17 @@ const runnable = (rows: NativeCase[] | undefined, limit = 256) =>
   rows.length <= limit &&
   rows.every((row) => row.file.length <= 4096) &&
   new Set(rows.map(canonicalRow)).size === rows.length;
-// A copy of the count a container asserts on a runner batch over its cohort.
-const cohortCountAdmits = (entry: CompanionCohort, rows: RequiredNative) => {
+// A copy of the check a container applies to a runner batch over its cohort:
+// the runner's own admission of each profile, then an exact count or a
+// comparison with the sum of the profile lengths.
+const cohortBatchAdmits = (entry: CompanionCohort, rows: RequiredNative) => {
   const lists = entry.cohort.map((owner) => rows[owner]);
   if (!lists.every((list) => runnable(list))) return false;
   const all = lists.flat() as NativeCase[];
   const distinct = new Set(all.map(canonicalRow)).size;
   return (
-    distinct === entry.rows && (!entry.disjoint || distinct === all.length)
+    (entry.rows === undefined || distinct === entry.rows) &&
+    (!entry.disjoint || distinct === all.length)
   );
 };
 const admissionProfileIds = (scope: Scope) =>
@@ -956,11 +970,183 @@ const admissionProfileIds = (scope: Scope) =>
       ),
     ),
   ].sort();
-const countPattern = (rows: number) =>
-  new RegExp(
-    `\\.(?:required|passed|length)(?:,\\s*|\\s*===\\s*)${rows}(?!\\d)`,
-    "u",
-  );
+
+// The count a controller asserts first after an anchor. Where one controller
+// checks several profiles in separate blocks, the anchor names the block, so
+// a count in another profile's block cannot stand in for it.
+const assertedCount =
+  /(?<!\btests[!?]?)\.(?:required|passed)(?:,\s*|\s*===\s*)([1-9]\d*)\s*[,)]|\brequirements\.length,\s*([1-9]\d*)\s*[,)]/u;
+const countAnchors: Record<string, Record<string, string>> = {
+  "scripts/verify-tasks-runtime-arm64.mjs": {
+    "confidence-provenance": "confidenceProvenance.installedEvidence.profile,",
+    "lifecycle-platforms":
+      "for (const evidence of [lifecycleSource, lifecycleInstalled.evidence])",
+  },
+};
+function pinnedCount(text: string, controller: string, profile: string) {
+  // By default the block starts where the controller runs the profile.
+  const at =
+    countAnchors[controller]?.[profile] !== undefined
+      ? text.indexOf(countAnchors[controller][profile])
+      : (runnerBatches(text).find((batch) => batch.profiles.includes(profile))
+          ?.at ??
+        [
+          "verify-consumer-witness-profile.mjs " + profile,
+          profile,
+          JSON.stringify(profile.replace(/^mutation-/u, "")),
+        ]
+          .map((anchor) => text.indexOf(anchor))
+          .find((index) => index >= 0) ??
+        -1);
+  assert.ok(at >= 0, controller + " never names " + profile);
+  const match = assertedCount.exec(text.slice(at));
+  return match ? Number(match[1] ?? match[2]) : undefined;
+}
+// Runner batches a controller starts, read from its source: the profiles
+// passed to verify-required-native-tests.mjs as array items, a spread of a
+// declared array, or shell words.
+function runnerBatches(text: string) {
+  const batches: { at: number; profiles: string[]; unresolved?: string }[] = [];
+  for (const match of text.matchAll(/verify-required-native-tests\.mjs/gu)) {
+    const rest = text.slice(match.index + match[0].length);
+    const profiles: string[] = [];
+    let unresolved: string | undefined;
+    if (rest.startsWith('"')) {
+      const items = /^"((?:\s*,\s*(?:"[a-z0-9-]+"|\.\.\.\w+))*)/u.exec(
+        rest,
+      )![1]!;
+      for (const item of items.matchAll(/"([a-z0-9-]+)"|\.\.\.(\w+)/gu)) {
+        if (item[1]) profiles.push(item[1]);
+        else {
+          const declared = new RegExp(
+            "\\b" + item[2] + "\\s*=\\s*\\[([^\\]]*)\\]",
+            "u",
+          ).exec(text);
+          if (!declared) {
+            unresolved = item[2];
+            continue;
+          }
+          profiles.push(
+            ...[...declared[1]!.matchAll(/"([a-z0-9-]+)"/gu)].map((x) => x[1]!),
+          );
+        }
+      }
+    } else {
+      const words = /^((?: [a-z0-9][a-z0-9-]*)+)/u.exec(rest);
+      if (words) profiles.push(...words[1]!.trim().split(" "));
+    }
+    if (profiles.length > 0 || unresolved)
+      batches.push({
+        at: match.index,
+        profiles,
+        ...(unresolved ? { unresolved } : {}),
+      });
+  }
+  return batches;
+}
+interface BatchCohort {
+  profile: string;
+  controller: string;
+  cohort: string[];
+  rows?: number;
+  disjoint?: boolean;
+}
+const batchRule = (row: BatchCohort) =>
+  JSON.stringify([
+    row.profile,
+    row.controller,
+    row.cohort,
+    row.rows ?? null,
+    row.disjoint ?? false,
+  ]);
+// Every batch of other profiles a controller of a selected profile runs, with
+// the check it applies to the batch receipt: an exact count, a comparison with
+// the sum of the profile lengths, or only the runner's own admission.
+async function deriveBatchCohorts(root: string, admitted: string[]) {
+  const sources = [
+    ...(await readdir(path.join(root, "scripts")))
+      .filter((name) => name.endsWith(".mjs"))
+      .map((name) => "scripts/" + name),
+    ".github/workflows/ci.yml",
+  ];
+  const found: BatchCohort[] = [];
+  for (const controller of sources) {
+    const text = await readFile(path.join(root, controller), "utf8").catch(
+      () => "",
+    );
+    const batches = runnerBatches(text);
+    const named = /^scripts\/verify-([a-z0-9-]+)-container\.mjs$/u.exec(
+      controller,
+    )?.[1];
+    const unread = batches.find((batch) => batch.unresolved);
+    batches.forEach((batch, index) => {
+      const cohort = batch.profiles.filter((p) => !admitted.includes(p));
+      const served = controller.endsWith(".yml")
+        ? batch.profiles.filter((p) => admitted.includes(p))
+        : [
+            ...new Set([
+              ...batches.flatMap((row) =>
+                row.profiles.filter((p) => admitted.includes(p)),
+              ),
+              ...(named && admitted.includes(named) ? [named] : []),
+            ]),
+          ];
+      if (served.length > 0)
+        assert.equal(unread?.unresolved, undefined, controller);
+      if (cohort.length === 0 || served.length === 0) return;
+      const window = text.slice(
+        batch.at,
+        batches[index + 1]?.at ?? batch.at + 1500,
+      );
+      const check = /\.(?:required|passed),\s*([\s\S]*?)\)\s*;/u.exec(
+        window,
+      )?.[1];
+      const rule: { rows?: number; disjoint?: boolean } = {};
+      if (check && /^\s*\d+\s*$/u.test(check)) rule.rows = Number(check);
+      else if (check && /\.length/u.test(check) && /\+|reduce\(/u.test(check))
+        rule.disjoint = true;
+      for (const profile of served)
+        found.push({ profile, controller, cohort, ...rule });
+    });
+  }
+  return found;
+}
+// The exact counts the selected acceptance files assert: inside the installed
+// acceptance callback, or anywhere else, which the audit does not model.
+async function deriveInstalledCounts(root: string) {
+  const found: { controller: string; rows: number; profiles: string[] }[] = [];
+  const elsewhere: string[] = [];
+  const counts = new RegExp(assertedCount.source, "gu");
+  for (const name of (await readdir(path.join(root, "test"))).sort()) {
+    const id = /^gate-([a-z0-9-]+)\.test\.ts$/u.exec(name)?.[1];
+    if (!id || id === "inventory") continue;
+    const text = await readFile(path.join(root, "test", name), "utf8");
+    const declared = /^test\(\s*(["'`])[^"'`]*installed acceptance\1/mu.exec(
+      text,
+    );
+    const end = declared
+      ? ([...text.matchAll(/^test\(/gmu)].find((m) => m.index > declared.index)
+          ?.index ?? text.length)
+      : -1;
+    const inside: number[] = [];
+    for (const match of text.matchAll(counts)) {
+      if (declared && match.index > declared.index && match.index < end)
+        inside.push(Number(match[1] ?? match[2]));
+      else elsewhere.push("test/" + name);
+    }
+    if (inside.length === 0) continue;
+    assert.equal(new Set(inside).size, 1, name);
+    found.push({
+      controller: "test/" + name,
+      rows: inside[0]!,
+      profiles:
+        id === "mutation-runners"
+          ? mutationFamilies.map((family) => "mutation-" + family)
+          : [id],
+    });
+  }
+  return { found, elsewhere };
+}
 
 test("finite inventory pins the controller rules its admission copies from source text", async (t) => {
   for (const [script, key, text] of [
@@ -1033,28 +1219,58 @@ test("finite inventory pins the controller rules its admission copies from sourc
     )?.length,
     1,
   );
-  // Each modelled count appears in its controller with the profiles it runs.
+  // One controller checks confidence-provenance and lifecycle-platforms
+  // receipts in separate blocks. Moving the lifecycle counts into the other
+  // block, or lowering them, leaves a 9 elsewhere in the file but not in the
+  // lifecycle block.
+  const arm64 = "scripts/verify-tasks-runtime-arm64.mjs";
+  const original = await readScript(arm64);
+  const lifecycleAt = original.indexOf(
+    countAnchors[arm64]!["lifecycle-platforms"]!,
+  );
+  const counts =
+    "      assert.equal(evidence.required, 9);\n      assert.equal(evidence.passed, 9);\n";
+  assert.equal(original.slice(lifecycleAt).split(counts).length, 2);
+  const lowered =
+    original.slice(0, lifecycleAt) +
+    original.slice(lifecycleAt).replace(counts, counts.replaceAll("9", "8"));
+  const moved =
+    original.slice(0, lifecycleAt).replace(counts, counts + counts) +
+    original.slice(lifecycleAt).replace(counts, "");
+  for (const [label, text] of [
+    ["lowered", lowered],
+    ["moved", moved],
+  ] as const) {
+    assert.notEqual(text, original, label);
+    assert.match(text, /evidence\.required, 9\)/u, label);
+    assert.equal(pinnedCount(text, arm64, "confidence-provenance"), 9, label);
+    assert.notEqual(pinnedCount(text, arm64, "lifecycle-platforms"), 9, label);
+  }
   for (const entry of report.rowCountControllers) {
     const text = await readScript(entry.controller);
-    assert.ok(countPattern(entry.rows).test(text), entry.controller);
     for (const profile of entry.profiles)
-      assert.ok(
-        text.includes(profile) ||
-          text.includes(JSON.stringify(profile.replace(/^mutation-/u, ""))),
+      assert.equal(
+        pinnedCount(text, entry.controller, profile),
+        entry.rows,
         entry.controller + " " + profile,
       );
   }
-  for (const entry of report.companionCohorts.filter(
-    (row) => row.rows !== undefined && !(row.controller in foundationSelectors),
-  )) {
-    const text = await readScript(entry.controller);
-    assert.ok(countPattern(entry.rows!).test(text), entry.controller);
-    for (const profile of entry.cohort)
-      assert.ok(
-        text.includes(JSON.stringify(profile)),
-        entry.controller + " " + profile,
-      );
-  }
+  const admitted = admissionProfileIds(await readScope());
+  const derived = await deriveBatchCohorts(repository, admitted);
+  const batchControllers = new Set(derived.map((row) => row.controller));
+  assert.deepEqual(
+    report.companionCohorts
+      .filter((row) => batchControllers.has(row.controller))
+      .map(batchRule)
+      .sort(),
+    derived.map(batchRule).sort(),
+  );
+  assert.deepEqual(
+    report.installedCountCallbacks.map((row) => JSON.stringify(row)).sort(),
+    (await deriveInstalledCounts(repository)).found
+      .map((row) => JSON.stringify(row))
+      .sort(),
+  );
 });
 
 // The .NET generator shard manifest partitions the preserved baseline rows of
@@ -1189,6 +1405,7 @@ test("finite inventory strict freeze refuses every profile whose controller call
               controller: "scripts/verify-consumer-witness-profile.mjs",
               reason: "row-count-differs",
             },
+            installedCount(profile),
           ]
         : []),
     ]),
@@ -1211,12 +1428,14 @@ test("finite inventory strict freeze refuses an unselected row a controller's po
       name: `${profile} unselected acceptance 5821`,
     });
   };
-  const counted = (profile: string, ...controllers: string[]) =>
-    controllers.map((controller) => ({
+  const counted = (profile: string, ...controllers: string[]) => [
+    ...controllers.map((controller) => ({
       profile,
       controller: "scripts/" + controller,
       reason: "row-count-differs",
-    }));
+    })),
+    installedCount(profile),
+  ];
   const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
     [
       [
@@ -1366,6 +1585,149 @@ test("finite inventory strict freeze refuses companion cohorts a controller requ
   }
 });
 
+// The installed acceptance callback in a selected test file runs its whole
+// profile from a fresh package and expects nine passes.
+test("finite inventory strict freeze refuses an unselected row a selected installed callback's count rejects", async (t) => {
+  const extra = (profile: string) => (rows: RequiredNative) => {
+    rows[profile]!.push({
+      file: `dist/test/gate-${profile}.test.js`,
+      name: `${profile} unselected acceptance 4483`,
+    });
+  };
+  const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
+    [
+      [
+        "an extra go-extensions row",
+        extra("go-extensions"),
+        [installedCount("go-extensions")],
+      ],
+      [
+        "an extra host-session-readiness row",
+        extra("host-session-readiness"),
+        [installedCount("host-session-readiness")],
+      ],
+      [
+        "go-extensions and host-session-readiness reordered",
+        (rows) => {
+          rows["go-extensions"]!.reverse();
+          rows["host-session-readiness"]!.reverse();
+        },
+        [],
+      ],
+    ];
+  for (const [label, edit, expected] of cases) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(result.code, expected.length ? 2 : 0, label);
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
+  }
+});
+
+test("finite inventory strict freeze refuses a baseline batch its controller's runner or sum check rejects", async (t) => {
+  const batch = (profile: string, controller: string) => ({
+    profile,
+    controller,
+    reason: "companion-cohort-differs",
+  });
+  const repeat = (profile: string, index: number) => (rows: RequiredNative) => {
+    rows[profile]!.push({ ...rows[profile]![index]! });
+  };
+  const copy =
+    (from: string, to: string, index: number) => (rows: RequiredNative) => {
+      rows[to]!.push({ ...rows[from]![index]! });
+    };
+  const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
+    [
+      [
+        "a helm row repeated",
+        repeat("helm", 3),
+        [
+          batch(
+            "helm-extensions",
+            "scripts/verify-helm-extensions-container.mjs",
+          ),
+        ],
+      ],
+      [
+        "a go-installed-harness row repeated",
+        repeat("go-installed-harness", 0),
+        [
+          batch("go-extensions", ".github/workflows/ci.yml"),
+          batch("host-session-readiness", ".github/workflows/ci.yml"),
+        ],
+      ],
+      [
+        "a swift-tools row also filed under swift",
+        copy("swift-tools", "swift", 1),
+        [
+          batch(
+            "swift-extensions",
+            "scripts/verify-swift-extensions-container.mjs",
+          ),
+        ],
+      ],
+      [
+        "a kotlin row also filed under java",
+        copy("kotlin", "java", 2),
+        [
+          batch(
+            "kotlin-extensions",
+            "scripts/verify-kotlin-extensions-container.mjs",
+          ),
+        ],
+      ],
+      [
+        "a review-probe row also filed under review",
+        copy("review-probe", "review", 0),
+        [
+          batch(
+            "confidence-provenance",
+            "scripts/verify-confidence-provenance.mjs",
+          ),
+        ],
+      ],
+      [
+        "a kustomize row also filed under kubeconform",
+        copy("kustomize", "kubeconform", 0),
+        [
+          batch(
+            "kubernetes-extensions",
+            "scripts/verify-kubernetes-extensions-container.mjs",
+          ),
+          batch(
+            "kustomize-extensions",
+            "scripts/verify-kustomize-extensions-container.mjs",
+          ),
+        ],
+      ],
+      [
+        "new distinct helm and kubeconform rows, swift reordered",
+        (rows) => {
+          rows.helm!.push({
+            file: rows.helm![0]!.file,
+            name: "helm baseline addition 2657",
+          });
+          rows.kubeconform!.push({
+            file: rows.kubeconform![0]!.file,
+            name: "kubeconform baseline addition 2657",
+          });
+          rows.swift!.reverse();
+        },
+        [],
+      ],
+    ];
+  for (const [label, edit, expected] of cases) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(result.code, expected.length ? 2 : 0, label);
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
+  }
+});
+
 test("finite inventory strict freeze refuses a mutation cohort its container selector rejects", async (t) => {
   const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
     [
@@ -1494,8 +1856,17 @@ test("finite inventory selector admission agrees with every dedicated controller
       .sort(),
   );
   const shared = shape.sharedSelectors[0]!;
+  const batchControllers = new Set(
+    (await deriveBatchCohorts(repository, admissionProfileIds(scope))).map(
+      (row) => row.controller,
+    ),
+  );
   const counted = [
-    ...new Set(shape.rowCountControllers.flatMap((row) => row.profiles)),
+    ...new Set(
+      [...shape.rowCountControllers, ...shape.installedCountCallbacks].flatMap(
+        (row) => row.profiles,
+      ),
+    ),
   ];
   const cohortProfiles = [
     ...new Set(shape.companionCohorts.flatMap((row) => row.cohort)),
@@ -1534,7 +1905,9 @@ test("finite inventory selector admission agrees with every dedicated controller
       )
       .map((entry) => {
         assert.ok(
-          entry.controller in foundationSelectors || entry.rows !== undefined,
+          entry.controller in foundationSelectors ||
+            batchControllers.has(entry.controller) ||
+            entry.rows !== undefined,
           entry.controller,
         );
         return entry;
@@ -1549,7 +1922,7 @@ test("finite inventory selector admission agrees with every dedicated controller
             ? throws(() =>
                 foundationSelectors[entry.controller]!(structuredClone(rows)),
               )
-            : !cohortCountAdmits(entry, rows),
+            : !cohortBatchAdmits(entry, rows),
       })),
     ...shared.dependents.map((profile) => ({
       rule: shared.controller,
@@ -1571,6 +1944,16 @@ test("finite inventory selector admission agrees with every dedicated controller
         profile,
         controller: entry.controller,
         reasons: ["row-count-differs"],
+        refuses: async (_root: string, rows: RequiredNative) =>
+          rows[profile]!.length !== entry.rows,
+      })),
+    ),
+    ...shape.installedCountCallbacks.flatMap((entry) =>
+      entry.profiles.map((profile) => ({
+        rule: entry.controller,
+        profile,
+        controller: entry.controller,
+        reasons: ["installed-count-differs"],
         refuses: async (_root: string, rows: RequiredNative) =>
           rows[profile]!.length !== entry.rows,
       })),
@@ -1646,6 +2029,12 @@ test("finite inventory selector admission agrees with every dedicated controller
             file: rows[id]![0]!.file,
             name: id + " companion row 6203",
           });
+      },
+    ],
+    [
+      "companion cohort rows repeated",
+      (rows) => {
+        for (const id of cohortProfiles) rows[id]!.push({ ...rows[id]![0]! });
       },
     ],
     [
@@ -1766,9 +2155,22 @@ async function discoverRowSelectors(root: string) {
 }
 test("finite inventory admission models every controller that selects manifest rows by an exact rule", async (t) => {
   const shape = admission((await audit(await source(t))).stdout);
+  const admitted = admissionProfileIds(await readScope());
+  // A batch cohort with neither a count nor a sum comparison holds no exact
+  // rule for the discovery to find; deriveBatchCohorts covers it instead.
   const modelled = new Set([
     ...Object.values(controllerSelectors).map((row) => row.controller),
-    ...shape.companionCohorts.map((row) => row.controller),
+    ...shape.companionCohorts
+      .filter(
+        (row) =>
+          row.rows !== undefined ||
+          row.disjoint ||
+          row.sha256 ||
+          row.preserved ||
+          row.files ||
+          row.outsideFile,
+      )
+      .map((row) => row.controller),
     ...shape.rowCountControllers.map((row) => row.controller),
   ]);
   const unmodelled = (found: string[]) =>
@@ -1787,17 +2189,41 @@ test("finite inventory admission models every controller that selects manifest r
     Object.keys(unmodelledRowSelectors).filter((name) => !found.includes(name)),
     [],
   );
-  const names = (await readdir(path.join(repository, "scripts"))).filter(
-    (name) => name.endsWith(".mjs"),
-  );
+  const audited = {
+    batches: new Set(shape.companionCohorts.map(batchRule)),
+    installed: new Set(
+      shape.installedCountCallbacks.map((row) => JSON.stringify(row)),
+    ),
+  };
+  const unmodelledBatches = async (root: string) =>
+    (await deriveBatchCohorts(root, admitted))
+      .filter((row) => !audited.batches.has(batchRule(row)))
+      .map((row) => row.controller + " " + row.cohort.join(","));
+  const unmodelledInstalled = async (root: string) => {
+    const { found: counted, elsewhere } = await deriveInstalledCounts(root);
+    return [
+      ...counted
+        .filter((row) => !audited.installed.has(JSON.stringify(row)))
+        .map((row) => row.controller),
+      ...elsewhere,
+    ];
+  };
+  assert.deepEqual(await unmodelledBatches(repository), []);
+  assert.deepEqual(await unmodelledInstalled(repository), []);
+  const tracked = [
+    ...(await readdir(path.join(repository, "scripts")))
+      .filter((name) => name.endsWith(".mjs"))
+      .map((name) => "scripts/" + name),
+    ...(await readdir(path.join(repository, "test")))
+      .filter((name) => /^gate-.*\.test\.ts$/u.test(name))
+      .map((name) => "test/" + name),
+    ".github/workflows/ci.yml",
+  ];
   const copy = await fixture(
     t,
     Object.fromEntries(
       await Promise.all(
-        names.map(async (name) => [
-          "scripts/" + name,
-          await readScript("scripts/" + name),
-        ]),
+        tracked.map(async (name) => [name, await readScript(name)]),
       ),
     ),
   );
@@ -1823,4 +2249,36 @@ test("finite inventory admission models every controller that selects manifest r
     );
     await writeFile(path.join(copy, "scripts", name), "export {};\n");
   }
+  // A new baseline batch in an existing controller, and a new installed count
+  // in a selected acceptance file, are each unmodelled until the audit adds
+  // them.
+  const helm = path.join(copy, "scripts/verify-helm-extensions-container.mjs");
+  const before = await readFile(helm, "utf8");
+  await writeFile(
+    helm,
+    before +
+      'run(["node", "scripts/verify-required-native-tests.mjs", "helm-tools"]);\n',
+  );
+  assert.deepEqual(await unmodelledBatches(copy), [
+    "scripts/verify-helm-extensions-container.mjs helm-tools",
+  ]);
+  await writeFile(helm, before);
+  const terraform = path.join(copy, "test/gate-terraform-extensions.test.ts");
+  const acceptance = await readFile(terraform, "utf8");
+  const declared = acceptance.indexOf(
+    '"terraform-extensions installed acceptance"',
+  );
+  assert.ok(declared > 0);
+  const body = acceptance.indexOf("=> {", declared) + 4;
+  await writeFile(
+    terraform,
+    acceptance.slice(0, body) +
+      "\n  assert.equal(receipt.profile.required, 10);" +
+      acceptance.slice(body),
+  );
+  assert.deepEqual(await unmodelledInstalled(copy), [
+    "test/gate-terraform-extensions.test.ts",
+  ]);
+  await writeFile(terraform, acceptance);
+  assert.deepEqual(await unmodelledInstalled(copy), []);
 });
