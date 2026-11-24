@@ -45,11 +45,14 @@ def freeze_configuration(frame,configuration):
     return hashlib.sha256(raw).hexdigest()
 
 
-def trusted_configuration(frame,expected):
+def trusted_configuration(frame,expected,frozen):
     require(isinstance(expected,str) and len(expected)==64,'Carrier-bound configuration digest unavailable')
-    descriptor=os.open(frame/TRUSTED_CONFIGURATION,os.O_RDONLY|os.O_NOFOLLOW)
+    require(frozen==expected,'Capture did not freeze the carrier-bound configuration')
+    # O_NONBLOCK keeps a substituted FIFO from stalling the failure ledger.
+    descriptor=os.open(frame/TRUSTED_CONFIGURATION,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
     with os.fdopen(descriptor,'rb') as source:
-        require(stat.S_ISREG(os.fstat(source.fileno()).st_mode),'Trusted configuration copy must be an ordinary file')
+        observed=os.fstat(source.fileno())
+        require(stat.S_ISREG(observed.st_mode) and observed.st_nlink==1,'Trusted configuration copy must be an unaliased ordinary file')
         raw=source.read(TRUSTED_CONFIGURATION_BYTES+1)
     require(len(raw)<=TRUSTED_CONFIGURATION_BYTES and hashlib.sha256(raw).hexdigest()==expected,
             'Trusted configuration copy differs from the carrier-bound configuration digest')
@@ -111,7 +114,7 @@ def capture(repository,inputs,output):
         # A missing copy only withholds the later transport failure ledger's
         # configuration; it never refuses an already admitted runtime.
         try:result['trustedConfigurationSha256']=freeze_configuration(frame,runtime['configuration'])
-        except BaseException as error:result['trustedConfigurationError']=str(error)[:1000]
+        except OSError as error:result['trustedConfigurationError']=str(error)[:1000]
         started=time.monotonic()
         result.update(nativeBodyStartRequested=True,originalGccTargetInvoked=None)
         try:
@@ -221,7 +224,7 @@ def post_capture(mode,repository,output):
             # The state tree may be the thing that was lost, so the configuration
             # comes only from the copy frozen at capture, bound to the checkpoint digest.
             expected=((result.get('retained') or {}).get('binding') or {}).get('configurationSha256')
-            try:configuration=trusted_configuration(frame,expected);configuration_error=None
+            try:configuration=trusted_configuration(frame,expected,result.get('trustedConfigurationSha256'));configuration_error=None
             except BaseException as caught:configuration=None;configuration_error=str(caught)[:1000]
             if configuration is None:
                 failed={'schemaVersion':1,'state':'transport-retention-failed-configuration-unavailable',

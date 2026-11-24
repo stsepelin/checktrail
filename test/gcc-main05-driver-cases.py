@@ -372,8 +372,13 @@ class Driver(unittest.TestCase):
    # Identical bytes behind a link are still not the frame's own frozen copy.
    moved=frame.parent/'synthetic-aliased-configuration-137.json';(frame/m.TRUSTED_CONFIGURATION).rename(moved)
    (frame/m.TRUSTED_CONFIGURATION).symlink_to(moved)
+  def hardlink(frame,runtime):os.link(frame/m.TRUSTED_CONFIGURATION,frame.parent/'synthetic-second-link-137.json')
+  def fifo(frame,runtime):
+   # A FIFO with no writer must be refused, not waited on.
+   (frame/m.TRUSTED_CONFIGURATION).unlink();os.mkfifo(frame/m.TRUSTED_CONFIGURATION)
   for kind,prepare,message in [('tampered',tamper,'differs from the carrier-bound'),('tampered-with-ledger',tamper_with_ledger,'differs from the carrier-bound'),
-                             ('missing',remove,'No such file'),('symlink',alias,'symbolic links|Too many levels')]:
+                             ('missing',remove,'No such file'),('symlink',alias,'symbolic links|Too many levels'),
+                             ('hardlink',hardlink,'unaliased ordinary file'),('fifo',fifo,'unaliased ordinary file')]:
    with self.subTest(kind=kind),tempfile.TemporaryDirectory() as name:
     result,written,runtime=self.lose_state_after_transport_preparation(Path(name).resolve(),prepare)
     digest=m.ledger_builder.planner.plan(runtime['configuration'])['configurationSha256']
@@ -387,15 +392,28 @@ class Driver(unittest.TestCase):
     self.assertNotIn('--synthetic-tampered-137',json.dumps(written))
 
  def test_a_preexisting_trusted_copy_is_never_overwritten_and_cannot_supply_the_configuration(self):
-  stale=b'{"synthetic":"preexisting-configuration-137"}\n'
-  def preexisting(frame,runtime):(frame/m.TRUSTED_CONFIGURATION).write_bytes(stale)
+  # Identical bytes isolate the failed creation: capture never established them.
+  for kind,message in [('different','Capture did not freeze'),('identical','Capture did not freeze')]:
+   def preexisting(frame,runtime):
+    stale=(b'{"synthetic":"preexisting-configuration-137"}\n' if kind=='different' else m.ledger_builder.planner.canonical(runtime['configuration']))
+    (frame/m.TRUSTED_CONFIGURATION).write_bytes(stale);runtime['syntheticStale']=stale
+   with self.subTest(kind=kind),tempfile.TemporaryDirectory() as name:
+    result,written,runtime=self.lose_state_after_transport_preparation(Path(name).resolve(),frame_setup=preexisting)
+    self.assertEqual((runtime['nativeFrame']/m.TRUSTED_CONFIGURATION).read_bytes(),runtime['syntheticStale'])
+    self.assertIn('File exists',result['trustedConfigurationError']);self.assertNotIn('trustedConfigurationSha256',result)
+    self.assertTrue(result['localCheckpointCapturedAndPhysicallyRestored'])
+    self.assertEqual(written['state'],'transport-retention-failed-configuration-unavailable')
+    self.assertRegex(written['configurationError'],message);self.assertNotIn('attempts',written)
+
+ def test_an_interrupt_while_freezing_the_configuration_never_starts_the_native_body(self):
   with tempfile.TemporaryDirectory() as name:
-   result,written,runtime=self.lose_state_after_transport_preparation(Path(name).resolve(),frame_setup=preexisting)
-   self.assertEqual((runtime['nativeFrame']/m.TRUSTED_CONFIGURATION).read_bytes(),stale)
-   self.assertIn('File exists',result['trustedConfigurationError']);self.assertNotIn('trustedConfigurationSha256',result)
-   self.assertTrue(result['localCheckpointCapturedAndPhysicallyRestored'])
-   self.assertEqual(written['state'],'transport-retention-failed-configuration-unavailable')
-   self.assertRegex(written['configurationError'],'differs from the carrier-bound')
+   root=Path(name).resolve();stack,output,runtime,_,observe,native,image=self.active(root)
+   with stack,mock.patch.object(m,'freeze_configuration',side_effect=KeyboardInterrupt('Synthetic operator interrupt 137')):
+    with self.assertRaises(KeyboardInterrupt):m.capture(root,root,output)
+   observe.assert_not_called();native.assert_called_once_with(runtime['nativeFrame']);image.assert_called_once_with(runtime['sdkFrame'])
+   result=json.loads((output/'CARRIER.json').read_bytes())
+   self.assertEqual(result['state'],'native05-failed-or-incomplete');self.assertIn('Synthetic operator interrupt 137',result['error'])
+   self.assertNotIn('trustedConfigurationError',result)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
