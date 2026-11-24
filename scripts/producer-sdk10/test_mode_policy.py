@@ -2,6 +2,9 @@
 import copy,json,pathlib,sys,tempfile,time,unittest
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent));import common,observer
 HERE=pathlib.Path(__file__).resolve().parent
+# These controls exercise report rules against a verified empty tracked
+# baseline; an unavailable baseline withholds all credit.
+def known_baseline(*args,**kwargs):return observer.reports(*args,tracked_contents=frozenset(),**kwargs)
 class ModeControls(unittest.TestCase):
  def profile(self):return json.loads((HERE/'profile.json').read_bytes())
  def test_both_original_argv_vectors_only_add_the_same_supported_operator_id(self):
@@ -33,12 +36,12 @@ class ModeControls(unittest.TestCase):
   for body in [b'<testsuite tests="0"/>',b'<testsuite tests="1" skipped="1"><testcase><skipped/></testcase></testsuite>']:
    with self.subTest(body=body),tempfile.TemporaryDirectory() as td:
     root=pathlib.Path(td);folder=root/'artifacts/TestResults';folder.mkdir(parents=True);before=observer.output_inventory([root],time.monotonic()+10,'test-reports');(folder/'fresh.xml').write_bytes(body)
-    row=observer.reports(root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
+    row=known_baseline(root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
     self.assertFalse(row['allCreditedFreshTestsPassed']);self.assertFalse(row['skippedUnavailableOrEmptyCountAsPassing']);self.assertFalse(common.original_mode_configuration(self.profile())['auditPassingCredit'])
  def test_original_nonwindows_sdk_test_optout_is_separate_nonpassing_metadata(self):
   mode=common.original_mode_configuration(self.profile());self.assertEqual(len(mode['declaredUpstreamTestOptOuts']),1);row=mode['declaredUpstreamTestOptOuts'][0];self.assertEqual(row['project'],'sdk');self.assertEqual(row['originalProperty'],'DotNetBuildTestsOptOut=true');self.assertEqual(row['evidenceKind'],'original-source-metadata-not-runtime-test-result');self.assertFalse(row['passingCredit']);self.assertFalse(mode['upstreamTestOptOutsZeroAndSkippedReportsCountAsPassing'])
  def test_valid_fresh_two_case_report_remains_separate_from_disabled_audit(self):
   with tempfile.TemporaryDirectory() as td:
    root=pathlib.Path(td);folder=root/'artifacts/TestResults';folder.mkdir(parents=True);before=observer.output_inventory([root],time.monotonic()+10,'test-reports');(folder/'fresh.xml').write_bytes(b'<testsuite tests="2"><testcase name="one"/><testcase name="two"/></testsuite>')
-   row=observer.reports(root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None});self.assertTrue(row['allCreditedFreshTestsPassed']);self.assertFalse(common.original_mode_configuration(self.profile())['auditPassingCredit'])
+   row=known_baseline(root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None});self.assertTrue(row['allCreditedFreshTestsPassed']);self.assertFalse(common.original_mode_configuration(self.profile())['auditPassingCredit'])
 if __name__=='__main__':unittest.main(verbosity=2)

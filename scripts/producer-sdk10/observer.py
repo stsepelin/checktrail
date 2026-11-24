@@ -148,18 +148,19 @@ def tracked_content_identities(baseline):
   if not(type(row.get('bytes')) is int and re.fullmatch(r'[0-9a-f]{64}',str(row.get('sha256','')))):return None
   rows.add((row['bytes'],row['sha256']))
  return frozenset(rows)
-def reports(source,deadline,tracked_paths=(),test_started_wall=None,before=None,original_test=None,tracked_contents=frozenset()):
+def reports(source,deadline,tracked_paths=(),test_started_wall=None,before=None,original_test=None,tracked_contents=None):
  # The pre-test snapshot holds only reports already under artifacts/TestResults,
  # so a tracked passing report copied there from elsewhere in the source tree
  # would look new to it; its content still matches the tracked baseline.
- # tracked_contents=None means that baseline is unavailable, so nothing is credited.
+ # tracked_contents=None means that baseline is unavailable: no comparison is
+ # made, matchesTrackedSourceContent stays None and nothing is credited.
  source=str(pathlib.Path(source).absolute());rows=[];command_passed=type(original_test) is dict and original_test.get('originalCodeExecuted') is True and type(original_test.get('exitCode')) is int and original_test.get('exitCode')==0 and original_test.get('stopReason') is None
  inventory=output_inventory([source],deadline,'test-reports');seen=set()
  for path,identity in inventory['entries'].items():
-  p=pathlib.Path(path);relative=p.relative_to(source).as_posix();row={'path':path,'identity':identity,'bytes':identity['bytes'],'sha256':identity['sha256'],'duplicateBody':False,'preexistingTrackedFixture':relative in tracked_paths,'matchesTrackedSourceContent':tracked_contents is None or (identity['bytes'],identity['sha256']) in tracked_contents,'changedSinceProtectedPreTestSnapshot':newly_attributed(path,identity,before,'test-reports',[source]),'originalTestCommandPositivelyPassed':command_passed}
+  p=pathlib.Path(path);relative=p.relative_to(source).as_posix();row={'path':path,'identity':identity,'bytes':identity['bytes'],'sha256':identity['sha256'],'duplicateBody':False,'preexistingTrackedFixture':relative in tracked_paths,'matchesTrackedSourceContent':None if tracked_contents is None else (identity['bytes'],identity['sha256']) in tracked_contents,'changedSinceProtectedPreTestSnapshot':newly_attributed(path,identity,before,'test-reports',[source]),'originalTestCommandPositivelyPassed':command_passed}
   try:row.update(natural=natural_report(read_observed(p,identity,32*1024**2)),naturalReportParsed=True)
   except (ValueError,ET.ParseError,Refusal,OSError):row['naturalReportParsed']=False
-  row['eligibleForPassingCredit']=not row['preexistingTrackedFixture'] and not row['matchesTrackedSourceContent'] and row['changedSinceProtectedPreTestSnapshot'] and command_passed
+  row['eligibleForPassingCredit']=not row['preexistingTrackedFixture'] and row['matchesTrackedSourceContent'] is False and row['changedSinceProtectedPreTestSnapshot'] and command_passed
   if row['eligibleForPassingCredit']:row['duplicateBody']=identity['sha256'] in seen;seen.add(identity['sha256'])
   rows.append(row)
  eligible=[row for row in rows if row['eligibleForPassingCredit']];credited=[row['natural'] for row in eligible if row.get('naturalReportParsed') and not row['duplicateBody'] and row['natural']['tests']>0];observed=[x for row in credited for x in row.get('outcomes',[])];counts={x:observed.count(x) for x in sorted(set(observed))};unavailable=not inventory['snapshotComplete'] or any(not row.get('naturalReportParsed') or row['natural']['tests']==0 for row in eligible)
@@ -274,12 +275,16 @@ def after(profile,evidence,deadline,test_started_wall=None):
  it neither suppresses the remaining records nor the capture of logs and
  failure evidence.
  """
- evidence=pathlib.Path(evidence);before=read_json(evidence/'source-before.json') if (evidence/'source-before.json').exists() else None
+ evidence=pathlib.Path(evidence);baseline_error=None
+ # An unreadable or malformed baseline is an unavailable one, never an empty one.
+ try:before=optional_json(evidence/'source-before.json')
+ except UNOBSERVABLE as error:before=None;baseline_error=type(error).__name__
+ if before is not None and tracked_content_identities(before) is None:before=None;baseline_error='malformed tracked baseline'
  def observe(name,build):
   try:value=build()
   except UNOBSERVABLE+(ET.ParseError,) as error:value={'state':'INCOMPLETE after-test observation','errorType':type(error).__name__,'passingCredit':False}
   freeze(evidence/name,encoded(value))
- observe('SOURCE-ENDPOINT-CHANGES.json',lambda:tracked_after(SOURCE_ROOT,before,deadline) if before is not None else {'state':'INCOMPLETE original materialization; no valid tracked baseline','passingCredit':False})
+ observe('SOURCE-ENDPOINT-CHANGES.json',lambda:tracked_after(SOURCE_ROOT,before,deadline) if before is not None else {'state':'INCOMPLETE original materialization; no valid tracked baseline','baselineError':baseline_error,'passingCredit':False})
  observe('ACTUAL-CMAKE-COMPILER-SELECTION.json',lambda:{'records':cmake_records(SOURCE_ROOT,deadline),'packageLabelsAloneAreExecutionEvidence':False})
  observe('ORIGINAL-NATURAL-TEST-REPORTS.json',lambda:reports(SOURCE_ROOT,deadline,{x['path'] for x in before['entries']} if before else (),test_started_wall,optional_json(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-tests-TERMINAL.json'),tracked_content_identities(before)))
  observe('FRESH-SELECTED-SDK-OUTPUTS.json',lambda:build_sdk_outputs(SDK_OUTPUT_ROOTS,profile,deadline,evidence))

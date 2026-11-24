@@ -4,6 +4,9 @@ from pathlib import Path
 from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import common,observer
+# These controls exercise snapshot and command rules against a verified empty
+# tracked baseline; an unavailable baseline withholds all credit.
+def known_baseline(*args,**kwargs):return observer.reports(*args,tracked_contents=frozenset(),**kwargs)
 
 class ObserverControls(unittest.TestCase):
  def setUp(self):self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name)
@@ -43,15 +46,15 @@ class ObserverControls(unittest.TestCase):
  def test_report_credit_needs_successful_original_test_and_fresh_nonfixture_body(self):
   folder=self.root/'artifacts/TestResults';folder.mkdir(parents=True);before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
   body=b'<testsuite tests="1"><testcase name="actual-synthetic-result"/></testsuite>';p=folder/'fresh.xml';p.write_bytes(body);passed={'originalCodeExecuted':True,'exitCode':0,'stopReason':None}
-  row=observer.reports(self.root,time.monotonic()+10,before=before,original_test=passed);self.assertTrue(row['allCreditedFreshTestsPassed'])
-  for command in [None,{'originalCodeExecuted':True,'exitCode':1,'stopReason':None},{'originalCodeExecuted':True,'exitCode':False,'stopReason':None},{'originalCodeExecuted':False,'exitCode':0,'stopReason':None}]:self.assertFalse(observer.reports(self.root,time.monotonic()+10,before=before,original_test=command)['allCreditedFreshTestsPassed'])
-  self.assertFalse(observer.reports(self.root,time.monotonic()+10,{'artifacts/TestResults/fresh.xml'},before=before,original_test=passed)['allCreditedFreshTestsPassed'])
-  stale=observer.output_inventory([self.root],time.monotonic()+10,'test-reports');os.utime(p,(time.time()+3600,time.time()+3600));self.assertFalse(observer.reports(self.root,time.monotonic()+10,before=stale,original_test=passed)['allCreditedFreshTestsPassed'])
+  row=known_baseline(self.root,time.monotonic()+10,before=before,original_test=passed);self.assertTrue(row['allCreditedFreshTestsPassed'])
+  for command in [None,{'originalCodeExecuted':True,'exitCode':1,'stopReason':None},{'originalCodeExecuted':True,'exitCode':False,'stopReason':None},{'originalCodeExecuted':False,'exitCode':0,'stopReason':None}]:self.assertFalse(known_baseline(self.root,time.monotonic()+10,before=before,original_test=command)['allCreditedFreshTestsPassed'])
+  self.assertFalse(known_baseline(self.root,time.monotonic()+10,{'artifacts/TestResults/fresh.xml'},before=before,original_test=passed)['allCreditedFreshTestsPassed'])
+  stale=observer.output_inventory([self.root],time.monotonic()+10,'test-reports');os.utime(p,(time.time()+3600,time.time()+3600));self.assertFalse(known_baseline(self.root,time.monotonic()+10,before=stale,original_test=passed)['allCreditedFreshTestsPassed'])
  def test_renamed_stale_body_and_unparsed_or_empty_fresh_report_block_credit(self):
   folder=self.root/'artifacts/TestResults';folder.mkdir(parents=True);p=folder/'old.xml';p.write_bytes(b'<testsuite tests="1"><testcase/></testsuite>');before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports');p.rename(folder/'renamed.xml');passed={'originalCodeExecuted':True,'exitCode':0,'stopReason':None}
-  self.assertFalse(observer.reports(self.root,time.monotonic()+10,before=before,original_test=passed)['allCreditedFreshTestsPassed'])
+  self.assertFalse(known_baseline(self.root,time.monotonic()+10,before=before,original_test=passed)['allCreditedFreshTestsPassed'])
   (folder/'valid.xml').write_bytes(b'<testsuite tests="1"><testcase name="new"/></testsuite>');(folder/'empty.xml').write_bytes(b'<testsuite tests="0"/>')
-  self.assertFalse(observer.reports(self.root,time.monotonic()+10,before=before,original_test=passed)['allCreditedFreshTestsPassed'])
+  self.assertFalse(known_baseline(self.root,time.monotonic()+10,before=before,original_test=passed)['allCreditedFreshTestsPassed'])
  def elf(self,machine=183,interpreter=b'/lib/ld-musl-aarch64.so.1\0'):
   ident=b'\x7fELF\x02\x01\x01'+b'\0'*9;start=64+112;size=start+len(interpreter)
   return struct.pack('<16sHHIQQQIHHHHHH',ident,3,machine,1,0,64,0,0,64,56,2,0,0,0)+struct.pack('<IIQQQQQQ',1,5,0,0,0,size,size,4096)+struct.pack('<IIQQQQQQ',3,4,start,0,0,len(interpreter),len(interpreter),1)+interpreter
@@ -164,19 +167,19 @@ class ObserverControls(unittest.TestCase):
   readable,locked=self.report_tree()
   with self.unlistable(locked):before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
   self.assertFalse(before['snapshotComplete']);self.assertEqual(list(before['entries']),[str(readable/'visible.xml')]);self.assertEqual([x['path'] for x in before['unlistedDirectories']],[str(locked)])
-  row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
+  row=known_baseline(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
   self.assertEqual({Path(x['path']).name:x['changedSinceProtectedPreTestSnapshot'] for x in row['reports']},{'visible.xml':False,'hidden.xml':False});self.assertFalse(row['allCreditedFreshTestsPassed'])
  def test_complete_snapshot_credits_only_the_report_written_after_it(self):
   readable,locked=self.report_tree();before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports');self.assertTrue(before['snapshotComplete']);self.assertEqual(before['unlistedDirectories'],[])
   (readable/'fresh.xml').write_bytes(b'<testsuite tests="1"><testcase name="fresh-after-snapshot-3301"/></testsuite>')
-  row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
+  row=known_baseline(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
   self.assertEqual({Path(x['path']).name:x['changedSinceProtectedPreTestSnapshot'] for x in row['reports']},{'visible.xml':False,'hidden.xml':False,'fresh.xml':True});self.assertTrue(row['allCreditedFreshTestsPassed']);self.assertTrue(row['reportInventoryComplete'])
  def test_unlisted_directory_in_final_report_scan_blocks_passing_credit(self):
   # A failing report the final scan cannot list must not leave the readable
   # passing report as the whole answer.
   readable,locked=self.report_tree();before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
   (readable/'fresh.xml').write_bytes(b'<testsuite tests="1"><testcase name="fresh-after-snapshot-3301"/></testsuite>');(locked/'failed.xml').write_bytes(b'<testsuite tests="1" failures="1"><testcase name="failed-3301"><failure/></testcase></testsuite>')
-  with self.unlistable(locked):row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
+  with self.unlistable(locked):row=known_baseline(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
   self.assertEqual(sorted(Path(x['path']).name for x in row['reports']),['fresh.xml','visible.xml']);self.assertFalse(row['reportInventoryComplete']);self.assertFalse(row['allCreditedFreshTestsPassed'])
 
  def test_undecodable_build_archive_still_freezes_the_post_build_record(self):
@@ -236,9 +239,11 @@ class ObserverControls(unittest.TestCase):
   for folder in [evidence,source/'tests/fixtures',source/'artifacts/TestResults',staging]:folder.mkdir(parents=True)
   tracked=source/'tests/fixtures/passing-5527.trx';tracked.write_bytes(b'<TestRun><Results><UnitTestResult outcome="Passed"/></Results><ResultSummary outcome="Completed"><Counters total="1" executed="1" passed="1"/></ResultSummary></TestRun>')
   n,h=common.hash_file(tracked)
-  if baseline:common.freeze(evidence/'source-before.json',common.encoded({'schemaVersion':1,'entries':[{'path':'tests/fixtures/passing-5527.trx','kind':'regular','mode':0o644,'bytes':n,'sha256':h}]}))
+  if baseline is True:common.freeze(evidence/'source-before.json',common.encoded({'schemaVersion':1,'entries':[{'path':'tests/fixtures/passing-5527.trx','kind':'regular','mode':0o644,'bytes':n,'sha256':h}]}))
   common.freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',common.encoded(observer.output_inventory([str(source)],time.monotonic()+10,'test-reports')))
   common.freeze(evidence/'original-tests-TERMINAL.json',common.encoded({'originalCodeExecuted':True,'exitCode':0,'stopReason':None}))
+  if baseline=='truncated':(evidence/'source-before.json').write_bytes(b'{"schemaVersion":1,"entries":[{"path":')
+  if baseline=='malformed':common.freeze(evidence/'source-before.json',common.encoded({'schemaVersion':1,'entries':[{'path':'tests/fixtures/passing-5527.trx','kind':'regular','bytes':'2783','sha256':h}]}))
   place(source/'artifacts/TestResults',tracked)
   with mock.patch.object(observer,'SDK_OUTPUT_ROOTS',[str(staging)]),mock.patch.object(observer,'SOURCE_ROOT',str(source)):observer.phase('after',{'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'},evidence,time.monotonic()+30)
   return common.read_json(evidence/'ORIGINAL-NATURAL-TEST-REPORTS.json')
@@ -253,12 +258,29 @@ class ObserverControls(unittest.TestCase):
    with self.subTest(baseline=baseline):
     self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name)
     row=self.after_reports(fresh,baseline)
-    self.assertEqual([(Path(x['path']).name,x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('fresh-5527.trx',not baseline,baseline)])
+    self.assertEqual([(Path(x['path']).name,x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('fresh-5527.trx',False if baseline else None,baseline)])
     self.assertIs(row['allCreditedFreshTestsPassed'],baseline);self.assertIs(row['trackedSourceBaselineAvailable'],baseline)
  def test_unobservable_report_tree_is_recorded_incomplete_and_the_sdk_record_still_frozen(self):
   def linked(results,tracked):(results/'linked-6203.trx').symlink_to(tracked)
   row=self.after_reports(linked)
   self.assertEqual(row,{'state':'INCOMPLETE after-test observation','errorType':'Refusal','passingCredit':False})
   self.assertFalse(common.read_json(self.root/'evidence/FRESH-SELECTED-SDK-OUTPUTS.json')['validatedBuildArchiveBytesUnchangedForStoppedCapture'])
+
+ def test_unreadable_or_malformed_tracked_baseline_withholds_credit_and_still_freezes_every_record(self):
+  def fresh(results,tracked):(results/'fresh-2783.trx').write_bytes(tracked.read_bytes().replace(b'<UnitTestResult outcome="Passed"/>',b'<UnitTestResult testName="fresh-2783" outcome="Passed"/>'))
+  for baseline,error in [('truncated','JSONDecodeError'),('malformed','malformed tracked baseline')]:
+   with self.subTest(baseline=baseline):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name)
+    row=self.after_reports(fresh,baseline)
+    self.assertEqual([(Path(x['path']).name,x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('fresh-2783.trx',None,False)]);self.assertFalse(row['allCreditedFreshTestsPassed']);self.assertFalse(row['trackedSourceBaselineAvailable'])
+    endpoint=common.read_json(self.root/'evidence/SOURCE-ENDPOINT-CHANGES.json');self.assertEqual(endpoint['baselineError'],error);self.assertFalse(endpoint['passingCredit'])
+    for name in ['ACTUAL-CMAKE-COMPILER-SELECTION.json','FRESH-SELECTED-SDK-OUTPUTS.json']:self.assertTrue((self.root/'evidence'/name).exists(),name)
+ def test_reports_without_a_stated_tracked_baseline_make_no_comparison_and_give_no_credit(self):
+  folder=self.root/'artifacts/TestResults';folder.mkdir(parents=True);before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
+  (folder/'fresh-2783.xml').write_bytes(b'<testsuite tests="1"><testcase name="fresh-2783"/></testsuite>');passed={'originalCodeExecuted':True,'exitCode':0,'stopReason':None}
+  unstated=observer.reports(self.root,time.monotonic()+10,before=before,original_test=passed)
+  self.assertEqual([(x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in unstated['reports']],[(None,False)]);self.assertFalse(unstated['allCreditedFreshTestsPassed']);self.assertFalse(unstated['trackedSourceBaselineAvailable'])
+  empty=observer.reports(self.root,time.monotonic()+10,before=before,original_test=passed,tracked_contents=frozenset())
+  self.assertEqual([(x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in empty['reports']],[(False,True)]);self.assertTrue(empty['allCreditedFreshTestsPassed'])
 
 if __name__=='__main__':unittest.main(verbosity=2)

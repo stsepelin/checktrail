@@ -147,6 +147,20 @@ class IntegrationControls(unittest.TestCase):
   with mock.patch.object(driver.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(driver.time,'sleep'),mock.patch.object(driver,'observe_live_resource',side_effect=driver.ObservationIncomplete(projection)):
    result,calls,deadline=self.native(live_poll=lambda:clock.__setitem__(0,121),deadline_seconds=360)
   self.assertEqual(result['exitCode'],0);self.assertEqual(result['stopReason'],'live resource observation incomplete');self.assertEqual(result['liveResourceFailure']['privacySafeProjection'],projection);self.assertTrue((self.root/'evidence'/'original-build-LIVE-RESOURCE-FAILURE.json').exists())
+ def test_input_preparation_child_leaves_no_bytecode_cache_in_the_reviewed_directory(self):
+  # Any cache entry in the reviewed directory makes every later --entry step
+  # refuse it, finalize included. Runs the real command shape over a scratch
+  # copy of input_prep.py and common.py, where importing common writes the cache.
+  bundle=self.root/'bundle-3359';bundle.mkdir()
+  for name in ['input_prep.py','common.py']:(bundle/name).write_bytes((Path(driver.__file__).parent/name).read_bytes())
+  argv=driver.input_prep_command(self.root/'owned-3359',1234.5)
+  self.assertEqual(argv[-6:],['--profile',str(driver.HERE/'profile.json'),'--out',str(self.root/'owned-3359'/'inputs'),'--deadline','1234.5'])
+  script=argv.index(str(driver.HERE/'input_prep.py'));command=[*argv[:script],str(bundle/'input_prep.py'),'--help']
+  # Some builds (macOS system Python) default to a cache prefix outside the
+  # script directory; a scratch prefix makes any bytecode write observable.
+  prefix=self.root/'pycache-prefix-3359';env={**{k:v for k,v in os.environ.items() if k!='PYTHONDONTWRITEBYTECODE'},'PYTHONPYCACHEPREFIX':str(prefix)}
+  done=__import__('subprocess').run(command,stdout=__import__('subprocess').PIPE,stderr=__import__('subprocess').STDOUT,timeout=60,env=env)
+  self.assertEqual(done.returncode,0,done.stdout);self.assertEqual(sorted(x.name for x in bundle.iterdir()),['common.py','input_prep.py']);self.assertFalse(prefix.exists())
  def test_resource_cutoff_stops_the_registered_producer_id_not_its_name(self):
   # The first poll is still running, so the loop sees the log flood and cuts off.
   result,_,_=self.native(limit=4,body=b'flood-7741 beyond the remaining log budget',live_poll=lambda:None)
