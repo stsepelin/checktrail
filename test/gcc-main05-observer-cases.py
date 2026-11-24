@@ -153,7 +153,7 @@ class Observations(unittest.TestCase):
 
  def test_live_sample_tolerates_a_build_temporary_unlinked_mid_walk(self):
   result,calls=self.execute('zero',transient=True)
-  self.assertIsNone(result['cutoffOrRetentionError']);self.assertEqual(calls,[['inspect',NAME],['inspect',NAME]])
+  self.assertIsNone(result['cutoffOrRetentionError']);self.assertEqual(calls,[['inspect',NAME],['start','--attach',IDENTIFIER],['inspect',IDENTIFIER]])
   self.assertEqual(result['originalCommandExitCode'],0);self.assertTrue(result['originalCommandTerminalObserved'])
   self.assertEqual(self.samples[0]['vanishedEntries'],1);self.assertEqual(self.samples[0]['logicalBytes'],len(b'object'))
 
