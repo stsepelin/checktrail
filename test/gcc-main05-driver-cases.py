@@ -6,6 +6,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import stat
 import sys
 import tempfile
@@ -209,7 +210,7 @@ class Driver(unittest.TestCase):
    root=Path(name).resolve();stack,output,runtime,*_=self.active(root)
    with stack:result=m.capture(root,root,output)
    frame=runtime['nativeFrame'];(frame/'controls/EXPECTED-PHASE-LEDGER.json').write_bytes(m.codec.canonical(runtime['ledger']))
-   with mock.patch.dict(os.environ,hosted()),mock.patch.object(m.h,'verify_repository') as repository,mock.patch.object(m.service,'GitHub'),mock.patch.object(m.transport,'verify',side_effect=ValueError('Synthetic late service metadata failure')),mock.patch.object(m.ledger_builder.planner,'read_configuration',return_value=runtime['configuration']):
+   with mock.patch.dict(os.environ,hosted()),mock.patch.object(m.h,'verify_repository') as repository,mock.patch.object(m.service,'GitHub'),mock.patch.object(m.transport,'verify',side_effect=ValueError('Synthetic late service metadata failure')):
     with self.assertRaisesRegex(ValueError,'late service metadata'):m.post_capture('verify-restore',root,output)
     repository.assert_called_once_with(root,runtime['resources']['context'])
    result=json.loads((output/'CARRIER.json').read_bytes());self.assertTrue(result['localCheckpointCapturedAndPhysicallyRestored'])
@@ -311,7 +312,6 @@ class Driver(unittest.TestCase):
     if kind=='missing-root':(frame/'CHECKPOINT-ROOT.json').unlink()
     with mock.patch.dict(os.environ,hosted()),mock.patch.object(m.h,'verify_repository'),mock.patch.object(m.service,'GitHub') as api,\
          mock.patch.object(m.transport,'prepare_restore') as restore,mock.patch.object(m.transport,'verify') as verify,\
-         mock.patch.object(m.ledger_builder.planner,'read_configuration',return_value=runtime['configuration']),\
          mock.patch.object(m.service.policy,'POST_CAPTURE_SECONDS',-1 if kind=='deadline' else m.service.policy.POST_CAPTURE_SECONDS):
      with self.assertRaisesRegex((ValueError,OSError),message):m.post_capture(mode,root,output)
      api.assert_not_called();restore.assert_not_called();verify.assert_not_called()
@@ -323,6 +323,79 @@ class Driver(unittest.TestCase):
     self.assertEqual(row['outcome'],'retention-failed');self.assertEqual(row['retentionStage'],'transport')
     self.assertEqual(row['exitCode'],0);self.assertEqual(row['nativeSeconds'],150);self.assertIsNone(row['checkpointSha256'])
     self.assertFalse(result['cacheSaveCompleted']);self.assertTrue(result['localLedgerIsProvisionalUntilServiceReplay'])
+
+ def lose_state_after_transport_preparation(self,root,prepare=None,frame_setup=None):
+  """Real capture, then the whole native state tree disappears before pre-save.
+
+  read_configuration is not stubbed for the failure handler: the configuration
+  can only come from the copy frozen in the frame or not at all.
+  """
+  stack,output,runtime,*_=self.active(root);frame=runtime['nativeFrame']
+  if frame_setup:frame_setup(frame,runtime)
+  with stack:m.capture(root,root,output)
+  (frame/'controls/EXPECTED-PHASE-LEDGER.json').write_bytes(m.codec.canonical(runtime['ledger']))
+  if prepare:prepare(frame,runtime)
+  shutil.rmtree(frame/'state');self.assertFalse(os.path.lexists(frame/'state'))
+  with mock.patch.dict(os.environ,hosted()),mock.patch.object(m.h,'verify_repository'),mock.patch.object(m.service,'GitHub') as api:
+   with self.assertRaises((ValueError,OSError)):m.post_capture('pre-save',root,output)
+   api.assert_not_called()
+  result=json.loads((output/'CARRIER.json').read_bytes())
+  self.assertEqual(result['state'],'native05-service-retention-incomplete');self.assertFalse(result['cacheSaveCompleted'])
+  self.assertNotIn('failedLedgerEvidenceError',result,result.get('failedLedgerEvidenceError'))
+  written=json.loads((frame/'FAILED-PHASE-LEDGER.json').read_bytes());self.assertEqual(written,result['failedPhaseLedger'])
+  return result,written,runtime
+
+ def test_whole_state_removed_after_transport_preparation_still_writes_the_failed_phase_ledger_from_the_trusted_copy(self):
+  with tempfile.TemporaryDirectory() as name:
+   result,written,runtime=self.lose_state_after_transport_preparation(Path(name).resolve())
+   digest=m.ledger_builder.planner.plan(runtime['configuration'])['configurationSha256']
+   self.assertEqual(result['retained']['binding']['configurationSha256'],digest);self.assertEqual(result['trustedConfigurationSha256'],digest)
+   self.assertEqual((runtime['nativeFrame']/m.TRUSTED_CONFIGURATION).read_bytes(),m.ledger_builder.planner.canonical(runtime['configuration']))
+   row=written['attempts'][-1]
+   self.assertEqual(row['outcome'],'retention-failed');self.assertEqual(row['retentionStage'],'transport')
+   self.assertEqual(row['exitCode'],0);self.assertEqual(row['nativeSeconds'],150);self.assertIsNone(row['checkpointSha256'])
+   self.assertEqual(m.ledger_builder.planner.validate_ledger(written,runtime['configuration'])[3],1)
+
+ def test_tampered_missing_or_aliased_trusted_copy_records_the_configuration_as_unavailable(self):
+  def tamper(frame,runtime):
+   changed=copy.deepcopy(runtime['configuration']);changed['variables']['CONFARGS']+=' --synthetic-tampered-137'
+   (frame/m.TRUSTED_CONFIGURATION).write_bytes(m.ledger_builder.planner.canonical(changed))
+  def tamper_with_ledger(frame,runtime):
+   # A consistent rewrite of the expected ledger as well leaves only the
+   # carrier-bound digest to refuse the substituted configuration.
+   planner=m.ledger_builder.planner;changed=copy.deepcopy(runtime['configuration']);changed['variables']['CONFARGS']+=' --synthetic-tampered-137'
+   ledger=planner.new_ledger(changed);ledger=planner.append_attempt(ledger,changed,r.f.completed(ledger,changed))
+   (frame/'controls/EXPECTED-PHASE-LEDGER.json').write_bytes(m.codec.canonical(ledger))
+   (frame/m.TRUSTED_CONFIGURATION).write_bytes(planner.canonical(changed))
+  def remove(frame,runtime):(frame/m.TRUSTED_CONFIGURATION).unlink()
+  def alias(frame,runtime):
+   # Identical bytes behind a link are still not the frame's own frozen copy.
+   moved=frame.parent/'synthetic-aliased-configuration-137.json';(frame/m.TRUSTED_CONFIGURATION).rename(moved)
+   (frame/m.TRUSTED_CONFIGURATION).symlink_to(moved)
+  for kind,prepare,message in [('tampered',tamper,'differs from the carrier-bound'),('tampered-with-ledger',tamper_with_ledger,'differs from the carrier-bound'),
+                             ('missing',remove,'No such file'),('symlink',alias,'symbolic links|Too many levels')]:
+   with self.subTest(kind=kind),tempfile.TemporaryDirectory() as name:
+    result,written,runtime=self.lose_state_after_transport_preparation(Path(name).resolve(),prepare)
+    digest=m.ledger_builder.planner.plan(runtime['configuration'])['configurationSha256']
+    self.assertEqual(written['state'],'transport-retention-failed-configuration-unavailable')
+    self.assertIs(written['configurationAvailable'],False);self.assertRegex(written['configurationError'],message)
+    self.assertEqual(written['carrierBoundConfigurationSha256'],digest);self.assertEqual(written['retentionStage'],'transport')
+    self.assertEqual(written['observed'],result['observed']);self.assertEqual(written['observed']['combinedSdkAndMainObservedSeconds'],150)
+    self.assertIs(written['phaseLedgerRowRecorded'],False);self.assertIs(written['phaseAdvanced'],False);self.assertIs(written['gateAComplete'],False)
+    # No ledger shape, configuration value or attempt row is invented.
+    self.assertNotIn('attempts',written);self.assertNotIn('configurationSha256',written)
+    self.assertNotIn('--synthetic-tampered-137',json.dumps(written))
+
+ def test_a_preexisting_trusted_copy_is_never_overwritten_and_cannot_supply_the_configuration(self):
+  stale=b'{"synthetic":"preexisting-configuration-137"}\n'
+  def preexisting(frame,runtime):(frame/m.TRUSTED_CONFIGURATION).write_bytes(stale)
+  with tempfile.TemporaryDirectory() as name:
+   result,written,runtime=self.lose_state_after_transport_preparation(Path(name).resolve(),frame_setup=preexisting)
+   self.assertEqual((runtime['nativeFrame']/m.TRUSTED_CONFIGURATION).read_bytes(),stale)
+   self.assertIn('File exists',result['trustedConfigurationError']);self.assertNotIn('trustedConfigurationSha256',result)
+   self.assertTrue(result['localCheckpointCapturedAndPhysicallyRestored'])
+   self.assertEqual(written['state'],'transport-retention-failed-configuration-unavailable')
+   self.assertRegex(written['configurationError'],'differs from the carrier-bound')
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

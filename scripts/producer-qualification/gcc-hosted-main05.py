@@ -10,6 +10,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import stat
 import time
 
 
@@ -28,6 +29,31 @@ ledger_builder=start.attempt_ledger
 h=start.h
 codec=start.codec
 require=h.require
+TRUSTED_CONFIGURATION='TRUSTED-CONFIGURATION.json'
+TRUSTED_CONFIGURATION_BYTES=8*1024**2
+
+
+def freeze_configuration(frame,configuration):
+    """Keep the admitted configuration bytes outside state, written exactly once.
+
+    Retention and transport can remove or replace frame/state; a later failure
+    ledger then still has configuration bytes it can check against the digest
+    the checkpoint binding carries.
+    """
+    raw=ledger_builder.planner.canonical(configuration)
+    with (frame/TRUSTED_CONFIGURATION).open('xb') as target:target.write(raw)
+    return hashlib.sha256(raw).hexdigest()
+
+
+def trusted_configuration(frame,expected):
+    require(isinstance(expected,str) and len(expected)==64,'Carrier-bound configuration digest unavailable')
+    descriptor=os.open(frame/TRUSTED_CONFIGURATION,os.O_RDONLY|os.O_NOFOLLOW)
+    with os.fdopen(descriptor,'rb') as source:
+        require(stat.S_ISREG(os.fstat(source.fileno()).st_mode),'Trusted configuration copy must be an ordinary file')
+        raw=source.read(TRUSTED_CONFIGURATION_BYTES+1)
+    require(len(raw)<=TRUSTED_CONFIGURATION_BYTES and hashlib.sha256(raw).hexdigest()==expected,
+            'Trusted configuration copy differs from the carrier-bound configuration digest')
+    return json.loads(raw)
 
 
 def observation_after_error(runtime,elapsed,error):
@@ -81,7 +107,12 @@ def capture(repository,inputs,output):
             'localLedgerIsProvisionalUntilServiceReplay':True,'gateAComplete':False}
     try:
         runtime=start.create_runtime(repository,inputs,output)
-        frame=runtime['nativeFrame'];started=time.monotonic()
+        frame=runtime['nativeFrame']
+        # A missing copy only withholds the later transport failure ledger's
+        # configuration; it never refuses an already admitted runtime.
+        try:result['trustedConfigurationSha256']=freeze_configuration(frame,runtime['configuration'])
+        except BaseException as error:result['trustedConfigurationError']=str(error)[:1000]
+        started=time.monotonic()
         result.update(nativeBodyStartRequested=True,originalGccTargetInvoked=None)
         try:
             observation=observer.observe(frame,runtime['name'],runtime['containerId'],
@@ -187,9 +218,19 @@ def post_capture(mode,repository,output):
         result.update(state='native05-service-retention-incomplete',serviceFailure={'mode':mode,'error':str(error)[:2000]},
                       cacheSaveCompleted=False,cacheRestoreReplayQualified=False,localLedgerIsProvisionalUntilServiceReplay=True)
         try:
-            old=json.loads((frame/'controls/EXPECTED-PHASE-LEDGER.json').read_bytes())
-            configuration=ledger_builder.planner.read_configuration(frame/'state/__carrier_work/gcc-staged-configuration',frame/'state/source')
-            failed=ledger_builder.failed(old,configuration,result['observed'],error,retention_stage='transport')
+            # The state tree may be the thing that was lost, so the configuration
+            # comes only from the copy frozen at capture, bound to the checkpoint digest.
+            expected=((result.get('retained') or {}).get('binding') or {}).get('configurationSha256')
+            try:configuration=trusted_configuration(frame,expected);configuration_error=None
+            except BaseException as caught:configuration=None;configuration_error=str(caught)[:1000]
+            if configuration is None:
+                failed={'schemaVersion':1,'state':'transport-retention-failed-configuration-unavailable',
+                        'configurationAvailable':False,'configurationError':configuration_error,
+                        'carrierBoundConfigurationSha256':expected,'retentionStage':'transport','error':str(error)[:2000],
+                        'observed':result['observed'],'phaseLedgerRowRecorded':False,'phaseAdvanced':False,'gateAComplete':False}
+            else:
+                old=json.loads((frame/'controls/EXPECTED-PHASE-LEDGER.json').read_bytes())
+                failed=ledger_builder.failed(old,configuration,result['observed'],error,retention_stage='transport')
             (frame/'FAILED-PHASE-LEDGER.json').write_bytes(ledger_builder.planner.canonical(failed));result['failedPhaseLedger']=failed
         except BaseException as ledger_error:result['failedLedgerEvidenceError']=str(ledger_error)[:1000]
         (output/'CARRIER.json').write_bytes(codec.canonical(result));raise
