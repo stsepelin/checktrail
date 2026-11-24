@@ -52,8 +52,9 @@ conservative impact fallback.
 
 Gate A retains upstream producer closure for the selected artifacts, including
 compiler, SDK and bootstrap build inputs and complete original notices. Each
-producer closes either as source-built, when its original build completes in one
-free standard hosted job, or as publisher-attested, with the exact release
+producer closes either as source-built, from a retained completed build within
+its recorded scope or a new attempt that completes in one free standard hosted
+job, or as publisher-attested, with the exact release
 artifact verified against the publisher's own signature or signed checksums, as
 defined by the [closure plan's producer budget revision](GATE-A-CLOSURE-PLAN.md#2a-producer-budget-revision-2026-11-24).
 The two classifications are recorded separately and a publisher-attested row

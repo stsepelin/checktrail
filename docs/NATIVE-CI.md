@@ -180,8 +180,10 @@ minutes from submission to completion, including queueing, with at most twenty
 concurrent GitHub jobs available. Job counts alone do not establish this target:
 measure queued time, setup and execution on the hosted candidate. Full
 compatibility verification remains the conservative fallback for shared and
-unclassified changes. Original upstream compiler qualification is separate work;
-complete producer-build closure remains required for Gate A.
+unclassified changes. Original upstream compiler qualification is separate work.
+Gate A requires producer closure as defined by the
+[closure plan's producer budget revision](GATE-A-CLOSURE-PLAN.md#2a-producer-budget-revision-2026-11-24):
+source-built or verified publisher-attested, not necessarily an original build.
 
 The same affected selection applies to a repository-bound, nonforced update to
 `main` after the planner verifies the exact event/checkout commits, their ancestry

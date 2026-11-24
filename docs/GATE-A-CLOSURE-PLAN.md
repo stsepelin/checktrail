@@ -113,9 +113,13 @@ obligation recorded with such a facet, such as capture recovery or work-volume
 cleanup, stays open for that row.
 
 **Classification per producer.** Each selected producer is classified on its
-own, using eligible retained evidence first, then at most one measured attempt;
-one package can contain both classifications. A work package closes only when
-all of its producer rows are resolved.
+own, using eligible retained evidence first, then one measured attempt; one
+package can contain both classifications. A work package closes only when all
+of its producer rows are resolved. An attempt stopped early by a controller or
+infrastructure defect, before the budget is exhausted, is neither a source build
+nor a measurement: it does not consume the measured attempt, and the failure
+policy in section 5.5 governs its repair and single bounded retry within the
+existing authorization.
 
 - **Source-built.** The original selected command completes within the budget.
   Close it with the existing source-build evidence rules.
@@ -235,9 +239,11 @@ explicit plan update. Unrelated optional features go to the later queue.
    selected macOS/Windows profiles. Follow the hosted producer plan's actual
    SDK/image admission. A runner label, preinstalled compiler smoke or historical
    metadata result does not qualify a full producer. If a required build cannot
-   fit the section 2a budget, retain the measured attempt and classify the
-   producer as publisher-attested; do not shrink the selected source, features
-   or tests to make a source build fit, and do not report a partial build as one.
+   fit the section 2a budget, retain the measured attempt and record the
+   producer as eligible for publisher attestation; it becomes
+   `publisher-attested` only after its artifact, signer, source, recipe and
+   notices are verified. Do not shrink the selected source, features or tests to
+   make a source build fit, and do not report a partial build as one.
 2. **Schedule independent work in parallel.** At most two long producer jobs and
    twelve verification workers at once, reduced further for other account jobs.
    Allow at most two producer macOS jobs and three verification macOS jobs.
