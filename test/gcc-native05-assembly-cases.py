@@ -98,6 +98,25 @@ class FixedComposition(unittest.TestCase):
      checkpoint.assert_not_called();copy.assert_not_called()
     self.assertFalse((frame/'PHASE-LEDGER.json').exists())
 
+ def test_restored_reader_binds_reconstructed_package_inventory_to_its_predecessor_path_and_digest(self):
+  with tempfile.TemporaryDirectory() as td:
+   args,scope,result,root=captured(Path(td).resolve());frame=args[0]
+   restored=frame/'test-independent-restore'
+   RET.codec.restore(frame/'checkpoint',restored,result['binding'],result['checkpoint']['archiveSha256'],limits=RET.policy.CHECKPOINT_LIMITS)
+   digest=hashlib.sha256(fixture.PACKAGES).hexdigest()
+   self.assertEqual(root['binding']['packageInventorySha256'],digest)
+   self.assertIn({'bytes':len(fixture.PACKAGES),'sha256':digest},root['native05Evidence']['excludedNewSdkBodyPins'])
+   self.assertEqual((restored/S.PACKAGE_INVENTORY).read_bytes(),fixture.PACKAGES)
+   self.assertEqual(V.validate_checkpoint(restored,root,deadline=time.monotonic()+30)['profile'],V.PROFILE)
+   copied=restored/'source/installed-build-package-identities.txt';copied.write_bytes(fixture.PACKAGES)
+   with self.assertRaisesRegex(ValueError,'Relabelled NEW SDK body'):V.validate_checkpoint(restored,root,deadline=time.monotonic()+30)
+   copied.unlink();V.validate_checkpoint(restored,root,deadline=time.monotonic()+30)
+   original=restored/S.PACKAGE_INVENTORY;original.write_bytes(fixture.PACKAGES.replace(b'2.40-2',b'2.40-3'))
+   with self.assertRaisesRegex(ValueError,'package inventory bytes changed'):V.validate_checkpoint(restored,root,deadline=time.monotonic()+30)
+   original.write_bytes(fixture.PACKAGES);V.validate_checkpoint(restored,root,deadline=time.monotonic()+30)
+   other=copy.deepcopy(root);other['binding']['packageInventorySha256']=hashlib.sha256(b'another synthetic predecessor').hexdigest()
+   with self.assertRaisesRegex(ValueError,'package inventory bytes changed'):V.validate_checkpoint(restored,other,deadline=time.monotonic()+30)
+
  def test_restored_reader_rejects_relabelled_sdk_body_even_with_updated_main_inventory(self):
   with tempfile.TemporaryDirectory() as td:
    args,scope,result,root=captured(Path(td).resolve());state=args[0]/'state';evidence=state/V.EVIDENCE

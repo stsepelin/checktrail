@@ -70,7 +70,7 @@ class Driver(unittest.TestCase):
   runtime={'output':output,'nativeFrame':frame,'sdkFrame':sdk,'name':'synthetic-owned-name','containerId':'b'*64,
            'root':original,'ledger':ledger,'configuration':config,'resources':{'context':selected},'api':object(),
            'admitted':{'maximumNativeBodyAndAttachSeconds':10},'service':{'clock':clock},'sdkPreparationSecondsCharged':50}
-  runtime['sdkScope']=scope_fixture.make_scope((frame,sdk))
+  runtime['sdkScope']=scope_fixture.make_scope((frame,sdk,original))
   environment={**HOSTED,'RUNNER_TEMP':str(root),'SUDO_UID':str(os.getuid() or 1001),'SUDO_GID':str(os.getgid() or 1001),
                'CHECKTRAIL_GITHUB_JOB_TOKEN':'synthetic-job-token-137'}
   return output,runtime,observed,environment

@@ -97,12 +97,14 @@ def _capture(frame,sdk_frame,root,ledger,configuration,observation,stage_record,
             evidence=preserve_evidence(frame,sdk_frame,evidence_deadline)
         else:
             profile.verify_historical_sdk_sources(sdk_frame,sdk_scope)
+            packages=root['binding']['packageInventorySha256']
             evidence=profile.scope.retain_main_only(frame,state,sdk_frame,sdk_scope['privateRoot'],
-                sdk_scope['historicalConfigureBaseline'],deadline=evidence_deadline)
+                sdk_scope['historicalConfigureBaseline'],deadline=evidence_deadline,package_inventory_sha256=packages)
             pins=profile.scope.raw_sdk_pins(sdk_frame,sdk_scope['privateRoot'],native_frame=frame)
             descriptor=profile.descriptor(sdk_scope['historicalSdkReceipt'],sdk_scope['historicalConfigureBaseline'],pins,
                 sdk_scope['historicalSdkReceipt']['sourceHead'])
-            profile.inspect_v2(state,descriptor,sdk_scope['historicalSdkReceipt']['sourceHead'],deadline=evidence_deadline)
+            profile.inspect_v2(state,descriptor,sdk_scope['historicalSdkReceipt']['sourceHead'],deadline=evidence_deadline,
+                               package_inventory_sha256=packages)
         result['evidence']=evidence
         binding={**root['binding'],'phase':'native','sequence':1,'predecessorSha256':previous}
         limits={**policy.CHECKPOINT_LIMITS,'seconds':remaining_seconds(deadline,1500)}
@@ -114,7 +116,8 @@ def _capture(frame,sdk_frame,root,ledger,configuration,observation,stage_record,
         limits={**limits,'seconds':remaining_seconds(deadline,1500)}
         restored=codec.restore(frame/'checkpoint',frame/'local-physical-readback',binding,captured['archiveSha256'],limits=limits)
         if descriptor is not None:
-            profile.inspect_v2(frame/'local-physical-readback',descriptor,sdk_scope['historicalSdkReceipt']['sourceHead'],deadline=deadline)
+            profile.inspect_v2(frame/'local-physical-readback',descriptor,sdk_scope['historicalSdkReceipt']['sourceHead'],deadline=deadline,
+                               package_inventory_sha256=root['binding']['packageInventorySha256'])
         ledger_after=ledger_builder.completed(ledger,configuration,observation,captured,restored,stage_record)
         readback=frame/'local-physical-readback'
         require(stat.S_ISREG((readback/'source/stamps/05-build-stamp').lstat().st_mode),'Restored physical original main05 stamp missing')

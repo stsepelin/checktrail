@@ -7,6 +7,9 @@ def load(path):
  spec=importlib.util.spec_from_file_location(path.stem.replace('-','_'),path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 V=load(P/'gcc-native05-checkpoint-profile.py');S=V.scope
 HEAD='a'*40
+# Distinct synthetic dpkg-query rows. A successful SDK reconstruction and both
+# main05 projections reproduce the predecessor's configure-time inventory.
+PACKAGES=b'synthetic-gcc-12-build-dep\t12.2.0-14+deb12u1\tamd64\nsynthetic-binutils\t2.40-2\tamd64\n'
 
 def sdk_receipt():
  r=V.receipt.empty_receipt(HEAD)
@@ -16,7 +19,12 @@ def sdk_receipt():
  return V.receipt.validate_receipt(r)
 
 def make_scope(args):
- frame,sdk=args[:2];state=frame/'state';private=frame.parent/'sdk-private';private.mkdir()
+ frame,sdk,root=args[:3];state=frame/'state';private=frame.parent/'sdk-private';private.mkdir()
+ root['binding']['packageInventorySha256']=hashlib.sha256(PACKAGES).hexdigest()
+ (state/S.PACKAGE_INVENTORY).write_bytes(PACKAGES);(sdk/'observations').mkdir(exist_ok=True)
+ (sdk/'observations/installed-package-identities.txt').write_bytes(PACKAGES)
+ for label in ['before','after']:
+  p=frame/('observations/installed-package-identities-'+label+'.txt');p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(PACKAGES)
  (private/'opaque-wrapper-output.log').write_bytes(b'Synthetic private SDK wrapper traceback/opaque output')
  (private/'independent-sdk-controls/prepared-sdk').mkdir(parents=True)
  for name in {*V.load('gcc-main05-sdk.py').FILES,'PREPARED-SDK-MANIFEST.json'}:

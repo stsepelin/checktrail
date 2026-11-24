@@ -3,7 +3,7 @@
 This guards the fixed controller's file copies, not universal information flow
 through arbitrary producer output. No checkpoint/cache action is performed.
 """
-import hashlib,importlib.util,json,os,stat,tempfile,time
+import hashlib,importlib.util,json,os,re,stat,tempfile,time
 from pathlib import Path
 
 def load(name):
@@ -13,6 +13,10 @@ h=load('gcc-hosted-carrier.py')
 codec=load('gcc-staged-checkpoint.py')
 require=h.require
 BASELINE='__carrier_work/external-sdk-before.json'
+# Written by configure and bound by the predecessor root. A successful SDK
+# reconstruction must reproduce it byte for byte, so its digest is also a NEW
+# SDK pin; only this path with exactly the bound digest is the historical file.
+PACKAGE_INVENTORY='__carrier_work/installed-build-package-identities.txt'
 MAIN_SOURCES={'main-native.log':'native.log','main-resource-samples.json':'resource-samples.json','original-commands.jsonl':'observations/original-commands.jsonl'}
 FORBIDDEN_STATE_PATHS=('__carrier_work/main05-carrier-evidence','sdk-frame','prepared-sdk','controls/prepared-sdk')
 SDK_SENSITIVE_PATHS=('native.log','resource-samples.json','ATTEMPT.json','SDK-FOR-MAIN.json','SDK-CARRIER.json',
@@ -36,6 +40,15 @@ def physical_file(path,maximum,*,unique=True):
 def historical_baseline(state):
  """Called only after the accepted constructor physically verifies predecessor."""
  return physical_file(Path(state)/BASELINE,256*1024**2)
+
+def historical_package_inventory(state,package_inventory_sha256):
+ require(type(package_inventory_sha256) is str and re.fullmatch('[a-f0-9]{64}',package_inventory_sha256),
+         'Predecessor package inventory binding required')
+ path=Path(state)/PACKAGE_INVENTORY
+ require(os.path.lexists(path),'Historical predecessor package inventory missing')
+ pin=physical_file(path,1024**2)
+ require(pin['sha256']==package_inventory_sha256,'Historical predecessor package inventory bytes changed')
+ return pin
 
 def raw_sdk_pins(sdk_frame,prepared_controls,*,native_frame=None):
  sdk_frame=h.physical(Path(sdk_frame));prepared_controls=h.physical(Path(prepared_controls))
@@ -69,11 +82,12 @@ def raw_sdk_pins(sdk_frame,prepared_controls,*,native_frame=None):
  require(0<len(files)<=1000,'Bounded nonempty NEW SDK family required for scope guard')
  return {(v['bytes'],v['sha256']) for p in files if (v:=physical_file(p,512*1024**2))['bytes']>0}
 
-def inspect_state(state,sdk_frame,prepared_controls,baseline_pin,*,deadline,native_frame=None):
+def inspect_state(state,sdk_frame,prepared_controls,baseline_pin,*,deadline,package_inventory_sha256,native_frame=None):
  state=h.physical(Path(state));sdk_frame=h.physical(Path(sdk_frame));prepared_controls=h.physical(Path(prepared_controls))
  for foreign in [sdk_frame,prepared_controls]:
   require(state!=foreign and state not in foreign.parents and foreign not in state.parents,'Original state and NEW SDK family overlap')
  require(historical_baseline(state)==baseline_pin,'Historical configure SDK baseline bytes/mode changed')
+ historical_package_inventory(state,package_inventory_sha256)
  for name in FORBIDDEN_STATE_PATHS:require(not os.path.lexists(state/name),'NEW/old SDK exporter directory cannot enter successor state')
  pins=raw_sdk_pins(sdk_frame,prepared_controls,native_frame=native_frame);sizes={n for n,digest in pins};checked=0
  for p in state.rglob('*'):
@@ -87,7 +101,8 @@ def inspect_state(state,sdk_frame,prepared_controls,baseline_pin,*,deadline,nati
    require(all(resolved!=r and r not in resolved.parents for r in [sdk_frame,prepared_controls]),'State link targets NEW SDK family')
    continue
   require(stat.S_ISREG(s.st_mode),'Unsupported successor source-state member')
-  if p.relative_to(state).as_posix()==BASELINE:continue
+  # Both historical paths were bound to their predecessor bytes above.
+  if p.relative_to(state).as_posix() in (BASELINE,PACKAGE_INVENTORY):continue
   if s.st_size in sizes:
    v=physical_file(p,512*1024**2,unique=False);checked+=1
    require((v['bytes'],v['sha256']) not in pins,'Exact NEW SDK family body copied into original source state')
@@ -95,10 +110,11 @@ def inspect_state(state,sdk_frame,prepared_controls,baseline_pin,*,deadline,nati
          'candidateHashComparisons':checked,'universalProducerOutputNoninterferenceClaimed':False,
          'cacheOrNativeExecutionAuthorized':False}
 
-def evidence_plan(native_frame,state,sdk_frame,prepared_controls,baseline_pin,*,deadline):
+def evidence_plan(native_frame,state,sdk_frame,prepared_controls,baseline_pin,*,deadline,package_inventory_sha256):
  native_frame=h.physical(Path(native_frame));state=h.physical(Path(state))
  require(state==native_frame/'state','Fixed complete native05 state required')
- scoped=inspect_state(state,sdk_frame,prepared_controls,baseline_pin,deadline=deadline,native_frame=native_frame)
+ scoped=inspect_state(state,sdk_frame,prepared_controls,baseline_pin,deadline=deadline,
+                      package_inventory_sha256=package_inventory_sha256,native_frame=native_frame)
  sdk_pins=raw_sdk_pins(sdk_frame,prepared_controls,native_frame=native_frame);files={}
  for target,relative in MAIN_SOURCES.items():
   source=native_frame/relative;pin=physical_file(source,512*1024**2)
@@ -111,14 +127,15 @@ def evidence_plan(native_frame,state,sdk_frame,prepared_controls,baseline_pin,*,
  return {'mainSources':files,'scope':scoped,'excludedNewSdkFamiliesStayOnHost':True,
          'rawSdkObservedStageDumpsMayEnterCheckpoint':False,'checkpointOrCacheExportAuthorized':False}
 
-def retain_main_only(native_frame,state,sdk_frame,prepared_controls,baseline_pin,*,deadline):
+def retain_main_only(native_frame,state,sdk_frame,prepared_controls,baseline_pin,*,deadline,package_inventory_sha256):
  """Copy only the three fixed main evidence files; preserve all source state.
 
  No SDK observation or raw stage dump is copied. The SDK checks still execute
  and remain privately available to the existing phase/ledger validators.
  """
  native_frame=Path(native_frame);state=Path(state)
- plan=evidence_plan(native_frame,state,sdk_frame,prepared_controls,baseline_pin,deadline=deadline)
+ plan=evidence_plan(native_frame,state,sdk_frame,prepared_controls,baseline_pin,deadline=deadline,
+                    package_inventory_sha256=package_inventory_sha256)
  work=state/'__carrier_work';h.physical(work);require(work.is_dir(),'Physical original work directory required')
  destination=work/'native05-gcc-only-evidence'
  require(not os.path.lexists(destination),'Fresh main-only evidence destination required')
@@ -140,7 +157,8 @@ def retain_main_only(native_frame,state,sdk_frame,prepared_controls,baseline_pin
   fd=os.open(work,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
   try:os.fsync(fd)
   finally:os.close(fd)
-  inspect_state(state,sdk_frame,prepared_controls,baseline_pin,deadline=deadline,native_frame=native_frame)
+  inspect_state(state,sdk_frame,prepared_controls,baseline_pin,deadline=deadline,
+                package_inventory_sha256=package_inventory_sha256,native_frame=native_frame)
   require(set(p.name for p in destination.iterdir())=={*MAIN_SOURCES,'INVENTORY.json'},'Unexpected main-only evidence member')
   return record
  except BaseException:

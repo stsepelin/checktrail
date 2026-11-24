@@ -130,9 +130,10 @@ def data(path,maximum=MAX_DESCRIPTOR):
  return json.loads(Path(path).read_bytes())
 
 
-def inspect_v2(state,value,head,*,deadline):
+def inspect_v2(state,value,head,*,deadline,package_inventory_sha256):
  value=validate_descriptor(value,head);state=h.physical(Path(state))
  require(scope.historical_baseline(state)==value['historicalConfigureBaseline'],'Restored historical baseline differs')
+ scope.historical_package_inventory(state,package_inventory_sha256)
  for relative in scope.FORBIDDEN_STATE_PATHS:
   require(not os.path.lexists(state/relative),'V2 checkpoint contains old/new SDK exporter directories')
  evidence=h.physical(state/EVIDENCE)
@@ -154,7 +155,8 @@ def inspect_v2(state,value,head,*,deadline):
   require(time.monotonic()<deadline,'V2 restored scope deadline reached')
   info=path.lstat()
   if not stat.S_ISREG(info.st_mode):continue # Full codec still validates tree/link semantics.
-  if path.relative_to(state).as_posix()==scope.BASELINE:continue # Explicit historical exception only.
+  # Explicit historical exceptions only, each bound to its predecessor bytes above.
+  if path.relative_to(state).as_posix() in (scope.BASELINE,scope.PACKAGE_INVENTORY):continue
   if info.st_size in sizes:
    row=scope.physical_file(path,512*1024**2,unique=False);compared+=1
    require((row['bytes'],row['sha256']) not in pins,'Relabelled NEW SDK body in v2 checkpoint')
@@ -198,4 +200,5 @@ def validate_checkpoint(state,root,*,deadline):
   return inspect_legacy(state,deadline=deadline)
  require(root['native05EvidenceProfile'] in PROFILES and root.get('preparedSdkMetadataRetainedInsideCheckpoint') is False and
          type(root.get('native05Evidence')) is dict and root['native05Evidence'].get('profile')==root['native05EvidenceProfile'],'Missing/conflicting explicit v2 profile/body flag')
- return inspect_v2(state,root['native05Evidence'],root['sourceServiceContext']['GITHUB_SHA'],deadline=deadline)
+ return inspect_v2(state,root['native05Evidence'],root['sourceServiceContext']['GITHUB_SHA'],deadline=deadline,
+                  package_inventory_sha256=root['binding']['packageInventorySha256'])

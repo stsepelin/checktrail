@@ -76,6 +76,10 @@ The current `gcc-native05-gcc-only-checkpoint-v4` profile retains the complete
 compiler state, three GCC evidence files and its historical configure baseline.
 New SDK stdout and metadata remain on the build host. A bounded descriptor
 records the verified pre-build SDK subaction and hashes of excluded SDK files.
+A successful SDK reconstruction reproduces the predecessor's installed package
+inventory byte for byte, so its digest is also an excluded SDK pin. That file is
+admitted only at its predecessor path and only with the digest the predecessor
+root binds; the same bytes anywhere else in the state are refused as an SDK copy.
 Its exact-file comparisons do not establish universal information-flow isolation.
 
 Current v4 admission requires SDK policy v6
