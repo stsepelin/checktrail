@@ -90,4 +90,71 @@ class ObserverControls(unittest.TestCase):
    for item,body in members+[members[0]]:tar.addfile(item,io.BytesIO(body))
   self.assertFalse(self.fresh()['selectedSDKArchiveMetadataAndAttributionObserved'])
 
+ def phases(self,build=None,tests=None,record=True):
+  # Build and test phases share the staging and artifacts roots; only the
+  # before-test observer sits between them, as in the hosted controller.
+  evidence=self.root/'evidence';evidence.mkdir();staging=self.root/'staging';staging.mkdir();roots=[str(staging),str(self.root/'artifacts')];profile={'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'};archive=staging/'dotnet-sdk-10.0.401-linux-musl-arm64.tar.gz'
+  with mock.patch.object(observer,'SDK_OUTPUT_ROOTS',roots):
+   common.freeze(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json',common.encoded(observer.output_inventory(roots,time.monotonic()+10,'sdk-archives')))
+   if build:build(archive)
+   common.freeze(evidence/'original-build-TERMINAL.json',common.encoded({'originalCodeExecuted':True,'exitCode':0,'stopReason':None}))
+   if tests is not None:
+    if record:observer.post_build_sdks(roots,profile,time.monotonic()+10,evidence)
+    common.freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',common.encoded(observer.output_inventory([str(self.root/'source')],time.monotonic()+10,'test-reports')));tests(archive)
+   observer.after(profile,evidence,time.monotonic()+30)
+  return common.read_json(evidence/'FRESH-SELECTED-SDK-OUTPUTS.json'),str(archive)
+ def test_archive_first_created_during_test_phase_is_not_build_output(self):
+  row,path=self.phases(tests=lambda archive:self.sdk(path=archive))
+  self.assertFalse(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertEqual(row['candidates'],[]);self.assertEqual(row['buildOutputObservation'],'post-build-before-test-record')
+  self.assertEqual([(x['path'],x['creditedAsBuildOutput']) for x in row['outputsFirstObservedAfterBuildNotCredited']],[(path,False)])
+ def test_build_archive_replaced_during_tests_keeps_the_recorded_build_identity(self):
+  wrong_rid={'sdk/10.0.401/.version':b'a'*40+b'\n10.0.401\nlinux-arm64\n'};replacement={'sdk/10.0.401/test-phase-4471.txt':b'replaced-during-tests-4471'}
+  for name,built,valid in [('invalid-build-valid-replacement',wrong_rid,False),('valid-build-valid-replacement',None,True)]:
+   with self.subTest(name=name):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name);hashes=[]
+    def build(archive):self.sdk(path=archive,changes=built);hashes.append(common.hash_file(archive)[1])
+    def tests(archive):self.sdk(path=archive,changes=replacement);hashes.append(common.hash_file(archive)[1])
+    row,path=self.phases(build,tests);self.assertNotEqual(hashes[0],hashes[1])
+    self.assertEqual(row['selectedSDKArchiveMetadataAndAttributionObserved'],valid);self.assertEqual([(x['path'],x['archive']['sha256'],x['finalObservation']) for x in row['candidates']],[(path,hashes[0],'replaced')])
+    self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[path]);self.assertEqual([(x['archive']['sha256'],x['creditedAsBuildOutput']) for x in row['outputsFirstObservedAfterBuildNotCredited']],[(hashes[1],False)])
+ def test_build_archive_removed_during_tests_stays_build_output_and_is_reported_absent(self):
+  row,path=self.phases(lambda archive:self.sdk(path=archive),lambda archive:archive.unlink())
+  self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertEqual([(x['path'],x['finalObservation']) for x in row['candidates']],[(path,'absent')])
+  self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[path]);self.assertEqual(row['outputsFirstObservedAfterBuildNotCredited'],[])
+ def test_build_archive_unchanged_through_tests_is_credited_from_the_post_build_record(self):
+  row,path=self.phases(lambda archive:self.sdk(path=archive),lambda archive:None)
+  self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertEqual([(x['path'],x['finalObservation']) for x in row['candidates']],[(path,'unchanged')]);self.assertTrue(row['observedAfterBuildStoppedBeforeTestPhase'])
+  self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[]);self.assertEqual(row['outputsFirstObservedAfterBuildNotCredited'],[])
+ def test_admitted_test_phase_without_post_build_record_gets_no_build_credit(self):
+  row,path=self.phases(lambda archive:self.sdk(path=archive),lambda archive:None,record=False)
+  self.assertFalse(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertIn('INCOMPLETE',row['buildOutputObservation'])
+ def test_final_tree_stands_in_for_the_post_build_record_only_without_a_test_phase(self):
+  row,path=self.phases(lambda archive:self.sdk(path=archive))
+  self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertEqual(row['buildOutputObservation'],'final-tree-no-test-phase-admitted');self.assertEqual([x['finalObservation'] for x in row['candidates']],['unchanged'])
+
+ def report_tree(self):
+  results=self.root/'artifacts/TestResults';readable=results/'readable-3301';locked=results/'locked-3301';readable.mkdir(parents=True);locked.mkdir()
+  (readable/'visible.xml').write_bytes(b'<testsuite tests="1"><testcase name="visible-preexisting-3301"/></testsuite>');(locked/'hidden.xml').write_bytes(b'<testsuite tests="1"><testcase name="hidden-preexisting-3301"/></testsuite>')
+  self.addCleanup(lambda:locked.exists() and os.chmod(locked,0o755));return readable,locked
+ def unreadable(self):
+  if os.geteuid()==0:self.skipTest('root reads a mode-000 directory, so no unlisted directory can be produced')
+ def test_unlisted_directory_leaves_pre_test_snapshot_incomplete_without_freshness_credit(self):
+  self.unreadable();readable,locked=self.report_tree();os.chmod(locked,0)
+  before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports');os.chmod(locked,0o755)
+  self.assertFalse(before['snapshotComplete']);self.assertEqual(list(before['entries']),[str(readable/'visible.xml')]);self.assertEqual([x['path'] for x in before['unlistedDirectories']],[str(locked)])
+  row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
+  self.assertEqual({Path(x['path']).name:x['changedSinceProtectedPreTestSnapshot'] for x in row['reports']},{'visible.xml':False,'hidden.xml':False});self.assertFalse(row['allCreditedFreshTestsPassed'])
+ def test_complete_snapshot_credits_only_the_report_written_after_it(self):
+  readable,locked=self.report_tree();before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports');self.assertTrue(before['snapshotComplete']);self.assertEqual(before['unlistedDirectories'],[])
+  (readable/'fresh.xml').write_bytes(b'<testsuite tests="1"><testcase name="fresh-after-snapshot-3301"/></testsuite>')
+  row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
+  self.assertEqual({Path(x['path']).name:x['changedSinceProtectedPreTestSnapshot'] for x in row['reports']},{'visible.xml':False,'hidden.xml':False,'fresh.xml':True});self.assertTrue(row['allCreditedFreshTestsPassed']);self.assertTrue(row['reportInventoryComplete'])
+ def test_unlisted_directory_in_final_report_scan_blocks_passing_credit(self):
+  # A failing report the final scan cannot list must not leave the readable
+  # passing report as the whole answer.
+  self.unreadable();readable,locked=self.report_tree();before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
+  (readable/'fresh.xml').write_bytes(b'<testsuite tests="1"><testcase name="fresh-after-snapshot-3301"/></testsuite>');(locked/'failed.xml').write_bytes(b'<testsuite tests="1" failures="1"><testcase name="failed-3301"><failure/></testcase></testsuite>');os.chmod(locked,0)
+  row=observer.reports(self.root,time.monotonic()+10,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None})
+  os.chmod(locked,0o755);self.assertEqual(sorted(Path(x['path']).name for x in row['reports']),['fresh.xml','visible.xml']);self.assertFalse(row['reportInventoryComplete']);self.assertFalse(row['allCreditedFreshTestsPassed'])
+
 if __name__=='__main__':unittest.main(verbosity=2)
