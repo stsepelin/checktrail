@@ -53,9 +53,9 @@
       "Import order: the on-host receipt entry verifies its policy, the checkout and every runtimeFiles pin with the standard library before loading any sibling, reads no adjacent bytecode cache, and every first-party module it loads or executes, including the JavaScript import closure of the two acquisition entry points, is pinned as a runtimeFiles row.",
       "Restore capacity: gcc-hosted-phase0-capacity.py admits phase 0 only when free scratch also holds a second uncompressed tree of up to the state ceiling, the readback the carrier restores beside the original tree and the checkpoint before its 8 GiB floor.",
       "Bounded native waits: in gcc-hosted-carrier.py every live capacity sample, selector wait and post-EOF wait is bounded by the smaller of the remaining native allowance and the remaining source-job time above the finalization reserve.",
-      "Descriptor walk: gcc-hosted-carrier.py measures state from directory descriptors opened with O_NOFOLLOW and O_DIRECTORY and resolves every name relative to the directory that listed it, so a directory replaced by a symlink is never entered; live samples count such an entry within LIVE_VANISHED_CEILING, stopped scans refuse it, and a walk deeper than 256 levels is refused.",
+      "Descriptor walk: gcc-hosted-carrier.py measures state from directory descriptors opened with O_NOFOLLOW and O_DIRECTORY, reads each directory one name at a time under the sample deadline and resolves every name relative to the directory that listed it, so a directory replaced by a symlink is never entered; live samples count such an entry within LIVE_VANISHED_CEILING, stopped scans refuse it and any measured directory no longer at its name, and a walk deeper than 256 levels is refused.",
       "Not-started generator: gcc-sdk-derived-run.py re-reads the command and whole-operation budget after journaling a request and records a not-started terminal instead of starting a generator once that budget is spent.",
-      "Git configuration: gcc-hosted-carrier.py runs git with no system or global configuration, no outside attribute files, no hooks and no textconv or external diff, and refuses a checkout whose own configuration names a filter, diff, fsmonitor, hooks or include program before git starts.",
+      "Git configuration: gcc-hosted-carrier.py runs git with no system or global configuration, no outside attribute files, no hooks, no textconv or external diff and no fetch of a missing object, and refuses a checkout whose own configuration, found as git finds it, names a filter, diff, fsmonitor, hooks or include program before git starts.",
       "Further changes approved by the operator on 2026-11-24: gcc-hosted-phase0-capacity.py, gcc-hosted-carrier.py and gcc-sdk-derived-run.py, as listed above. No command, image or other runtime file changes; the limit changes are the restore-tree term of the phase-0 scratch budget and the state depth ceiling."
     ]
   },
@@ -67,10 +67,10 @@
       "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d"
     },
     {
-      "bytes": 54676,
+      "bytes": 56507,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
-      "sha256": "2e56567cafc78dfe152d0ae4645d6daecfbc40bd153790be50816b8175f9d9de"
+      "sha256": "7f5141dfa08907d2b311c148c50efc1569b019621672aad9a76a14bb03e3bd1e"
     },
     {
       "bytes": 7585,

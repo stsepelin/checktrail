@@ -1,6 +1,7 @@
 import copy
 import importlib.util
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -229,15 +230,28 @@ class FailedSnapshotCleanup(unittest.TestCase):
 
     def test_rebind_in_the_last_instant_before_removal_is_detected_and_reported(self):
         # The Docker API offers no compare-and-delete: a rebind between the
-        # final tag read and the removal reaches the foreign image. The owned
-        # image is then left untagged, which cleanup refuses to call complete.
+        # final tag read and the removal reaches the foreign image. The removal
+        # response then names an image other than the observed one, which
+        # cleanup refuses to call complete, whether or not the owned image
+        # still carries a foreign alias of its own.
+        for alias in [False,True]:
+            with self.subTest(alias=alias),tempfile.TemporaryDirectory() as name:
+                output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure')
+                if alias:table.bind(FOREIGN_TAG,IMAGE)
+                def rebind(store):store.images[FOREIGN_IMAGE]=dict(store.images[IMAGE],Id=FOREIGN_IMAGE);store.bind(TAG,FOREIGN_IMAGE)
+                table.races[('image','rm',TAG)]=rebind
+                with self.assertRaisesRegex(ValueError,'deleted an image other than the observed one'):m.cleanup_owned(output,docker)
+                self.assertNotIn(FOREIGN_IMAGE,table.images,'Synthetic race did not reach the foreign image')
+                self.assertIn(IMAGE,table.images);self.assertEqual(table.view(IMAGE)['RepoTags'],[FOREIGN_TAG] if alias else [])
+                self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
+
+    def test_owned_image_deleted_elsewhere_while_the_tag_removal_hit_another_image_is_refused(self):
         with tempfile.TemporaryDirectory() as name:
             output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure')
-            def rebind(store):store.images[FOREIGN_IMAGE]=dict(store.images[IMAGE],Id=FOREIGN_IMAGE);store.bind(TAG,FOREIGN_IMAGE)
-            table.races[('image','rm',TAG)]=rebind
-            with self.assertRaisesRegex(ValueError,'survived removal of its only tag'):m.cleanup_owned(output,docker)
-            self.assertIn(IMAGE,table.images);self.assertEqual(table.view(IMAGE)['RepoTags'],[])
-            self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
+            def swap(store):
+                store.images[FOREIGN_IMAGE]=dict(store.images[IMAGE],Id=FOREIGN_IMAGE);store.bind(TAG,FOREIGN_IMAGE);del store.images[IMAGE]
+            table.races[('image','rm',TAG)]=swap
+            with self.assertRaisesRegex(ValueError,'did not delete the observed image'):m.cleanup_owned(output,docker)
 
     def test_image_that_already_carries_a_foreign_alias_loses_only_the_owned_tag(self):
         with tempfile.TemporaryDirectory() as name:
@@ -252,7 +266,25 @@ class FailedSnapshotCleanup(unittest.TestCase):
             output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');del table.tags[TAG]
             result=m.cleanup_owned(output,docker)
             self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
-            self.assertEqual(self.removals(table),[['tag',IMAGE,TAG],['image','rm',TAG]])
+            (verb,source,spare),removal=self.removals(table)
+            self.assertEqual((verb,source),('tag',IMAGE));self.assertRegex(spare,'^'+re.escape(TAG)+'-removal-[0-9a-f]{32}$')
+            self.assertEqual(removal,['image','rm',spare]);self.assertNotIn(spare,table.tags)
+
+    def test_owned_tag_claimed_by_another_client_during_recovery_is_never_rebound(self):
+        # `docker tag` replaces an existing binding: recovery must not use the
+        # predictable owned tag, which another client may have claimed by now.
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');del table.tags[TAG]
+            raced=[]
+            def docker_after_inspect(args,**kw):
+                value=docker(args,**kw)
+                if args==['image','inspect',IMAGE] and not raced:
+                    raced.append(True);table.images[FOREIGN_IMAGE]=dict(table.images[IMAGE],Id=FOREIGN_IMAGE);table.bind(TAG,FOREIGN_IMAGE)
+                return value
+            result=m.cleanup_owned(output,docker_after_inspect)
+            self.assertEqual(raced,[True]);self.assertTrue(result['ownedImageCleanupComplete'])
+            self.assertNotIn(IMAGE,table.images)
+            self.assertIn(FOREIGN_IMAGE,table.images);self.assertEqual(table.view(FOREIGN_IMAGE)['RepoTags'],[TAG])
 
     def test_returned_untagged_image_aliased_before_removal_keeps_the_foreign_tag(self):
         with tempfile.TemporaryDirectory() as name:

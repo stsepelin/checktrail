@@ -19,7 +19,7 @@ import sys
 import time
 import traceback
 
-POLICY_SHA256='30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261'
+POLICY_SHA256='1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -351,10 +351,12 @@ def guarded(work,private,head):
 
 
 # Git runs as root here: no system or global configuration, no attribute
-# files outside the checkout, and a repository whose own configuration names
-# a program git could run while reading the tree is refused before git starts.
+# files outside the checkout, no fetch of a missing promised object, and a
+# repository whose own configuration names a program git could run while
+# reading the tree is refused before git starts.
 CHECKOUT_ENV={'PATH':'/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-              'GIT_CONFIG_NOSYSTEM':'1','GIT_CONFIG_GLOBAL':'/dev/null','GIT_ATTR_NOSYSTEM':'1'}
+              'GIT_CONFIG_NOSYSTEM':'1','GIT_CONFIG_GLOBAL':'/dev/null','GIT_ATTR_NOSYSTEM':'1','GIT_OPTIONAL_LOCKS':'0',
+              'GIT_TERMINAL_PROMPT':'0','GIT_NO_LAZY_FETCH':'1','GIT_NO_REPLACE_OBJECTS':'1','GIT_ALLOW_PROTOCOL':''}
 GIT_CONFIG_BYTES=1024**2
 GIT_EXECUTABLE_KEYS={('filter','clean'),('filter','smudge'),('filter','process'),('diff','textconv'),('diff','command'),
                      ('diff','external'),('core','fsmonitor'),('core','hookspath'),('include','path'),('includeif','path')}
@@ -411,7 +413,8 @@ def git_config_keys(raw):
 
 
 def read_git_metadata(path):
-    with os.fdopen(os.open(path,os.O_RDONLY|os.O_NOFOLLOW|getattr(os,'O_CLOEXEC',0)),'rb') as stream:
+    # Nonblocking, so a FIFO is refused by the type check instead of waiting.
+    with os.fdopen(os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK|getattr(os,'O_CLOEXEC',0)),'rb') as stream:
         require(stat.S_ISREG(os.fstat(stream.fileno()).st_mode),'source-refused');raw=stream.read(GIT_CONFIG_BYTES+1)
     require(len(raw)<=GIT_CONFIG_BYTES,'source-refused');return raw
 
@@ -421,11 +424,18 @@ def git_config_files(repository):
     dotgit=repository/'.git';kind=os.lstat(dotgit).st_mode
     if stat.S_ISDIR(kind):gitdir=dotgit
     else:
-        require(stat.S_ISREG(kind),'source-refused');line=read_git_metadata(dotgit).decode('utf-8').strip()
-        require(line.startswith('gitdir: ') and '\n' not in line,'source-refused');gitdir=repository/line[len('gitdir: '):]
+        require(stat.S_ISREG(kind),'source-refused');line=git_metadata_line(read_git_metadata(dotgit))
+        require(line.startswith('gitdir: '),'source-refused');gitdir=repository/line[len('gitdir: '):]
     common=gitdir
-    if os.path.lexists(gitdir/'commondir'):common=gitdir/read_git_metadata(gitdir/'commondir').decode('utf-8').strip()
-    return [common/'config',*[path for path in {gitdir/'config.worktree',common/'config.worktree'} if os.path.lexists(path)]]
+    if os.path.lexists(gitdir/'commondir'):common=gitdir/git_metadata_line(read_git_metadata(gitdir/'commondir'))
+    # A linked worktree's own config.worktree is in its gitdir; the common one belongs to the main worktree.
+    return [common/'config',*([gitdir/'config.worktree'] if os.path.lexists(gitdir/'config.worktree') else [])]
+
+
+def git_metadata_line(raw):
+    # Git trims only line terminators here; spaces are part of the path.
+    line=raw.decode('utf-8').rstrip('\r\n')
+    require(line and not any(char in line for char in '\r\n\0'),'source-refused');return line
 
 
 def refuse_executable_git_config(repository):

@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import re
+import uuid
 
 
 def load(name):
@@ -115,22 +116,27 @@ def remove_owned_tag(tag,observed,docker,result):
 
     Docker deletes the image only when no other tag still holds it, so an
     alias another client added survives with its image. The tag is re-read
-    just before the removal; afterwards the image must carry no owned tag and
-    is either gone or held only by foreign tags, which are reported. A
-    rebind in the last instant before removal cannot be prevented through
-    the Docker API; it shows as the owned image left untagged, and is refused.
+    just before the removal. Docker offers no compare-and-delete, so a rebind
+    in the instant between that read and the removal cannot be prevented; it
+    is detected from the removal's own response, which may delete only the
+    observed image, and from the observed image afterwards, which must carry
+    no owned tag and be either gone or held only by foreign tags.
     """
     listed=docker(['image','ls','--no-trunc','--quiet',tag]).decode().splitlines()
     require(listed==[observed],'Owned SDK tag no longer names the observed image; refuse removal')
-    docker(['image','rm',tag],timeout=30)
+    response=docker(['image','rm',tag],timeout=30).decode().splitlines()
+    deleted=[line[len('Deleted: '):].strip() for line in response if line.startswith('Deleted: ')]
     require(not docker(['image','ls','--no-trunc','--quiet',tag]).strip(),'Exact owned SDK tag remains after removal')
     present=set(docker(['image','ls','--all','--no-trunc','--quiet']).decode().splitlines())
     if observed in present:
+        require(not deleted,'Removing the owned SDK tag deleted an image other than the observed one')
         remaining=json.loads(docker(['image','inspect',observed]))[0]
         aliases=remaining.get('RepoTags') or []
         require(remaining['Id']==observed and tag not in aliases,'Owned SDK tag still names the observed image')
         require(aliases,'Owned SDK image survived removal of its only tag; the tag may have named another image')
         result['unrelatedRemainingAliasesProtected']=aliases
+    else:
+        require(deleted[:1]==[observed],'Owned SDK tag removal did not delete the observed image')
 
 
 def cleanup_owned(output,docker=h.docker):
@@ -188,9 +194,12 @@ def cleanup_owned(output,docker=h.docker):
                 require(actual['Id']==returned,'Exact returned SDK image identity differs')
                 if not actual.get('RepoTags'):
                     # Removing by ID would also take a tag another client adds
-                    # meanwhile. Re-acquire the owned tag and remove only that.
-                    docker(['tag',returned,tag],timeout=30)
-                    remove_owned_tag(tag,returned,docker,result)
+                    # meanwhile. `docker tag` replaces any existing binding, so
+                    # the image gets a fresh unpredictable owned tag that no
+                    # other client can hold, and only that tag is removed.
+                    spare=tag+'-removal-'+uuid.uuid4().hex
+                    docker(['tag',returned,spare],timeout=30)
+                    remove_owned_tag(spare,returned,docker,result)
                 else:result['unrelatedRemainingAliasesProtected']=actual['RepoTags']
             result.update(state='local-sdk-owned-tag-absent-returned-image-reconciled',ownedImageCleanupComplete=True)
         else:

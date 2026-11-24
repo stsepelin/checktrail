@@ -52,11 +52,12 @@ def physical(path):
 
 
 # Git runs as root here. No system or global configuration is read, attribute
-# files outside the checkout are ignored, and a repository whose own
-# configuration names a program git could run while reading the tree is
-# refused before git starts.
+# files outside the checkout are ignored, a missing promised object is never
+# fetched, and a repository whose own configuration names a program git could
+# run while reading the tree is refused before git starts.
 GIT_ENV = {'PATH': HOST_ENV['PATH'], 'GIT_CONFIG_NOSYSTEM': '1', 'GIT_CONFIG_GLOBAL': '/dev/null',
-           'GIT_ATTR_NOSYSTEM': '1'}
+           'GIT_ATTR_NOSYSTEM': '1', 'GIT_OPTIONAL_LOCKS': '0', 'GIT_TERMINAL_PROMPT': '0',
+           'GIT_NO_LAZY_FETCH': '1', 'GIT_NO_REPLACE_OBJECTS': '1', 'GIT_ALLOW_PROTOCOL': ''}
 GIT_CONFIG_BYTES = 1024 ** 2
 GIT_EXECUTABLE_KEYS = {('filter', 'clean'), ('filter', 'smudge'), ('filter', 'process'),
                        ('diff', 'textconv'), ('diff', 'command'), ('diff', 'external'),
@@ -160,7 +161,8 @@ def git_config_keys(raw):
 
 
 def read_bounded(path):
-    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | getattr(os, 'O_CLOEXEC', 0))
+    # Nonblocking, so a FIFO is refused by the type check instead of waiting.
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | getattr(os, 'O_CLOEXEC', 0))
     with os.fdopen(descriptor, 'rb') as stream:
         require(stat.S_ISREG(os.fstat(stream.fileno()).st_mode), 'Repository git metadata must be a regular file')
         raw = stream.read(GIT_CONFIG_BYTES + 1)
@@ -176,15 +178,22 @@ def git_config_files(repository):
         gitdir = dotgit
     else:
         require(stat.S_ISREG(kind), 'Repository git directory must be a directory or gitdir file')
-        line = read_bounded(dotgit).decode('utf-8').strip()
-        require(line.startswith('gitdir: ') and '\n' not in line, 'Repository gitdir file is malformed')
+        line = git_metadata_line(read_bounded(dotgit))
+        require(line.startswith('gitdir: '), 'Repository gitdir file is malformed')
         gitdir = repository / line[len('gitdir: '):]
     common = gitdir
     if os.path.lexists(gitdir / 'commondir'):
-        common = gitdir / read_bounded(gitdir / 'commondir').decode('utf-8').strip()
-    files = [common / 'config']
-    files += [path for path in {gitdir / 'config.worktree', common / 'config.worktree'} if os.path.lexists(path)]
-    return files
+        common = gitdir / git_metadata_line(read_bounded(gitdir / 'commondir'))
+    # A linked worktree's own config.worktree lives in its gitdir; the one in
+    # the common directory belongs to the main worktree.
+    return [common / 'config', *([gitdir / 'config.worktree'] if os.path.lexists(gitdir / 'config.worktree') else [])]
+
+
+def git_metadata_line(raw):
+    # Git trims only line terminators here; spaces are part of the path.
+    line = raw.decode('utf-8').rstrip('\r\n')
+    require(line and '\n' not in line and '\r' not in line and '\0' not in line, 'Repository git metadata path is malformed')
+    return line
 
 
 def refuse_executable_git_config(repository):
@@ -389,7 +398,8 @@ def allocated_state(root, maximum_seconds=30, *, live=False):
     lead the walk into another tree.
 
     A stopped tree (admission, checkpoint, relocation) must stay readable for
-    the whole walk: any entry that disappears or changes kind is an error. A
+    the whole walk: any entry that disappears or changes kind, or a measured
+    directory that is no longer at its name when its walk ends, is an error. A
     live sample runs beside a build that legitimately unlinks temporaries, so
     an entry removed or replaced after its parent was listed is skipped. That
     tolerance is bounded per sample, and the root itself must always exist.
@@ -421,29 +431,53 @@ def allocated_state(root, maximum_seconds=30, *, live=False):
     def opened(name, parent=None):
         descriptor = os.open(name, DIRECTORY_FLAGS, dir_fd=parent)
         try:
-            return descriptor, os.fstat(descriptor), os.listdir(descriptor)
+            info = os.fstat(descriptor)
+            # Names are read one at a time, so the deadline and entry
+            # ceiling apply while a wide directory is still being listed.
+            return {'fd': descriptor, 'names': os.scandir(descriptor), 'parent': parent, 'name': name,
+                    'identity': (info.st_dev, info.st_ino)}, info
         except BaseException:
             os.close(descriptor)
             raise
 
-    descriptor, info, listed = opened(root)
-    frames = [(descriptor, listed)]
+    def close(frame):
+        try:
+            frame['names'].close()
+        finally:
+            os.close(frame['fd'])
+
+    def still_listed(frame):
+        # An open descriptor keeps a renamed directory readable. A stopped
+        # tree must still name the directory that was measured.
+        if live:
+            return
+        if frame['parent'] is None:
+            info = os.stat(frame['name'], follow_symlinks=False)
+        else:
+            info = os.stat(frame['name'], dir_fd=frame['parent'], follow_symlinks=False)
+        require(stat.S_ISDIR(info.st_mode) and (info.st_dev, info.st_ino) == frame['identity'],
+                'Stopped native state changed during its scan')
+
+    frame, info = opened(root)
+    frames = [frame]
     try:
         count(info, 0)
         while frames:
             require(time.monotonic() - started < maximum_seconds, 'Native capacity sample deadline')
-            parent, names = frames[-1]
-            if not names:
+            frame = frames[-1]
+            entry = next(frame['names'], None)
+            if entry is None:
+                still_listed(frame)
                 frames.pop()
-                os.close(parent)
+                close(frame)
                 continue
-            name = names.pop()
+            name, parent = entry.name, frame['fd']
             try:
                 info = os.stat(name, dir_fd=parent, follow_symlinks=False)
                 if stat.S_ISDIR(info.st_mode):
                     require(len(frames) < STATE_DEPTH_CEILING, 'Actual native state depth ceiling')
-                    child, info, listed = opened(name, parent)
-                    frames.append((child, listed))
+                    child, info = opened(name, parent)
+                    frames.append(child)
                     count(info, 0)
                 elif stat.S_ISREG(info.st_mode):
                     count(info, info.st_size)
@@ -454,8 +488,8 @@ def allocated_state(root, maximum_seconds=30, *, live=False):
             except OSError as error:
                 changed(error)
     finally:
-        for parent, _ in frames:
-            os.close(parent)
+        for frame in frames:
+            close(frame)
     measured = {'entries': entries, 'logicalBytes': logical, 'allocatedBytes': allocated,
                 'quotaEnforced': False, 'samplingIsPhysicalHighWater': False}
     if live:
@@ -513,12 +547,13 @@ def native_observation(output, identifier, maximum_seconds, service_clock, *, sc
                     observed_bytes += len(raw)
                     require(observed_bytes <= LOG_CEILING, 'Native log retention ceiling reached')
                     log.write(raw)
-            wait_seconds = min(10, allowance())
-            require(wait_seconds > 0, 'Native attempt reached source-job/native cutoff; terminal remains unobserved')
+            left = allowance()
+            require(left > 0, 'Native attempt reached source-job/native cutoff; terminal remains unobserved')
             try:
-                status = process.wait(timeout=wait_seconds)
+                status = process.wait(timeout=min(10, left))
             except subprocess.TimeoutExpired:
-                raise ValueError('Native attempt reached source-job/native cutoff; terminal remains unobserved')
+                raise ValueError('Native attempt reached source-job/native cutoff; terminal remains unobserved' if left <= 10 else
+                                 'Native attach wrapper did not exit within 10 seconds of its output closing')
             require(status == 0, 'Original first-stage controller exited nonzero' if scope == 'configure' else 'SDK reconstruction body exited nonzero; no GCC target was selected')
             require(time.monotonic() - start <= maximum_seconds and service_clock['remainingSeconds'] -
                     (time.monotonic() - service_clock['capturedMonotonic']) >= capacity.FINALIZE_SECONDS,

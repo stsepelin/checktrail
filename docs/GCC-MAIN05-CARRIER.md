@@ -58,8 +58,11 @@ physical ownership and exact identity; a rebound tag, unproven resource or
 ambiguous result cannot authorize broad cleanup. The local SDK image is
 removed only through its exact owned tag, re-read immediately before removal,
 so Docker deletes it only while no other tag holds it; an image that keeps a
-foreign tag is reported, never removed, and an owned image left untagged keeps
-cleanup unqualified. Actual SDK/native elapsed
+foreign tag is reported, never removed. Docker has no compare-and-delete, so a
+rebind in the instant before removal cannot be prevented; a removal response
+that deleted any other image, or an owned image left untagged, keeps cleanup
+unqualified. An untagged owned image is recovered through a fresh
+unpredictable tag, never by ID and never by rebinding the owned tag. Actual SDK/native elapsed
 time remains charged when later checks or retention fail. A genuine zero with
 an unconfirmed family creates a charged `terminal-incomplete` row with no
 checkpoint. Such a row blocks every continuation; there is no caller Boolean
@@ -109,13 +112,15 @@ beside the original tree and the checkpoint. Every live capacity sample,
 selector wait and post-EOF wait in the configure carrier spends only the
 smaller of the remaining native allowance and the source-job time above the
 finalization reserve. State is measured from directory descriptors opened with
-`O_NOFOLLOW`, so a directory replaced by a symlink mid-walk is never entered: a
-live sample counts it as changed, a stopped scan refuses it. A generator whose
+`O_NOFOLLOW`, one name at a time under the sample deadline, so a directory
+replaced by a symlink mid-walk is never entered: a live sample counts it as
+changed, a stopped scan refuses it and any measured directory no longer at its
+name. A generator whose
 budget ran out while its request was journaled is recorded as not started.
 Checkout checks run git without system or global configuration, outside
-attribute files, hooks, textconv or external diff, and refuse a repository
-whose own configuration names a filter, diff, fsmonitor, hooks or include
-program before git runs. The operator approved all of these changes on
+attribute files, hooks, textconv, external diff or fetches of missing objects,
+and refuse a repository whose own configuration, found as git finds it, names
+a filter, diff, fsmonitor, hooks or include program before git runs. The operator approved all of these changes on
 2026-11-24; the policy records the approval and the changed and added files in
 `revisionApproval`. The historical v3 decoder remains bound to SDK policy v5,
 which retains primary errors and cleanup diagnostics, and the historical v2

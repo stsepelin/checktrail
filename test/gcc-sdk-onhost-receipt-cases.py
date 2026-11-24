@@ -176,14 +176,14 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
 
     def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
         root,_,_,good,_=self.run_entry(self.noisy)
-        current='30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261'
+        current='1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6'
         v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
         v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
         self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
         decoders={current:m.validate_receipt,v5:m.validate_historical_v5_receipt,v4:m.validate_historical_v4_receipt}
         # Earlier v6 amendments never authorized a run, so no receipt or
         # checkpoint carries their digests and no decoder keeps them.
-        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923']
+        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261']
         self.assertNotIn(current,retired)
         for digest in retired:
             for decode in decoders.values():
@@ -667,6 +667,66 @@ class CheckoutGitConfig(unittest.TestCase):
    repository,head=self.carrier_cases.filtered_repository(Path(name).resolve(),self.CORPUS[0])
    self.assertIsNone(m.verify_checkout(repository,head))
    with self.assertRaises(m.Refusal):m.verify_checkout(repository,'c'*40)
+
+
+class CheckoutGitLayout(unittest.TestCase):
+ """Both checkout readers inspect the configuration git itself opens."""
+ carrier_cases=CheckoutGitConfig.carrier_cases
+ def git(self,cwd,*args,base):
+  env={'HOME':str(base),'GIT_CONFIG_NOSYSTEM':'1','PATH':'/usr/bin:/bin'}
+  return subprocess.run(['/usr/bin/git','-c','user.name=synthetic','-c','user.email=synthetic@invalid','-c','core.hooksPath=/dev/null',
+                         '-c','commit.gpgsign=false',*args],cwd=cwd,env=env,check=True,capture_output=True,timeout=60)
+ def both_refuse(self,repository,head,marker=None):
+  h=self.carrier_cases.h
+  with self.assertRaisesRegex(ValueError,'Repository git'):h.verify_repository(repository,{'GITHUB_SHA':head})
+  with self.assertRaises(m.Refusal):m.verify_checkout(repository,head)
+  if marker is not None:self.assertFalse(marker.exists(),'A configured clean filter ran during checkout verification')
+ def test_gitdir_path_ending_in_a_space_is_read_exactly(self):
+  with tempfile.TemporaryDirectory(prefix='gcc-git-space-') as name:
+   base=Path(name).resolve();marker=base/'filter-ran.marker'
+   repository,head=self.carrier_cases.filtered_repository(base,'[filter "synthetic"]\n\tclean = %s\n'%self.carrier_cases.marking_filter(base,marker))
+   # Git reads the gitdir whose name ends in a space; a decoy without the
+   # space holds a harmless configuration.
+   real=base/'metadata-137 ';(repository/'.git').rename(real);(repository/'.git').write_text('gitdir: %s\n'%real)
+   decoy=base/'metadata-137';decoy.mkdir();(decoy/'config').write_text('[core]\n\trepositoryformatversion = 0\n')
+   self.assertEqual(self.git(repository,'rev-parse','--git-dir',base=base).stdout.decode().rstrip('\n'),str(real))
+   self.both_refuse(repository,head,marker)
+ def test_linked_worktree_ignores_the_main_worktree_configuration_but_not_its_own(self):
+  with tempfile.TemporaryDirectory(prefix='gcc-git-worktree-') as name:
+   base=Path(name).resolve();main,head=self.carrier_cases.filtered_repository(base,'[extensions]\n\tworktreeConfig = true\n')
+   (main/'.git/config').write_text((main/'.git/config').read_text().replace('repositoryformatversion = 0','repositoryformatversion = 1'))
+   # Written after the add, which copies the main worktree's file into the new one.
+   self.git(main,'worktree','add','-q','--detach',str(base/'linked'),'HEAD',base=base);linked=base/'linked'
+   (main/'.git/config.worktree').write_text('[core]\n\thooksPath = /tmp/synthetic-main-hooks-137\n')
+   self.assertIn('synthetic-main-hooks-137',self.git(main,'config','--show-origin','--list',base=base).stdout.decode())
+   self.assertNotIn('synthetic-main-hooks-137',self.git(linked,'config','--show-origin','--list',base=base).stdout.decode())
+   self.assertEqual(self.carrier_cases.h.verify_repository(linked,{'GITHUB_SHA':head})['headSha'],head)
+   self.assertIsNone(m.verify_checkout(linked,head))
+   gitdir=Path(self.git(linked,'rev-parse','--absolute-git-dir',base=base).stdout.decode().rstrip('\n'))
+   (gitdir/'config.worktree').write_text('[core]\n\thooksPath = /tmp/synthetic-linked-hooks-137\n')
+   self.both_refuse(linked,head)
+ def test_fifo_metadata_is_refused_without_waiting_for_a_writer(self):
+  with tempfile.TemporaryDirectory(prefix='gcc-git-fifo-') as name:
+   base=Path(name).resolve();repository,_=self.carrier_cases.filtered_repository(base,'')
+   os.mkfifo(repository/'.git/config.worktree')
+   for module,call in [(ROOT/'scripts/producer-qualification/gcc-hosted-carrier.py','refuse_executable_git_config'),
+                       (ROOT/'scripts/producer-qualification/gcc-sdk-onhost-receipt.py','refuse_executable_git_config')]:
+    with self.subTest(module=module.name):
+     code=('import importlib.util,pathlib,sys;s=importlib.util.spec_from_file_location("r",sys.argv[1]);r=importlib.util.module_from_spec(s);'
+           's.loader.exec_module(r)\ntry:r.%s(pathlib.Path(sys.argv[2]))\nexcept Exception as e:print("refused",type(e).__name__)'%call)
+     completed=subprocess.run([sys.executable,'-I','-B','-c',code,str(module),str(repository)],capture_output=True,timeout=60)
+     self.assertEqual(completed.stdout.decode().split()[0],'refused',completed.stderr[-500:])
+ def test_both_git_environments_carry_every_shared_metadata_control(self):
+  # src/git-metadata-policy.ts is the engine's git policy; any control added
+  # there must also reach both root-run checkout readers.
+  source=(ROOT/'src/git-metadata-policy.ts').read_text()
+  body=re.search(r'gitMetadataEnvironment = Object\.freeze\(\{(.*?)\}\)',source,re.S).group(1)
+  shared=dict(re.findall(r'(GIT_[A-Z_]+):\s*"([^"]*)"',body))
+  self.assertIn('GIT_NO_LAZY_FETCH',shared);self.assertEqual(shared['GIT_ALLOW_PROTOCOL'],'')
+  for name,environment in [('carrier',self.carrier_cases.h.GIT_ENV),('receipt',m.CHECKOUT_ENV)]:
+   with self.subTest(reader=name):
+    self.assertEqual({key:environment.get(key) for key in shared},shared)
+    self.assertEqual(set(environment)-set(shared),{'PATH'})
 
 
 if __name__=='__main__':unittest.main()

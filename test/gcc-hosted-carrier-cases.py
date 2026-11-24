@@ -102,6 +102,27 @@ class Body(unittest.TestCase):
                 self.assertNotEqual(rows[-1]['exitCode'],137)
 
 
+class ListedEntries:
+    """A directory listing already read in full, closable like os.scandir()."""
+    def __init__(self,entries):self.entries=iter(entries)
+    def __iter__(self):return self
+    def __next__(self):return next(self.entries)
+    def close(self):pass
+
+
+def listed_then_unlinked(directory,names):
+    """os.scandir replacement: read `directory` in full, then unlink `names`
+    before the walk reaches them, as a running build would."""
+    original=os.scandir;target=directory.stat()
+    def scandir(descriptor):
+        observed=os.fstat(descriptor)
+        if (observed.st_dev,observed.st_ino)!=(target.st_dev,target.st_ino):return original(descriptor)
+        with original(descriptor) as iterator:entries=list(iterator)
+        for item in names:(directory/item).unlink(missing_ok=True)
+        return ListedEntries(entries)
+    return scandir
+
+
 def marking_filter(base,marker):
     """A clean filter program that leaves `marker` behind when git runs it.
     A script file keeps git's own value quoting and `;` comments out of the way."""
@@ -329,14 +350,7 @@ class Host(unittest.TestCase):
     def racing_listing(self,directory,names):
         """List directory as a running build would see it, then unlink names
         before the walk reaches them: the listing/lstat race, made certain."""
-        original=os.listdir;target=directory.stat()
-        def listdir(descriptor):
-            listed=original(descriptor)
-            observed=os.fstat(descriptor)
-            if (observed.st_dev,observed.st_ino)==(target.st_dev,target.st_ino):
-                for item in names:(directory/item).unlink()
-            return listed
-        return mock.patch.object(h.os,'listdir',listdir)
+        return mock.patch.object(h.os,'scandir',listed_then_unlinked(directory,names))
 
     def swap_tree(self,base):
         """root/kept (613 B) and root/sub/inner.o (1375 B) inside the state;
@@ -402,6 +416,43 @@ class Host(unittest.TestCase):
             # The descendant is the 1375-byte file of the directory that was
             # listed, not the 7919-byte file the swapped path now names.
             self.assertEqual(value['logicalBytes'],613+1375);self.assertEqual(value['vanishedEntries'],0)
+
+    def test_stopped_scan_refuses_a_measured_directory_that_was_moved_away(self):
+        # The open descriptor still reads the moved directory; a stopped tree
+        # must refuse that instead of admitting state no longer at its name.
+        with tempfile.TemporaryDirectory(prefix='gcc-swap-stopped-queued-synthetic-') as name:
+            root,outside=self.swap_tree(Path(name).resolve())
+            stack,swapped=self.racing_swap(root,outside,root/'sub/inner.o',after=False)
+            with stack,self.assertRaisesRegex(ValueError,'changed during its scan'):h.allocated_state(root)
+            self.assertEqual(swapped,[True])
+
+    def test_wide_directory_is_read_incrementally_under_the_sample_deadline(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-wide-synthetic-') as name:
+            root=Path(name).resolve()
+            for index in range(137):(root/('wide-%03d.o'%index)).write_bytes(b'w')
+            pulled=[];real=os.scandir
+            class Counting:
+                def __init__(self,descriptor):self.inner=real(descriptor)
+                def __iter__(self):return self
+                def __next__(self):
+                    entry=next(self.inner);pulled.append(entry.name);return entry
+                def close(self):self.inner.close()
+            now=[100.0]
+            def clock():
+                now[0]+=1.0;return now[0]
+            real_listdir=os.listdir
+            def listdir(target):
+                names=real_listdir(target);pulled.extend(names);return names
+            with mock.patch.object(h.os,'scandir',Counting),mock.patch.object(h.os,'listdir',listdir),\
+                 mock.patch.object(h.time,'monotonic',clock),self.assertRaisesRegex(ValueError,'sample deadline'):
+                h.allocated_state(root,maximum_seconds=5.5,live=True)
+            # One name is read per deadline check: the deadline stops the walk
+            # after a handful, never after the whole 137-name listing.
+            self.assertTrue(pulled);self.assertLessEqual(len(pulled),6)
+        with tempfile.TemporaryDirectory(prefix='gcc-wide-near-miss-synthetic-') as name:
+            root=Path(name).resolve()
+            for index in range(137):(root/('wide-%03d.o'%index)).write_bytes(b'w')
+            self.assertEqual(h.allocated_state(root,live=True)['entries'],138)
 
     def test_unchanged_tree_with_a_subdirectory_is_counted_in_full(self):
         with tempfile.TemporaryDirectory(prefix='gcc-swap-near-miss-synthetic-') as name:
@@ -515,29 +566,37 @@ class Host(unittest.TestCase):
             self.assertIsNone(attempt['nativeOriginalCommandExitCode']);self.assertTrue(attempt['allElapsedTimeMustBeChargedOnRetry'])
             self.assertFalse(attempt['checkpointCompleted'])
 
-    def bounded_observation(self,output,*,maximum,service_left):
-        """Run one observation on a frozen clock and record the time each
-        blocking step was allowed: capacity sample, selector wait, post-EOF wait."""
+    def bounded_observation(self,output,*,maximum,service_left,sample_cost=0.0,select_cost=0.0,wait_times_out=False):
+        """Run one observation on a controlled clock that advances only by the
+        given costs, and record the time each blocking step was allowed:
+        capacity sample, selector wait, post-EOF wait."""
         read_fd,write_fd=os.pipe();os.write(write_fd,b'Synthetic bounded stdout\n');os.close(write_fd)
         granted={'sample':[],'select':[],'wait':[]}
+        now=[5000.0]
         class Process:
             def __init__(self):self.stdout=os.fdopen(read_fd,'rb');self.pid=999999;self.returncode=None
-            def wait(self,timeout=None):granted['wait'].append(timeout);self.returncode=0;return 0
+            def wait(self,timeout=None):
+                granted['wait'].append(timeout)
+                if wait_times_out and self.returncode is None:
+                    self.returncode=-9;raise h.subprocess.TimeoutExpired('synthetic docker start --attach',timeout)
+                if self.returncode is None:self.returncode=0
+                return self.returncode
             def poll(self):return self.returncode
         real_selector=h.selectors.DefaultSelector
         class Selector:
             def __init__(self):self.inner=real_selector()
             def __getattr__(self,name):return getattr(self.inner,name)
-            def select(self,timeout=None):granted['select'].append(timeout);return self.inner.select(timeout=timeout)
+            def select(self,timeout=None):
+                granted['select'].append(timeout);ready=self.inner.select(timeout=timeout);now[0]+=select_cost;return ready
         real_allocated=h.allocated_state
         def allocated(root,maximum_seconds=30,*,live=False):
-            granted['sample'].append(maximum_seconds);return real_allocated(root,maximum_seconds,live=live)
+            granted['sample'].append(maximum_seconds);value=real_allocated(root,maximum_seconds,live=live);now[0]+=sample_cost;return value
         state={'Running':False,'Pid':0,'Status':'exited','ExitCode':0,'OOMKilled':False,'Error':''}
         def docker(arguments,**kwargs):
             return json.dumps([{'Id':SYNTHETIC_ID,'State':state}]).encode() if arguments[0]=='inspect' else b''
         service={'remainingSeconds':h.capacity.FINALIZE_SECONDS+service_left,'capturedMonotonic':5000.0}
         with mock.patch.object(h.subprocess,'Popen',return_value=Process()),mock.patch.object(h,'docker',side_effect=docker),\
-             mock.patch.object(h.time,'sleep'),mock.patch.object(h.time,'monotonic',return_value=5000.0),\
+             mock.patch.object(h.time,'sleep'),mock.patch.object(h.time,'monotonic',side_effect=lambda:now[0]),\
              mock.patch.object(h.selectors,'DefaultSelector',Selector),mock.patch.object(h,'allocated_state',allocated):
             h.native_observation(output,SYNTHETIC_ID,maximum,service)
         return granted
@@ -555,6 +614,22 @@ class Host(unittest.TestCase):
             granted=self.bounded_observation(output,maximum=60,service_left=0.375)
             self.assertEqual(granted['sample'],[0.375]);self.assertEqual(granted['wait'],[0.375])
             self.assertTrue(granted['select'] and all(value==0.375 for value in granted['select']))
+
+    def test_each_wait_receives_only_what_the_previous_step_left(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-bounded-advancing-synthetic-') as name:
+            output=Path(name).resolve();(output/'state').mkdir()
+            # Sampling spends 2.0 s and each selector wait 0.125 s of a 2.75 s allowance.
+            granted=self.bounded_observation(output,maximum=2.75,service_left=1000,sample_cost=2.0,select_cost=0.125)
+            self.assertEqual(granted['sample'],[2.75]);self.assertEqual(granted['select'],[0.75,0.625])
+            self.assertEqual(granted['wait'],[0.5])
+
+    def test_post_eof_wrapper_timeout_is_not_reported_as_a_budget_cutoff(self):
+        for maximum,expected in [(1800,'did not exit within 10 seconds'),(7.25,'source-job/native cutoff')]:
+            with self.subTest(maximum=maximum),tempfile.TemporaryDirectory(prefix='gcc-bounded-wrapper-synthetic-') as name:
+                output=Path(name).resolve();(output/'state').mkdir()
+                with self.assertRaisesRegex(ValueError,expected):
+                    self.bounded_observation(output,maximum=maximum,service_left=2700,wait_times_out=True)
+                self.assertRegex(json.loads((output/'ATTEMPT.json').read_bytes())['cutoffOrRetentionError'],expected)
 
     def test_ample_allowance_keeps_the_fixed_sample_selector_and_wait_caps(self):
         with tempfile.TemporaryDirectory(prefix='gcc-bounded-ample-synthetic-') as name:
