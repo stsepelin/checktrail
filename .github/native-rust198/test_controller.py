@@ -1,6 +1,6 @@
 """Synthetic first-party controls only: no upstream source/SDK/compiler execution."""
 from pathlib import Path
-import _io,ast,builtins,contextlib,copy,hashlib,io,json,os,plistlib,re,signal,stat,sys,tempfile,types,unittest
+import _io,ast,builtins,subprocess,contextlib,copy,hashlib,io,json,os,plistlib,re,signal,stat,sys,tempfile,types,unittest
 from contextlib import redirect_stdout
 from unittest import mock
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
@@ -707,9 +707,50 @@ class InputCustodyTests(unittest.TestCase):
   with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache):
    with self.assertRaises(SystemExit) as raised:L.run_verified(root,{**bodies,'producer.py':producer},['observe'])
   self.assertEqual('refused-6151',raised.exception.code)
+ def test_launch_never_searches_a_controller_directory_reached_through_a_link(self):
+  root,manifest,bodies=self.cohort();root.chmod(0o755);(root/'synthetic_planted_6151.py').write_bytes(b"VALUE='planted-through-link-6151'\n");link=self.root/'linked-controller-6151';link.symlink_to(root)
+  # The link is already on sys.path before verification, so only its resolved target refuses it.
+  producer=b"try:\n import synthetic_planted_6151\nexcept ImportError:\n raise SystemExit('refused-6151')\nraise SystemExit('imported-'+synthetic_planted_6151.VALUE)\n"
+  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',[str(link),*sys.path]),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache):
+   with self.assertRaises(SystemExit) as raised:L.run_verified(root,{**bodies,'producer.py':producer},['observe'])
+  self.assertEqual('refused-6151',raised.exception.code)
  def test_launch_refuses_a_cohort_module_imported_before_verification(self):
   root,manifest,bodies=self.cohort();stale=types.ModuleType('synthetic_helper_6151');stale.VALUE='unverified-6151'
   with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules,{'synthetic_helper_6151':stale}),mock.patch.dict(sys.path_importer_cache):
    with self.assertRaisesRegex(ValueError,'^Controller module imported before cohort verification$'):L.run_verified(root,bodies,['observe'])
 
+LAUNCH_DRIVER="""
+import importlib.util,sys
+from pathlib import Path
+here=Path(sys.argv[1])
+spec=importlib.util.spec_from_file_location('verified_launcher_6151',here/'launch.py');L=importlib.util.module_from_spec(spec);spec.loader.exec_module(L)
+bodies={p.relative_to(here).as_posix():p.read_bytes() for p in here.rglob('*') if p.is_file() and '__pycache__' not in p.parts}
+if len(sys.argv)>2:bodies['producer.py']=sys.argv[2].encode();L.run_verified(here,bodies,['observe'])
+else:L.run_verified(here,bodies,['plan',str(here/'profile.json')])
+"""
+def through_launcher(*body):
+ """Run the launcher in a fresh isolated interpreter over the checked-in controller files."""
+ return subprocess.run([sys.executable,'-I','-S','-B','-c',LAUNCH_DRIVER,str(HERE),*body],cwd='/',input=b'',capture_output=True,env={'PATH':'/usr/bin:/bin','LC_ALL':'C'},timeout=120,check=False)
+def first_party_imports():
+ """(module, imported name) for every absolute import in a cohort Python file."""
+ rows=json.loads((HERE/'PUBLIC-COHORT.json').read_bytes());files=[row['file'] for row in rows if row['file'].endswith('.py')]
+ local={Path(name).stem for name in files}|{'common'};found=set()
+ for name in files:
+  for node in ast.walk(ast.parse((HERE/name).read_bytes())):
+   if isinstance(node,ast.Import):found.update((alias.name,None) for alias in node.names)
+   elif isinstance(node,ast.ImportFrom) and node.level==0:found.update((node.module,alias.name) for alias in node.names)
+ return sorted((row for row in found if row[0].split('.')[0] not in local),key=lambda row:(row[0],row[1] or ''))
+
+class LauncherImportTests(unittest.TestCase):
+ """The launcher's import restrictions still admit the standard library."""
+ def test_fresh_interpreter_runs_the_real_producer_through_the_launcher(self):
+  result=through_launcher();self.assertEqual(0,result.returncode,result.stderr[-600:])
+  value=json.loads(result.stdout);self.assertTrue(value['profileValidated']);self.assertFalse(value['nativeExecutionGranted'])
+ def test_fresh_interpreter_completes_materializer_and_host_probe_entry_imports(self):
+  result=through_launcher("import host_probe,materializer\nmaterializer.primitives()\nraise SystemExit('entry-imports-complete-6151')\n")
+  self.assertEqual((1,b'',b'entry-imports-complete-6151\n'),(result.returncode,result.stdout,result.stderr),result.stderr[-600:])
+ def test_every_module_a_controller_file_imports_loads_through_the_launcher(self):
+  wanted=first_party_imports();self.assertIn(('plistlib',None),wanted);self.assertIn(('unittest','mock'),wanted)
+  body="import importlib,json\nfailed=[]\nfor module,name in %r:\n try:\n  value=importlib.import_module(module)\n  if name is not None and name!='*' and not hasattr(value,name):importlib.import_module(module+'.'+name)\n except Exception as error:failed.append([module,name,type(error).__name__+': '+str(error)])\nraise SystemExit(json.dumps(failed))\n" % (wanted,)
+  result=through_launcher(body);self.assertEqual((1,b''),(result.returncode,result.stdout));self.assertEqual([],json.loads(result.stderr))
 if __name__=='__main__':unittest.main()
