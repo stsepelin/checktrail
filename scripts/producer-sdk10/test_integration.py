@@ -150,6 +150,23 @@ class IntegrationControls(unittest.TestCase):
   def removed(controller,name):return {'kind':'volume','name':name,'positiveOwnedAbsenceObserved':True}
   with mock.patch.object(driver,'load_controller',return_value=c),mock.patch.object(driver,'remove_owned_volume',side_effect=removed) as remove,mock.patch.object(driver.time,'monotonic',return_value=1000),mock.patch.object(driver,'output'),mock.patch('builtins.print'),self.assertRaises(SystemExit) as stopped:driver.finalize('synthetic','a'*64)
   self.assertEqual(stopped.exception.code,1);self.assertEqual(remove.call_args_list,[mock.call(c,'owned-work'),mock.call(c,'owned-temp')]);self.assertEqual(c.state['phaseDeadline'],1300);self.assertEqual(c.state['cleanupDeadline'],21000)
+ def test_finalize_reports_complete_custody_only_with_the_validated_build_archive_retained(self):
+  for retained,code in [(False,1),(True,None)]:
+   with self.subTest(retained=retained),self.temp_subdir():
+    (self.root/'evidence').mkdir(parents=True)
+    common.freeze(self.root/'evidence'/'ORIGINAL-NATURAL-TEST-REPORTS.json',common.encoded({'allCreditedFreshTestsPassed':True}))
+    common.freeze(self.root/'evidence'/'FRESH-SELECTED-SDK-OUTPUTS.json',common.encoded({'selectedSDKArchiveMetadataAndAttributionObserved':True,'validatedBuildArchiveBytesUnchangedForStoppedCapture':retained}))
+    c=type('SyntheticController',(),{})();c.root=self.root;c.ctx=self.ctx;c.profile={'limits':{'cleanupSeconds':300}}
+    c.state={'phaseDeadline':20000,'cleanupDeadline':21000,'operatorFullRoundtripAcknowledged':True,'captureReady':True,'containers':[],'volume':'owned-work-3917','tempVolume':'owned-temp-3917','imageAliasCreated':False,'windows':{},
+     'build':{'exitCode':0,'stopReason':None},'test':{'exitCode':0,'stopReason':None}};c.inspect=lambda kind,name:None
+    printed=[]
+    with mock.patch.object(driver,'load_controller',return_value=c),mock.patch.object(driver,'finalize_image_inputs'),mock.patch.object(driver.time,'monotonic',return_value=1000),mock.patch.object(driver,'output'),mock.patch('builtins.print',side_effect=lambda *a,**k:printed.append(' '.join(map(str,a)))):
+     if code is None:driver.finalize('synthetic','a'*64)
+     else:
+      with self.assertRaises(SystemExit) as stopped:driver.finalize('synthetic','a'*64)
+      self.assertEqual(stopped.exception.code,code)
+    terminal=json.loads([x for x in printed if x.startswith('CHECKTRAIL_SDK10_TERMINAL=')][-1].split('=',1)[1])
+    self.assertIs(terminal['validatedBuildArchiveBytesUnchangedForStoppedCapture'],retained);self.assertEqual(terminal['state'].startswith('COMPLETE'),retained)
  def ack_api(self,change=None):
   ctx=self.ctx;channel={'ref':'heads/diagnostic/sdk10-recovery-synthetic-test','parent':'b'*40};ack={'payload':{'context':ctx,'syntheticHashesOnly':True},'signature':'SYNTHETIC','algorithm':'RSA-PSS-SHA256-salt32'};raw=common.encoded(ack);blob=common.git_blob(raw);events=[]
   documents={'git/ref/'+channel['ref']:{'ref':'refs/'+channel['ref'],'object':{'type':'commit','sha':'f'*40}},'git/commits/'+'f'*40:{'sha':'f'*40,'message':git_ack.MESSAGE,'parents':[{'sha':channel['parent']}],'tree':{'sha':'d'*40}},'git/trees/'+'d'*40:{'sha':'d'*40,'truncated':False,'tree':[{'path':'.checktrail-recovery','mode':'040000','type':'tree','sha':'e'*40}]},'git/trees/'+'e'*40:{'sha':'e'*40,'truncated':False,'tree':[{'path':git_ack.ack_path(ctx).split('/')[-1],'mode':'100644','type':'blob','sha':blob}]},'git/blobs/'+blob:{'encoding':'base64','content':base64.b64encode(raw).decode(),'size':len(raw)}}

@@ -11137,7 +11137,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "7be1775ea6726a4a21a9b8ee0d23cb73d58e63e4"
+      "hash": "ef370d5dda68e1be24851414af24f0cf45909849"
     },
     {
       "path": "scripts/producer-sdk10/PROTECTED-CONTROLS.json",
@@ -11193,7 +11193,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "74af6929ec847c94a160596e4421a740eebbd2d2"
+      "hash": "0872e87e7873ae196db45df1df87177f6aebca32"
     },
     {
       "path": "scripts/producer-sdk10/envelope.mjs",
@@ -11263,7 +11263,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a90e5aba7f3f5149ce4ef0c3bf3d6d90aabcb7aa"
+      "hash": "10f4b619f5f7622b365b3918fe01a986963e2f27"
     },
     {
       "path": "scripts/producer-sdk10/owned_image.py",
@@ -11389,7 +11389,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "17c0aba76c25221e63b661319001f205283a4d15"
+      "hash": "13776fdfa6c9a8a0e70c6ce1d10758462149eb50"
     },
     {
       "path": "scripts/producer-sdk10/test_live_resource.py",
@@ -11424,7 +11424,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "5bc298a801fc3ae3fa829312199ccee9f51fce36"
+      "hash": "9bf619694a561dc0d2a4535cfced655948e72111"
     },
     {
       "path": "scripts/producer-sdk10/test_producer_adapter.py",

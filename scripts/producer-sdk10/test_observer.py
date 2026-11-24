@@ -127,6 +127,14 @@ class ObserverControls(unittest.TestCase):
   row,path=self.phases(lambda archive:self.sdk(path=archive),lambda archive:None)
   self.assertTrue(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertEqual([(x['path'],x['finalObservation']) for x in row['candidates']],[(path,'unchanged')]);self.assertTrue(row['observedAfterBuildStoppedBeforeTestPhase'])
   self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[]);self.assertEqual(row['outputsFirstObservedAfterBuildNotCredited'],[])
+ def test_custody_requires_the_validated_build_archive_bytes_unchanged_for_stopped_capture(self):
+  wrong_rid={'sdk/10.0.401/.version':b'a'*40+b'\n10.0.401\nlinux-arm64\n'};replacement={'sdk/10.0.401/test-phase-5813.txt':b'replaced-during-tests-5813'}
+  cases=[('removed',lambda a:self.sdk(path=a),lambda a:a.unlink(),False),('replaced',lambda a:self.sdk(path=a),lambda a:self.sdk(path=a,changes=replacement),False),
+   ('invalid-build-unchanged',lambda a:self.sdk(path=a,changes=wrong_rid),lambda a:None,False),('unchanged',lambda a:self.sdk(path=a),lambda a:None,True),('no-test-phase',lambda a:self.sdk(path=a),None,True)]
+  for name,build,tests,retained in cases:
+   with self.subTest(name=name):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name)
+    row,_=self.phases(build,tests);self.assertIs(row['validatedBuildArchiveBytesUnchangedForStoppedCapture'],retained)
  def test_admitted_test_phase_without_post_build_record_gets_no_build_credit(self):
   row,path=self.phases(lambda archive:self.sdk(path=archive),lambda archive:None,record=False)
   self.assertFalse(row['selectedSDKArchiveMetadataAndAttributionObserved']);self.assertIn('INCOMPLETE',row['buildOutputObservation'])
