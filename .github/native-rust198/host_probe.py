@@ -2,13 +2,15 @@
 SLA text stays private on the host; this helper has no upload/export implementation.
 """
 from pathlib import Path
-import argparse,gzip,hashlib,importlib.util,json,os,platform,plistlib,pwd,re,shutil,stat,subprocess,sys,time
+import argparse,gzip,hashlib,json,os,platform,plistlib,pwd,re,shutil,stat,subprocess,sys,time,types
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
 import admission as D
 import placement as PL
 
+REUSED_ADMISSION_SHA256='06bb9d23fc305375f8e7498caab3fb40cbe65e4e37f01d60ef6333c54c3fa49c'
 def guard():
- p=HERE/'reused_admission.py';D.need(hashlib.sha256(p.read_bytes()).hexdigest()=='06bb9d23fc305375f8e7498caab3fb40cbe65e4e37f01d60ef6333c54c3fa49c','Reviewed permission-frame helper changed');spec=importlib.util.spec_from_file_location('rust_metadata_permissions',p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+ # The helper runs from the bytes that matched the pin, never from a reopened path.
+ p=HERE/'reused_admission.py';body=D.read_once(p,1024**2,'Reviewed permission-frame helper changed')[0];D.need(hashlib.sha256(body).hexdigest()==REUSED_ADMISSION_SHA256,'Reviewed permission-frame helper changed');m=types.ModuleType('rust_metadata_permissions');m.__file__=str(p);exec(compile(body,str(p),'exec'),m.__dict__);return m
 
 def bounded_read(file,limit):
  before=file.lstat();D.need(stat.S_ISREG(before.st_mode) and before.st_nlink>=1 and 0<before.st_size<=limit,'Bounded physical original host metadata');fd=os.open(file,os.O_RDONLY|os.O_NOFOLLOW)
@@ -136,7 +138,7 @@ def permission_observation(developer,sdk,toolchain,tools,output,context):
  # was not fully assembled stays behind as root-only evidence of what was probed.
  try:
   # The request is complete and read-only before the directory admits the build account.
-  module.write_json(request,{'frame':frame,'controller':{'file':str(HERE/'reused_admission.py'),'sha256':module.digest((HERE/'reused_admission.py').read_bytes()),'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444);output.chmod(0o755)
+  module.write_json(request,{'frame':frame,'controller':{'file':str(HERE/'reused_admission.py'),'sha256':REUSED_ADMISSION_SHA256,'uid':int(os.environ['CHECKTRAIL_CONTROLLER_UID'])},'identity':identity});request.chmod(0o444);output.chmod(0o755)
   command=['/usr/bin/sudo','-n','-u','nobody','/usr/bin/env','-i','PATH=/usr/bin:/bin:/usr/sbin:/sbin','LC_ALL=C','/usr/bin/python3','-I','-S','-B',str(HERE/'reused_admission.py'),'--inner',str(request)]
   # The inner invocation is reviewed first-party metadata code, not an SDK producer.
   try:value=observe_inner(module,command,clean,receipts,timeout=min(300,bounds.deadline-bounds.clock()))

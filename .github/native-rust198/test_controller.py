@@ -1,6 +1,6 @@
 """Synthetic first-party controls only: no upstream source/SDK/compiler execution."""
 from pathlib import Path
-import ast,contextlib,copy,hashlib,io,json,os,plistlib,re,stat,sys,tempfile,unittest
+import _io,ast,contextlib,copy,hashlib,io,json,os,plistlib,re,signal,stat,sys,tempfile,types,unittest
 from contextlib import redirect_stdout
 from unittest import mock
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
@@ -11,6 +11,15 @@ def qualified(p):
  # Explicitly synthetic contract evidence, never a real host admission receipt.
  p['originalSccache']['sha256']='f'*64;net='(version 1)(deny network*)'
  return {'evidenceKind':'actual-standard-github-host','platform':'Darwin','arch':'arm64','macOS':'15.8.2','developerDir':A.DEVELOPER,'xcodeVersion':'26.2','CPUs':3,'RAMBytes':7*A.GIB,'scratchFreeBytes':49_422_606_336,'controllerProtected':True,'sdkAndToolsProtectedFromBuildUid':True,'allDeclaredSDKToolBytesHashed':True,'buildUid':4294967294,'buildGid':4294967294,'buildUser':'nobody','runnerUid':501,'sudoDenied':True,'buildUidProcesses':[],'caseSensitiveWorkspace':True,'originalSLATextRetained':True,'SLABodyRootReviewed':True,'tools':{t:{'path':'/usr/bin/'+t} for t in A.TOOLS},'sccache':{'path':'/synthetic/sccache','version':'0.10.0','artifactSHA256':'f'*64,'originalSourceNoticeClosure':True,'MachOArchitecture':'x86_64','stockRosettaRuntimeObserved':True,'stopServerCommandQualified':True},'networkIPCProbeQualified':True,'qualifiedNetworkProfile':net,'operatorQualifiedNetworkProfileSHA256':hashlib.sha256(net.encode()).hexdigest(),'sdkPath':A.DEVELOPER+'/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk'}
+
+def root_owned_descriptor(file):
+ """os.fstat() reporting root ownership for descriptors open on file's current inode only."""
+ original=os.fstat
+ def fstat(fd):
+  s=original(fd);now=os.lstat(file)
+  if (s.st_dev,s.st_ino)!=(now.st_dev,now.st_ino):return s
+  v=list(s);v[4]=0;return os.stat_result(v,{'st_mtime_ns':s.st_mtime_ns,'st_ctime_ns':s.st_ctime_ns})
+ return fstat
 
 class ControlTests(unittest.TestCase):
  def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.p=profile()
@@ -35,19 +44,15 @@ class ControlTests(unittest.TestCase):
   # Physical owner refusal is real under this nonroot test UID.
   if os.getuid()!=0:
    with self.assertRaisesRegex(ValueError,'root-owned'):A.validate_operator_grant(file,'x','p',{'r':'1'},'c','h','a',self.root/'work')
-  original=Path.lstat
-  def fake_lstat(path):
-   s=original(path)
-   if path!=file:return s
-   v=list(s);v[4]=0;return os.stat_result(v)
+  fake_fstat=root_owned_descriptor(file)
   def call():return A.validate_operator_grant(file,hashlib.sha256(file.read_bytes()).hexdigest(),'p',{'r':'1'},'c','h','a',self.root/'work')
-  with mock.patch.object(Path,'lstat',fake_lstat):
+  with mock.patch.object(A.os,'fstat',fake_fstat):
    self.assertEqual(value,call())
    for key,bad in [('MCPOrModelArgumentAuthority',True),('hostReceiptSHA256','other'),('runContext',{'r':'2'}),('archiveMappingSHA256','other'),('workNamespace','/other'),('controllerCodeSHA256','other')]:
     altered={**value,key:bad};file.chmod(0o600);file.write_text(json.dumps(altered));file.chmod(0o400)
     with self.assertRaises(ValueError):call()
   file.chmod(0o600);file.write_text(json.dumps(value));file.chmod(0o444)
-  with mock.patch.object(Path,'lstat',fake_lstat),self.assertRaisesRegex(ValueError,'root-owned'):call()
+  with mock.patch.object(A.os,'fstat',fake_fstat),self.assertRaisesRegex(ValueError,'root-owned'):call()
  def test_sequence_original_retry_order_and_shutdown(self):
   calls=[];slept=[];prepares=[1,2,0]
   def run(args,cwd,seconds):calls.append(args);return prepares.pop(0) if args==['make','prepare'] else 0
@@ -182,10 +187,12 @@ class ControlTests(unittest.TestCase):
 
  def test_frozen_cohort_binding_detects_hash_mode_extra_and_symlink(self):
   root=self.root/'readonly';root.mkdir();code=root/'producer.py';code.write_bytes(b'first-party synthetic code');code.chmod(0o444);manifest=root/'COHORT.json';rows=[{'file':code.name,'bytes':code.stat().st_size,'sha256':hashlib.sha256(code.read_bytes()).hexdigest()}];manifest.write_text(json.dumps(rows));manifest.chmod(0o444);root.chmod(0o555);sha=hashlib.sha256(manifest.read_bytes()).hexdigest();original=Path.stat;original_lstat=Path.lstat
-  def root_owner(s):v=list(s);v[4]=0;return os.stat_result(v)
+  def root_owner(s):v=list(s);v[4]=0;return os.stat_result(v,{'st_mtime_ns':s.st_mtime_ns,'st_ctime_ns':s.st_ctime_ns})
   def fake_stat(p,*args,**kwargs):return root_owner(original(p,*args,**kwargs))
   def fake_lstat(p,*args,**kwargs):return root_owner(original_lstat(p,*args,**kwargs))
-  with mock.patch.object(Path,'stat',fake_stat),mock.patch.object(Path,'lstat',fake_lstat):
+  def fake_fstat(fd):return root_owner(original_fstat(fd))
+  original_fstat=os.fstat
+  with mock.patch.object(Path,'stat',fake_stat),mock.patch.object(Path,'lstat',fake_lstat),mock.patch.object(L.os,'fstat',fake_fstat):
    self.assertEqual(rows,L.verify(root,manifest,sha))
    with self.assertRaisesRegex(ValueError,'manifest hash'):L.verify(root,manifest,'0'*64)
    code.chmod(0o600)
@@ -510,5 +517,134 @@ class ContainerEngineGuard(unittest.TestCase):
    with self.subTest(case=label):self.assertEqual([],engine_literals(source,'.py'))
   for label,source in {'mjs-comment':"// docker is never started here\nconst a = 1;",'mjs-lookalike':"const n = 'dockerfile-9137';",'mjs-quoted-comment':"// 'docker' is documentation\nconst a = 1;",'mjs-block-comment':"/* run `docker rm` by hand */\nconst b = 2;"}.items():
    with self.subTest(case=label):self.assertEqual([],engine_literals(source,'.mjs'))
+
+class SecondOpenSwap:
+ """Every open of a tracked file after its first finds a replacement file there.
+
+ os.open, io.open (pathlib's Path.open and read_bytes) and open_code (source reads
+ by the import system and runpy) are all counted, so code that reopens a path by
+ any of them reads the replacement bytes, not the ones it read first.
+ """
+ def __init__(self,replacements):self.replacements={str(path):body for path,body in replacements.items()};self.opens={key:0 for key in self.replacements};self.patches=[]
+ def note(self,path):
+  if isinstance(path,int):return
+  key=os.fsdecode(os.fspath(path))
+  if key not in self.opens:return
+  self.opens[key]+=1
+  if self.opens[key]==2 and self.replacements[key] is not None:
+   target=Path(key);mode=stat.S_IMODE(os.lstat(key).st_mode);part=target.with_name(target.name+'.replacement-6151')
+   fd=self.real_os_open(str(part),os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+   with os.fdopen(fd,'wb') as stream:stream.write(self.replacements[key])
+   os.chmod(part,mode);os.replace(part,target)
+ def __enter__(self):
+  self.real_os_open=os.open;real_io_open=io.open;real_open_code=_io.open_code
+  def os_open(path,*args,**kwargs):self.note(path);return self.real_os_open(path,*args,**kwargs)
+  def io_open(file,*args,**kwargs):self.note(file);return real_io_open(file,*args,**kwargs)
+  def open_code(path):self.note(path);return real_open_code(path)
+  self.patches=[mock.patch.object(os,'open',os_open),mock.patch.object(io,'open',io_open),mock.patch.object(_io,'open_code',open_code),mock.patch.object(io,'open_code',open_code)]
+  for item in self.patches:item.start()
+  return self
+ def __exit__(self,*args):
+  for item in reversed(self.patches):item.stop()
+
+class InputCustodyTests(unittest.TestCase):
+ """Bytes a grant or pin approves are the bytes used, read through one open."""
+ context={'GITHUB_RUN_ID':'6151','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'b'*40}
+ def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.p=profile()
+ def tearDown(self):
+  if (self.root/'cohort').is_dir():(self.root/'cohort').chmod(0o755)
+  self.temp.cleanup()
+ def producer_inputs(self):
+  host={**qualified(copy.deepcopy(self.p)),'runContext':self.context};files={'profile':(self.root/'profile-6151.json',(HERE/'profile.json').read_bytes()),'host':(self.root/'host-6151.json',json.dumps(host).encode()),'archives':(self.root/'archives-6151.json',json.dumps({'rustc-source198':'/synthetic/source-6151.tar.xz'}).encode())}
+  for path,body in files.values():path.write_bytes(body);path.chmod(0o400)
+  replacements={files['profile'][0]:json.dumps({**self.p,'sourceVersion':'9.99.6151'}).encode(),files['host'][0]:json.dumps({**host,'syntheticReplacement':6151}).encode(),files['archives'][0]:json.dumps({'rustc-source198':'/synthetic/replaced-6151.tar.xz'}).encode()}
+  return files,replacements
+ def run_main(self,files,swap):
+  grants=[];observed=[];work=self.root/'rust198-6151-1-synthetic-custody'
+  argv=['producer.py','observe',str(files['profile'][0]),'--operator-grant',str(self.root/'grant-6151.json'),'--grant-sha256','f'*64,'--host-receipt',str(files['host'][0]),'--archives',str(files['archives'][0]),'--work',str(work)]
+  def observe(p,host,archives,*args):observed.append((p,host,archives));return {}
+  with mock.patch.object(sys,'argv',argv),mock.patch.dict(os.environ,self.context),mock.patch.object(P.os,'getuid',return_value=0),mock.patch.object(P.PL,'require_native_work'),mock.patch.object(P.A,'validate_operator_grant',side_effect=lambda *args:grants.append(args)),mock.patch.object(P,'observe',side_effect=observe),mock.patch.object(P,'finish_private',return_value={'controllerLifecycleComplete':True}),mock.patch.object(P,'enforce_whole_deadline',return_value=signal.getsignal(signal.SIGALRM)),swap:
+   self.assertEqual(0,P.main())
+  return grants,observed
+ def assert_approved_bytes_used(self,files,grants,observed):
+  digest=lambda body:hashlib.sha256(body).hexdigest()
+  self.assertEqual(1,len(grants));_,_,profile_sha,context,code_sha,host_sha,archives_sha,_=grants[0]
+  self.assertEqual((digest(files['profile'][1]),digest(files['host'][1]),digest(files['archives'][1])),(profile_sha,host_sha,archives_sha))
+  self.assertEqual(digest((HERE/'producer.py').read_bytes()),code_sha);self.assertEqual(self.context,context)
+  self.assertEqual([(json.loads(files['profile'][1]),json.loads(files['host'][1]),json.loads(files['archives'][1]))],observed)
+ def test_inputs_replaced_after_their_first_read_never_reach_the_grant_or_observer(self):
+  files,replacements=self.producer_inputs();swap=SecondOpenSwap(replacements)
+  grants,observed=self.run_main(files,swap);self.assert_approved_bytes_used(files,grants,observed)
+  self.assertEqual({str(path):1 for path in replacements},swap.opens)
+ def test_unchanged_inputs_are_hashed_and_used_from_one_read(self):
+  files,replacements=self.producer_inputs();swap=SecondOpenSwap({path:None for path in replacements})
+  grants,observed=self.run_main(files,swap);self.assert_approved_bytes_used(files,grants,observed)
+  self.assertEqual({str(path):1 for path in replacements},swap.opens)
+ def test_linked_or_symlinked_input_is_refused_before_the_grant_is_checked(self):
+  for kind in ['hardlink','symlink']:
+   with self.subTest(kind=kind):
+    files,_=self.producer_inputs();host=files['host'][0]
+    if kind=='hardlink':os.link(host,self.root/'second-name-6151.json')
+    else:moved=self.root/'real-host-6151.json';host.rename(moved);host.symlink_to(moved)
+    try:
+     with self.assertRaisesRegex(ValueError,'^Physical bounded single-link host receipt$'):self.run_main(files,SecondOpenSwap({}))
+    finally:
+     for path in self.root.iterdir():path.unlink()
+ def test_grant_replaced_after_its_ownership_check_is_refused(self):
+  file=self.root/'grant-6151.json';value={'authority':'explicit-reviewed-workflow-startup','profileSHA256':'p','controllerCodeSHA256':'c','runContext':{'r':'6151'},'allowedOperation':'original-rust198-producer','hostReceiptSHA256':'h','archiveMappingSHA256':'a','workNamespace':str(self.root/'work'),'MCPOrModelArgumentAuthority':False}
+  body=json.dumps(value).encode();file.write_bytes(body);file.chmod(0o400);sha=hashlib.sha256(body).hexdigest();granted=os.lstat(file)
+  def root_if_granted(s):
+   if (s.st_dev,s.st_ino)!=(granted.st_dev,granted.st_ino):return s
+   v=list(s);v[4]=0;return os.stat_result(v,{'st_mtime_ns':s.st_mtime_ns,'st_ctime_ns':s.st_ctime_ns})
+  real_fstat=os.fstat;real_lstat=Path.lstat;real_open=os.open;replaced=[]
+  def replace_once():
+   if not replaced:
+    part=self.root/'replacement-6151';part.write_bytes(body);part.chmod(0o400);os.replace(part,file);replaced.append(True)
+  def lstat(path):
+   s=real_lstat(path)
+   if path==file:replace_once()
+   return root_if_granted(s)
+  def opening(path,*args,**kwargs):
+   if os.fspath(path)==str(file):replace_once()
+   return real_open(path,*args,**kwargs)
+  def call():return A.validate_operator_grant(file,sha,'p',{'r':'6151'},'c','h','a',self.root/'work')
+  with mock.patch.object(A.os,'fstat',lambda fd:root_if_granted(real_fstat(fd))):
+   with mock.patch.object(Path,'lstat',lambda path:root_if_granted(real_lstat(path))):self.assertEqual(value,call())
+   self.assertEqual([],replaced)
+   with mock.patch.object(Path,'lstat',lstat),mock.patch.object(A.os,'open',opening),self.assertRaisesRegex(ValueError,'^Physical root-owned startup operator grant required$'):call()
+  self.assertEqual([True],replaced)
+ def test_reused_permission_helper_runs_from_the_bytes_matching_its_pin(self):
+  copied=self.root/'controller';copied.mkdir();original=(HERE/'reused_admission.py').read_bytes();(copied/'reused_admission.py').write_bytes(original)
+  for replacement,expected in [(original+b'\nSWAPPED_6151=True\n',1),(None,1)]:
+   with self.subTest(replaced=replacement is not None):
+    swap=SecondOpenSwap({copied/'reused_admission.py':replacement})
+    with mock.patch.object(H,'HERE',copied),swap:module=H.guard()
+    self.assertFalse(hasattr(module,'SWAPPED_6151'));self.assertEqual({str(copied/'reused_admission.py'):expected},swap.opens);self.assertTrue(callable(module.inspect_as_build))
+    (copied/'reused_admission.py').write_bytes(original)
+ def cohort(self):
+  root=self.root/'cohort';root.mkdir();bodies={'producer.py':b"import hashlib,synthetic_helper_6151 as helper\nraise SystemExit(repr((helper.VALUE,hashlib.sha256(__loader__.get_data(__file__)).hexdigest())))\n",'synthetic_helper_6151.py':b"VALUE='verified-6151'\n"}
+  for name,body in bodies.items():(root/name).write_bytes(body);(root/name).chmod(0o444)
+  manifest=root/'COHORT.json';manifest.write_text(json.dumps([{'file':name,'bytes':len(body),'sha256':hashlib.sha256(body).hexdigest()} for name,body in bodies.items()]));manifest.chmod(0o444);root.chmod(0o555);return root,manifest,bodies
+ def root_owned(self):
+  def owner(s):v=list(s);v[4]=0;return os.stat_result(v,{'st_mtime_ns':s.st_mtime_ns,'st_ctime_ns':s.st_ctime_ns})
+  real_stat,real_lstat,real_fstat=Path.stat,Path.lstat,os.fstat
+  return [mock.patch.object(Path,'stat',lambda p,*a,**k:owner(real_stat(p,*a,**k))),mock.patch.object(Path,'lstat',lambda p,*a,**k:owner(real_lstat(p,*a,**k))),mock.patch.object(L.os,'fstat',lambda fd:owner(real_fstat(fd)))]
+ def test_launch_runs_the_verified_cohort_bytes_after_the_files_are_replaced(self):
+  root,manifest,bodies=self.cohort();verified={}
+  with contextlib.ExitStack() as stack:
+   for item in self.root_owned():stack.enter_context(item)
+   L.verify(root,manifest,hashlib.sha256(manifest.read_bytes()).hexdigest(),verified)
+  self.assertEqual(bodies,verified)
+  root.chmod(0o755)
+  for name in bodies:(root/name).chmod(0o644);(root/name).write_bytes(b"VALUE='replaced-6151'\nraise SystemExit('replaced-6151')\n")
+  swap=SecondOpenSwap({root/name:None for name in bodies})
+  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),swap:
+   with self.assertRaises(SystemExit) as raised:L.run_verified(root,verified,['observe'])
+  self.assertEqual(repr(('verified-6151',hashlib.sha256(bodies['producer.py']).hexdigest())),raised.exception.code)
+  self.assertEqual({str(root/name):0 for name in bodies},swap.opens)
+ def test_launch_refuses_a_cohort_module_imported_before_verification(self):
+  root,manifest,bodies=self.cohort();stale=types.ModuleType('synthetic_helper_6151');stale.VALUE='unverified-6151'
+  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules,{'synthetic_helper_6151':stale}):
+   with self.assertRaisesRegex(ValueError,'^Controller module imported before cohort verification$'):L.run_verified(root,bodies,['observe'])
 
 if __name__=='__main__':unittest.main()

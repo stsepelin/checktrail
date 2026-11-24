@@ -2,8 +2,9 @@
 Imports and plan validation execute no archive, SDK or upstream source code.
 """
 from pathlib import Path
-import hashlib,importlib.util,json,os,posixpath,shutil,stat,sys,time
-HERE=Path(__file__).resolve().parent
+import hashlib,io,json,os,posixpath,shutil,stat,sys,time,types
+HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
+from admission import read_once
 REUSE={'inventory.py':'509f0ef56d388777b8ded23d5285064e12c0780cd2eb02a0015616dd93629727','common.py':'c7d863cf1502600b11754d9d5aed90511481a6959f2a4d3b4a68ad3616eee72f','POLICY.json':'b9d8b09325cf578f618adeb896eff7f66c7f1dd15fb24b789a9a8144f9880fe5'}
 def need(v,m):
  if not v:raise ValueError(m)
@@ -12,14 +13,28 @@ def digest(file):
  with file.open('rb') as f:
   for b in iter(lambda:f.read(65536),b''):n+=len(b);h.update(b)
  return n,h.hexdigest()
+REUSE_BYTES=1024**2
+def verified_module(name,file,body):
+ module=types.ModuleType(name);module.__file__=str(file);module.__verifiedSHA256__=hashlib.sha256(body).hexdigest();exec(compile(body,str(file),'exec'),module.__dict__);return module
 def primitives():
- root=HERE/'reused-inventory'
- for name,sha in REUSE.items():need(digest(root/name)[1]==sha,'Reviewed bounded primitive bytes changed')
- if 'common' in sys.modules:need(Path(sys.modules['common'].__file__).resolve()==root/'common.py','Wrong cached common module')
- spec=importlib.util.spec_from_file_location('rust_producer_bounded_tar',root/'inventory.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
+ # The reviewed modules run from the bytes that matched their pins, never from a reopened path.
+ root=HERE/'reused-inventory';bodies={}
+ for name,sha in REUSE.items():bodies[name]=read_once(root/name,REUSE_BYTES,'Reviewed bounded primitive file')[0];need(hashlib.sha256(bodies[name]).hexdigest()==sha,'Reviewed bounded primitive bytes changed')
+ if 'common' in sys.modules:need(getattr(sys.modules['common'],'__verifiedSHA256__',None)==REUSE['common.py'] and Path(sys.modules['common'].__file__)==root/'common.py','Wrong cached common module')
+ else:sys.modules['common']=verified_module('common',root/'common.py',bodies['common.py'])
+ module=verified_module('rust_producer_bounded_tar',root/'inventory.py',bodies['inventory.py'])
+ # inventory.py reads POLICY.json itself at import; that read must give the pinned policy.
+ need(module.METADATA==set(json.loads(bodies['POLICY.json'])['sourceMetadataPaths']),'Reviewed bounded primitive bytes changed');return module
 
 def safe(path):
  need(isinstance(path,str) and path and len(path.encode())<=2048 and all(ord(c)>=32 and ord(c)!=127 for c in path) and not path.startswith('/') and '\\' not in path and all(x not in ('','.','..') for x in path.split('/')),'Canonical source relative path');return path
+
+class HeldArchive:
+ """An archive read once and matched to its pin; every pass reads these same bytes."""
+ def __init__(self,body):self.body=body
+ def open(self,mode='rb'):need(mode=='rb','Read-only held archive');return io.BytesIO(self.body)
+def held_archive(path,pin,refusal):
+ body=read_once(Path(path),pin['bytes'],refusal)[0];need((len(body),hashlib.sha256(body).hexdigest())==(pin['bytes'],pin['sha256']),refusal);return body
 
 def target(path,link):
  need(isinstance(link,str) and link and len(link.encode())<=2048 and all(ord(c)>=32 and ord(c)!=127 for c in link) and not link.startswith('/') and '\\' not in link,'Relative original link required');value=posixpath.normpath(posixpath.join(posixpath.dirname(path),link));need(value!='..' and not value.startswith('../') and value!='.','Original link leaves source root');return safe(value)
@@ -59,14 +74,14 @@ def source_pass(archive,prefix,I,budget,consume):
 
 def materialize(source_pin,cache_pins,archives,destination,limits,I=None):
  """Future operator-only call; tests pass only synthetic generated archive bodies."""
- started=time.monotonic();limits={**limits,'materializationCapacityRoots':[destination.parent,destination.parent.parent]};deadline=started+limits['materializationSeconds'];I=I or primitives();need(not os.path.lexists(destination),'Fresh source destination');need(destination.parent==destination.parent.resolve(strict=True),'Physical owned materialization parents');shared={'decoded':0};source=Path(archives[source_pin['id']]);need(digest(source)==(source_pin['bytes'],source_pin['sha256']),'Original source archive pin');records=[]
+ started=time.monotonic();limits={**limits,'materializationCapacityRoots':[destination.parent,destination.parent.parent]};deadline=started+limits['materializationSeconds'];I=I or primitives();need(not os.path.lexists(destination),'Fresh source destination');need(destination.parent==destination.parent.resolve(strict=True),'Physical owned materialization parents');shared={'decoded':0};source=HeldArchive(held_archive(archives[source_pin['id']],source_pin,'Original source archive pin'));records=[]
  def screen(row,chunks):
   h=hashlib.sha256()
   for b in chunks:h.update(b)
   if row['type']=='regular':row['sha256']=h.hexdigest()
   records.append(row)
  root_mode=source_pass(source,source_pin['prefix'],I,PassBudget(shared,deadline,limits),screen);by=validate_layout(records);index=(json.dumps(records,sort_keys=True,separators=(',',':'))+'\n').encode();need(len(index)<=limits['materializationIndexBytes'],'Original member-map byte ceiling');payload=sum(r['bytes'] for r in records if r['type']=='regular');cache_total=sum(p['bytes'] for p in cache_pins);reserved=payload+cache_total+len(index)+65536;need(reserved<=limits['materializationFileAndIndexBytes'],'All source/cache/map logical file bytes reserved before writes');need(not any(p=='build' or p.startswith('build/') for p in by),'Original archive overlaps bootstrap build/cache namespace')
- for pin in cache_pins:need(digest(Path(archives[pin['id']]))==(pin['bytes'],pin['sha256']),'Original bootstrap cache pin')
+ caches={pin['id']:held_archive(archives[pin['id']],pin,'Original bootstrap cache pin') for pin in cache_pins}
  temp=destination.with_name(destination.name+'.unaccepted');need(not os.path.lexists(temp),'Preserve previous materialization failure');temp.mkdir(mode=0o700);tree=temp/'source';tree.mkdir(mode=0o700);meta=temp/'control';meta.mkdir(mode=0o700);seen=set()
  try:
   for row in sorted(records,key=lambda r:(r['path'].count('/'),r['path'])):
@@ -86,9 +101,9 @@ def materialize(source_pin,cache_pins,archives,destination,limits,I=None):
   tree.chmod(root_mode);cache=tree/'build/cache/2026-07-16';cache.mkdir(parents=True,mode=0o700)
   for pin in cache_pins:
    filename=pin['originalURL'].rsplit('/',1)[-1];safe(filename);out=cache/filename
-   with Path(archives[pin['id']]).open('rb') as src,out.open('xb') as sink:shutil.copyfileobj(src,sink,65536)
+   with out.open('xb') as sink:need(sink.write(caches[pin['id']])==pin['bytes'],'Complete reserved bootstrap cache write')
    need(digest(out)==(pin['bytes'],pin['sha256']),'Unchanged original bootstrap working-cache copy');out.chmod(0o444)
-  need(digest(source)==(source_pin['bytes'],source_pin['sha256']),'Original archive changed during materialization');need(time.monotonic()<deadline,'Late materialization refused');mapfile=meta/'original-source-members.json';need(not mapfile.exists(),'Fresh protected original member map');mapfile.write_bytes(index);mapfile.chmod(0o444);os.rename(temp,destination)
+  need(time.monotonic()<deadline,'Late materialization refused');mapfile=meta/'original-source-members.json';need(not mapfile.exists(),'Fresh protected original member map');mapfile.write_bytes(index);mapfile.chmod(0o444);os.rename(temp,destination)
  except BaseException:
   # Root-owned private unaccepted tree is retained as failure evidence; never activated as final workspace.
   raise

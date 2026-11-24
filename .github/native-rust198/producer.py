@@ -171,10 +171,20 @@ def enforce_whole_deadline(seconds):
  def elapsed(_signal,_frame):raise WholeDeadline('Whole original producer wall-clock deadline')
  previous=signal.signal(signal.SIGALRM,elapsed);signal.setitimer(signal.ITIMER_REAL,seconds);return previous
 
+PROFILE_BYTES=1024**2
+HOST_RECEIPT_BYTES=16*1024**2
+ARCHIVE_MAPPING_BYTES=64*1024
+def controller_code():
+ # launch.py runs this module through a loader that returns the bytes it verified.
+ return __loader__.get_data(__file__)
+
 def main():
- parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('mode',choices=['plan','observe']);parser.add_argument('profile');parser.add_argument('--operator-grant');parser.add_argument('--grant-sha256');parser.add_argument('--host-receipt');parser.add_argument('--archives');parser.add_argument('--work');args=parser.parse_args();profile_file=Path(args.profile);p=json.loads(profile_file.read_bytes());validate_profile(p)
+ parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('mode',choices=['plan','observe']);parser.add_argument('profile');parser.add_argument('--operator-grant');parser.add_argument('--grant-sha256');parser.add_argument('--host-receipt');parser.add_argument('--archives');parser.add_argument('--work');args=parser.parse_args();profile_body,_=A.read_once(Path(args.profile),PROFILE_BYTES,'Physical bounded single-link profile');p=json.loads(profile_body);validate_profile(p)
  if args.mode=='plan':print(json.dumps({'profileValidated':True,'nativeExecutionGranted':False,'originalCommands':[p['configure'],p['prepare'],p['dist']],'unassessed':['SDK262/SLA/toolphysicalprotection','sourcecasevolume','originalsccache/Rosetta/IPC','buildmemory/disk/time/capturefit'],'anySDKOrSourceExecuted':False}));return 0
- need(os.getuid()==0 and all([args.operator_grant,args.grant_sha256,args.host_receipt,args.archives,args.work]),'Explicit root startup grant/host/archive/work inputs required');context={k:os.environ.get(k,'') for k in ['GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_SHA']};need(all(context.values()),'Actual hosted run context');PL.require_native_work(context,HERE,Path(args.work));A.validate_operator_grant(Path(args.operator_grant),args.grant_sha256,hashlib.sha256(profile_file.read_bytes()).hexdigest(),context,hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),hashlib.sha256(Path(args.host_receipt).read_bytes()).hexdigest(),hashlib.sha256(Path(args.archives).read_bytes()).hexdigest(),Path(args.work));host=json.loads(Path(args.host_receipt).read_bytes());need(host['runContext']==context,'Fresh same-run host receipt');archives=json.loads(Path(args.archives).read_bytes());work=Path(args.work);ops=Operations(p);previous=enforce_whole_deadline(p['bounds']['wholeSeconds'])
+ need(os.getuid()==0 and all([args.operator_grant,args.grant_sha256,args.host_receipt,args.archives,args.work]),'Explicit root startup grant/host/archive/work inputs required');context={k:os.environ.get(k,'') for k in ['GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_SHA']};need(all(context.values()),'Actual hosted run context');PL.require_native_work(context,HERE,Path(args.work))
+ # Each input the grant binds is read once; its hash and the value used come from those bytes.
+ host_body,_=A.read_once(Path(args.host_receipt),HOST_RECEIPT_BYTES,'Physical bounded single-link host receipt');archives_body,_=A.read_once(Path(args.archives),ARCHIVE_MAPPING_BYTES,'Physical bounded single-link archive mapping')
+ A.validate_operator_grant(Path(args.operator_grant),args.grant_sha256,hashlib.sha256(profile_body).hexdigest(),context,hashlib.sha256(controller_code()).hexdigest(),hashlib.sha256(host_body).hexdigest(),hashlib.sha256(archives_body).hexdigest(),Path(args.work));host=json.loads(host_body);need(host['runContext']==context,'Fresh same-run host receipt');archives=json.loads(archives_body);work=Path(args.work);ops=Operations(p);previous=enforce_whole_deadline(p['bounds']['wholeSeconds'])
  try:
   result=observe(p,host,archives,work,context,ops);lifecycle=finish_private(p,result,work,context,host,ops);return 0 if lifecycle['controllerLifecycleComplete'] else 1
  finally:signal.setitimer(signal.ITIMER_REAL,0);signal.signal(signal.SIGALRM,previous)

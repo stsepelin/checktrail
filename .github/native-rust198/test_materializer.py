@@ -1,7 +1,9 @@
-import hashlib,importlib.util,io,json,lzma,os,tarfile,tempfile,unittest
+import hashlib,importlib.util,io,json,lzma,os,shutil,sys,tarfile,tempfile,unittest
 from pathlib import Path
 from unittest.mock import patch
-HERE=Path(__file__).resolve().parent;s=importlib.util.spec_from_file_location('producer_materializer',HERE/'materializer.py');M=importlib.util.module_from_spec(s);s.loader.exec_module(M)
+HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
+from test_controller import SecondOpenSwap
+s=importlib.util.spec_from_file_location('producer_materializer',HERE/'materializer.py');M=importlib.util.module_from_spec(s);s.loader.exec_module(M)
 class Controls(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory(prefix='synthetic-rust-producer-');self.root=Path(self.tmp.name).resolve();self.limits={'materializationSeconds':30,'materializationDecodedBytes':1024**2,'materializationMembersPerPass':100,'materializationFileAndIndexBytes':1024**2,'materializationIndexBytes':65536};self.I=M.primitives()
@@ -61,4 +63,47 @@ class Controls(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'file changed'):M.original_frame_matches(source,records)
   (source/'version').write_bytes(b'1.98.0 synthetic');(source/'src/item.rs').unlink();(source/'src').rmdir();os.symlink(self.root,source/'src')
   with self.assertRaisesRegex(ValueError,'directory changed'):M.original_frame_matches(source,records)
+ def replaced_source(self):
+  stream=io.BytesIO()
+  with tarfile.open(fileobj=stream,mode='w',format=tarfile.USTAR_FORMAT) as tar:
+   for name in ['source','source/src']:
+    x=tarfile.TarInfo(name);x.type=tarfile.DIRTYPE;x.mode=0o755;tar.addfile(x)
+   for name,body,mode in [('source/version',b'9.99.6151 replaced',0o644),('source/src/item.rs',b'replaced inert fixture 6151',0o644),('source/x.py',b'# replaced fixture 6151\n',0o755)]:
+    x=tarfile.TarInfo(name);x.size=len(body);x.mode=mode;tar.addfile(x,io.BytesIO(body))
+  return lzma.compress(stream.getvalue())
+ def test_archives_replaced_after_their_pin_check_are_never_read_again(self):
+  a,b,archives=self.fixture();swap=SecondOpenSwap({archives['source']:self.replaced_source(),archives['cache']:b'replaced opaque bootstrap cache 6151'})
+  with swap:result=self.invoke((a,b,archives))
+  source=Path(result['source']);self.assertEqual(b'1.98.0 synthetic',(source/'version').read_bytes());self.assertEqual(b'synthetic inert fixture bytes',(source/'src/item.rs').read_bytes())
+  self.assertEqual(b'synthetic opaque bootstrap cache',(source/'build/cache/2026-07-16/cargo-synthetic.tar.xz').read_bytes());self.assertEqual({archives['source']:1,archives['cache']:1},swap.opens)
+ def test_unchanged_archives_are_read_once_each(self):
+  a,b,archives=self.fixture();swap=SecondOpenSwap({archives['source']:None,archives['cache']:None})
+  with swap:result=self.invoke((a,b,archives))
+  self.assertTrue(result['completeSourceMaterialization']);self.assertEqual({archives['source']:1,archives['cache']:1},swap.opens)
+ def test_second_link_to_a_pinned_archive_is_refused_before_any_bundle_write(self):
+  for key,message in [('source','source archive pin'),('cache','cache pin')]:
+   with self.subTest(archive=key):
+    a,b,archives=self.fixture();os.link(archives[key],self.root/'second-name-6151')
+    try:
+     with self.assertRaisesRegex(ValueError,message):self.invoke((a,b,archives))
+    finally:os.unlink(self.root/'second-name-6151')
+    self.assertFalse((self.root/'payload').exists());self.assertFalse((self.root/'payload.unaccepted').exists())
+ def reused_copy(self):
+  copied=self.root/'reused-inventory';shutil.copytree(HERE/'reused-inventory',copied);return {name:copied/name for name in M.REUSE}
+ def load_copied_primitives(self,swap):
+  with patch.object(M,'HERE',self.root),patch.object(sys,'path',list(sys.path)),patch.dict(sys.modules),swap:
+   sys.modules.pop('common',None);module=M.primitives();return module,sys.modules['common']
+ def test_reused_primitives_run_from_the_bytes_matching_their_pins(self):
+  files=self.reused_copy();swap=SecondOpenSwap({files[name]:files[name].read_bytes()+b'\nSWAPPED_6151=True\n' for name in ['inventory.py','common.py']})
+  module,common=self.load_copied_primitives(swap)
+  self.assertFalse(hasattr(module,'SWAPPED_6151'));self.assertFalse(hasattr(common,'SWAPPED_6151'));self.assertEqual({str(files['inventory.py']):1,str(files['common.py']):1},swap.opens)
+ def test_reused_policy_replaced_before_the_inventory_reads_it_is_refused(self):
+  files=self.reused_copy();policy=json.loads(files['POLICY.json'].read_bytes());policy['sourceMetadataPaths']=['replaced-6151']
+  with self.assertRaisesRegex(ValueError,'^Reviewed bounded primitive bytes changed$'):self.load_copied_primitives(SecondOpenSwap({files['POLICY.json']:json.dumps(policy).encode()}))
+ def test_unchanged_reused_primitives_load_with_the_pinned_policy(self):
+  files=self.reused_copy();swap=SecondOpenSwap({path:None for path in files.values()})
+  module,common=self.load_copied_primitives(swap)
+  self.assertEqual(set(json.loads(files['POLICY.json'].read_bytes())['sourceMetadataPaths']),module.METADATA);self.assertEqual(M.REUSE['common.py'],common.__verifiedSHA256__)
+  # inventory.py reads POLICY.json itself at import; that second read is compared with the pinned one.
+  self.assertEqual({str(files['inventory.py']):1,str(files['common.py']):1,str(files['POLICY.json']):2},swap.opens)
 if __name__=='__main__':unittest.main()
