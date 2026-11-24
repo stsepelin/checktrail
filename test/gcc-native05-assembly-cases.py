@@ -24,6 +24,12 @@ def captured(root):
   'native05Evidence':result['native05Evidence'],'sourceServiceContext':{'GITHUB_SHA':HEAD}}
  return args,scope,result,root_record
 
+def without_package_pin(root):
+ # A v2/v3 writer refused any state whose predecessor package inventory digest
+ # was also an SDK pin, so its descriptors never carry that pin.
+ value=copy.deepcopy(root);row={'bytes':len(fixture.PACKAGES),'sha256':hashlib.sha256(fixture.PACKAGES).hexdigest()}
+ value['native05Evidence']['excludedNewSdkBodyPins'].remove(row);return value
+
 class FixedComposition(unittest.TestCase):
  def test_original_constructor_then_actual_reader_then_authenticated_baseline(self):
   with tempfile.TemporaryDirectory() as td:
@@ -116,6 +122,18 @@ class FixedComposition(unittest.TestCase):
    original.write_bytes(fixture.PACKAGES);V.validate_checkpoint(restored,root,deadline=time.monotonic()+30)
    other=copy.deepcopy(root);other['binding']['packageInventorySha256']=hashlib.sha256(b'another synthetic predecessor').hexdigest()
    with self.assertRaisesRegex(ValueError,'package inventory bytes changed'):V.validate_checkpoint(restored,other,deadline=time.monotonic()+30)
+   unpinned=without_package_pin(root)
+   with self.assertRaisesRegex(ValueError,'must pin the reconstructed predecessor package inventory'):
+    V.validate_checkpoint(restored,unpinned,deadline=time.monotonic()+30)
+   # Historical profiles keep their original rules: only the configure baseline
+   # is exempt, so a pinned inventory digest refuses even at the predecessor path.
+   for profile,policy in [(V.V3_PROFILE,V.V3_SDK_POLICY_SHA256),(V.V2_PROFILE,V.V2_SDK_POLICY_SHA256)]:
+    with self.subTest(profile=profile):
+     pinned=copy.deepcopy(root);pinned['native05EvidenceProfile']=profile;pinned['native05Evidence']['profile']=profile
+     pinned['native05Evidence']['historicalSdkSubaction']['receipt']['sourcePolicySha256']=policy
+     with self.assertRaisesRegex(ValueError,'Relabelled NEW SDK body'):V.validate_checkpoint(restored,pinned,deadline=time.monotonic()+30)
+     historical=without_package_pin(pinned);historical['binding']['packageInventorySha256']=hashlib.sha256(b'unchecked by v2/v3').hexdigest()
+     self.assertEqual(V.validate_checkpoint(restored,historical,deadline=time.monotonic()+30)['profile'],profile)
 
  def test_restored_reader_rejects_relabelled_sdk_body_even_with_updated_main_inventory(self):
   with tempfile.TemporaryDirectory() as td:
@@ -173,7 +191,7 @@ class FixedComposition(unittest.TestCase):
  def test_historical_v2_keeps_v4_policy_and_cross_version_bindings_refuse(self):
   with tempfile.TemporaryDirectory() as td:
    args,scope,result,root=captured(Path(td).resolve())
-   old=copy.deepcopy(root);old['native05EvidenceProfile']=V.V2_PROFILE
+   old=without_package_pin(root);old['native05EvidenceProfile']=V.V2_PROFILE
    old['native05Evidence']['profile']=V.V2_PROFILE
    old['native05Evidence']['historicalSdkSubaction']['receipt']['sourcePolicySha256']=V.V2_SDK_POLICY_SHA256
    self.assertEqual(V.validate_checkpoint(args[0]/'state',old,deadline=time.monotonic()+30)['profile'],V.V2_PROFILE)
@@ -193,7 +211,8 @@ class FixedComposition(unittest.TestCase):
    self.assertEqual(root['native05Evidence']['profile'],V.PROFILE)
    self.assertEqual(V.validate_checkpoint(state,root,deadline=time.monotonic()+30)['profile'],V.PROFILE)
    def relabel(outer,inner,policy):
-    value=copy.deepcopy(root);value['native05EvidenceProfile']=outer;value['native05Evidence']['profile']=inner
+    value=copy.deepcopy(root) if inner==V.PROFILE else without_package_pin(root)
+    value['native05EvidenceProfile']=outer;value['native05Evidence']['profile']=inner
     value['native05Evidence']['historicalSdkSubaction']['receipt']['sourcePolicySha256']=policy;return value
    v3=relabel(V.V3_PROFILE,V.V3_PROFILE,V.V3_SDK_POLICY_SHA256)
    self.assertEqual(V.validate_checkpoint(state,v3,deadline=time.monotonic()+30)['profile'],V.V3_PROFILE)

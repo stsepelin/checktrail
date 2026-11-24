@@ -133,7 +133,15 @@ def data(path,maximum=MAX_DESCRIPTOR):
 def inspect_v2(state,value,head,*,deadline,package_inventory_sha256):
  value=validate_descriptor(value,head);state=h.physical(Path(state))
  require(scope.historical_baseline(state)==value['historicalConfigureBaseline'],'Restored historical baseline differs')
- scope.historical_package_inventory(state,package_inventory_sha256)
+ exempt={scope.BASELINE}
+ if value['profile']==PROFILE:
+  # Historical profiles keep their original single exception. A v4 writer
+  # always pins the reconstructed inventory, so its path exception is only
+  # sound while the same digest stays a refused pin everywhere else.
+  packages=scope.historical_package_inventory(state,package_inventory_sha256)
+  require({'bytes':packages['bytes'],'sha256':packages['sha256']} in value['excludedNewSdkBodyPins'],
+          'V4 descriptor must pin the reconstructed predecessor package inventory')
+  exempt.add(scope.PACKAGE_INVENTORY)
  for relative in scope.FORBIDDEN_STATE_PATHS:
   require(not os.path.lexists(state/relative),'V2 checkpoint contains old/new SDK exporter directories')
  evidence=h.physical(state/EVIDENCE)
@@ -156,7 +164,7 @@ def inspect_v2(state,value,head,*,deadline,package_inventory_sha256):
   info=path.lstat()
   if not stat.S_ISREG(info.st_mode):continue # Full codec still validates tree/link semantics.
   # Explicit historical exceptions only, each bound to its predecessor bytes above.
-  if path.relative_to(state).as_posix() in (scope.BASELINE,scope.PACKAGE_INVENTORY):continue
+  if path.relative_to(state).as_posix() in exempt:continue
   if info.st_size in sizes:
    row=scope.physical_file(path,512*1024**2,unique=False);compared+=1
    require((row['bytes'],row['sha256']) not in pins,'Relabelled NEW SDK body in v2 checkpoint')
