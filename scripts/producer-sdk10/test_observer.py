@@ -216,6 +216,32 @@ class ObserverControls(unittest.TestCase):
     record=common.read_json(evidence/'POST-BUILD-SDK-OUTPUTS.json');self.assertTrue((evidence/'PRE-TEST-OUTPUT-IDENTITIES.json').exists())
     self.assertEqual(record['outputInventoryComplete'],not linked);self.assertEqual([x['path'] for x in record['candidates']],[] if linked else [str(archive)])
 
+ def test_unobservable_pre_test_report_records_an_incomplete_snapshot_and_the_tests_start(self):
+  # A report the inventory refuses (a symlink, or over the size bound) must
+  # leave an incomplete pre-test snapshot rather than stop the before-test
+  # observer; a fresh passing report written afterwards then earns no credit.
+  # The controls run under a 4 MiB file-size limit, so the 32 MiB report
+  # bound is lowered to 7741 bytes here and the oversized report exceeds that.
+  passed={'originalCodeExecuted':True,'exitCode':0,'stopReason':None};real=observer.file_identity
+  def bounded(path,maximum=256*1024**2,deadline=None):
+   self.assertEqual(maximum,32*1024**2);return real(path,7741,deadline)
+  for case in ['symlink','oversized','regular']:
+   with self.subTest(case=case):
+    base=Path(tempfile.mkdtemp(dir=self.root));evidence=base/'evidence';staging=base/'staging';source=base/'source';results=source/'artifacts/TestResults'
+    for folder in [evidence,staging,results]:folder.mkdir(parents=True)
+    target=base/'outside-7741.trx';target.write_bytes(b'<testsuite tests="1"><testcase name="outside-7741"/></testsuite>');bad=results/'left-by-build-7741.trx'
+    if case=='symlink':bad.symlink_to(target)
+    elif case=='oversized':
+     bad.write_bytes(b'<testsuite tests="1"><testcase name="oversized-7741"/></testsuite>'+b' '*7741)
+    else:bad.write_bytes(target.read_bytes())
+    common.freeze(evidence/'original-build-TERMINAL.json',common.encoded({'originalCodeExecuted':True,'exitCode':0,'stopReason':None}))
+    with mock.patch.object(observer,'SDK_OUTPUT_ROOTS',[str(staging)]),mock.patch.object(observer,'SOURCE_ROOT',str(source)),mock.patch.object(observer,'file_identity',side_effect=bounded):observer.phase('before-test',{'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'},evidence,time.monotonic()+10)
+    before=common.read_json(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json');self.assertIs(before['snapshotComplete'],case=='regular')
+    self.assertEqual(before.get('errorType'),None if case=='regular' else 'Refusal');self.assertEqual(list(before['entries']),[str(bad)] if case=='regular' else [])
+    if case!='regular':bad.unlink()
+    (results/'fresh-7741.trx').write_bytes(b'<testsuite tests="1"><testcase name="fresh-after-tests-7741"/></testsuite>')
+    row=known_baseline(str(source),time.monotonic()+10,before=before,original_test=passed)
+    self.assertIs(row['allCreditedFreshTestsPassed'],case=='regular');self.assertEqual([x['changedSinceProtectedPreTestSnapshot'] for x in row['reports'] if x['path'].endswith('fresh-7741.trx')],[case=='regular'])
  def test_unobservable_final_sdk_tree_is_incomplete_without_custody_and_does_not_stop_the_observer(self):
   # A symlink with an archive name is refused by the inventory. The final scan
   # must record that, not raise: the after-observer gates stopped capture.

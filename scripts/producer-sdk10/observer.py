@@ -344,11 +344,20 @@ def after(profile,evidence,deadline,test_started_wall=None):
  observe('ACTUAL-CMAKE-COMPILER-SELECTION.json',lambda:{'records':cmake_records(SOURCE_ROOT,deadline),'packageLabelsAloneAreExecutionEvidence':False})
  observe('ORIGINAL-NATURAL-TEST-REPORTS.json',lambda:reports(SOURCE_ROOT,deadline,{x['path'] for x in before['entries']} if before else (),test_started_wall,optional_json(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-tests-TERMINAL.json'),tracked_content_identities(before)))
  observe('FRESH-SELECTED-SDK-OUTPUTS.json',lambda:build_sdk_outputs(SDK_OUTPUT_ROOTS,profile,deadline,evidence))
+def pre_test_reports(deadline):
+ """The pre-test report snapshot, recorded incomplete when a report cannot be observed.
+
+ A symlinked or oversized report left by the build must not keep the tests
+ from starting. prior_identities() attributes nothing to an incomplete
+ snapshot, so no report then earns credit.
+ """
+ try:return output_inventory([SOURCE_ROOT],deadline,'test-reports')
+ except UNOBSERVABLE as error:return {'schemaVersion':2,'kind':'test-reports','roots':[str(pathlib.Path(SOURCE_ROOT).absolute())],'snapshotComplete':False,'unlistedDirectories':[],'unlistedDirectoryCount':0,'createdBeforeOriginalCommand':True,'identityPolicy':'regular-no-symlinks-content-sha256-before-command','entries':{},'state':'INCOMPLETE pre-test report inventory; no report credit','errorType':type(error).__name__}
 def phase(mode,profile,evidence,deadline,test_started_wall=None):
  evidence=pathlib.Path(evidence)
  if mode=='probe':image_probe(profile,evidence)
  elif mode=='before-build':freeze(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json',encoded(output_inventory(SDK_OUTPUT_ROOTS,deadline,'sdk-archives')))
- elif mode=='before-test':post_build_sdks(SDK_OUTPUT_ROOTS,profile,deadline,evidence);freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',encoded(output_inventory([SOURCE_ROOT],deadline,'test-reports')))
+ elif mode=='before-test':post_build_sdks(SDK_OUTPUT_ROOTS,profile,deadline,evidence);freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',encoded(pre_test_reports(deadline)))
  else:need(mode=='after','known observer phase');after(profile,evidence,deadline,test_started_wall)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('mode',choices=['probe','before-build','before-test','after']);p.add_argument('--profile',required=True);p.add_argument('--evidence',required=True);p.add_argument('--deadline',type=float,required=True);p.add_argument('--uid',type=int,required=True);p.add_argument('--gid',type=int,required=True);p.add_argument('--test-start-wall',type=float);a=p.parse_args();profile=read_json(a.profile)

@@ -66,9 +66,9 @@
       "sha256": "61710f1d67c1765b9e802b1d7fadfe13fd465afa1db23a91350f01b0dce632be"
     },
     {
-      "bytes": 36093,
+      "bytes": 36871,
       "path": "observer.py",
-      "sha256": "703ad3cefc34631469f5867625c30378066b7790450ef8c56509fb7d02c321d2"
+      "sha256": "2bbd618df7e73b4b8934da704e5f9faabfa2d096da5970657c76f9b983f33366"
     },
     {
       "bytes": 56760,
@@ -91,9 +91,9 @@
       "sha256": "76d80de4524662181c408537fadc600e88cb8dab520169a412fffced80958eb9"
     },
     {
-      "bytes": 46841,
+      "bytes": 49437,
       "path": "test_observer.py",
-      "sha256": "562352af55d40a8259238e1b196b9c99d4d473948b9a39609a8fa408da8b8ccb"
+      "sha256": "48d0651fd694772fc8ac403cdfd5ed5f5c2917390517606a769764f7aca6b309"
     },
     {
       "bytes": 28903,
