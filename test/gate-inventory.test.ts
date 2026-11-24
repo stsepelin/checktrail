@@ -271,10 +271,8 @@ test("finite inventory does not count a callback filed under another profile as 
   const result = await audit(root);
   assert.equal(result.code, 0, result.stderr);
   const after = JSON.parse(result.stdout);
-  assert.equal(
-    after.selectedCaseBindings.casesInSharedManifest,
-    baseline.selectedCaseBindings.casesInSharedManifest - 9,
-  );
+  // The legacy visibility report still finds the callback in another profile.
+  assert.deepEqual(after.selectedCaseBindings, baseline.selectedCaseBindings);
   assert.equal(
     after.controllerCaseBindings.declaredFileBindings,
     baseline.controllerCaseBindings.declaredFileBindings - 9,
@@ -509,4 +507,8 @@ test("finite inventory strict freeze refuses unresolved case bindings even when 
   const aggregate = await audit(root, true);
   assert.equal(aggregate.code, 0, aggregate.stderr);
   assert.deepEqual(unresolvedAddresses(aggregate.stdout), []);
+  assert.deepEqual(
+    JSON.parse(aggregate.stdout).selectedCaseBindings,
+    JSON.parse(complete.stdout).selectedCaseBindings,
+  );
 });

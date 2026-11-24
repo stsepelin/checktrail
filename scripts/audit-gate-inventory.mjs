@@ -293,9 +293,11 @@ try {
       "Selection metadata cannot assert acceptance or quality",
     );
   // These are declaration counts, separate from execution and acceptance.
-  // A case is addressed by its owning profile key as well as file and name.
-  // Occurrences are counted: the native runner refuses a repeated address.
+  // Controller bindings address a case by its owning profile key as well as
+  // file and name, and count occurrences: the native runner refuses a repeated
+  // address. The legacy visibility report matches file and name in any profile.
   const sharedCases = new Map();
+  const visibleCases = new Set();
   for (const [owner, rows] of Object.entries(current)) {
     assert.ok(
       Array.isArray(rows),
@@ -324,15 +326,14 @@ try {
       );
       const address = canonical([owner, row.file, row.name]);
       sharedCases.set(address, (sharedCases.get(address) ?? 0) + 1);
+      visibleCases.add(canonical([row.file, row.name]));
     }
   }
   let casesInSharedManifest = 0;
   const outsideSharedManifest = [];
   for (const profile of inventory.extensionProfiles) {
     const present = profile.acceptanceCases.filter((entry) =>
-      sharedCases.has(
-        canonical([profile.id, profile.acceptanceFile, entry.name]),
-      ),
+      visibleCases.has(canonical([profile.acceptanceFile, entry.name])),
     ).length;
     casesInSharedManifest += present;
     if (present !== profile.acceptanceCases.length)
