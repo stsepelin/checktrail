@@ -99,7 +99,7 @@ def create_producer(c, role, deadline):
     argv = ['/usr/bin/python3', '-I', '-S', '-B', '/observer/pause_control_worker.py', 'writer', '--role', role, '--deadline', str(deadline)]
     args = ['create', '--name', name, '--platform', 'linux/amd64', '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges:true', '--network', 'none', '--cpus', '1', '--memory', str(256 * 1024**2), '--memory-swap', str(256 * 1024**2), '--pids-limit', '32', '--user', '0:0', '--group-add', str(c.state['gid']), '--mount', 'type=volume,source=' + c.state['volume'] + ',target=/work,volume-nocopy', '--mount', 'type=bind,source=' + str(HERE) + ',target=/observer,readonly', '--mount', 'type=bind,source=' + str(c.root / 'evidence') + ',target=/coord', '--mount', 'type=bind,source=' + str(protected) + ',target=/native-control,readonly', '--entrypoint', argv[0]]
     for key, value in owned_labels(c.ctx).items(): args.extend(['--label', key + '=' + value])
-    c.docker([*args, c.state['imageAlias'], *argv[1:]], seconds=30)
+    c.docker([*args, c.state['imageID'], *argv[1:]], seconds=30)
     obj = c.own_container(name)
     expected = {'context': c.ctx, 'purpose': 'first-party-inert-control-only', 'role': role}
     binding = ProducerAPI.register(c, name, obj, expected, argv)

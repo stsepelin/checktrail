@@ -65,7 +65,10 @@ class Controller:
         return {'exitCode': 0}, None
     def own_container(self, name):
         self.clock.advance(0.2)
-        return {'Name': name}
+        return {'Id': '6' * 64, 'Name': name}
+    def bind_owned_id(self, name, obj):
+        self.calls.append(('bind', name, obj['Id']))
+        return obj['Id']
     def validate_container(self, *args):
         pass
     def cmd(self, args, seconds, check=False):

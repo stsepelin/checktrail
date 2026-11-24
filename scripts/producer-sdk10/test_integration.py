@@ -11,7 +11,7 @@ class IntegrationControls(unittest.TestCase):
  def native(self,label='original-build',limit=32,body=b'synthetic output',prior=b'',cleanup=None,caps=None,terminal_caps=None,on_start=None,receipt_change=None,live_poll=None,deadline_seconds=60,owned_abort=False):
   bundle=self.root/'bundle';bundle.mkdir(mode=0o755);bundle.chmod(0o755)
   for name in ['native_entry.py','common.py','profile.json']:(bundle/name).write_bytes(b'first-party synthetic descriptor');(bundle/name).chmod(0o644)
-  c=object.__new__(driver.Controller);c.root=self.root;c.ctx=self.ctx;c.state={'prefix':'ct-sdk10-synthetic','uid':os.getuid(),'gid':os.getgid(),'manifestSHA256':'b'*64,'containers':[],'volume':'work','tempVolume':'temp','cleanupDeadline':time.monotonic()+100000};c.profile={'limits':{'nativeMemory':1024,'logBytes':limit,'freeReserve':0}};c.save=lambda:None
+  c=object.__new__(driver.Controller);c.root=self.root;c.ctx=self.ctx;c.state={'prefix':'ct-sdk10-synthetic','uid':os.getuid(),'gid':os.getgid(),'manifestSHA256':'b'*64,'containers':[],'volume':'work','tempVolume':'temp','cleanupDeadline':time.monotonic()+100000,'phaseDeadline':time.monotonic()+100000};c.profile={'limits':{'nativeMemory':1024,'logBytes':limit,'freeReserve':0}};c.save=lambda:None
   self.last_controller=c
   evidence=self.root/'evidence';evidence.mkdir();(self.root/'protected').mkdir()
   if prior:(evidence/'original-build.stdout').write_bytes(prior)
@@ -25,6 +25,15 @@ class IntegrationControls(unittest.TestCase):
    if owned_abort and count[0]>0:return None
    value=copy.deepcopy(obj);value['HostConfig']['CapAdd']=caps if count[0]==0 and caps is not None else terminal_caps if count[0]>0 and terminal_caps is not None else obj['HostConfig']['CapAdd'];count[0]+=1;return value
   c.own_container=own_container
+  self.inspected_ids=[]
+  def cmd(args,seconds=60,check=True,cap=0):
+   # Terminal inspection goes through the registered producer ID only.
+   out=self.root/('transport-'+str(len(self.inspected_ids)));row={'exitCode':0,'reason':None,'ownedChildStarted':True,'ownedChildReaped':True}
+   if args[1:3]==['container','ls']:out.write_bytes(b'');return row,out
+   self.assertEqual(args[1:3],['container','inspect']);self.inspected_ids.append(args[3]);value=own_container(name)
+   if value is None:out.write_bytes(b'');return {**row,'exitCode':1},out
+   out.write_bytes(common.encoded([value]));return row,out
+  c.cmd=cmd
   self.docker_calls=[]
   def docker(args,**kwargs):
    self.docker_calls.append(list(args))

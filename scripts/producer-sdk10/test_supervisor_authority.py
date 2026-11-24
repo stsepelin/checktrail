@@ -85,11 +85,13 @@ class SupervisorAuthority(unittest.TestCase):
     def test_only_native_supervisor_receives_kill_helpers_keep_existing_caps_and_nnp(self):
         profile=json.loads((Path(driver.__file__).parent/'profile.json').read_bytes())
         c=driver.Controller(self.root,{'run':123,'attempt':1,'nonce':'inert','head':'a'*40},profile)
-        c.state={'volume':'inert-work','tempVolume':'inert-tmp','imageAlias':'inert-alias','uid':10001,'gid':10001}
+        c.state={'volume':'inert-work','tempVolume':'inert-tmp','imageAlias':'inert-alias','imageID':'sha256:'+'8'*64,'uid':10001,'gid':10001}
         for helper in [False,True]:
             args=c.container_args('ct-sdk10-inert-original-build',['/usr/bin/python3','/observer/inert.py'],helper=helper)
             caps=[args[i+1] for i,x in enumerate(args) if x=='--cap-add']
             self.assertEqual(caps,['DAC_READ_SEARCH','CHOWN'] if helper else ['CHOWN','SETUID','SETGID','KILL'])
             self.assertIn('no-new-privileges:true',args);self.assertEqual(args[args.index('--cap-drop')+1],'ALL')
+            # The proved image ID, not the retaggable alias, is what the container is created from.
+            self.assertEqual(args[args.index('/usr/bin/python3')+1],'sha256:'+'8'*64);self.assertNotIn('inert-alias',args)
 
 if __name__=='__main__':unittest.main(verbosity=2)

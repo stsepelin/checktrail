@@ -67,15 +67,19 @@ def collect(a):
  try:
   run=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run']));need(run.get('head_sha')==ctx['head'] and run.get('event')=='workflow_dispatch' and run.get('run_attempt')==1 and run.get('path')==a.workflow,'exact source producer workflow/run/head');freeze(a.out/'RUN-BINDING.json',encoded(run))
   while series is None or window<=series['plan']['windows']:
-   need(not a.stop.is_set() and time.monotonic()<whole-2,'operator finite whole waiting bound');ordinals=[window*2-1,window*2];folder=a.out/('window-'+str(window).zfill(2));folder.mkdir(mode=0o700);members=None
+   # Only the wait for the first pair may use the whole bound. Listing it
+   # starts the 75-minute recovery budget, and every later listing, handshake,
+   # download and sleep ends within that budget.
+   limit=whole if recovery_deadline is None else recovery_deadline;calls.deadline=limit
+   need(not a.stop.is_set() and time.monotonic()<limit-2,'operator finite whole waiting bound' if recovery_deadline is None else 'original recovery budget before next window');ordinals=[window*2-1,window*2];folder=a.out/('window-'+str(window).zfill(2));folder.mkdir(mode=0o700);members=None
    while members is None:
     listing=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run'])+'/artifacts?per_page=100');members=validate_window_listing(listing,ctx,ordinals)
     if members is None:
      if time.monotonic()-last_run_status>=60:
       latest=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run']));need(latest.get('head_sha')==ctx['head'] and latest.get('run_attempt')==1,'same original run while waiting');last_run_status=time.monotonic();need(latest.get('status')!='completed','original producer completed without the complete next owned window; preserve incomplete evidence')
-     freeze(folder/('INCOMPLETE-LISTING-'+str(calls.seq)+'.json'),encoded(listing));need(time.monotonic()<whole-2 and not a.stop.is_set(),'bounded source window availability wait');time.sleep(15 if series is None else 2)
+     freeze(folder/('INCOMPLETE-LISTING-'+str(calls.seq)+'.json'),encoded(listing));need(time.monotonic()<limit-2 and not a.stop.is_set(),'bounded source window availability wait');time.sleep(max(0,min(15 if series is None else 2,limit-2-time.monotonic())))
    if recovery_deadline is None:recovery_deadline=min(whole,time.monotonic()+4500)
-   deadline=min(whole,recovery_deadline);hand=None
+   deadline=min(whole,recovery_deadline);calls.deadline=deadline;hand=None
    while hand is None:
     jobs=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run'])+'/attempts/1/jobs?per_page=100');hand=handshake(jobs,ctx,window)
     if hand is None:need(time.monotonic()<deadline-2 and not a.stop.is_set(),'bounded exact window completed-step wait');time.sleep(1)
@@ -90,8 +94,9 @@ def collect(a):
    for row in pair:delete_after_custody(row,ctx,deadline,a.stop,final)
    freeze(folder/'WINDOW-RESULT.json',encoded({'window':window,'handshake':hand,'allTwoOriginalPartsCustodiedBeforeExactDelete':True,'fullArchiveRoundtripBeforeFinalDelete':final,'ownedIDs':[x['artifactID'] for x in pair]}));windows.append(window);window+=1
   # The finalizer emits only bounded first-party metadata to the workflow log.
-  # It executes AFTER the final independent-custody404 acknowledgement.
-  terminal=None
+  # It executes AFTER the final independent-custody404 acknowledgement. Waiting
+  # for the producer job to finish is not a carrier wait and keeps the whole bound.
+  calls.deadline=whole;terminal=None
   while terminal is None:
    need(time.monotonic()<whole-2,'bounded final owned cleanup/run metadata wait');run=calls.metadata('repos/stsepelin/checktrail/actions/runs/'+str(ctx['run']))
    if run.get('status')!='completed':time.sleep(2);continue

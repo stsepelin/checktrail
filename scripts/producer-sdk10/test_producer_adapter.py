@@ -273,12 +273,22 @@ class DockerTable(unittest.TestCase):
         self.name = 'ct-sdk10-synthetic-table-original-tests'; self.id = '4' * 64; self.foreign = 'f' * 64
         c = object.__new__(driver.Controller); c.root = root; c.ctx = self.ctx; c.save = lambda: None
         c.state = {'prefix': 'ct-sdk10-synthetic-table', 'containers': [self.name], 'phaseDeadline': time.monotonic() + 600, 'cleanupDeadline': time.monotonic() + 600}
-        self.table = {}; self.effects = []; self.counter = 0
+        self.table = {}; self.effects = []; self.counter = 0; self.commands = []; self.created = []; self.receipts = None
+        def find(key): return [x for x in self.table.values() if x['Id'] == key or x['Name'] == '/' + key]
+        self.find = find
         def cmd(args, seconds=60, check=True, cap=2 * 1024 ** 2):
-            self.assertEqual(args[0], 'docker'); args = args[1:]; self.counter += 1
+            self.assertEqual(args[0], 'docker'); args = args[1:]; self.counter += 1; self.commands.append(list(args))
             out = root / ('transport-' + str(self.counter)); out.write_bytes(b''); row = copy.deepcopy(GOOD)
-            def find(key): return [x for x in self.table.values() if x['Id'] == key or x['Name'] == '/' + key]
-            if args[:2] == ['container', 'inspect']:
+            if args[0] == 'create':
+                identity, name = self.created.pop(0); self.container(identity, name, running=False)
+            elif args[0] == 'start':
+                target = args[-1]; self.effects.append(('start', target)); found = find(target)
+                # An attached start returns once the container exits.
+                for x in found: x['State'].update(Running=False, ExitCode=0)
+                if not found: row['exitCode'] = 1
+            elif args[0] == 'top':
+                self.effects.append(('top', args[1])); row['exitCode'] = 1
+            elif args[:2] == ['container', 'inspect']:
                 found = find(args[2])
                 if found: out.write_bytes(common.encoded(copy.deepcopy(found)))
                 else: row['exitCode'] = 1
@@ -291,7 +301,9 @@ class DockerTable(unittest.TestCase):
                 for x in find(target):
                     if args[0] == 'stop': x['State']['Running'] = False
                     if args[0] == 'rm': del self.table[x['Id']]
-            elif args[0] == 'cp': self.effects.append(('cp', args[1]))
+            elif args[0] == 'cp':
+                self.effects.append(('cp', args[1].split(':', 1)[0])); member = args[1].rsplit('/', 1)[-1]
+                if self.receipts is not None and member in ['START.json', 'RESULT.json']: Path(args[2]).write_bytes(common.encoded(self.receipts[member[:-5]]))
             else: self.fail('unexpected synthetic docker command ' + repr(args))
             common.need(not check or row['exitCode'] == 0, 'first-party command incomplete: docker')
             return row, out
@@ -299,7 +311,8 @@ class DockerTable(unittest.TestCase):
         original = self.container(self.id, self.name)
         a.ProducerAPI.register(c, self.name, original, {'context': self.ctx}, ['./build.sh', '--synthetic-table'])
     def container(self, identity, name, labels=True, running=True):
-        value = {'Id': identity, 'Name': '/' + name, 'Config': {'Labels': common.owned_labels(self.ctx) if labels else {'synthetic': 'foreign-4417'}}, 'State': {'Running': running, 'Paused': False}}
+        value = {'Id': identity, 'Name': '/' + name, 'Config': {'User': '0:0', 'Labels': common.owned_labels(self.ctx) if labels else {'synthetic': 'foreign-4417'}}, 'State': {'Running': running, 'Paused': False, 'ExitCode': 0, 'OOMKilled': False},
+                 'HostConfig': {'PidMode': '', 'Privileged': False, 'Memory': 4417 * 1024, 'CapAdd': ['CHOWN', 'SETUID', 'SETGID', 'KILL']}}
         self.table[identity] = value; return value
     def test_renamed_running_producer_gets_no_quiescence_credit_from_name_absence(self):
         self.container(self.id, 'renamed-producer-4417')
@@ -321,5 +334,113 @@ class DockerTable(unittest.TestCase):
                 self.container(self.foreign, self.name, labels=labels)
                 with self.assertRaises((common.Refusal, p.Refusal, a.MetadataUnavailable)): self.c.stop_owned(self.name)
                 self.assertTrue(self.table[self.foreign]['State']['Running']); self.assertEqual(self.effects, [])
+
+    # Each lifecycle below is driven through the real Controller. "rebind" moves
+    # the owned name to the foreign container right after the owned ID is known:
+    # 'renamed' renames the owned container first, 'removed' deletes it.
+    def rebind(self, owned, name, case, labels=True):
+        if case == 'renamed': self.table[owned]['Name'] = '/renamed-owned-4417'
+        if case == 'removed': del self.table[owned]
+        self.container(self.foreign, name, labels=labels); self.rebound_at = len(self.commands)
+    def assert_foreign_untouched(self, name_lookups_allowed):
+        self.assertNotIn(self.foreign, [x[1] for x in self.effects])
+        self.assertTrue(self.table[self.foreign]['State']['Running'])
+        after = self.commands[self.rebound_at:]
+        self.assertFalse([x for x in after if self.foreign in x], after)
+        # After the rebind the name is at most looked up, which refuses; no
+        # command acts through it. The native phase does not even look it up.
+        by_name = [x for x in after if any(self.name_under_test in y for y in x)]
+        self.assertFalse([x for x in by_name if not name_lookups_allowed or x[:2] not in [['container', 'inspect'], ['container', 'ls']]], after)
+    def native_phase(self, case=None, labels=True):
+        self.c.state.update(containers=[], nativeProducers={}, uid=4417, gid=4417, manifestSHA256='9' * 64, nativeDeadline=time.monotonic() + 600)
+        self.table.clear(); self.rebound_at = None; self.name_under_test = self.name
+        bundle = self.c.root / 'bundle'; bundle.mkdir(mode=0o755); bundle.chmod(0o755); (self.c.root / 'protected').mkdir()
+        for name in ['native_entry.py', 'common.py', 'profile.json']: (bundle / name).write_bytes(b'synthetic-4417 ' + name.encode()); (bundle / name).chmod(0o644)
+        argv = ['./build.sh', '--synthetic-table-tests']; binding = {'context': self.ctx, 'manifestSHA256': '9' * 64, 'phase': 'test', 'profileSHA256': common.hash_file(bundle / 'profile.json')[1], 'supervisorSHA256': common.hash_file(bundle / 'native_entry.py')[1]}
+        base = {'schemaVersion': 2, 'binding': binding, 'originalArgv': argv, 'originalCommandStarted': True, 'originalChildPID': 4417, 'originalStartedWallTime': 4417.0, 'originalStartedMonotonic': 17.0, 'ownChildReaped': True, 'timedOut': False, 'interrupted': False, 'supervisorErrorType': None}
+        self.receipts = {'START': {**base, 'originalExitCode': None}, 'RESULT': {**base, 'originalExitCode': 0, 'supervisorExitCode': 0}}
+        self.c.profile = {'limits': {'nativeMemory': 4417 * 1024, 'logBytes': 1 << 20, 'freeReserve': 0}}
+        self.c.helper = lambda *args, **kwargs: None; self.c.validate_container = lambda *args, **kwargs: True
+        self.c.container_args = lambda name, *rest: self.created.append((self.id, name)) or ['create', '--name', name]
+        real_register = a.ProducerAPI.register
+        def register(*args):
+            value = real_register(*args)
+            if case is not None: self.rebind(self.id, self.name, case, labels)
+            return value
+        table = self
+        class Client:
+            def __init__(inner, args, stdout, stderr, **kwargs):
+                self.assertEqual(args[:3], ['docker', 'start', '-a']); table.commands.append(args[1:]); table.effects.append(('start', args[3]))
+                inner.found = table.find(args[3]); inner.polls = 0; inner.pid = 99999999
+                for x in inner.found: x['State']['Running'] = True
+            def poll(inner):
+                inner.polls += 1
+                if inner.polls == 1: return None
+                for x in inner.found: x['State'].update(Running=False, ExitCode=0)
+                return 0 if inner.found else 1
+            def wait(inner, timeout=None): return inner.poll()
+        with patch.object(driver, 'HERE', bundle), patch.object(driver.subprocess, 'Popen', Client), patch.object(a.ProducerAPI, 'register', side_effect=register), patch.object(driver.time, 'sleep'):
+            return self.c.native('original-tests', argv, time.monotonic() + 600)
+    def test_native_phase_never_starts_observes_inspects_or_copies_a_container_given_its_name(self):
+        for case, labels in [('renamed', True), ('renamed', False), ('removed', True)]:
+            with self.subTest(case=case, labels=labels):
+                self.setUp()
+                with self.assertRaises((common.Refusal, p.Refusal, a.MetadataUnavailable)): self.native_phase(case, labels)
+                self.assertIsNotNone(self.rebound_at); self.assert_foreign_untouched(False)
+                self.assertEqual([x for x in self.effects if x[0] in ['start', 'top']][:2], [('start', self.id), ('top', self.id)])
+                self.assertFalse(any(x[0] == 'cp' for x in self.effects))
+    def test_native_phase_with_an_unchanged_name_runs_through_the_registered_id(self):
+        row = self.native_phase()
+        self.assertEqual((row['exitCode'], row['stopReason'], row['protectedReceiptErrors']), (0, None, []))
+        self.assertEqual(self.effects, [('start', self.id), ('top', self.id), ('cp', self.id), ('cp', self.id), ('cp', self.id), ('rm', self.id)])
+        inspected = [x[2] for x in self.commands if x[:2] == ['container', 'inspect']]
+        self.assertEqual(inspected[:2], [self.name, self.name]); self.assertEqual(set(inspected[2:]) - {self.name}, {self.id}); self.assertEqual(self.table, {})
+    def helper_phase(self, case=None, labels=True):
+        self.table.clear(); self.rebound_at = None; helper = '5' * 64; self.name_under_test = self.c.state['prefix'] + '-materialize'
+        self.c.container_args = lambda name, *rest: self.created.append((helper, name)) or ['create', '--name', name]
+        def validate(obj, name, *rest):
+            if case is not None: self.rebind(helper, name, case, labels)
+            return True
+        self.c.validate_container = validate
+        return self.c.helper('materialize', ['/observer/input_prep.py', 'materialize'], time.monotonic() + 60), helper
+    def test_helper_container_given_away_after_creation_is_never_started_stopped_or_removed(self):
+        for case, labels in [('renamed', True), ('renamed', False), ('removed', True)]:
+            with self.subTest(case=case, labels=labels):
+                self.setUp()
+                with self.assertRaises((common.Refusal, p.Refusal)): self.helper_phase(case, labels)
+                # A removed helper's ID start simply fails; nothing else is attempted.
+                self.assert_foreign_untouched(True); self.assertEqual(self.effects, [('start', '5' * 64)])
+    def test_helper_with_an_unchanged_name_is_started_and_removed_by_its_id(self):
+        row, helper = self.helper_phase()
+        self.assertEqual(row['exitCode'], 0); self.assertEqual(self.effects, [('start', helper), ('rm', helper)]); self.assertEqual(self.table, {})
+        self.assertEqual(self.c.state['ownedContainerIDs'], {self.c.state['prefix'] + '-materialize': helper})
+        self.assertEqual(self.commands[-2:], [['container', 'inspect', helper], ['container', 'ls', '-aq', '--no-trunc', '--filter', 'id=' + helper]])
+    def meter_phase(self, case=None, labels=True):
+        import live_resource
+        meter = '6' * 64; self.name_under_test = self.c.state['prefix'] + '-meter-4417'; self.rebound_at = None
+        self.c.state.update(nativeDeadline=time.monotonic() + 600, uid=4417, gid=4417, capacityAdmission={'DockerRootDir': '/synthetic/docker-4417'})
+        self.c.profile = {'limits': {'workBytes': 4417}}
+        self.c.container_args = lambda name, *rest: self.created.append((meter, name)) or ['create', '--name', name]
+        def validate(obj, name, *rest):
+            if case is not None: self.rebind(meter, name, case, labels)
+            return True
+        self.c.validate_container = validate
+        def protocol(binding, api, scan, *rest):
+            try: scan()
+            except common.Refusal: pass
+            return {'outcome': 'producer-terminal-no-sample'}
+        binding = self.c.state['nativeProducers'][self.name]['binding']
+        with patch.object(live_resource.producer_pause, 'run', side_effect=protocol), patch('builtins.print'):
+            return live_resource.observe(self.c, 'meter-4417', time.monotonic() + 600, producer_binding=binding), meter
+    def test_meter_given_away_after_creation_is_never_attached_or_reaped(self):
+        import live_resource
+        for case, labels in [('renamed', True), ('renamed', False)]:
+            with self.subTest(case=case, labels=labels):
+                self.setUp()
+                with self.assertRaises(live_resource.ObservationIncomplete): self.meter_phase(case, labels)
+                self.assert_foreign_untouched(True); self.assertEqual(self.effects, [('start', '6' * 64)])
+    def test_meter_with_an_unchanged_name_is_attached_and_reaped_by_its_id(self):
+        record, meter = self.meter_phase()
+        self.assertTrue(record['helperPositivelyAbsent']); self.assertEqual(self.effects, [('start', meter), ('rm', meter)])
 
 if __name__ == '__main__': unittest.main()

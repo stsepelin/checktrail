@@ -113,14 +113,16 @@ def observe(controller, label, native_deadline, clock=time.monotonic, producer_b
         script = ['/observer/meter_runner.py', '--uid', str(c.state['uid']), '--gid', str(c.state['gid'])]
         entry = ['/usr/bin/python3', '-I', '-S', '-B', *script]
         c.docker(c.container_args(name, entry, True, True, False), seconds=LIMITS['startupSeconds'])
-        c.validate_container(c.own_container(name), name, script, True, True, False)
+        obj = c.own_container(name)
+        meter_id = c.bind_owned_id(name, obj)
+        c.validate_container(obj, name, script, True, True, False)
         need(clock() < c.state['phaseDeadline'], 'live startup deadline')
         protocol_deadline = deadline - LIMITS['helperReapReserveSeconds']
         scan_deadline = protocol_deadline - producer_pause.LIMITS['lifecycleReserveSeconds']
         def strict_scan():
             stage('attach', LIMITS['attachSeconds'])
             c.state['phaseDeadline'] = min(c.state['phaseDeadline'], scan_deadline)
-            row, _ = c.cmd(['docker', 'start', '-a', name], LIMITS['attachSeconds'], check=False)
+            row, _ = c.cmd(['docker', 'start', '-a', meter_id], LIMITS['attachSeconds'], check=False)
             record['attach'] = row
             stage('readback', LIMITS['readbackSeconds'])
             c.state['phaseDeadline'] = min(c.state['phaseDeadline'], scan_deadline)

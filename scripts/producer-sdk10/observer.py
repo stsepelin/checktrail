@@ -15,6 +15,32 @@ def file_identity(path,maximum=256*1024**2,deadline=None):
   need(n==before.st_size and keys(before)==keys(after)==keys(endpoint),'observed physical file changed during hash')
   return {'bytes':n,'sha256':h.hexdigest(),'dev':after.st_dev,'inode':after.st_ino,'mtimeNS':after.st_mtime_ns,'ctimeNS':after.st_ctime_ns,'mode':stat.S_IMODE(after.st_mode),'physicalPath':str(p),'resolvedPath':os.path.realpath(p)}
  finally:os.close(fd)
+def regular_body(path,deadline=None,keep=0):
+ """Hash one regular file through a single descriptor and keep its body up to keep bytes.
+
+ O_NONBLOCK makes opening a FIFO return at once instead of waiting for a
+ writer, and O_NOFOLLOW refuses a final symlink; fstat then refuses anything
+ that is not a regular file before a single read can block.
+ """
+ fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+ try:
+  before=os.fstat(fd);need(stat.S_ISREG(before.st_mode),'observed physical regular file');h=hashlib.sha256();n=0;chunks=[]
+  while True:
+   if deadline is not None:need(time.monotonic()<deadline,'observed file hash deadline')
+   block=os.read(fd,1048576)
+   if not block:break
+   n+=len(block);h.update(block)
+   if n<=keep:chunks.append(block)
+  after=os.fstat(fd);need((before.st_dev,before.st_ino)==(after.st_dev,after.st_ino) and n==after.st_size,'observed file changed during hash')
+  return n,h.hexdigest(),b''.join(chunks) if n<=keep else None,after
+ finally:os.close(fd)
+def inventoried_regular(stream,identity):
+ """The open stream, once it is the same regular file the inventory hashed.
+
+ A path replaced by a FIFO after the inventory opens without blocking, but a
+ nonblocking read of it returns None, which the gzip reader cannot handle.
+ """
+ opened=os.fstat(stream.fileno());need(stat.S_ISREG(opened.st_mode) and (opened.st_dev,opened.st_ino)==(identity['dev'],identity['inode']),'opened output is the inventoried regular file');return stream
 def read_observed(path,identity,maximum):
  fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
  try:
@@ -40,7 +66,7 @@ def tracked_after(source,before,deadline):
   try:s=p.lstat()
   except FileNotFoundError:changes.append({'path':path,'change':'deleted','before':old});continue
   if stat.S_ISREG(s.st_mode):
-   n,h=hash_file(p,deadline=deadline);row={'path':path,'kind':'regular','mode':stat.S_IMODE(s.st_mode),'bytes':n,'sha256':h}
+   n,h,_,opened=regular_body(p,deadline);row={'path':path,'kind':'regular','mode':stat.S_IMODE(opened.st_mode),'bytes':n,'sha256':h}
   elif stat.S_ISLNK(s.st_mode):row={'path':path,'kind':'symlink','mode':stat.S_IMODE(s.st_mode),'bytes':s.st_size,'target':os.readlink(p)}
   else:row={'path':path,'kind':'other','mode':stat.S_IMODE(s.st_mode),'bytes':s.st_size}
   rows.append(row);keys=['kind','mode','sha256','target'];changed=any(old.get(k)!=row.get(k) for k in keys if k in old or k in row)
@@ -100,9 +126,8 @@ def cmake_records(source,deadline):
   need(time.monotonic()<deadline,'compiler metadata walk deadline');dirs[:]=[x for x in dirs if not pathlib.Path(parent,x).is_symlink() and x not in ['.git','.dotnet']]
   for name in files:
    if name not in ['CMakeCache.txt','CMakeCCompiler.cmake','CMakeCXXCompiler.cmake','compile_commands.json']:continue
-   p=pathlib.Path(parent,name);need(not p.is_symlink(),'compiler metadata file symlink');s=p.stat();row={'path':str(p),'bytes':s.st_size,'sha256':hash_file(p,deadline=deadline)[1],'kind':name}
-   if s.st_size<=32*1024**2:
-    body=p.read_bytes()
+   p=pathlib.Path(parent,name);need(not p.is_symlink(),'compiler metadata file symlink');size,sha,body,_=regular_body(p,deadline,32*1024**2);row={'path':str(p),'bytes':size,'sha256':sha,'kind':name}
+   if body is not None:
     if name=='compile_commands.json':
      try:
       data=json.loads(body);need(type(data) is list and len(data)<=200000,'compiler command count');row['compileCommands']=[{k:x.get(k) for k in ['directory','file','command','arguments']} for x in data if type(x) is dict]
@@ -130,24 +155,52 @@ def output_inventory(roots,deadline,kind):
     if not (report if kind=='test-reports' else sdk):continue
     need(len(entries)<100000 and not p.is_symlink(),'bounded observed output is not a symlink');identity=file_identity(p,2*1024**3 if kind=='sdk-archives' else 32*1024**2,deadline);need(pathlib.Path(root).resolve() in pathlib.Path(identity['resolvedPath']).parents,'observed output resolves inside inventory root');entries[str(p)]=identity
  return {'schemaVersion':2,'kind':kind,'roots':roots,'snapshotComplete':not errors,'unlistedDirectories':errors[:64],'unlistedDirectoryCount':len(errors),'createdBeforeOriginalCommand':True,'identityPolicy':'regular-no-symlinks-content-sha256-before-command','entries':entries}
-def newly_attributed(path,identity,before,kind,roots):
- if not(type(before) is dict and before.get('schemaVersion')==2 and before.get('kind')==kind and before.get('roots')==sorted({str(pathlib.Path(x).absolute()) for x in roots}) and before.get('snapshotComplete') is True and before.get('createdBeforeOriginalCommand') is True and before.get('identityPolicy')=='regular-no-symlinks-content-sha256-before-command' and type(before.get('entries')) is dict):return False
- # An inode swap, copy, rename or future timestamp alone is not new content.
- for old in before['entries'].values():
-  if not(type(old) is dict and type(old.get('bytes')) is int and re.fullmatch(r'[0-9a-f]{64}',str(old.get('sha256','')))):return False
-  if (identity['bytes'],identity['sha256'])==(old['bytes'],old['sha256']):return False
- return True
+def prior_identities(before,kind,roots,deadline=None):
+ """Content identities of a valid protected pre-command snapshot, or None.
 
+ None means nothing can be attributed to the command: the snapshot is
+ missing, incomplete, for other roots, or holds a malformed entry.
+ """
+ if not(type(before) is dict and before.get('schemaVersion')==2 and before.get('kind')==kind and before.get('roots')==sorted({str(pathlib.Path(x).absolute()) for x in roots}) and before.get('snapshotComplete') is True and before.get('createdBeforeOriginalCommand') is True and before.get('identityPolicy')=='regular-no-symlinks-content-sha256-before-command' and type(before.get('entries')) is dict):return None
+ known=set()
+ for old in before['entries'].values():
+  if deadline is not None:need(time.monotonic()<deadline,'pre-command snapshot validation deadline')
+  if not(type(old) is dict and type(old.get('bytes')) is int and re.fullmatch(r'[0-9a-f]{64}',str(old.get('sha256','')))):return None
+  known.add((old['bytes'],old['sha256']))
+ return frozenset(known)
+def newly_attributed(identity,known):
+ # An inode swap, copy, rename or future timestamp alone is not new content.
+ return known is not None and (identity['bytes'],identity['sha256']) not in known
+
+# Materialization snapshots record exactly these two tracked endpoint kinds.
+TRACKED_KINDS=('regular','symlink')
 def tracked_content_identities(baseline):
  """Content identities of tracked regular files, or None without a usable baseline."""
  if not(type(baseline) is dict and type(baseline.get('entries')) is list):return None
  rows=set()
  for row in baseline['entries']:
-  if not(type(row) is dict and type(row.get('path')) is str):return None
-  if row.get('kind')!='regular':continue
+  if not(type(row) is dict and type(row.get('path')) is str and row.get('kind') in TRACKED_KINDS):return None
+  if row['kind']!='regular':continue
   if not(type(row.get('bytes')) is int and re.fullmatch(r'[0-9a-f]{64}',str(row.get('sha256','')))):return None
   rows.add((row['bytes'],row['sha256']))
  return frozenset(rows)
+def bound_tracked_baseline(evidence):
+ """The tracked baseline, or None when materialization recorded none.
+
+ Materialization freezes source-before.json and, in MATERIALIZATION.json, the
+ SHA256 of exactly those bytes and their entry count. A baseline those do not
+ bind is incomplete, however well formed, and is refused rather than read as
+ a smaller tracked tree.
+ """
+ path=pathlib.Path(evidence)/'source-before.json'
+ if not path.exists():return None
+ need(not path.is_symlink() and path.stat().st_size<=64*1024**2,'bounded regular tracked baseline');raw=path.read_bytes();before=json.loads(raw)
+ receipt=optional_json(pathlib.Path(evidence)/'MATERIALIZATION.json')
+ need(type(receipt) is dict and receipt.get('state')=='COMPLETE','complete materialization receipt binds the tracked baseline')
+ need(type(receipt.get('baselineSHA256')) is str and hashlib.sha256(raw).hexdigest()==receipt['baselineSHA256'],'tracked baseline bytes match the materialization receipt')
+ need(tracked_content_identities(before) is not None,'malformed tracked baseline')
+ need(type(receipt.get('trackedPhysicalLeaves')) is int and len(before['entries'])==receipt['trackedPhysicalLeaves'],'tracked baseline entry count matches the materialization receipt')
+ return before
 def reports(source,deadline,tracked_paths=(),test_started_wall=None,before=None,original_test=None,tracked_contents=None):
  # The pre-test snapshot holds only reports already under artifacts/TestResults,
  # so a tracked passing report copied there from elsewhere in the source tree
@@ -155,9 +208,9 @@ def reports(source,deadline,tracked_paths=(),test_started_wall=None,before=None,
  # tracked_contents=None means that baseline is unavailable: no comparison is
  # made, matchesTrackedSourceContent stays None and nothing is credited.
  source=str(pathlib.Path(source).absolute());rows=[];command_passed=type(original_test) is dict and original_test.get('originalCodeExecuted') is True and type(original_test.get('exitCode')) is int and original_test.get('exitCode')==0 and original_test.get('stopReason') is None
- inventory=output_inventory([source],deadline,'test-reports');seen=set()
+ inventory=output_inventory([source],deadline,'test-reports');seen=set();known=prior_identities(before,'test-reports',[source],deadline)
  for path,identity in inventory['entries'].items():
-  p=pathlib.Path(path);relative=p.relative_to(source).as_posix();row={'path':path,'identity':identity,'bytes':identity['bytes'],'sha256':identity['sha256'],'duplicateBody':False,'preexistingTrackedFixture':relative in tracked_paths,'matchesTrackedSourceContent':None if tracked_contents is None else (identity['bytes'],identity['sha256']) in tracked_contents,'changedSinceProtectedPreTestSnapshot':newly_attributed(path,identity,before,'test-reports',[source]),'originalTestCommandPositivelyPassed':command_passed}
+  p=pathlib.Path(path);relative=p.relative_to(source).as_posix();row={'path':path,'identity':identity,'bytes':identity['bytes'],'sha256':identity['sha256'],'duplicateBody':False,'preexistingTrackedFixture':relative in tracked_paths,'matchesTrackedSourceContent':None if tracked_contents is None else (identity['bytes'],identity['sha256']) in tracked_contents,'changedSinceProtectedPreTestSnapshot':newly_attributed(identity,known),'originalTestCommandPositivelyPassed':command_passed}
   try:row.update(natural=natural_report(read_observed(p,identity,32*1024**2)),naturalReportParsed=True)
   # LookupError: a report declaring an XML encoding this interpreter lacks.
   except (ValueError,LookupError,ET.ParseError,Refusal,OSError):row['naturalReportParsed']=False
@@ -180,16 +233,16 @@ def arm64_musl_elf(f,size):
  f.read(interpreter[0]-(phoff+len(table)));return f.read(interpreter[1]).rstrip(b'\0')==b'/lib/ld-musl-aarch64.so.1'
 
 def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
- rows=[];inventory=output_inventory(roots,deadline,'sdk-archives');command_passed=type(original_build) is dict and original_build.get('originalCodeExecuted') is True and original_build.get('exitCode')==0 and original_build.get('stopReason') is None
+ rows=[];inventory=output_inventory(roots,deadline,'sdk-archives');known=prior_identities(before,'sdk-archives',roots,deadline);command_passed=type(original_build) is dict and original_build.get('originalCodeExecuted') is True and original_build.get('exitCode')==0 and original_build.get('stopReason') is None
  for path,identity in inventory['entries'].items():
-  p=pathlib.Path(path);row={'path':path,'archive':identity,'versionFiles':[],'targetDotnetARM64MuslELFMetadataMatched':False,'changedSinceProtectedPreBuildSnapshot':newly_attributed(path,identity,before,'sdk-archives',roots),'originalBuildCommandPositivelyPassed':command_passed};decoded=0;entries=0;layout=set();names=set()
+  p=pathlib.Path(path);row={'path':path,'archive':identity,'versionFiles':[],'targetDotnetARM64MuslELFMetadataMatched':False,'changedSinceProtectedPreBuildSnapshot':newly_attributed(identity,known),'originalBuildCommandPositivelyPassed':command_passed};decoded=0;entries=0;layout=set();names=set()
   try:
    class Reader:
     def __init__(self,stream):self.stream=stream;self.bytes=0
     def read(self,n=-1):
      need(time.monotonic()<deadline,'fresh SDK gzip validation deadline');body=self.stream.read(n);self.bytes+=len(body);need(self.bytes<=8*1024**3,'fresh SDK complete decoded stream bound');return body
    fd=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
-   with os.fdopen(fd,'rb') as raw,gzip.GzipFile(fileobj=raw,mode='rb') as compressed:
+   with os.fdopen(fd,'rb') as raw,gzip.GzipFile(fileobj=inventoried_regular(raw,identity),mode='rb') as compressed:
     reader=Reader(compressed)
     with tarfile.open(fileobj=reader,mode='r|') as t:
      for item in t:
@@ -277,10 +330,9 @@ def after(profile,evidence,deadline,test_started_wall=None):
  failure evidence.
  """
  evidence=pathlib.Path(evidence);baseline_error=None
- # An unreadable or malformed baseline is an unavailable one, never an empty one.
- try:before=optional_json(evidence/'source-before.json')
- except UNOBSERVABLE as error:before=None;baseline_error=type(error).__name__
- if before is not None and tracked_content_identities(before) is None:before=None;baseline_error='malformed tracked baseline'
+ # An unreadable, malformed or unbound baseline is an unavailable one, never an empty one.
+ try:before=bound_tracked_baseline(evidence)
+ except UNOBSERVABLE as error:before=None;baseline_error=str(error) if isinstance(error,Refusal) else type(error).__name__
  def observe(name,build):
   try:value=build()
   except UNOBSERVABLE+(ET.ParseError,LookupError) as error:value={'state':'INCOMPLETE after-test observation','errorType':type(error).__name__,'passingCredit':False}

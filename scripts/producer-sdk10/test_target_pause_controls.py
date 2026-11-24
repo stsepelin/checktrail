@@ -110,7 +110,7 @@ class Target(unittest.TestCase):
         number=getattr(self,'assembly_number',0)+1;self.assembly_number=number;root=self.root/('assembly-'+str(number));root.mkdir()
         for name in ['protected','evidence','control']:(root/name).mkdir()
         prefix='ct-sdk10-synthetic-assembly-'+str(number);name=prefix+'-original-build';gid=os.getgid()
-        c=SimpleNamespace(root=root,ctx=self.ctx,state={'prefix':prefix,'gid':gid,'containers':[],'imageAlias':'synthetic-pinned-image','volume':'inert-work','tempVolume':'inert-temp','phaseDeadline':100,'nativeDeadline':100,'cleanupDeadline':120},save=lambda:None,inspect=lambda *args:None)
+        c=SimpleNamespace(root=root,ctx=self.ctx,state={'prefix':prefix,'gid':gid,'containers':[],'imageAlias':'synthetic-pinned-image','imageID':'sha256:'+'9'*64,'volume':'inert-work','tempVolume':'inert-temp','phaseDeadline':100,'nativeDeadline':100,'cleanupDeadline':120},save=lambda:None,inspect=lambda *args:None)
         model={'calls':[],'declaredMounts':[],'obj':{'Id':'b'*64,'Name':'/'+name,'Config':{'Labels':common.owned_labels(self.ctx)},'State':{'Running':False,'Paused':False},'HostConfig':{'NetworkMode':'none','ReadonlyRootfs':True,'Privileged':False,'Memory':256*1024**2,'CapDrop':['ALL'],'GroupAdd':[str(gid)]}}};self.last_assembly=model
         def docker(args,**kwargs):
             model['calls'].append(args)
@@ -167,7 +167,7 @@ class Target(unittest.TestCase):
             self.assertFalse(any(args[0]=='start' for args in self.last_assembly['calls']))
     def test_inert_writer_group_and_coord_mount_are_exact_and_guarded_before_start(self):
         (self.root/'protected').mkdir();prefix='ct-sdk10-synthetic-control';name=prefix+'-original-build';gid=os.getgid()
-        self.c.state.update(prefix=prefix,gid=gid,containers=[],imageAlias='synthetic-pinned-image');self.c.save=lambda:None;self.c.inspect=lambda *args:None
+        self.c.state.update(prefix=prefix,gid=gid,containers=[],imageAlias='synthetic-pinned-image',imageID='sha256:'+'9'*64);self.c.save=lambda:None;self.c.inspect=lambda *args:None
         obj={'Id':'b'*64,'Name':'/'+name,'Config':{'Labels':common.owned_labels(self.ctx)},'State':{'Running':False,'Paused':False},'HostConfig':{'NetworkMode':'none','ReadonlyRootfs':True,'Privileged':False,'Memory':256*1024**2,'CapDrop':['ALL'],'GroupAdd':[str(gid)]}}
         self.c.own_container=lambda _:copy.deepcopy(obj);calls=[]
         def docker(args,**kwargs):
@@ -178,6 +178,7 @@ class Target(unittest.TestCase):
         with patch.object(t,'wait_counter',return_value={'synthetic':True}):
             binding,_=t.create_producer(self.c,'build',100)
         self.assertEqual(binding['id'],'b'*64);created=calls[0];self.assertEqual(created[created.index('--group-add')+1],str(gid));self.assertIn('type=bind,source='+str(self.root/'evidence')+',target=/coord',created);self.assertEqual(calls[1],['start','b'*64])
+        self.assertIn('sha256:'+'9'*64,created);self.assertNotIn('synthetic-pinned-image',created)
         # A differing actual supplemental group is rejected before any start.
         self.c.state['containers']=[];self.c.state['nativeProducers']={};(self.root/'protected'/name/'START.json').unlink();(self.root/'protected'/name).rmdir();calls.clear();obj['HostConfig']['GroupAdd']=['foreign']
         with patch.object(t,'wait_counter',return_value={'synthetic':True}),self.assertRaises(common.Refusal):t.create_producer(self.c,'build',100)
@@ -315,6 +316,21 @@ class PhysicalImage(unittest.TestCase):
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):result=t.prove_control_image(c,100)
         self.assertEqual(result['actualRuntimeImageID'],'sha256:'+'d'*64);self.assertEqual(result['originalConfigSHA256'],c.profile['image']['configSHA256']);self.assertNotEqual(result['actualRuntimeImageID'],'sha256:'+result['originalConfigSHA256']);self.assertTrue(result['imageConfigAndRawLayersPhysicallyVerified']);self.assertEqual(result['imageProofOpaqueRawLayerBytes'],7)
         self.assertEqual([x[0] for x in calls if x[0]!='inspect'],['baseline','pull','tag','save']);self.assertFalse((self.root/'original-image-proof.tar').exists())
+    def test_alias_is_tagged_exported_and_recorded_by_the_admitted_image_id(self):
+        c,calls,_,image=self.model()
+        with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):t.prove_control_image(c,100)
+        tag=[x for x in calls if x[0]=='tag'];save=[x for x in calls if x[0]=='save']
+        self.assertEqual(tag,[['tag','sha256:'+'d'*64,c.state['imageAlias']]]);self.assertEqual(save[0][-1],'sha256:'+'d'*64);self.assertEqual(c.state['imageID'],'sha256:'+'d'*64)
+    def test_alias_bound_to_other_content_after_tag_is_never_exported_or_recorded(self):
+        c,calls,live,image=self.model();original=c.inspect
+        def rebound(kind,name):
+            value=original(kind,name)
+            # Another daemon client moves the owned alias to other content right after the tag.
+            if value is not None and name==c.state['imageAlias'] and any(x[0]=='tag' for x in calls if type(x) is list):value={**value,'Id':'sha256:'+'f'*64}
+            return value
+        c.inspect=rebound
+        with self.image_scope(),patch.object(t.time,'monotonic',return_value=0),self.assertRaisesRegex(common.Refusal,'owned alias names the admitted image ID'):t.prove_control_image(c,100)
+        self.assertFalse(any(x[0]=='save' for x in calls));self.assertNotIn('imageID',c.state)
     def test_config_runtime_backend_is_also_physical_not_a_boolean_waiver(self):
         c,_,_,_=self.model(runtime='config')
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):result=t.prove_control_image(c,100)

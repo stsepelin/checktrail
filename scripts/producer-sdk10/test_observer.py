@@ -1,5 +1,5 @@
 """Synthetic report/package bodies only; no SDK, Docker or source execution."""
-import contextlib,copy,gzip,io,json,os,struct,sys,tarfile,tempfile,time,unittest
+import contextlib,copy,gzip,hashlib,io,json,os,signal,struct,sys,tarfile,tempfile,time,unittest
 from pathlib import Path
 from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -238,12 +238,15 @@ class ObserverControls(unittest.TestCase):
   evidence=self.root/'evidence';source=self.root/'source';staging=self.root/'staging'
   for folder in [evidence,source/'tests/fixtures',source/'artifacts/TestResults',staging]:folder.mkdir(parents=True)
   tracked=source/'tests/fixtures/passing-5527.trx';tracked.write_bytes(b'<TestRun><Results><UnitTestResult outcome="Passed"/></Results><ResultSummary outcome="Completed"><Counters total="1" executed="1" passed="1"/></ResultSummary></TestRun>')
-  n,h=common.hash_file(tracked)
-  if baseline is True:common.freeze(evidence/'source-before.json',common.encoded({'schemaVersion':1,'entries':[{'path':'tests/fixtures/passing-5527.trx','kind':'regular','mode':0o644,'bytes':n,'sha256':h}]}))
+  n,h=common.hash_file(tracked);entry={'path':'tests/fixtures/passing-5527.trx','kind':'regular','mode':0o644,'bytes':n,'sha256':h}
+  link={'path':'tests/fixtures/link-5527','kind':'symlink','mode':0o777,'bytes':16,'target':'passing-5527.trx'}
+  entries={True:[entry],'with-symlink':[entry,link],'malformed':[{**entry,'bytes':'2783'}],'unknown-kind':[{**entry,'kind':'fifo-5527'}],'missing-kind':[{k:v for k,v in entry.items() if k!='kind'}],'empty-entries':[],'mismatched-sha':[entry],'missing-receipt':[entry],'incomplete-receipt':[entry]}
+  raw=b'{"schemaVersion":1,"entries":[{"path":' if baseline=='truncated' else common.encoded({'schemaVersion':1,'entries':entries[baseline]}) if baseline in entries else None
+  if raw is not None:common.freeze(evidence/'source-before.json',raw)
+  # Materialization records the SHA256 of the exact baseline bytes and their entry count.
+  if raw is not None and baseline!='missing-receipt':common.freeze(evidence/'MATERIALIZATION.json',common.encoded({'schemaVersion':1,'state':'INCOMPLETE' if baseline=='incomplete-receipt' else 'COMPLETE','trackedPhysicalLeaves':2 if baseline=='with-symlink' else 1,'baselineSHA256':hashlib.sha256(b'other-5527' if baseline=='mismatched-sha' else raw).hexdigest()}))
   common.freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',common.encoded(observer.output_inventory([str(source)],time.monotonic()+10,'test-reports')))
   common.freeze(evidence/'original-tests-TERMINAL.json',common.encoded({'originalCodeExecuted':True,'exitCode':0,'stopReason':None}))
-  if baseline=='truncated':(evidence/'source-before.json').write_bytes(b'{"schemaVersion":1,"entries":[{"path":')
-  if baseline=='malformed':common.freeze(evidence/'source-before.json',common.encoded({'schemaVersion':1,'entries':[{'path':'tests/fixtures/passing-5527.trx','kind':'regular','bytes':'2783','sha256':h}]}))
   place(source/'artifacts/TestResults',tracked)
   with mock.patch.object(observer,'SDK_OUTPUT_ROOTS',[str(staging)]),mock.patch.object(observer,'SOURCE_ROOT',str(source)):observer.phase('after',{'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'},evidence,time.monotonic()+30)
   return common.read_json(evidence/'ORIGINAL-NATURAL-TEST-REPORTS.json')
@@ -283,6 +286,29 @@ class ObserverControls(unittest.TestCase):
     self.assertEqual([(Path(x['path']).name,x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('fresh-2783.trx',None,False)]);self.assertFalse(row['allCreditedFreshTestsPassed']);self.assertFalse(row['trackedSourceBaselineAvailable'])
     endpoint=common.read_json(self.root/'evidence/SOURCE-ENDPOINT-CHANGES.json');self.assertEqual(endpoint['baselineError'],error);self.assertFalse(endpoint['passingCredit'])
     for name in ['ACTUAL-CMAKE-COMPILER-SELECTION.json','FRESH-SELECTED-SDK-OUTPUTS.json']:self.assertTrue((self.root/'evidence'/name).exists(),name)
+ def copied_fixture(self,results,tracked):(results/'run-5527').mkdir();(results/'run-5527/copied.trx').write_bytes(tracked.read_bytes())
+ def test_baseline_not_bound_by_its_materialization_receipt_is_unavailable_for_a_copied_fixture(self):
+  for baseline,error in [('empty-entries','tracked baseline entry count matches the materialization receipt'),('unknown-kind','malformed tracked baseline'),('missing-kind','malformed tracked baseline'),('mismatched-sha','tracked baseline bytes match the materialization receipt'),('missing-receipt','complete materialization receipt binds the tracked baseline'),('incomplete-receipt','complete materialization receipt binds the tracked baseline')]:
+   with self.subTest(baseline=baseline):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name)
+    row=self.after_reports(self.copied_fixture,baseline)
+    self.assertEqual([(Path(x['path']).name,x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('copied.trx',None,False)])
+    self.assertFalse(row['trackedSourceBaselineAvailable']);self.assertFalse(row['allCreditedFreshTestsPassed'])
+    self.assertEqual(common.read_json(self.root/'evidence/SOURCE-ENDPOINT-CHANGES.json')['baselineError'],error)
+ def test_bound_baseline_with_regular_and_symlink_entries_is_available(self):
+  row=self.after_reports(self.copied_fixture,'with-symlink')
+  self.assertEqual([(Path(x['path']).name,x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('copied.trx',True,False)]);self.assertTrue(row['trackedSourceBaselineAvailable'])
+  endpoint=common.read_json(self.root/'evidence/SOURCE-ENDPOINT-CHANGES.json');self.assertEqual(endpoint['trackedBefore'],2);self.assertNotIn('baselineError',endpoint)
+ def test_materialization_receipt_fields_bind_the_baseline_the_observer_reads(self):
+  # Producer and consumer of the binding are separate files; this pins that
+  # what input_prep records is exactly what the observer checks.
+  import input_prep
+  baseline={'schemaVersion':1,'entries':[{'path':'a-6113.txt','kind':'regular','mode':0o644,'bytes':6113,'sha256':'6'*64},{'path':'l-6113','kind':'symlink','mode':0o777,'bytes':9,'target':'a-6113.txt'}]}
+  raw,receipt=input_prep.baseline_binding(baseline);evidence=self.root/'evidence-6113';evidence.mkdir()
+  common.freeze(evidence/'source-before.json',raw);common.freeze(evidence/'MATERIALIZATION.json',common.encoded({'state':'COMPLETE',**receipt}))
+  self.assertEqual(observer.bound_tracked_baseline(evidence),baseline)
+  (evidence/'source-before.json').chmod(0o600);(evidence/'source-before.json').write_bytes(common.encoded({**baseline,'entries':baseline['entries'][:1]}))
+  with self.assertRaisesRegex(common.Refusal,'tracked baseline bytes match the materialization receipt'):observer.bound_tracked_baseline(evidence)
  def test_reports_without_a_stated_tracked_baseline_make_no_comparison_and_give_no_credit(self):
   folder=self.root/'artifacts/TestResults';folder.mkdir(parents=True);before=observer.output_inventory([self.root],time.monotonic()+10,'test-reports')
   (folder/'fresh-2783.xml').write_bytes(b'<testsuite tests="1"><testcase name="fresh-2783"/></testsuite>');passed={'originalCodeExecuted':True,'exitCode':0,'stopReason':None}
@@ -290,5 +316,92 @@ class ObserverControls(unittest.TestCase):
   self.assertEqual([(x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in unstated['reports']],[(None,False)]);self.assertFalse(unstated['allCreditedFreshTestsPassed']);self.assertFalse(unstated['trackedSourceBaselineAvailable'])
   empty=observer.reports(self.root,time.monotonic()+10,before=before,original_test=passed,tracked_contents=frozenset())
   self.assertEqual([(x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in empty['reports']],[(False,True)]);self.assertTrue(empty['allCreditedFreshTestsPassed'])
+
+def per_entry_attribution(path,identity,before,kind,roots):
+ # The per-entry rule the snapshot index must reproduce exactly.
+ if not(type(before) is dict and before.get('schemaVersion')==2 and before.get('kind')==kind and before.get('roots')==sorted({str(Path(x).absolute()) for x in roots}) and before.get('snapshotComplete') is True and before.get('createdBeforeOriginalCommand') is True and before.get('identityPolicy')=='regular-no-symlinks-content-sha256-before-command' and type(before.get('entries')) is dict):return False
+ for old in before['entries'].values():
+  if not(type(old) is dict and type(old.get('bytes')) is int and len(str(old.get('sha256','')))==64 and all(c in '0123456789abcdef' for c in str(old.get('sha256','')))):return False
+  if (identity['bytes'],identity['sha256'])==(old['bytes'],old['sha256']):return False
+ return True
+
+class SnapshotIndex(unittest.TestCase):
+ def setUp(self):self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-index-');self.root=Path(self.temp.name)
+ def tearDown(self):self.temp.cleanup()
+ def snapshot(self,count,**changes):
+  entries={'/synthetic/%05d.trx'%i:{'bytes':7000+i,'sha256':hashlib.sha256(b'%d'%i).hexdigest()} for i in range(count)}
+  return {'schemaVersion':2,'kind':'test-reports','roots':[str(self.root.absolute())],'snapshotComplete':True,'createdBeforeOriginalCommand':True,'identityPolicy':'regular-no-symlinks-content-sha256-before-command','entries':entries,**changes}
+ def test_indexed_attribution_matches_the_per_entry_rule_over_a_large_snapshot(self):
+  large=self.snapshot(20000);malformed=self.snapshot(3);malformed['entries']['/synthetic/bad.trx']={'bytes':'7001','sha256':'a'*64}
+  befores=[large,self.snapshot(0),malformed,self.snapshot(3,snapshotComplete=False),self.snapshot(3,kind='sdk-archives'),self.snapshot(3,roots=['/elsewhere-7001']),None,{**large,'entries':[]}]
+  identities=[{'bytes':7000+i,'sha256':hashlib.sha256(b'%d'%i).hexdigest()} for i in [0,1,19999]]+[{'bytes':7001,'sha256':hashlib.sha256(b'0').hexdigest()},{'bytes':91,'sha256':'9'*64}]
+  for index,before in enumerate(befores):
+   known=observer.prior_identities(before,'test-reports',[self.root])
+   for identity in identities:
+    with self.subTest(before=index,identity=identity['bytes']):self.assertIs(observer.newly_attributed(identity,known),per_entry_attribution('unused',identity,before,'test-reports',[self.root]))
+ def reports_tree(self,count):
+  folder=self.root/'artifacts/TestResults';folder.mkdir(parents=True)
+  for i in range(count):(folder/('fresh-%d.xml'%i)).write_bytes(('<testsuite tests="1"><testcase name="fresh-%d"/></testsuite>'%i).encode())
+ def test_each_report_scan_validates_its_snapshot_once(self):
+  before=self.snapshot(500);self.reports_tree(7)
+  with mock.patch.object(observer,'prior_identities',wraps=observer.prior_identities) as index:
+   row=observer.reports(self.root,time.monotonic()+30,before=before,original_test={'originalCodeExecuted':True,'exitCode':0,'stopReason':None},tracked_contents=frozenset())
+  self.assertEqual(index.call_count,1);self.assertEqual(len(row['reports']),7);self.assertTrue(all(x['changedSinceProtectedPreTestSnapshot'] for x in row['reports']))
+ def test_each_sdk_scan_validates_its_snapshot_once(self):
+  for i in range(5):
+   with tarfile.open(self.root/('dotnet-sdk-%d.tar.gz'%i),'w:gz') as tar:item=tarfile.TarInfo('sdk/10.0.401/.version');item.size=2;tar.addfile(item,io.BytesIO(b'%d\n'%i))
+  before={**self.snapshot(500),'kind':'sdk-archives'}
+  with mock.patch.object(observer,'prior_identities',wraps=observer.prior_identities) as index:row=observer.fresh_sdks([self.root],{'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'},time.monotonic()+30,before,None)
+  self.assertEqual(index.call_count,1);self.assertEqual(len(row['candidates']),5);self.assertTrue(all(x['changedSinceProtectedPreBuildSnapshot'] for x in row['candidates']))
+
+@contextlib.contextmanager
+def watchdog(seconds=5):
+ # A blocking open of a FIFO never returns on its own; the alarm turns that
+ # hang into a test error instead of a stalled control run.
+ def expired(signum,frame):raise TimeoutError('observer blocked on a non-regular endpoint')
+ previous=signal.signal(signal.SIGALRM,expired);signal.alarm(seconds)
+ try:yield
+ finally:signal.alarm(0);signal.signal(signal.SIGALRM,previous)
+
+class NonRegularEndpoints(unittest.TestCase):
+ def setUp(self):self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-fifo-');self.root=Path(self.temp.name);self.source=self.root/'source';(self.source/'build-4417').mkdir(parents=True)
+ def tearDown(self):self.temp.cleanup()
+ def test_compiler_metadata_fifo_is_refused_without_waiting_for_a_writer(self):
+  for name in ['compile_commands.json','CMakeCache.txt']:
+   with self.subTest(name=name):
+    fifo=self.source/'build-4417'/name;os.mkfifo(fifo)
+    with watchdog(),self.assertRaisesRegex(common.Refusal,'observed physical regular file'):observer.cmake_records(str(self.source),time.monotonic()+30)
+    fifo.unlink()
+ def test_regular_compiler_metadata_is_hashed_and_parsed(self):
+  commands=b'[{"directory":"/work/source","file":"probe-4417.c","command":"clang-20 -c probe-4417.c"}]';cache=b'CMAKE_C_COMPILER:FILEPATH=/usr/local/bin/clang-20\nUNRELATED_4417:BOOL=ON\n'
+  (self.source/'build-4417'/'compile_commands.json').write_bytes(commands);(self.source/'build-4417'/'CMakeCache.txt').write_bytes(cache)
+  with watchdog():rows={Path(x['path']).name:x for x in observer.cmake_records(str(self.source),time.monotonic()+30)}
+  self.assertEqual((rows['compile_commands.json']['bytes'],rows['compile_commands.json']['sha256']),(len(commands),hashlib.sha256(commands).hexdigest()))
+  self.assertEqual(rows['compile_commands.json']['compileCommands'],[{'directory':'/work/source','file':'probe-4417.c','command':'clang-20 -c probe-4417.c','arguments':None}])
+  self.assertEqual((rows['CMakeCache.txt']['sha256'],rows['CMakeCache.txt']['selectedCompilerAndImplicitHeaderDeclarations']),(hashlib.sha256(cache).hexdigest(),['CMAKE_C_COMPILER:FILEPATH=/usr/local/bin/clang-20']))
+ def tracked(self,body):
+  path=self.source/'src-4417.txt';path.write_bytes(body);return {'entries':[{'path':'src-4417.txt','kind':'regular','mode':0o644,'bytes':len(body),'sha256':hashlib.sha256(body).hexdigest()}]}
+ def test_tracked_endpoint_replaced_by_a_fifo_after_its_lstat_is_refused_without_blocking(self):
+  before=self.tracked(b'tracked-4417\n');target=self.source/'src-4417.txt';decoy=self.root/'decoy-4417.txt';decoy.write_bytes(b'tracked-4417\n');target.unlink();os.mkfifo(target);real=Path.lstat
+  # The lstat still describes the regular file the endpoint was a moment before.
+  with watchdog(),mock.patch.object(observer.pathlib.Path,'lstat',lambda path:real(decoy) if path==target else real(path)),self.assertRaisesRegex(common.Refusal,'observed physical regular file'):observer.tracked_after(str(self.source),before,time.monotonic()+30)
+ def test_unchanged_tracked_regular_endpoint_is_hashed_through_its_descriptor(self):
+  before=self.tracked(b'tracked-4417\n')
+  with watchdog():row=observer.tracked_after(str(self.source),before,time.monotonic()+30)
+  self.assertEqual(row['trackedEndpointChanges'],[]);self.assertEqual(row['fullBeforeAndAfterTrackedIdentities'],before['entries'])
+ def sdk_inventory(self):
+  archive=self.source/'dotnet-sdk-4417.tar.gz'
+  with tarfile.open(archive,'w:gz') as tar:item=tarfile.TarInfo('sdk/10.0.401/.version');item.size=9;tar.addfile(item,io.BytesIO(b'10.0.401\n'))
+  return archive,observer.output_inventory([str(self.source)],time.monotonic()+30,'sdk-archives')
+ def fresh(self,inventory):
+  with watchdog(),mock.patch.object(observer,'output_inventory',return_value=inventory):return observer.fresh_sdks([str(self.source)],{'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'},time.monotonic()+30)
+ def test_sdk_archive_replaced_by_a_held_fifo_after_the_inventory_is_refused_as_a_candidate(self):
+  archive,inventory=self.sdk_inventory();archive.unlink();os.mkfifo(archive);writer=os.open(archive,os.O_RDWR)
+  try:row=self.fresh(inventory)
+  finally:os.close(writer)
+  self.assertEqual([(x['path'],x['selectedSDKArchiveMetadataAndAttributionMatched']) for x in row['candidates']],[(str(archive),False)]);self.assertNotIn('fullGzipStreamIntegrityVerified',row['candidates'][0])
+ def test_inventoried_regular_sdk_archive_is_still_read_in_full(self):
+  archive,inventory=self.sdk_inventory();row=self.fresh(inventory)
+  self.assertTrue(row['candidates'][0]['fullGzipStreamIntegrityVerified']);self.assertEqual([x['path'] for x in row['candidates'][0]['versionFiles']],['sdk/10.0.401/.version'])
 
 if __name__=='__main__':unittest.main(verbosity=2)

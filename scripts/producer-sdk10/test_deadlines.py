@@ -4,6 +4,8 @@ from pathlib import Path
 from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import common,crypto_bridge,git_ack,native_entry,transport_base
+import collect,threading
+from types import SimpleNamespace
 
 class DeadlineControls(unittest.TestCase):
  def setUp(self):self.temp=tempfile.TemporaryDirectory(prefix='sdk10-deadline-synthetic-');self.root=Path(self.temp.name);self.clock=[0.0]
@@ -69,5 +71,51 @@ class DeadlineControls(unittest.TestCase):
   with mock.patch.object(common.time,'monotonic',side_effect=lambda:self.clock[0]),mock.patch.object(common,'process',return_value=({'exitCode':0,'reason':None},reply)),mock.patch.object(common.json,'loads',side_effect=parsing),self.assertRaises(common.Refusal):api.call('repos/stsepelin/checktrail/actions/runs/123')
   self.clock[0]=0;ctx={'run':123,'head':'a'*40,'nonce':'synthetic-test','attempt':1};channel={'ref':'heads/diagnostic/sdk10-recovery-synthetic-test','parent':'b'*40};ack=git_ack.AckAPI(self.root/'ack-postparse',5,channel,ctx)
   with mock.patch.object(git_ack.time,'monotonic',side_effect=lambda:self.clock[0]),mock.patch.object(git_ack,'process',return_value=({'exitCode':0,'reason':None},reply)),mock.patch.object(git_ack.json,'loads',side_effect=parsing),self.assertRaises(common.Refusal):ack.call('git/ref/'+channel['ref'])
+
+class CollectorRecoveryBudget(unittest.TestCase):
+ """A synthetic two-window collection under a controlled clock; no CLI or network."""
+ def setUp(self):self.temp=tempfile.TemporaryDirectory(prefix='sdk10-collector-clock-');self.root=Path(self.temp.name);self.clock=[0.0]
+ def tearDown(self):self.temp.cleanup()
+ def collect(self,second_window_at):
+  clock=self.clock;ctx={'run':5113,'attempt':1,'head':'a'*40,'nonce':'synthetic-5113'};series={'plan':{'windows':2},'context':ctx};requests=[];state={'recovered':False}
+  key=self.root/'operator-key-5113';key.write_bytes(b'synthetic');key.chmod(0o600)
+  args=SimpleNamespace(nonce=ctx['nonce'],run=ctx['run'],head=ctx['head'],out=self.root/'collection',private_key=key,workflow='.github/workflows/sdk10-5113.yml',seconds=28800,stop=threading.Event())
+  class Calls:
+   def __init__(inner,out,deadline,stop=None):inner.deadline=deadline;inner.seq=0;inner.events=[]
+   def metadata(inner,path,missing=False):
+    # Same refusal as the real transport: no request at or past its own deadline.
+    common.need(clock[0]<inner.deadline-1,'original metadata deadline before request');inner.seq+=1;requests.append((clock[0],inner.deadline,path));clock[0]+=0.5
+    if path.endswith('/artifacts?per_page=100'):
+     listed=([1,2] if clock[0]>=200 else [])+([3,4] if clock[0]>=second_window_at else []);return {'total_count':0 if state['recovered'] else 2,'artifacts':[],'listed':listed}
+    if path.endswith('/jobs?per_page=100'):return {'total_count':1,'jobs':[{'head_sha':ctx['head'],'name':'sdk10-original','id':5113}]}
+    return {'head_sha':ctx['head'],'event':'workflow_dispatch','run_attempt':1,'path':args.workflow,'status':'completed' if state['recovered'] else 'in_progress'}
+   def run(inner,tail,cap,seconds):
+    line='CHECKTRAIL_SDK10_TERMINAL='+json.dumps({'context':ctx,'cleanup':{'synthetic':5113},'state':'synthetic-complete-5113'});path=self.root/'job-log-5113';path.write_text(line);return 0,line.encode(),path
+  def listing(value,ctx,ordinals):return [{'ordinal':i} for i in ordinals] if all(i in value['listed'] for i in ordinals) else None
+  def worker(folder,ctx,ordinal,meta,deadline,stop):return {'ordinal':ordinal,'artifactID':ordinal,'state':'CUSTODIED','error':None,'ownedChildrenReaped':True,'series':series,'part':{'ordinal':ordinal}}
+  def deleted(row,ctx,deadline,stop,final=False):
+   if final:state['recovered']=True
+   return row
+  def sleep(seconds):clock[0]+=seconds
+  with mock.patch.object(collect,'Calls',Calls),mock.patch.object(collect,'context',return_value=ctx),mock.patch.object(collect.shutil,'disk_usage',return_value=SimpleNamespace(free=10**14)),mock.patch.object(collect,'validate_window_listing',side_effect=listing),mock.patch.object(collect,'handshake',side_effect=lambda jobs,ctx,window:{'window':window}),mock.patch.object(collect,'worker',side_effect=worker),mock.patch.object(collect,'validate_meta',return_value=series),mock.patch.object(collect,'archive_roundtrip',return_value={'synthetic':5113}),mock.patch.object(collect,'publish_recovery_ack',return_value={'synthetic':5113}),mock.patch.object(collect,'delete_after_custody',side_effect=deleted),mock.patch.object(collect.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(collect.time,'sleep',side_effect=sleep),mock.patch('builtins.print'):
+   try:collect.collect(args);code=0
+   except SystemExit as exit:code=exit.code
+  result=common.read_json(args.out/'RESULT.json');return code,result,requests
+ def recovery_deadline(self,requests):
+  # The first handshake request is made the moment the first pair is listed.
+  listed=[t for t,deadline,path in requests if path.endswith('/attempts/1/jobs?per_page=100')][0];self.assertGreaterEqual(listed,200);return listed+4500
+ def test_later_window_that_never_appears_stops_polling_at_the_recovery_budget(self):
+  code,result,requests=self.collect(second_window_at=10**9);recovery=self.recovery_deadline(requests)
+  self.assertEqual(code,1);self.assertIn('bounded source window availability wait',result['error'])
+  listings=[(t,deadline) for t,deadline,path in requests if path.endswith('/artifacts?per_page=100')]
+  # The wait for the first pair ran under the whole bound; every later listing under the recovery budget.
+  self.assertEqual({deadline for t,deadline in listings if t<200},{28790});self.assertEqual({deadline for t,deadline in listings if t>recovery-4500},{recovery})
+  self.assertGreater(max(t for t,_ in listings),recovery-60);self.assertLess(max(t for t,_,_ in requests),recovery);self.assertLessEqual(self.clock[0],recovery)
+ def test_later_window_listed_inside_the_recovery_budget_is_collected(self):
+  code,result,requests=self.collect(second_window_at=3700.0);recovery=self.recovery_deadline(requests)
+  self.assertEqual(code,0,result.get('error'));self.assertEqual(result['completedWindows'],[1,2]);self.assertEqual(result['completedParts'],4)
+  window_two=[t for t,deadline,path in requests if path.endswith('/attempts/1/jobs?per_page=100')][1];self.assertGreaterEqual(window_two,3700.0);self.assertLess(window_two,recovery)
+  # Waiting for the producer job to finish after recovery keeps the whole bound.
+  self.assertEqual(requests[-1][1],28790)
 
 if __name__=='__main__':unittest.main(verbosity=2)

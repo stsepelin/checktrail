@@ -669,6 +669,16 @@ def git_read_tree(source_dir, tree, home, evidence, expected, deadline):
     return {'argv': argv, 'readTreeOnlyNoCheckoutOrU': True, 'filtersHooksAndInheritedGitConfigDisabled': True, 'process': row, 'indexReadback': index}
 
 
+def baseline_binding(baseline):
+    """The exact source-before.json bytes and the receipt fields that bind them.
+
+    The after-test observer accepts a tracked baseline only when its bytes hash
+    to baselineSHA256 and it holds trackedPhysicalLeaves entries.
+    """
+    raw = encoded(baseline)
+    return raw, {'trackedPhysicalLeaves': len(baseline['entries']), 'baselineSHA256': hashlib.sha256(raw).hexdigest()}
+
+
 def snapshot_source(source_dir, expected, canonical_tree, source_commit, deadline):
     entries, physical = [], {}
     for path in sorted(expected):
@@ -803,8 +813,9 @@ def _materialize(profile, inputs, work, evidence, uid, gid, deadline, ownership)
                 os.chown(Path(current) / name, uid, gid, follow_symlinks=False)
     baseline = snapshot_source(source_dir, expected, profile['source']['tree'], profile['source']['commit'], deadline)
     physical_readback = verify_physical_export(baseline, export_doc, expected, canonical)
-    freeze(evidence / 'source-before.json', encoded(baseline))
-    result = {'schemaVersion': 1, 'state': 'COMPLETE', 'sourceCommit': profile['source']['commit'], 'canonicalGitTree': root, 'workingTreeGitRoot': baseline['workingTreeGitRoot'], 'trackedPhysicalLeaves': len(baseline['entries']), 'workingExportBytesPreserved': True, 'canonicalProjectionPaths': len(projection['entries']), 'canonicalBodiesRetainedSeparately': True, 'originalNoticeBodiesAndAliasesRetained': True, 'inputProofsAreFullPreparedBundle': False, 'seedVersion': profile['seedVersion'], 'seedUntracked': True, 'realOriginalShallowGitContext': git_context, 'canonicalLooseObjectReadback': object_readback, 'physicalExportReadback': physical_readback, 'operatorConfiguredPublicOrigin': origin, 'historicalLocalGitConfigurationClaimed': False, 'originalRawCommitSHA256': hashlib.sha256(commit).hexdigest(), 'sourceOrSeedExecuted': False, 'baselineSHA256': hashlib.sha256(encoded(baseline)).hexdigest(), 'inputsReceiptSHA256': hashlib.sha256(encoded(receipt)).hexdigest(), 'freshOwnedDirectories': required, 'preexistingEmptyTempDirectoryReused': existing_tmp, 'tempVolumeIdentityVerifiedHere': False}
+    raw_baseline, baseline_receipt = baseline_binding(baseline)
+    freeze(evidence / 'source-before.json', raw_baseline)
+    result = {'schemaVersion': 1, 'state': 'COMPLETE', 'sourceCommit': profile['source']['commit'], 'canonicalGitTree': root, 'workingTreeGitRoot': baseline['workingTreeGitRoot'], 'workingExportBytesPreserved': True, 'canonicalProjectionPaths': len(projection['entries']), 'canonicalBodiesRetainedSeparately': True, 'originalNoticeBodiesAndAliasesRetained': True, 'inputProofsAreFullPreparedBundle': False, 'seedVersion': profile['seedVersion'], 'seedUntracked': True, 'realOriginalShallowGitContext': git_context, 'canonicalLooseObjectReadback': object_readback, 'physicalExportReadback': physical_readback, 'operatorConfiguredPublicOrigin': origin, 'historicalLocalGitConfigurationClaimed': False, 'originalRawCommitSHA256': hashlib.sha256(commit).hexdigest(), 'sourceOrSeedExecuted': False, **baseline_receipt, 'inputsReceiptSHA256': hashlib.sha256(encoded(receipt)).hexdigest(), 'freshOwnedDirectories': required, 'preexistingEmptyTempDirectoryReused': existing_tmp, 'tempVolumeIdentityVerifiedHere': False}
     return result
 
 

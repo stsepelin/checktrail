@@ -125,6 +125,22 @@ class Controller:
    need(not body.read_bytes().strip(),'failed inspect conflicts with existing identity; no absence credit')
    return None
   data=json.loads(p.read_bytes());need(type(data) is list and len(data)==1,'one exact Docker identity');return data[0]
+ def inspect_container_id(self,container_id):
+  # Docker resolves a full 64-hex ID before any name, and the returned Id is
+  # compared too, so a container later given this name is never selected.
+  need(re.fullmatch('[0-9a-f]{64}',str(container_id)) is not None,'full immutable container ID')
+  row,p=self.docker(['container','inspect',container_id],check=False)
+  need(row['reason'] is None,'Docker inspect unavailable; absence is not observed')
+  if row['exitCode']!=0:
+   listing,body=self.docker(['container','ls','-aq','--no-trunc','--filter','id='+container_id],check=False)
+   need(listing['reason'] is None and listing['exitCode']==0,'Docker identity listing unavailable; no absence credit')
+   need(not body.read_bytes().strip(),'failed inspect conflicts with existing identity; no absence credit')
+   return None
+  data=json.loads(p.read_bytes());need(type(data) is list and len(data)==1 and type(data[0]) is dict and data[0].get('Id')==container_id,'one exact Docker identity by immutable ID');return data[0]
+ def bind_owned_id(self,name,obj):
+  """Record the immutable ID of a just-created owned helper; later effects target only it."""
+  need(name in self.state['containers'] and type(obj) is dict and re.fullmatch('[0-9a-f]{64}',str(obj.get('Id'))) is not None,'owned helper immutable ID')
+  ids=self.state.setdefault('ownedContainerIDs',{});need(ids.get(name,obj['Id'])==obj['Id'],'owned helper ID is bound once');ids[name]=obj['Id'];self.save();return obj['Id']
  def own_container(self,name):
   need(name in self.state['containers'],'only registered owned container name');obj=self.inspect('container',name)
   if obj is not None:need(obj['Name'].lstrip('/')==name and labels_match(obj['Config'].get('Labels'),self.ctx),'positive owned container label binding')
@@ -132,11 +148,13 @@ class Controller:
  def stop_owned(self,name):
   obj=self.own_container(name)
   native=name in [self.state['prefix']+'-original-build',self.state['prefix']+'-original-tests']
+  helper_id=None if native else self.state.get('ownedContainerIDs',{}).get(name)
   if obj is None:
    # A renamed producer leaves its name absent while its registered ID still
    # runs and writes the volume; only absence of that exact ID is quiescence.
    if native and name in self.state.get('nativeProducers',{}):
     api=ProducerAPI(self,name);need(api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline'])) is None,'registered native producer ID absence')
+   if helper_id is not None:need(self.inspect_container_id(helper_id) is None,'registered owned helper ID absence')
    return True
   if native:
    api=ProducerAPI(self,name);actual=api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline']));need(actual is not None,'owned native immutable identity before stop')
@@ -144,8 +162,11 @@ class Controller:
    if actual['State'].get('Running'):self.docker(['stop','--time','20',api.binding['id']],seconds=30,check=False)
    terminal=api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline']));need(terminal is not None and not terminal['State']['Running'],'native stopped before protected preservation');need(api.preserve_protected_metadata(api.binding,min(self.state['phaseDeadline'],time.monotonic()+10)),'protected native evidence before cleanup');api.force_remove_id(api.binding['id'],min(self.state['phaseDeadline'],time.monotonic()+30));gone=api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline'])) is None
   else:
-   if obj['State'].get('Running'):self.docker(['stop','--time','20',name],seconds=30,check=False)
-   self.docker(['rm','-f',name],seconds=30,check=False);gone=self.inspect('container',name) is None
+   # The name inspection above only found the container; every effect and the
+   # absence proof use its ID, so a name rebound in between is never touched.
+   container_id=obj.get('Id');need(re.fullmatch('[0-9a-f]{64}',str(container_id)) is not None and container_id==(helper_id or container_id),'owned helper name still bound to its registered ID')
+   if obj['State'].get('Running'):self.docker(['stop','--time','20',container_id],seconds=30,check=False)
+   self.docker(['rm','-f',container_id],seconds=30,check=False);gone=self.inspect_container_id(container_id) is None
   need(gone,'owned container absence not observed');return gone
  def volume_owned(self,name=None):
   name=name or self.state['volume'];need(name in [self.state['volume'],self.state['tempVolume']],'registered owned persistent volume');obj=self.inspect('volume',name);need(obj is not None and obj['Name']==name and labels_match(obj.get('Labels'),self.ctx),'positive exact volume ownership');return obj
@@ -159,7 +180,7 @@ class Controller:
    destination=self.root/('materialization' if '/observer/input_prep.py' in entry and 'materialize' in entry else 'evidence');args+=['--user','0:0','--cap-add','DAC_READ_SEARCH','--cap-add','CHOWN','--mount','type=bind,source='+str(HERE)+',target=/observer,readonly','--mount','type=bind,source='+str(self.root/'inputs')+',target=/inputs,readonly','--mount','type=bind,source='+str(destination)+',target=/evidence'+(',readonly' if capture else '')]
   else:args+=['--user','0:0','--cap-add','CHOWN','--cap-add','SETUID','--cap-add','SETGID','--cap-add','KILL','--mount','type=bind,source='+str(HERE)+',target=/observer,readonly','--mount','type=bind,source='+str(self.root/'protected'/name)+',target=/native-control']
   if capture:args+=['--mount','type=bind,source='+str(self.root/'capture')+',target=/capture']
-  env={'HOME':'/work/home','DOTNET_CLI_HOME':'/work/home/dotnet','NUGET_PACKAGES':'/work/cache/nuget','ROOTFS_DIR':'/crossrootfs/arm64','DOTNET_INSTALL_DIR':'/work/source/.dotnet','DOTNET_ROOT':'/work/source/.dotnet','DOTNET_CLI_TELEMETRY_OPTOUT':'1','DOTNET_NOLOGO':'1','DOTNET_MULTILEVEL_LOOKUP':'0','TZ':'UTC','TMPDIR':'/work/tmp','TMP':'/work/tmp','TEMP':'/work/tmp'};args+=fresh_env(env);args+=['--workdir','/' if helper else '/work/source','--entrypoint',entry[0],self.state['imageAlias'],*entry[1:]];return args
+  env={'HOME':'/work/home','DOTNET_CLI_HOME':'/work/home/dotnet','NUGET_PACKAGES':'/work/cache/nuget','ROOTFS_DIR':'/crossrootfs/arm64','DOTNET_INSTALL_DIR':'/work/source/.dotnet','DOTNET_ROOT':'/work/source/.dotnet','DOTNET_CLI_TELEMETRY_OPTOUT':'1','DOTNET_NOLOGO':'1','DOTNET_MULTILEVEL_LOOKUP':'0','TZ':'UTC','TMPDIR':'/work/tmp','TMP':'/work/tmp','TEMP':'/work/tmp'};args+=fresh_env(env);args+=['--workdir','/' if helper else '/work/source','--entrypoint',entry[0],self.state['imageID'],*entry[1:]];return args
  def validate_container(self,obj,name,entry,read_only=False,helper=False,capture=False):
   expected={'/work':('volume',self.state['volume'],not read_only),'/work/tmp':('volume',self.state['tempVolume'],not read_only),'/tmp':('volume',self.state['tempVolume'],not read_only),'/observer':('bind',str(HERE),False)}
   if helper:
@@ -175,9 +196,9 @@ class Controller:
   for m in volumes:need(m.get('Source')==targets[m['Target']] and (m.get('VolumeOptions') or {}).get('NoCopy') is True,'actual owned volume must disable image-directory copy-up')
   return True
  def helper(self,label,script_args,deadline,read_only=False,capture=False):
-  name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned helper name must start absent');self.state['containers'].append(name);self.save();args=self.container_args(name,['/usr/bin/python3','-I','-S','-B',*script_args],read_only,True,capture);self.docker(args);self.validate_container(self.own_container(name),name,script_args,read_only,True,capture);row,p=self.cmd(['docker','start','-a',name],max(1,deadline-time.monotonic()),check=False);self.stop_owned(name);need(row['exitCode']==0 and row['reason'] is None,'first-party '+label+' incomplete');return row
- def compiler_processes(self,name,seen,cache,file):
-  row,p=self.docker(['top',name,'-eo','pid,ppid,comm,args'],seconds=5,check=False)
+  name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned helper name must start absent');self.state['containers'].append(name);self.save();args=self.container_args(name,['/usr/bin/python3','-I','-S','-B',*script_args],read_only,True,capture);self.docker(args);obj=self.own_container(name);container_id=self.bind_owned_id(name,obj);self.validate_container(obj,name,script_args,read_only,True,capture);row,p=self.cmd(['docker','start','-a',container_id],max(1,deadline-time.monotonic()),check=False);self.stop_owned(name);need(row['exitCode']==0 and row['reason'] is None,'first-party '+label+' incomplete');return row
+ def compiler_processes(self,container_id,seen,cache,file):
+  row,p=self.docker(['top',container_id,'-eo','pid,ppid,comm,args'],seconds=5,check=False)
   if row['exitCode']!=0 or row.get('reason') is not None:return
   lines=p.read_text(errors='replace').splitlines()[1:];need(hash_file(p)==(row['stdoutBytes'],row['stdoutSHA256']),'owned docker-top metadata physical identity');p.unlink() # only redundant first-party polling transport; selected original observations remain in JSONL
   observation_deadline=min(time.monotonic()+5,self.state.get('nativeDeadline',time.monotonic()+5))
@@ -224,15 +245,19 @@ class Controller:
   need(stat.S_IMODE(HERE.stat().st_mode)&0o005==0o005 and all(stat.S_IMODE((HERE/n).stat().st_mode)&0o004 for n in ['native_entry.py','common.py','profile.json']),'published first-party readonly supervisor bundle must be traversable/readable without DAC capabilities')
   self.helper('before-'+label,['/observer/observer.py','before-build' if label=='original-build' else 'before-test','--profile','/observer/profile.json','--evidence','/evidence','--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid'])],deadline,True);need(time.monotonic()<deadline,'original command budget before container action');name=self.state['prefix']+'-'+label;need(self.inspect('container',name) is None,'owned original producer starts absent');self.state['containers'].append(name);self.save();phase='build' if label=='original-build' else 'test';binding={'context':self.ctx,'manifestSHA256':self.state['manifestSHA256']};protected=self.root/'protected'/name;protected.mkdir(mode=0o700);wrapped=['/usr/bin/python3','-I','-S','-B','/observer/native_entry.py','--profile','/observer/profile.json','--phase',phase,'--deadline',str(deadline),'--uid',str(self.state['uid']),'--gid',str(self.state['gid']),'--binding-json',json.dumps(binding,sort_keys=True)];self.docker(self.container_args(name,wrapped));obj=self.own_container(name);producer_binding=ProducerAPI.register(self,name,obj,{**binding,'phase':phase,'profileSHA256':hash_file(HERE/'profile.json')[1],'supervisorSHA256':hash_file(HERE/'native_entry.py')[1]},argv);retain_native_identity(self.root/'evidence',label,'admission',obj);native_identity_contract(obj);self.validate_container(obj,name,wrapped);need(obj['HostConfig'].get('PidMode') in ['',None] and obj['HostConfig'].get('Privileged') is False,'own private PID namespace and unprivileged original process');need(obj['HostConfig']['Memory']==self.profile['limits']['nativeMemory'],'exact native memory cap');logs=self.root/'evidence';stdout=logs/(label+'.stdout');stderr=logs/(label+'.stderr');observed=logs/(label+'-actual-compiler-processes.jsonl');started=time.monotonic();started_wall=time.time();reason=None;seen={};cache={};last_sample=started;resource_failure=None;previous_log_bytes=sum(p.stat().st_size for phase in ['original-build','original-tests'] for suffix in ['.stdout','.stderr'] for p in [logs/(phase+suffix)] if p.exists());remaining_log_bytes=self.profile['limits']['logBytes']-previous_log_bytes;need(remaining_log_bytes>0,'remaining cumulative original log budget')
   need(time.monotonic()<deadline,'original remaining budget before Docker start')
+  # From registration on, every Docker action of this phase names the captured
+  # immutable ID: a container later given this name is never started, observed,
+  # inspected for terminal credit or copied from.
+  producer_id=producer_binding['id'];api=ProducerAPI(self,name)
   with stdout.open('xb') as so,stderr.open('xb') as se,observed.open('x') as observations:
-   child=subprocess.Popen(['docker','start','-a',name],stdout=so,stderr=se,start_new_session=True)
+   child=subprocess.Popen(['docker','start','-a',producer_id],stdout=so,stderr=se,start_new_session=True)
    try:
     while child.poll() is None:
      now=time.monotonic()
      if now>=deadline:reason='original combined240min build/test deadline';break
      if stdout.stat().st_size+stderr.stat().st_size>remaining_log_bytes:reason='original log bound';break
      if shutil.disk_usage(self.root).free<self.profile['limits']['freeReserve']:reason='physical host free reserve';break
-     self.compiler_processes(name,seen,cache,observations)
+     self.compiler_processes(producer_id,seen,cache,observations)
      if now-last_sample>=120:
       try:
        live=observe_live_resource(self,'meter-'+str(int(now)),deadline,producer_binding=producer_binding)
@@ -242,7 +267,7 @@ class Controller:
        resource_failure={'errorType':type(error).__name__,'privacySafeProjection':error.safe_projection if isinstance(error,ObservationIncomplete) else None};freeze(logs/(label+'-LIVE-RESOURCE-FAILURE.json'),encoded({'context':self.ctx,**resource_failure}));reason='live resource observation incomplete';break
       last_sample=now
      time.sleep(.5)
-    if reason:self.docker(['stop','--time','20',producer_binding['id']],seconds=30,check=False)
+    if reason:self.docker(['stop','--time','20',producer_id],seconds=30,check=False)
     try:code=child.wait(timeout=30)
     except subprocess.TimeoutExpired:code=None
    finally:
@@ -250,14 +275,14 @@ class Controller:
      settle_native_client(child,lambda:self.stop_owned(name),logs,label,self.state['cleanupDeadline'])
     observations.flush();os.fsync(observations.fileno())
   if stdout.stat().st_size+stderr.stat().st_size>remaining_log_bytes:reason='terminal cumulative original log bound'
-  terminal=self.own_container(name)
+  terminal=api.inspect_id(producer_id,min(self.state['phaseDeadline'],self.state['cleanupDeadline']))
   if terminal is None:
-   api=ProducerAPI(self,name);absence=api.inspect_id(producer_binding['id'],min(deadline,self.state['cleanupDeadline']));attempt=self.state.get('nativeRemovalAttempts',{}).get(name);need(absence is None and type(attempt) is dict and attempt.get('binding')==producer_binding and attempt.get('protectedPreservation',{}).get('existingProtectedBodiesPreserved') is True,'owned producer abort protected custody and exact absence required');row={'phase':label,'exitCode':None,'originalArgv':argv,'originalCodeExecuted':None,'liveResourceFailure':resource_failure,'stopReason':'owned producer aborted; original exit unknown','dockerClientExitCode':code,'protectedRemovalAttempt':attempt,'elapsedSeconds':time.monotonic()-started,'sourceOrCompilerCalledSandboxed':False};return deadline_receipt(logs/(label+'-TERMINAL.json'),row,deadline,{'stopReason':'owned producer abort and original combined deadline; original exit unknown'},started)
+   attempt=self.state.get('nativeRemovalAttempts',{}).get(name);need(type(attempt) is dict and attempt.get('binding')==producer_binding and attempt.get('protectedPreservation',{}).get('existingProtectedBodiesPreserved') is True,'owned producer abort protected custody and exact absence required');row={'phase':label,'exitCode':None,'originalArgv':argv,'originalCodeExecuted':None,'liveResourceFailure':resource_failure,'stopReason':'owned producer aborted; original exit unknown','dockerClientExitCode':code,'protectedRemovalAttempt':attempt,'elapsedSeconds':time.monotonic()-started,'sourceOrCompilerCalledSandboxed':False};return deadline_receipt(logs/(label+'-TERMINAL.json'),row,deadline,{'stopReason':'owned producer abort and original combined deadline; original exit unknown'},started)
   need(not terminal['State'].get('Running'),'owned original process stopped before protected receipt copy');controls={};observed_controls={};receipt_errors=[];expected={**binding,'phase':phase,'profileSHA256':hash_file(HERE/'profile.json')[1],'supervisorSHA256':hash_file(HERE/'native_entry.py')[1]}
   retain_native_identity(logs,label,'terminal',terminal)
   for member in ['START','RESULT']:
    try:
-    destination=logs/(label+'-PROTECTED-'+member+'.json');copied,_=self.docker(['cp',name+':/native-control/'+member+'.json',str(destination)],seconds=20,check=False);need(copied['exitCode']==0 and copied['reason'] is None,'protected '+member+' receipt unavailable');need(destination.is_file() and not destination.is_symlink() and destination.stat().st_size<=65536,'protected physical receipt');value=read_json(destination,65536);observed_controls[member]=value;need(value.get('binding')==expected and value.get('originalArgv')==argv and value.get('schemaVersion')==2,'protected exact original command/bundle/context binding');need(type(value.get('originalCommandStarted')) is bool,'protected original start state')
+    destination=logs/(label+'-PROTECTED-'+member+'.json');copied,_=self.docker(['cp',producer_id+':/native-control/'+member+'.json',str(destination)],seconds=20,check=False);need(copied['exitCode']==0 and copied['reason'] is None,'protected '+member+' receipt unavailable');need(destination.is_file() and not destination.is_symlink() and destination.stat().st_size<=65536,'protected physical receipt');value=read_json(destination,65536);observed_controls[member]=value;need(value.get('binding')==expected and value.get('originalArgv')==argv and value.get('schemaVersion')==2,'protected exact original command/bundle/context binding');need(type(value.get('originalCommandStarted')) is bool,'protected original start state')
     if value['originalCommandStarted']:need(type(value.get('originalChildPID')) is int and value['originalChildPID']>0 and type(value.get('originalStartedWallTime')) in [int,float] and value['originalStartedWallTime']>0,'protected actual child admission identity')
     if member=='START':need(value['originalCommandStarted'] is True and value.get('originalExitCode') is None,'protected preterminal child start receipt')
     else:need((value['originalCommandStarted'] and value.get('ownChildReaped') is True and type(value.get('originalExitCode')) is int) or (value['originalCommandStarted'] is False and value.get('originalExitCode') is None),'protected started/exit/reap consistency')
@@ -276,14 +301,14 @@ def capacity(root,profile):
   value,n=values.raw_decode(text);parts.append(value);text=text[n:].lstrip()
  arch,cpus,memory,docker_root=parts;limit=profile['limits'];capacity_plan(profile);free=shutil.disk_usage(root).free;need(arch in ['amd64','x86_64'] and cpus>=limit['minCPUs'] and memory>=limit['minHostMemory'],'actual original AMD64/4CPU/15GiB host capacity');need(free>=limit['minimumFreeBeforeInputs'],'fresh full84,020,297,728byte scratch envelope');need(os.stat(root).st_dev==os.stat(docker_root).st_dev,'Docker and capture storage physical accounting share admitted filesystem');row,p=process(['docker','container','ls','-q'],root/'control'/'capacity-running',time.monotonic()+30);need(row['exitCode']==0 and row['reason'] is None and not p.read_bytes().strip(),'no existing running containers displaced');return {'architecture':arch,'CPUs':cpus,'memoryBytes':memory,'freeBytes':free,'requiredFullScratchBytes':limit['minimumFreeBeforeInputs'],'DockerRootDir':docker_root,'kernelFilesystemQuotaClaimed':False,'nativeAdmissionDoesNotProve12GiBRecoveryOrInstantArtifactQuota':True}
 def prove_image(c):
- p=c.profile;alias=c.state['imageAlias'];reserve_image_inputs(c);c.docker(['pull','--platform','linux/amd64',p['image']['reference']],seconds=900);admit_pulled_image(c);need(shutil.disk_usage(c.root).free>=9*1024**3,'same nine GiB opaque image scratch admission after pull before tag/save');c.docker(['tag',p['image']['reference'],alias]);c.state['imageAliasCreated']=True;c.save();image=c.inspect('image',alias);need(image and image['Architecture']=='amd64' and image['Os']=='linux' and image['RootFS']['Layers']==['sha256:'+x for x in p['image']['diffIDs']],'fresh actual original image architecture/raw layer identities');target=c.root/'original-image-proof.tar';c.docker(['save','--output',str(target),alias],seconds=600);need(target.stat().st_size<=8*1024**3,'independent original image export scratch bound');config=None;layer_hashes=[]
+ p=c.profile;alias=c.state['imageAlias'];reserve_image_inputs(c);c.docker(['pull','--platform','linux/amd64',p['image']['reference']],seconds=900);admitted=admit_pulled_image(c);need(shutil.disk_usage(c.root).free>=9*1024**3,'same nine GiB opaque image scratch admission after pull before tag/save');c.docker(['tag',admitted['Id'],alias]);c.state['imageAliasCreated']=True;c.save();image=c.inspect('image',alias);need(image and image['Id']==admitted['Id'],'owned alias names the admitted image ID');need(image['Architecture']=='amd64' and image['Os']=='linux' and image['RootFS']['Layers']==['sha256:'+x for x in p['image']['diffIDs']],'fresh actual original image architecture/raw layer identities');target=c.root/'original-image-proof.tar';c.docker(['save','--output',str(target),image['Id']],seconds=600);need(target.stat().st_size<=8*1024**3,'independent original image export scratch bound');config=None;layer_hashes=[]
  with tarfile.open(target,'r:') as t:
   entries=t.getmembers();need(len(entries)<=1000,'original image export metadata bound');configs=[x for x in entries if x.isfile() and (x.name=='blobs/sha256/'+p['image']['configSHA256'] or x.name==p['image']['configSHA256']+'.json')];need(len(configs)==1 and configs[0].size<=65536,'exact original config in physical image export');body=t.extractfile(configs[0]).read();need(digest(body)==p['image']['configSHA256'],'exported original config bytes');config=json.loads(body);m=t.getmember('manifest.json');need(m.isfile() and m.size<=65536,'Docker export layer map');man=json.loads(t.extractfile(m).read());need(len(man)==1 and len(man[0]['Layers'])==4,'four actual original layers in export')
   for name,expected in zip(man[0]['Layers'],p['image']['diffIDs']):
    item=t.getmember(name);need(item.isfile(),'raw layer byte member');h=hashlib.sha256();n=0;f=t.extractfile(item);signature=f.read(2);f.seek(0);stream=gzip.GzipFile(fileobj=f,mode='rb') if signature==b'\x1f\x8b' else f
    for block in iter(lambda:stream.read(1048576),b''):need(time.monotonic()<c.state['preparationDeadline'],'original layer proof within preparation deadline');h.update(block);n+=len(block);need(n<=p['image']['rawLayerBytes'],'original raw layer byte bound')
    need(h.hexdigest()==expected,'actual exported original rawdiffID');layer_hashes.append({'bytes':n,'sha256':h.hexdigest()})
- need(sum(x['bytes'] for x in layer_hashes)==p['image']['rawLayerBytes'],'actual original raw layer total');freeze(c.root/'evidence'/'ORIGINAL-IMAGE-IDENTITY.json',encoded({'requestedOriginalManifest':p['image']['manifestSHA256'],'actualRuntimeImageID':image['Id'],'originalConfig':p['image']['configSHA256'],'rawOriginalLayers':layer_hashes,'staticNoticePackageHandoffSHA256':p['image']['staticNoticePackageHandoffSHA256'],'historicalPublisherConsumptionAttested':False}));target.unlink() # exact redundant transport, original config/layer bytes already proved and operator custody is pinned
+ need(sum(x['bytes'] for x in layer_hashes)==p['image']['rawLayerBytes'],'actual original raw layer total');freeze(c.root/'evidence'/'ORIGINAL-IMAGE-IDENTITY.json',encoded({'requestedOriginalManifest':p['image']['manifestSHA256'],'actualRuntimeImageID':image['Id'],'originalConfig':p['image']['configSHA256'],'rawOriginalLayers':layer_hashes,'staticNoticePackageHandoffSHA256':p['image']['staticNoticePackageHandoffSHA256'],'historicalPublisherConsumptionAttested':False}));c.state['imageID']=image['Id'];c.save();target.unlink() # exact redundant transport, original config/layer bytes already proved and operator custody is pinned
 def produce(nonce,pin):
  profile=manifest_check(pin);mode=original_mode_configuration(profile);ctx=context(nonce);need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and os.environ.get('GITHUB_REPOSITORY')==profile['repository'] and os.environ.get('GITHUB_RUN_ATTEMPT')=='1','manual-only selected repository first attempt');need(os.environ.get('CHECKTRAIL_OPERATOR_ACK')=='sdk10-original-e34-240m-'+pin[:12],'concrete operator source-execution acknowledgement');root=root_path(nonce);need(not root.exists(),'new owned hosted root');root.mkdir(mode=0o700)
  for name in ['control','protected','materialization','evidence','capture','windows']:(root/name).mkdir(mode=0o700)

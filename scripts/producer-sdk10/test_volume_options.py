@@ -8,7 +8,7 @@ class VolumeControls(unittest.TestCase):
  def setUp(self):self.temp=tempfile.TemporaryDirectory(prefix='sdk10-volume-synthetic-');self.root=Path(self.temp.name)
  def tearDown(self):self.temp.cleanup()
  def controller(self):
-  c=object.__new__(driver.Controller);c.root=self.root;c.ctx={'run':123,'head':'a'*40,'nonce':'synthetic-test','attempt':1};c.state={'volume':'owned-work','tempVolume':'owned-temp','imageAlias':'inert:synthetic'};c.profile=json.loads((Path(driver.__file__).parent/'profile.json').read_bytes());return c
+  c=object.__new__(driver.Controller);c.root=self.root;c.ctx={'run':123,'head':'a'*40,'nonce':'synthetic-test','attempt':1};c.state={'volume':'owned-work','tempVolume':'owned-temp','imageAlias':'inert:synthetic','imageID':'sha256:'+'7'*64};c.profile=json.loads((Path(driver.__file__).parent/'profile.json').read_bytes());return c
  def test_every_helper_native_readonly_and_capture_mode_disables_copy_for_all_three_volumes(self):
   c=self.controller()
   for readonly,helper,capture in [(False,False,False),(False,True,False),(True,True,False),(True,True,True)]:
