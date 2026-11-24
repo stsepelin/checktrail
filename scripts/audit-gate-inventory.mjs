@@ -36,6 +36,16 @@ const alternateAcceptanceFiles = {
     lifecycle: "dist/test/helm-extensions-lifecycle.test.js",
   },
 };
+// The native verifier refuses to select the aggregate mutation profile: each of
+// its cases runs in every per-family cohort (verify-required-native-tests.mjs).
+const controllerProfiles = {
+  "mutation-runners": [
+    "mutation-vitest",
+    "mutation-jest",
+    "mutation-pytest",
+    "mutation-phpunit",
+  ],
+};
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const canonical = (value) =>
   JSON.stringify(value, (_key, item) =>
@@ -284,7 +294,8 @@ try {
     );
   // These are declaration counts, separate from execution and acceptance.
   // A case is addressed by its owning profile key as well as file and name.
-  const sharedCases = new Set();
+  // Occurrences are counted: the native runner refuses a repeated address.
+  const sharedCases = new Map();
   for (const [owner, rows] of Object.entries(current)) {
     assert.ok(
       Array.isArray(rows),
@@ -311,7 +322,8 @@ try {
           row.name.length <= 512,
         "Invalid required native case name",
       );
-      sharedCases.add(canonical([owner, row.file, row.name]));
+      const address = canonical([owner, row.file, row.name]);
+      sharedCases.set(address, (sharedCases.get(address) ?? 0) + 1);
     }
   }
   let casesInSharedManifest = 0;
@@ -359,7 +371,12 @@ try {
         if (matches.length === 1 && matches[0].file === file)
           alternateBindings.push(binding);
         else unresolvedBindings.push(binding);
-      } else if (sharedCases.has(canonical([profile.id, file, entry.name]))) {
+      } else if (
+        (controllerProfiles[profile.id] ?? [profile.id]).every(
+          (owner) =>
+            sharedCases.get(canonical([owner, file, entry.name])) === 1,
+        )
+      ) {
         declaredFileBindings++;
       } else unresolvedBindings.push(binding);
     }

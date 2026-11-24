@@ -21,9 +21,13 @@ unresolved. An unrelated adjacent callback name does not invalidate a correct
 binding. The selected inventory and its pinned scope remain unchanged.
 
 Declared-file bindings follow the same address rule: a case counts only when its
-default file and name appear under its own profile key. The same callback filed
-only under another profile, such as `core`, leaves the case unresolved; a copy
-kept in both profiles still resolves.
+default file and name appear exactly once under each profile key that runs it.
+For most profiles that is its own key. `mutation-runners` is an aggregate the
+native verifier refuses to select, so its cases must appear in each of
+`mutation-vitest`, `mutation-jest`, `mutation-pytest` and `mutation-phpunit`.
+The same callback filed only under another profile, such as `core`, or repeated
+within one profile, leaves the case unresolved; a copy kept in a second profile
+still resolves.
 
 The `controllerCaseBindings` report partitions every selected case into a
 declared-file binding, an alternate-file binding or an unresolved binding.

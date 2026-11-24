@@ -396,7 +396,7 @@ for (const [profile, caseId, file] of alternateBindings) {
   });
 }
 
-test("finite inventory strict freeze refuses unresolved case bindings even when selection freeze is declared", async (t) => {
+async function frozen(t: TestContext) {
   const root = await source(t);
   await alter<SelectedInventory & { unresolvedFreezeDecisions: unknown[] }>(
     root,
@@ -406,17 +406,107 @@ test("finite inventory strict freeze refuses unresolved case bindings even when 
       value.unresolvedFreezeDecisions = [];
     },
   );
-  const complete = await audit(root, true);
+  return root;
+}
+const unresolvedAddresses = (stdout: string) =>
+  (
+    JSON.parse(stdout).controllerCaseBindings.unresolvedBindings as {
+      profile: string;
+      caseId: string;
+    }[]
+  )
+    .map((row) => row.profile + "/" + row.caseId)
+    .sort();
+const selectedCaseIds = async (profile: string) => {
+  const inventory = JSON.parse(
+    await readFile(path.join(repository, files[0]!), "utf8"),
+  ) as {
+    extensionProfiles: {
+      id: string;
+      acceptanceCases: { id: string; name: string }[];
+    }[];
+  };
+  return inventory.extensionProfiles.find((row) => row.id === profile)!
+    .acceptanceCases;
+};
+
+test("finite inventory pins the mutation controller cohorts the native verifier selects", async () => {
+  const verifier = await readFile(
+    path.join(repository, "scripts/verify-required-native-tests.mjs"),
+    "utf8",
+  );
+  const audited = await readFile(script, "utf8");
+  const list = (text: string, name: string) =>
+    JSON.parse(
+      new RegExp("const " + name + " = (\\[[^\\]]*\\])", "u")
+        .exec(text)![1]!
+        .replace(/,(\s*)\]$/u, "$1]"),
+    ) as string[];
+  const block = /"mutation-runners": (\[[^\]]*\])/u.exec(audited)![1]!;
+  assert.deepEqual(
+    JSON.parse(block.replace(/,(\s*)\]$/u, "$1]")),
+    list(verifier, "mutationProfiles"),
+  );
+});
+
+// Each broken case starts from a fresh frozen fixture, so the refusal can only
+// come from the one address it removes or repeats.
+test("finite inventory strict freeze refuses unresolved case bindings even when selection freeze is declared", async (t) => {
+  const complete = await audit(await frozen(t), true);
   assert.equal(complete.code, 0, complete.stderr);
   assert.equal(JSON.parse(complete.stdout).gateAComplete, false);
-  for (const profile of ["tasks-matrix", "cpp-extensions"]) {
+  assert.deepEqual(unresolvedAddresses(complete.stdout), []);
+  const mutation = (await selectedCaseIds("mutation-runners")).map(
+    (row) => "mutation-runners/" + row.id,
+  );
+  const tasks = await selectedCaseIds("tasks-matrix");
+  const broken: [string, (rows: RequiredNative) => void, string[]][] = [
+    [
+      "one per-family mutation cohort missing",
+      (rows) => {
+        delete rows["mutation-jest"];
+      },
+      mutation.slice().sort(),
+    ],
+    [
+      "a declared address repeated in its own profile",
+      (rows) => {
+        rows["tasks-matrix"]!.push({ ...rows["tasks-matrix"]![0]! });
+      },
+      [],
+    ],
+    [
+      "only the C++ privacy controller row missing",
+      (rows) => {
+        rows["cpp-extensions"] = rows["cpp-extensions"]!.filter(
+          (row) =>
+            row.file !== "dist/test/cpp-extensions-surfaces.test.js" ||
+            row.name !== "cpp-extensions privacy acceptance",
+        );
+      },
+      ["cpp-extensions/privacy"],
+    ],
+  ];
+  for (const [label, edit, expected] of broken) {
+    const root = await frozen(t);
+    let repeated = "";
     await alter<RequiredNative>(root, files[2]!, (rows) => {
-      delete rows[profile];
+      repeated = rows["tasks-matrix"]![0]!.name;
+      edit(rows);
     });
-    const incomplete = await audit(root, true);
-    assert.equal(incomplete.code, 2);
-    assert.ok(
-      JSON.parse(incomplete.stdout).controllerCaseBindings.unresolvedCases > 0,
-    );
+    const want =
+      expected.length > 0
+        ? expected
+        : ["tasks-matrix/" + tasks.find((row) => row.name === repeated)!.id];
+    const result = await audit(root, true);
+    assert.equal(result.code, 2, label + ": " + result.stderr);
+    assert.deepEqual(unresolvedAddresses(result.stdout), want, label);
   }
+  const root = await frozen(t);
+  await alter<RequiredNative>(root, files[2]!, (rows) => {
+    delete rows["mutation-runners"];
+  });
+  const aggregate = await audit(root, true);
+  assert.equal(aggregate.code, 0, aggregate.stderr);
+  assert.deepEqual(unresolvedAddresses(aggregate.stdout), []);
 });
