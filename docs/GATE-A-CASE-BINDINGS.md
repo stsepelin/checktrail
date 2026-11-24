@@ -18,7 +18,8 @@ binding, its exact selected callback name must appear once in the same manifest
 profile and point to the file above. A same-named entry in another profile, an
 entry in the default file, duplicate entries or a different file leave that case
 unresolved. An unrelated adjacent callback name does not invalidate a correct
-binding. The selected inventory and its pinned scope remain unchanged.
+binding, although the C++ selector refuses the profile because of it (see
+controller admission below). The selected inventory and its pinned scope remain unchanged.
 
 Declared-file bindings follow the same address rule: a case counts only when its
 default file and name appear exactly once under each profile key that runs it.
@@ -35,6 +36,33 @@ declared-file binding, an alternate-file binding or an unresolved binding.
 for compatibility; its outside count does not mean these controllers are absent.
 `--require-frozen` also refuses unresolved bindings, even when selection metadata
 declares the inventory frozen.
+
+A controller checks a profile's whole row set, selected or not, before it runs any
+callback, so a resolved binding is not enough. The `controllerAdmission` report
+lists each controller profile that a selected case resolves to and refuses it
+when:
+
+- any file and name pair repeats within that profile (`duplicate-address`),
+  which the native runner rejects for the whole profile. The same pair in a
+  different profile, or in the `mutation-runners` aggregate, stays valid;
+- its dedicated selector would reject the rows (`selector-rows-differ`). These
+  profiles do not use the generic verifier: `cpp-extensions`,
+  `dotnet-generator-extensions`, `scala-extensions`, `ruby-extensions`,
+  `consumer-impact`, `multi-candidate-workflow`, `confidence-provenance`,
+  `attempt-archives`, `lifecycle-platforms`, `tasks-matrix`,
+  `native-license-provenance`, `resource-release-readiness` and
+  `independent-evaluation-protocol`. Each selector requires exactly the selected
+  cases at their bound files. The C++ selector also requires the unselected
+  `cpp-extensions compiler formatter analyzer acceptance` row and ignores order.
+  The .NET generator selector ignores order. The others require the selected
+  order;
+- the Tasks selector's preserved `mcp-tasks` cohort is not exactly 10 distinct
+  rows outside the Tasks acceptance file (`companion-cohort-differs`).
+
+The audit reproduces these rules from data and never imports a controller. A test
+runs each exported selector against the same manifest variants and requires the
+same verdict. For the two inline checks it pins the source text instead.
+`--require-frozen` exits 2 on any admission refusal.
 
 The existing C++, Terraform and Helm extension container controllers select
 these manifest profiles through `verify-required-native-tests.mjs`; source and

@@ -46,6 +46,70 @@ const controllerProfiles = {
     "mutation-phpunit",
   ],
 };
+// These controllers take a profile's manifest rows through a dedicated selector
+// rather than the generic native verifier. Each refuses the whole profile before
+// any callback runs unless its rows equal the selected cases at their bound
+// files, plus `extra` names in the default file. An `ordered` selector compares
+// the rows as written; the others compare them sorted. The .NET generator
+// compares against its shard manifest, whose source partitions are exactly the
+// selected cases. `companions` are other profiles the selector requires at an
+// exact duplicate-free size, none filed in this profile's default file.
+const dedicatedSelectors = {
+  "cpp-extensions": {
+    controller: "scripts/selected-clang-consumer-witness.mjs",
+    ordered: false,
+    extra: ["cpp-extensions compiler formatter analyzer acceptance"],
+  },
+  "dotnet-generator-extensions": {
+    controller: "scripts/dotnet-generator-shards.mjs",
+    ordered: false,
+  },
+  "scala-extensions": {
+    controller: "scripts/scala-native-ci-phases.mjs",
+    ordered: true,
+  },
+  "ruby-extensions": {
+    controller: "scripts/ruby-extensions-acceptance-selection.mjs",
+    ordered: true,
+  },
+  "consumer-impact": {
+    controller: "scripts/consumer-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "multi-candidate-workflow": {
+    controller: "scripts/review-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "confidence-provenance": {
+    controller: "scripts/review-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "attempt-archives": {
+    controller: "scripts/attempt-whole-evidence.mjs",
+    ordered: true,
+  },
+  "lifecycle-platforms": {
+    controller: "scripts/verify-lifecycle-platforms.mjs",
+    ordered: true,
+  },
+  "tasks-matrix": {
+    controller: "scripts/tasks-runtime-evidence.mjs",
+    ordered: true,
+    companions: { "mcp-tasks": 10 },
+  },
+  "native-license-provenance": {
+    controller: "scripts/native-provenance-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "resource-release-readiness": {
+    controller: "scripts/verify-resource-release-readiness.mjs",
+    ordered: true,
+  },
+  "independent-evaluation-protocol": {
+    controller: "scripts/evaluation-runtime-evidence.mjs",
+    ordered: true,
+  },
+};
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const canonical = (value) =>
   JSON.stringify(value, (_key, item) =>
@@ -387,6 +451,65 @@ try {
     selectedCases,
     "Every selected case must have one binding disposition",
   );
+  // A controller validates a profile's full row set, selected or not, before
+  // running any of it: one refusal stops every case the profile would run.
+  // The aggregate mutation profile is not a controller profile.
+  const admissionProfiles = [
+    ...new Set(
+      inventory.extensionProfiles.flatMap(
+        (profile) => controllerProfiles[profile.id] ?? [profile.id],
+      ),
+    ),
+  ].sort();
+  const admissionRefusals = [];
+  for (const owner of admissionProfiles) {
+    const rows = current[owner] ?? [];
+    const addresses = rows.map((row) => canonical([row.file, row.name]));
+    // resolveRequirements in required-test-evidence.mjs refuses a profile
+    // that repeats any file/name pair; the same pair in another profile is
+    // a separate requirement.
+    if (new Set(addresses).size !== addresses.length)
+      admissionRefusals.push({
+        profile: owner,
+        controller: "scripts/required-test-evidence.mjs",
+        reason: "duplicate-address",
+      });
+    const selector = dedicatedSelectors[owner];
+    if (!selector) continue;
+    const profile = inventory.extensionProfiles.find((p) => p.id === owner);
+    const expected = [
+      ...profile.acceptanceCases.map((entry) =>
+        canonical([
+          alternateAcceptanceFiles[owner]?.[entry.id] ?? profile.acceptanceFile,
+          entry.name,
+        ]),
+      ),
+      ...(selector.extra ?? []).map((name) =>
+        canonical([profile.acceptanceFile, name]),
+      ),
+    ];
+    const arranged = (list) => (selector.ordered ? list : [...list].sort());
+    if (canonical(arranged(addresses)) !== canonical(arranged(expected)))
+      admissionRefusals.push({
+        profile: owner,
+        controller: selector.controller,
+        reason: "selector-rows-differ",
+      });
+    for (const [companion, size] of Object.entries(selector.companions ?? {})) {
+      const companionRows = current[companion] ?? [];
+      if (
+        companionRows.length !== size ||
+        new Set(companionRows.map((row) => canonical([row.file, row.name])))
+          .size !== size ||
+        companionRows.some((row) => row.file === profile.acceptanceFile)
+      )
+        admissionRefusals.push({
+          profile: owner,
+          controller: selector.controller,
+          reason: "companion-cohort-differs",
+        });
+    }
+  }
   process.stdout.write(
     JSON.stringify({
       schemaVersion: 1,
@@ -424,6 +547,14 @@ try {
         unresolvedBindings,
         nativeExecutionAssessed: false,
       },
+      controllerAdmission: {
+        controllerProfiles: admissionProfiles.length,
+        dedicatedSelectorProfiles: Object.keys(dedicatedSelectors).sort(),
+        refusedProfiles: new Set(admissionRefusals.map((row) => row.profile))
+          .size,
+        refusals: admissionRefusals,
+        nativeExecutionAssessed: false,
+      },
       unresolvedFreezeDecisions: inventory.unresolvedFreezeDecisions.length,
       frozen: inventory.frozen,
       implementationAcceptanceAssessed: false,
@@ -433,7 +564,9 @@ try {
   );
   if (
     process.argv[3] === "--require-frozen" &&
-    (!inventory.frozen || unresolvedBindings.length > 0)
+    (!inventory.frozen ||
+      unresolvedBindings.length > 0 ||
+      admissionRefusals.length > 0)
   )
     process.exitCode = 2;
 } catch (error) {

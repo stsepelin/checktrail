@@ -324,17 +324,29 @@ test("finite inventory resolves every separate privacy and lifecycle controller 
   assert.deepEqual(bindings.unresolvedBindings, []);
   assert.equal(bindings.nativeExecutionAssessed, false);
   assert.equal(report.gateAComplete, false);
-  // An unrelated adjacent name must not make an exact existing binding ambiguous.
-  await alter<RequiredNative>(root, files[2]!, (rows) => {
+  // An unrelated adjacent name must not make an exact existing binding
+  // ambiguous. The generic verifier admits the extra Terraform and Helm rows;
+  // the C++ selector admits no extra row but compares its rows sorted, so its
+  // near miss is a reordering.
+  const near = await frozen(t);
+  await alter<RequiredNative>(near, files[2]!, (rows) => {
+    rows["cpp-extensions"]!.reverse();
     for (const [profile, caseId, file] of alternateBindings)
-      rows[profile]!.push({
-        file: `dist/test/${file}.test.js`,
-        name: `${profile} ${caseId} acceptance adjacent`,
-      });
+      if (profile !== "cpp-extensions")
+        rows[profile]!.push({
+          file: `dist/test/${file}.test.js`,
+          name: `${profile} ${caseId} acceptance adjacent 4127`,
+        });
   });
+  const admitted = await audit(near, true);
+  assert.equal(admitted.code, 0, admitted.stdout);
   assert.deepEqual(
-    JSON.parse((await audit(root)).stdout).controllerCaseBindings,
+    JSON.parse(admitted.stdout).controllerCaseBindings,
     bindings,
+  );
+  assert.deepEqual(
+    JSON.parse(admitted.stdout).controllerAdmission.refusals,
+    [],
   );
 });
 
@@ -511,4 +523,366 @@ test("finite inventory strict freeze refuses unresolved case bindings even when 
     JSON.parse(aggregate.stdout).selectedCaseBindings,
     JSON.parse(complete.stdout).selectedCaseBindings,
   );
+});
+
+interface AdmissionRefusal {
+  profile: string;
+  controller: string;
+  reason: string;
+}
+const admissionRefusals = (stdout: string) =>
+  JSON.parse(stdout).controllerAdmission.refusals as AdmissionRefusal[];
+const genericRunner = "scripts/required-test-evidence.mjs";
+
+test("finite inventory strict freeze refuses a profile its dedicated controller selector rejects", async (t) => {
+  const complete = await audit(await frozen(t), true);
+  assert.equal(complete.code, 0, complete.stderr);
+  assert.deepEqual(admissionRefusals(complete.stdout), []);
+  const clang = "scripts/selected-clang-consumer-witness.mjs";
+  const tasks = "scripts/tasks-runtime-evidence.mjs";
+  const broken: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
+    [
+      [
+        "the unselected C++ compiler formatter analyzer row removed",
+        (rows) => {
+          rows["cpp-extensions"] = rows["cpp-extensions"]!.filter(
+            (row) =>
+              row.name !==
+              "cpp-extensions compiler formatter analyzer acceptance",
+          );
+        },
+        [
+          {
+            profile: "cpp-extensions",
+            controller: clang,
+            reason: "selector-rows-differ",
+          },
+        ],
+      ],
+      [
+        "an adjacent C++ row added",
+        (rows) => {
+          rows["cpp-extensions"]!.push({
+            file: "dist/test/cpp-extensions-surfaces.test.js",
+            name: "cpp-extensions privacy acceptance adjacent 4127",
+          });
+        },
+        [
+          {
+            profile: "cpp-extensions",
+            controller: clang,
+            reason: "selector-rows-differ",
+          },
+        ],
+      ],
+      [
+        "two Tasks rows swapped",
+        (rows) => {
+          const list = rows["tasks-matrix"]!;
+          [list[2], list[6]] = [list[6]!, list[2]!];
+        },
+        [
+          {
+            profile: "tasks-matrix",
+            controller: tasks,
+            reason: "selector-rows-differ",
+          },
+        ],
+      ],
+      [
+        "the preserved MCP Tasks cohort grown",
+        (rows) => {
+          rows["mcp-tasks"]!.push({
+            file: "dist/test/mcp-validation-tasks.test.js",
+            name: "MCP Tasks companion row 6203",
+          });
+        },
+        [
+          {
+            profile: "tasks-matrix",
+            controller: tasks,
+            reason: "companion-cohort-differs",
+          },
+        ],
+      ],
+      [
+        "an adjacent .NET generator row added",
+        (rows) => {
+          rows["dotnet-generator-extensions"]!.push({
+            file: "dist/test/gate-dotnet-generator-extensions.test.js",
+            name: "dotnet-generator-extensions adjacent acceptance 9157",
+          });
+        },
+        [
+          {
+            profile: "dotnet-generator-extensions",
+            controller: "scripts/dotnet-generator-shards.mjs",
+            reason: "selector-rows-differ",
+          },
+        ],
+      ],
+    ];
+  for (const [label, edit, expected] of broken) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(result.code, 2, label + ": " + result.stderr);
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
+  }
+});
+
+const canonicalRow = (row: NativeCase) => JSON.stringify([row.file, row.name]);
+const diagnostic = {
+  file: "dist/test/gate-helm-extensions.test.js",
+  name: "helm-extensions diagnostic acceptance",
+};
+test("finite inventory strict freeze refuses a controller profile that repeats an unselected address", async (t) => {
+  const repeated = await frozen(t);
+  await alter<RequiredNative>(repeated, files[2]!, (rows) => {
+    assert.equal(
+      rows["helm-extensions"]!.filter(
+        (row) => canonicalRow(row) === canonicalRow(diagnostic),
+      ).length,
+      1,
+    );
+    rows["helm-extensions"]!.push({ ...diagnostic });
+  });
+  const refused = await audit(repeated, true);
+  assert.equal(refused.code, 2, refused.stderr);
+  assert.deepEqual(unresolvedAddresses(refused.stdout), []);
+  assert.deepEqual(admissionRefusals(refused.stdout), [
+    {
+      profile: "helm-extensions",
+      controller: genericRunner,
+      reason: "duplicate-address",
+    },
+  ]);
+});
+// The same address in a second controller profile is that profile's own
+// requirement, and the aggregate mutation profile runs under no controller.
+test("finite inventory strict freeze admits an address repeated across profiles or in the aggregate", async (t) => {
+  const nearMisses: [string, (rows: RequiredNative) => void][] = [
+    [
+      "the Helm diagnostic row also filed under Terraform",
+      (rows) => {
+        rows["terraform-extensions"]!.push({ ...diagnostic });
+      },
+    ],
+    [
+      "a row repeated in the aggregate mutation profile",
+      (rows) => {
+        rows["mutation-runners"]!.push({ ...rows["mutation-runners"]![4]! });
+      },
+    ],
+  ];
+  for (const [label, edit] of nearMisses) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(result.code, 0, label + ": " + result.stdout);
+    assert.deepEqual(unresolvedAddresses(result.stdout), [], label);
+    assert.deepEqual(admissionRefusals(result.stdout), [], label);
+  }
+});
+
+interface ScopeProfile {
+  id: string;
+  acceptanceFile: string;
+  acceptanceCases: { id: string; name: string }[];
+}
+interface Scope {
+  extensionProfiles: ScopeProfile[];
+}
+const scriptModule = (name: string) =>
+  import(new URL("../../scripts/" + name, import.meta.url).href);
+// Two controllers check their rows inline at the top of a script that runs
+// native tests on import, so their rule is pinned by its source text instead.
+const inlineSelection = `assert.deepEqual(
+  requirements,
+  selection.acceptanceCases.map((item) => ({
+    file: selection.acceptanceFile,
+    name: item.name,
+  })),
+);`;
+const inlineSelector =
+  (id: string) => (_root: string, rows: RequiredNative, scope: Scope) => {
+    const selected = scope.extensionProfiles.find((row) => row.id === id)!;
+    assert.deepEqual(
+      rows[id],
+      selected.acceptanceCases.map((item) => ({
+        file: selected.acceptanceFile,
+        name: item.name,
+      })),
+    );
+  };
+const controllerSelectors: Record<
+  string,
+  (root: string, rows: RequiredNative, scope: Scope) => Promise<unknown> | void
+> = {
+  "cpp-extensions": async (root) =>
+    (
+      await scriptModule("selected-clang-consumer-witness.mjs")
+    ).selectSelectedClangRequirements(root),
+  "dotnet-generator-extensions": async (_root, rows) =>
+    (
+      await scriptModule("dotnet-generator-shards.mjs")
+    ).validateGeneratorShardManifest(
+      JSON.parse(
+        await readFile(
+          path.join(repository, "scripts/dotnet-generator-shards.v1.json"),
+          "utf8",
+        ),
+      ),
+      rows,
+    ),
+  "scala-extensions": async (_root, rows) =>
+    (
+      await scriptModule("scala-native-ci-phases.mjs")
+    ).selectScalaExtensionSourceRequirements(rows["scala-extensions"]),
+  "ruby-extensions": async (_root, rows) =>
+    (
+      await scriptModule("ruby-extensions-acceptance-selection.mjs")
+    ).selectRubyExtensionAcceptance(rows["ruby-extensions"], "source", "all"),
+  "consumer-impact": async (_root, rows, scope) =>
+    (
+      await scriptModule("consumer-runtime-evidence.mjs")
+    ).selectConsumerRuntimeRequirements(rows, scope),
+  "multi-candidate-workflow": async (_root, rows, scope) =>
+    (
+      await scriptModule("review-runtime-evidence.mjs")
+    ).selectReviewRuntimeRequirements(rows, scope, "multi-candidate-workflow"),
+  "confidence-provenance": async (_root, rows, scope) =>
+    (
+      await scriptModule("review-runtime-evidence.mjs")
+    ).selectReviewRuntimeRequirements(rows, scope, "confidence-provenance"),
+  "attempt-archives": async (_root, rows, scope) =>
+    (
+      await scriptModule("attempt-whole-evidence.mjs")
+    ).selectAttemptWholeRequirements(rows, scope),
+  "lifecycle-platforms": inlineSelector("lifecycle-platforms"),
+  "tasks-matrix": async (_root, rows, scope) =>
+    (
+      await scriptModule("tasks-runtime-evidence.mjs")
+    ).selectTasksRuntimeRequirements(
+      rows,
+      scope.extensionProfiles.find((row) => row.id === "tasks-matrix"),
+      "linux",
+    ),
+  "native-license-provenance": async (_root, rows, scope) =>
+    (
+      await scriptModule("native-provenance-runtime-evidence.mjs")
+    ).selectProvenanceRuntimeRequirements(rows, scope),
+  "resource-release-readiness": inlineSelector("resource-release-readiness"),
+  "independent-evaluation-protocol": async (_root, rows, scope) =>
+    (
+      await scriptModule("evaluation-runtime-evidence.mjs")
+    ).selectEvaluationRuntimeRequirements(rows, scope),
+};
+
+// Each variant edits every dedicated profile at once; the audit must refuse
+// exactly the profiles whose real selector throws on the same manifest.
+test("finite inventory selector admission agrees with every dedicated controller selector", async (t) => {
+  for (const [script, key] of [
+    ["verify-lifecycle-platforms.mjs", 'profiles["lifecycle-platforms"];'],
+    [
+      "verify-resource-release-readiness.mjs",
+      ')["resource-release-readiness"];',
+    ],
+  ] as const) {
+    const text = await readFile(
+      path.join(repository, "scripts", script),
+      "utf8",
+    );
+    assert.equal(text.split(key).length, 2, script);
+    assert.equal(text.split(inlineSelection).length, 2, script);
+  }
+  const scope = JSON.parse(
+    await readFile(path.join(repository, files[0]!), "utf8"),
+  ) as Scope;
+  // The .NET generator selector compares against its shard partitions; the
+  // audit models it with the selected cases, so the two must stay equal.
+  const shards = JSON.parse(
+    await readFile(
+      path.join(repository, "scripts/dotnet-generator-shards.v1.json"),
+      "utf8",
+    ),
+  ) as { shards: { source: NativeCase[] }[] };
+  const generator = scope.extensionProfiles.find(
+    (row) => row.id === "dotnet-generator-extensions",
+  )!;
+  assert.deepEqual(
+    shards.shards.flatMap((row) => row.source.map(canonicalRow)).sort(),
+    generator.acceptanceCases
+      .map((row) =>
+        canonicalRow({ file: generator.acceptanceFile, name: row.name }),
+      )
+      .sort(),
+  );
+  const ids = Object.keys(controllerSelectors).sort();
+  const variants: [string, (rows: RequiredNative) => void][] = [
+    ["as written", () => {}],
+    [
+      "reversed",
+      (rows) => {
+        for (const id of ids) rows[id]!.reverse();
+      },
+    ],
+    [
+      "adjacent row",
+      (rows) => {
+        for (const id of ids)
+          rows[id]!.push({
+            file: rows[id]![0]!.file,
+            name: id + " adjacent acceptance 9157",
+          });
+      },
+    ],
+    [
+      "first row repeated",
+      (rows) => {
+        for (const id of ids) rows[id]!.push({ ...rows[id]![0]! });
+      },
+    ],
+    [
+      "companion cohort grown",
+      (rows) => {
+        rows["mcp-tasks"]!.push({
+          file: "dist/test/mcp-validation-tasks.test.js",
+          name: "MCP Tasks companion row 6203",
+        });
+      },
+    ],
+  ];
+  const outcomes = new Map(ids.map((id) => [id, new Set<boolean>()]));
+  for (const [label, edit] of variants) {
+    const root = await source(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const rows = JSON.parse(
+      await readFile(path.join(root, files[2]!), "utf8"),
+    ) as RequiredNative;
+    const result = await audit(root);
+    assert.equal(result.code, 0, label + ": " + result.stderr);
+    const report = JSON.parse(result.stdout);
+    assert.deepEqual(
+      report.controllerAdmission.dedicatedSelectorProfiles,
+      ids,
+      label,
+    );
+    for (const id of ids) {
+      let controllerRefused = false;
+      try {
+        await controllerSelectors[id]!(root, structuredClone(rows), scope);
+      } catch {
+        controllerRefused = true;
+      }
+      const auditRefused = (
+        report.controllerAdmission.refusals as AdmissionRefusal[]
+      ).some((row) => row.profile === id && row.controller !== genericRunner);
+      assert.equal(auditRefused, controllerRefused, label + ": " + id);
+      outcomes.get(id)!.add(controllerRefused);
+    }
+  }
+  for (const [id, seen] of outcomes)
+    assert.deepEqual([...seen].sort(), [false, true], id);
 });
