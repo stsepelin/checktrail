@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
@@ -14,6 +15,7 @@ const files = [
   "docs/gate-a-profiles.v1.json",
   "docs/gate-a-native-baseline.v1.json",
   "scripts/required-native-tests.json",
+  "scripts/ci-full-suite-profiles.json",
 ];
 interface NativeCase {
   file: string;
@@ -533,6 +535,32 @@ interface AdmissionRefusal {
 const admissionRefusals = (stdout: string) =>
   JSON.parse(stdout).controllerAdmission.refusals as AdmissionRefusal[];
 const genericRunner = "scripts/required-test-evidence.mjs";
+// ci-full-suite-shards.mjs admits every profile in its list before any shard
+// runs, so refusing one listed profile refuses each selected profile listed.
+const fullSuiteRefusals = async (except: string[] = []) =>
+  (
+    JSON.parse(await readFile(path.join(repository, files[3]!), "utf8")) as {
+      profiles: string[];
+    }
+  ).profiles
+    .filter(
+      (profile) =>
+        !except.includes(profile) &&
+        admissionProfileIds({
+          extensionProfiles: JSON.parse(
+            readFileSync(path.join(repository, files[0]!), "utf8"),
+          ).extensionProfiles,
+        }).includes(profile),
+    )
+    .map((profile) => ({
+      profile,
+      controller: "scripts/ci-full-suite-shards.mjs",
+      reason: "companion-cohort-differs",
+    }));
+const byProfile = (rows: AdmissionRefusal[]) =>
+  [...rows].sort((a, b) =>
+    a.profile < b.profile ? -1 : a.profile > b.profile ? 1 : 0,
+  );
 const installedCount = (profile: string) => ({
   profile,
   controller: `test/gate-${profile}.test.ts`,
@@ -714,6 +742,7 @@ interface CompanionCohort {
   absentNames?: string[];
   fileOrder?: string[];
   shards?: number;
+  countedBy?: string;
 }
 interface Admission {
   controllerProfiles: number;
@@ -728,11 +757,13 @@ interface Admission {
     controller: string;
     rows: number;
     profiles: string[];
+    passedOnly?: boolean;
   }[];
   installedCountCallbacks: {
     controller: string;
     rows: number;
     profiles: string[];
+    passedOnly?: boolean;
   }[];
   maxProfileRows: number;
   maxFileCharacters: number;
@@ -975,8 +1006,11 @@ const cohortBatchAdmits = (entry: CompanionCohort, rows: RequiredNative) => {
   const firsts = (entry.fileOrder ?? []).map((file) =>
     all.findIndex((row) => row.file === file),
   );
+  const counted =
+    entry.countedBy === undefined ||
+    all.some((row) => row.name === entry.countedBy);
   return (
-    (entry.rows === undefined || distinct === entry.rows) &&
+    (entry.rows === undefined || !counted || distinct === entry.rows) &&
     (!entry.disjoint || distinct === all.length) &&
     !all.some((row) => entry.absentNames?.includes(row.name)) &&
     (!entry.files || all.every((row) => entry.files!.includes(row.file))) &&
@@ -1018,7 +1052,7 @@ const countAnchors: Record<string, Record<string, string>> = {
 // runs from where the controller runs the profile, or from the profile's
 // anchor, to the next runner batch or anchor, so each later receipt check in
 // the block must agree as well as the first.
-function pinnedCounts(text: string, controller: string, profile: string) {
+function pinnedBlock(text: string, controller: string, profile: string) {
   const anchors = Object.values(countAnchors[controller] ?? {});
   const at =
     countAnchors[controller]?.[profile] !== undefined
@@ -1041,10 +1075,19 @@ function pinnedCounts(text: string, controller: string, profile: string) {
     ].filter((index) => index > at),
     text.length,
   );
-  return [
-    ...text.slice(at, end).matchAll(new RegExp(assertedCount.source, "gu")),
-  ].map((match) => Number(match[1] ?? match[2]));
+  return text.slice(at, end);
 }
+const pinnedCounts = (text: string, controller: string, profile: string) =>
+  [
+    ...pinnedBlock(text, controller, profile).matchAll(
+      new RegExp(assertedCount.source, "gu"),
+    ),
+  ].map((match) => Number(match[1] ?? match[2]));
+// Whether a block checks the receipt's required count, not only its passes.
+const checksRequired = (block: string) =>
+  /(?<!\btests[!?]?)\.required(?:,\s*|\s*===\s*)\d+\s*[,)]|\brequirements\.length,\s*[1-9]/u.test(
+    block,
+  );
 // Runner batches a controller starts, read from its source: the profiles
 // passed to verify-required-native-tests.mjs as array items, a spread of a
 // declared array, or shell words.
@@ -1179,12 +1222,29 @@ async function deriveBatchCohorts(
         batch.at,
         batches[index + 1]?.at ?? batch.at + 1500,
       );
-      const check = /\.(?:required|passed),\s*([\s\S]*?)\)\s*;/u.exec(
-        window,
-      )?.[1];
+      // Every count asserted on the batch receipt, which the first assertion
+      // names, must agree; conflicting literals mark the rule unreadable.
+      const asserted = [
+        ...window.matchAll(
+          /([\w.]+)\.(?:required|passed),\s*([\s\S]*?)\)\s*;/gu,
+        ),
+      ];
+      const checks = asserted
+        .filter((match) => match[1] === asserted[0]?.[1])
+        .map((match) => match[2]!);
+      const literals = new Set(
+        checks
+          .filter((check) => /^\s*\d+\s*$/u.test(check))
+          .map((check) => Number(check)),
+      );
       const rule: { rows?: number; disjoint?: boolean } = {};
-      if (check && /^\s*\d+\s*$/u.test(check)) rule.rows = Number(check);
-      else if (check && /\.length/u.test(check) && /\+|reduce\(/u.test(check))
+      if (literals.size > 0)
+        rule.rows = literals.size === 1 ? [...literals][0]! : -1;
+      else if (
+        checks.some(
+          (check) => /\.length/u.test(check) && /\+|reduce\(/u.test(check),
+        )
+      )
         rule.disjoint = true;
       for (const profile of served) {
         // A batch validates every profile before running any, so the other
@@ -1231,7 +1291,12 @@ async function deriveInstalledHarness(root: string, admitted: string[]) {
 // The exact counts the selected acceptance files assert: inside the installed
 // acceptance callback, or anywhere else, which the audit does not model.
 async function deriveInstalledCounts(root: string) {
-  const found: { controller: string; rows: number; profiles: string[] }[] = [];
+  const found: {
+    controller: string;
+    rows: number;
+    profiles: string[];
+    passedOnly?: boolean;
+  }[] = [];
   const elsewhere: string[] = [];
   const counts = new RegExp(assertedCount.source, "gu");
   for (const name of (await readdir(path.join(root, "test"))).sort()) {
@@ -1260,6 +1325,9 @@ async function deriveInstalledCounts(root: string) {
         id === "mutation-runners"
           ? mutationFamilies.map((family) => "mutation-" + family)
           : [id],
+      ...(checksRequired(text.slice(declared!.index, end))
+        ? {}
+        : { passedOnly: true }),
     });
   }
   return { found, elsewhere };
@@ -1403,12 +1471,18 @@ test("finite inventory pins the controller rules its admission copies from sourc
   );
   for (const entry of report.rowCountControllers) {
     const text = await readScript(entry.controller);
-    for (const profile of entry.profiles)
+    for (const profile of entry.profiles) {
       assert.deepEqual(
         [...new Set(pinnedCounts(text, entry.controller, profile))],
         [entry.rows],
         entry.controller + " " + profile,
       );
+      assert.equal(
+        entry.passedOnly ?? false,
+        !checksRequired(pinnedBlock(text, entry.controller, profile)),
+        entry.controller + " " + profile,
+      );
+    }
   }
   const admitted = admissionProfileIds(await readScope());
   const derived = await deriveBatchCohorts(
@@ -1502,6 +1576,55 @@ test("finite inventory pins the controller rules its admission copies from sourc
       [entry.rows],
       entry.controller,
     );
+  const laravelCache = (
+    await scriptModule("laravel-cache-runtime-evidence.mjs")
+  ).laravelCacheHarnessFiles as string[];
+  assert.deepEqual(
+    report.companionCohorts.find((row) => row.cohort.includes("laravel-cache"))!
+      .files,
+    laravelCache.filter((file) =>
+      /^dist\/test\/[a-z0-9-]+\.test\.js$/u.test(file),
+    ),
+  );
+  assert.equal(
+    (await readScript("scripts/verify-laravel-cache.mjs")).split(
+      "laravelCacheHarnessFiles.includes(row.file),",
+    ).length,
+    2,
+  );
+  const contextLimits = report.companionCohorts.filter(
+    (row) => row.controller === "test/review-context-limits.test.ts",
+  );
+  assert.equal(contextLimits.length, 2);
+  for (const row of contextLimits) {
+    assert.deepEqual(row.files, report.installedHarness.files);
+    assert.match(
+      await readScript("test/review-context-limits.test.ts"),
+      new RegExp('^test\\(\\s*"' + row.countedBy + '"', "mu"),
+    );
+  }
+  const suiteSelector = await readScript("scripts/ci-full-suite-shards.mjs");
+  for (const text of [
+    "Array.isArray(rows) && rows.length > 0 && rows.length <= 256,",
+    'assert.ok(!unique.has(key), "Duplicate required callback");',
+  ])
+    assert.equal(suiteSelector.split(text).length, 2, text);
+  const suiteList = (
+    JSON.parse(await readFile(path.join(repository, files[3]!), "utf8")) as {
+      profiles: string[];
+    }
+  ).profiles;
+  assert.deepEqual(
+    report.companionCohorts
+      .filter((row) => row.controller === "scripts/ci-full-suite-shards.mjs")
+      .map((row) => [row.profile, row.cohort]),
+    admitted
+      .filter((profile) => suiteList.includes(profile))
+      .map((profile) => [
+        profile,
+        suiteList.filter((other) => other !== profile),
+      ]),
+  );
   const harness = await deriveInstalledHarness(repository, admitted);
   assert.equal(report.installedHarness.controller, harness.controller);
   assert.deepEqual(
@@ -1769,6 +1892,7 @@ test("finite inventory strict freeze refuses an unselected row a controller's po
 });
 
 test("finite inventory strict freeze refuses companion cohorts a controller requires before it runs", async (t) => {
+  const suite = await fullSuiteRefusals();
   const companion = (profile: string, controller: string) => ({
     profile,
     controller: "scripts/" + controller,
@@ -1820,7 +1944,10 @@ test("finite inventory strict freeze refuses companion cohorts a controller requ
         (rows) => {
           delete rows["posix-owner"];
         },
-        [companion("lifecycle-platforms", "verify-lifecycle-platforms.mjs")],
+        byProfile([
+          companion("lifecycle-platforms", "verify-lifecycle-platforms.mjs"),
+          ...suite,
+        ]),
       ],
       [
         "a Windows foundation row outside the lifecycle harness",
@@ -1933,19 +2060,23 @@ test("finite inventory strict freeze refuses companion cohorts a controller requ
   assert.deepEqual(unresolvedAddresses(refused.stdout), [
     "host-session-readiness/broken",
   ]);
-  assert.deepEqual(admissionRefusals(refused.stdout), [
-    {
-      profile: "go-extensions",
-      controller: ".github/workflows/ci.yml",
-      reason: "companion-cohort-differs",
-    },
-    {
-      profile: "host-session-readiness",
-      controller: genericRunner,
-      reason: "duplicate-address",
-    },
-    installedCount("host-session-readiness"),
-  ]);
+  assert.deepEqual(
+    admissionRefusals(refused.stdout),
+    byProfile([
+      {
+        profile: "go-extensions",
+        controller: ".github/workflows/ci.yml",
+        reason: "companion-cohort-differs",
+      },
+      {
+        profile: "host-session-readiness",
+        controller: genericRunner,
+        reason: "duplicate-address",
+      },
+      installedCount("host-session-readiness"),
+      ...(await fullSuiteRefusals(["host-session-readiness"])),
+    ]),
+  );
 });
 
 // The installed acceptance callback in a selected test file runs its whole
@@ -2147,6 +2278,100 @@ test("finite inventory strict freeze refuses a baseline batch its controller's r
   }
 });
 
+test("finite inventory strict freeze refuses rows a cache, installed context or full-suite controller cannot run", async (t) => {
+  const helmLifecycle = {
+    file: "dist/test/helm-lifecycle.test.js",
+    name: "helm lifecycle row in another harness 7781",
+  };
+  const counting =
+    "expanded context original controls execute against a fresh offline installed runtime";
+  const goBatch = ["go-extensions", "host-session-readiness"].map(
+    (profile) => ({
+      profile,
+      controller: "test/review-context-limits.test.ts",
+      reason: "companion-cohort-differs",
+    }),
+  );
+  const cases: [
+    string,
+    (rows: RequiredNative) => void,
+    AdmissionRefusal[],
+    string[],
+  ][] = [
+    [
+      "a laravel-cache row replaced by a Helm lifecycle row",
+      (rows) => {
+        rows["laravel-cache"]![0] = { ...helmLifecycle };
+      },
+      [
+        {
+          profile: "assembly-laravel",
+          controller: "scripts/laravel-cache-runtime-evidence.mjs",
+          reason: "companion-cohort-differs",
+        },
+      ],
+      [],
+    ],
+    [
+      "a review-context-limits row replaced by a Helm lifecycle row",
+      (rows) => {
+        rows["review-context-limits"]![0] = { ...helmLifecycle };
+      },
+      goBatch,
+      [],
+    ],
+    [
+      "a review-context-limits row removed while its counting callback stays",
+      (rows) => {
+        rows["review-context-limits"]!.splice(1, 1);
+      },
+      goBatch,
+      [],
+    ],
+    [
+      "the counting review-context-limits callback removed",
+      (rows) => {
+        rows["review-context-limits"] = rows["review-context-limits"]!.filter(
+          (row) => row.name !== counting,
+        );
+        assert.equal(rows["review-context-limits"].length, 8);
+      },
+      [],
+      [],
+    ],
+    [
+      "a core row repeated",
+      (rows) => {
+        rows.core!.push({ ...rows.core![2]! });
+      },
+      byProfile(await fullSuiteRefusals()),
+      [],
+    ],
+    // These containers check only passes, so a missing Nuxt row is the
+    // unresolved binding alone.
+    [
+      "an assembly-nuxt row removed",
+      (rows) => {
+        rows["assembly-nuxt"]!.pop();
+      },
+      [],
+      ["assembly-nuxt/installed"],
+    ],
+  ];
+  for (const [label, edit, expected, unresolved] of cases) {
+    const root = await frozen(t);
+    await alter<RequiredNative>(root, files[2]!, edit);
+    const result = await audit(root, true);
+    assert.equal(
+      result.code,
+      expected.length || unresolved.length ? 2 : 0,
+      label,
+    );
+    assert.deepEqual(unresolvedAddresses(result.stdout), unresolved, label);
+    assert.deepEqual(admissionRefusals(result.stdout), expected, label);
+  }
+});
+
 test("finite inventory strict freeze refuses a mutation cohort its container selector rejects", async (t) => {
   const cases: [string, (rows: RequiredNative) => void, AdmissionRefusal[]][] =
     [
@@ -2332,7 +2557,8 @@ test("finite inventory selector admission agrees with every dedicated controller
             batchControllers.has(entry.controller) ||
             entry.rows !== undefined ||
             entry.files !== undefined ||
-            entry.cohort.includes("ruby-tools"),
+            entry.cohort.includes("ruby-tools") ||
+            entry.controller === "scripts/ci-full-suite-shards.mjs",
           entry.controller,
         );
         return entry;
@@ -2370,7 +2596,9 @@ test("finite inventory selector admission agrees with every dedicated controller
         controller: entry.controller,
         reasons: ["row-count-differs"],
         refuses: async (_root: string, rows: RequiredNative) =>
-          rows[profile]!.length !== entry.rows,
+          entry.passedOnly
+            ? rows[profile]!.length > entry.rows
+            : rows[profile]!.length !== entry.rows,
       })),
     ),
     ...shape.installedHarness.profiles.map((profile) => ({
@@ -2390,7 +2618,9 @@ test("finite inventory selector admission agrees with every dedicated controller
         controller: entry.controller,
         reasons: ["installed-count-differs"],
         refuses: async (_root: string, rows: RequiredNative) =>
-          rows[profile]!.length !== entry.rows,
+          entry.passedOnly
+            ? rows[profile]!.length > entry.rows
+            : rows[profile]!.length !== entry.rows,
       })),
     ),
     ...admissionProfileIds(scope).map((profile) => ({
@@ -2520,6 +2750,23 @@ test("finite inventory selector admission agrees with every dedicated controller
         ] as [string, (rows: RequiredNative) => void],
     ),
     [
+      "the counting review-context-limits callback removed",
+      (rows) => {
+        rows["review-context-limits"] = rows["review-context-limits"]!.filter(
+          (row) =>
+            row.name !==
+            "expanded context original controls execute against a fresh offline installed runtime",
+        );
+      },
+    ],
+    [
+      "a core row repeated, a context-c row removed",
+      (rows) => {
+        rows.core!.push({ ...rows.core![2]! });
+        rows["context-c"]!.pop();
+      },
+    ],
+    [
       "a row outside the installed harness",
       (rows) => {
         rows["terraform-extensions"]!.push({
@@ -2582,8 +2829,6 @@ test("finite inventory selector admission agrees with every dedicated controller
 // exact row set must be modelled by the admission audit. Scripts listed here
 // carry such a rule for a profile no selected case runs under.
 const unmodelledRowSelectors: Record<string, string> = {
-  "scripts/ci-full-suite-shards.mjs":
-    "partitions every manifest profile into CI full-suite shards",
   "scripts/task-archive-evidence.mjs":
     "counts the Task archive callbacks it reads from their test files",
   "scripts/verify-attempt-outputs.mjs":
@@ -2629,6 +2874,11 @@ test("finite inventory admission models every controller that selects manifest r
   // harness derivations cover it instead. The discovery scans scripts only.
   const modelled = new Set([
     ...Object.values(controllerSelectors).map((row) => row.controller),
+    ...shape.companionCohorts.map((row) => row.controller),
+    ...shape.rowCountControllers.map((row) => row.controller),
+  ]);
+  const exactlyModelled = new Set([
+    ...Object.values(controllerSelectors).map((row) => row.controller),
     ...shape.companionCohorts
       .filter(
         (row) =>
@@ -2650,7 +2900,7 @@ test("finite inventory admission models every controller that selects manifest r
   // The discovery reaches every modelled controller, and no listed exception
   // is stale.
   assert.deepEqual(
-    [...modelled].filter(
+    [...exactlyModelled].filter(
       (name) => name.startsWith("scripts/") && !found.includes(name),
     ),
     [],
@@ -2726,6 +2976,22 @@ test("finite inventory admission models every controller that selects manifest r
   // A new baseline batch in an existing controller, and a new installed count
   // in a selected acceptance file, are each unmodelled until the audit adds
   // them.
+  // A second assertion on a batch receipt counts as much as the first.
+  const django = path.join(
+    copy,
+    "scripts/verify-django-assembly-container.mjs",
+  );
+  const djangoText = await readFile(django, "utf8");
+  const lowered = djangoText.replace(
+    "frameworks.passed, 8);",
+    "frameworks.passed, 7);",
+  );
+  assert.notEqual(lowered, djangoText);
+  await writeFile(django, lowered);
+  assert.deepEqual(await unmodelledBatches(copy), [
+    "scripts/verify-django-assembly-container.mjs frameworks",
+  ]);
+  await writeFile(django, djangoText);
   const helm = path.join(copy, "scripts/verify-helm-extensions-container.mjs");
   const before = await readFile(helm, "utf8");
   await writeFile(

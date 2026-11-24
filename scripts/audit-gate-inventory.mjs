@@ -121,6 +121,99 @@ const dedicatedSelectors = {
   "mutation-pytest": mutationCohort,
   "mutation-phpunit": mutationCohort,
 };
+const contextFamilies = [
+  "python",
+  "go",
+  "php",
+  "rust",
+  "java",
+  "kotlin",
+  "scala",
+  "csharp",
+  "fsharp",
+  "vb",
+  "ruby",
+  "swift",
+  "c",
+  "cpp",
+  "hcl",
+  "yaml",
+];
+// verify-import-context-package.mjs installs these profiles into a fresh
+// consumer with only these acceptance files, then runs the whole profile there.
+const installedHarness = {
+  controller: "scripts/verify-import-context-package.mjs",
+  profiles: [
+    "assembly-django",
+    "assembly-fastapi",
+    "assembly-laravel",
+    "assembly-nuxt",
+    "assembly-vue-router",
+    "confidence-provenance",
+    ...contextFamilies.map((family) => "context-" + family),
+    "cpp-extensions",
+    "dotnet-format-extensions",
+    "dotnet-fsharp-format",
+    "dotnet-generator-extensions",
+    "helm-extensions",
+    "host-session-readiness",
+    "javascript-extensions",
+    "jvm-analyzer-extensions",
+    "jvm-wrappers",
+    "kotlin-extensions",
+    "kubernetes-extensions",
+    "kustomize-extensions",
+    "multi-candidate-workflow",
+    "php-extensions",
+    "python-extensions",
+    "ruby-extensions",
+    "rust-extensions",
+    "scala-extensions",
+    "swift-extensions",
+    "terraform-extensions",
+  ],
+  files: [
+    "import-context",
+    "review-polyglot",
+    "review-context-limits",
+    "import-history",
+    ...contextFamilies.map((family) => "gate-context-" + family),
+    "gate-assembly-nuxt",
+    "gate-javascript-extensions",
+    "gate-rust-extensions",
+    "gate-kotlin-extensions",
+    "gate-jvm-analyzer-extensions",
+    "gate-kubernetes-extensions",
+    "gate-kustomize-extensions",
+    "gate-dotnet-fsharp-format",
+    "gate-dotnet-format-extensions",
+    "gate-dotnet-generator-extensions",
+    "gate-ruby-extensions",
+    "gate-swift-extensions",
+    "gate-helm-extensions",
+    "helm-extensions-surfaces",
+    "helm-extensions-lifecycle",
+    "gate-terraform-extensions",
+    "terraform-extensions-surfaces",
+    "terraform-extensions-lifecycle",
+    "gate-cpp-extensions",
+    "cpp-extensions-surfaces",
+    "cpp-extensions-cancel",
+    "gate-confidence-provenance",
+    "review-findings",
+    "review-workflow-findings",
+    "gate-multi-candidate-workflow",
+    "gate-scala-extensions",
+    "gate-jvm-wrappers",
+    "gate-php-extensions",
+    "gate-python-extensions",
+    "gate-assembly-laravel",
+    "gate-assembly-django",
+    "gate-assembly-fastapi",
+    "gate-assembly-vue-router",
+    "gate-host-session-readiness",
+  ].map((name) => "dist/test/" + name + ".test.js"),
+};
 // Other profiles a controller requires before it accepts the selected profile.
 // Every cohort profile must hold 1 to `maxRows` rows (256 by default) without
 // a repeated address. Then, by rule:
@@ -138,7 +231,10 @@ const dedicatedSelectors = {
 //   their unrequired callbacks in that order;
 // - `shards`: the runner admits each of this many shards (row index modulo
 //   the count) on its own, so the row limit applies per shard, not to the
-//   whole cohort.
+//   whole cohort;
+// - `countedBy`: `rows` applies only while the cohort holds the callback with
+//   this name, since that callback asserts the count and runs only when
+//   selected.
 // - `sha256`: the cohort's ordered file/name list has this canonical digest,
 //   the exact list the controller's foundation module compares against.
 const companionCohorts = [
@@ -204,12 +300,15 @@ const companionCohorts = [
     cohort: ["laravel-cache-runtime-bindings"],
     rows: 1,
   },
+  // verify-laravel-cache.mjs refuses a row outside laravelCacheHarnessFiles
+  // before it runs any.
   {
     profile: "assembly-laravel",
     controller: "scripts/laravel-cache-runtime-evidence.mjs",
     cohort: ["laravel", "laravel-cache"],
     rows: 9,
     disjoint: true,
+    files: ["dist/test/laravel.test.js", "dist/test/laravel-cache.test.js"],
   },
   {
     profile: "assembly-django",
@@ -380,13 +479,16 @@ const companionCohorts = [
     controller: ".github/workflows/ci.yml",
     cohort: [other, "go-installed-harness", "review-context-limits"],
   })),
-  // review-context-limits runs in that batch, and its installed callback
-  // requires nine passes from the whole profile.
+  // review-context-limits runs in that batch. Its installed callback runs the
+  // whole profile from the installed harness and requires nine passes.
   ...["go-extensions", "host-session-readiness"].map((profile) => ({
     profile,
     controller: "test/review-context-limits.test.ts",
     cohort: ["review-context-limits"],
     rows: 9,
+    countedBy:
+      "expanded context original controls execute against a fresh offline installed runtime",
+    files: installedHarness.files,
   })),
   // The ARM64 Tasks runtime command runs this batch under `set -eu` before the
   // lifecycle and evaluation controllers, and the provenance command runs only
@@ -426,24 +528,6 @@ const companionCohorts = [
     ].map((name) => "dist/test/" + name + ".test.js"),
   })),
 ];
-const contextFamilies = [
-  "python",
-  "go",
-  "php",
-  "rust",
-  "java",
-  "kotlin",
-  "scala",
-  "csharp",
-  "fsharp",
-  "vb",
-  "ruby",
-  "swift",
-  "c",
-  "cpp",
-  "hcl",
-  "yaml",
-];
 // selectConsumerWitnessRequirements reads the broken, fixed and near-miss rows
 // of every consumer witness family from `profiles`. The controller of each of
 // them calls it, and so does the selected Clang consumer acceptance that the
@@ -459,6 +543,19 @@ const sharedWitnessSelector = {
   profiles: witnessProfiles,
   dependents: [...witnessProfiles, "cpp-extensions"],
 };
+// These controllers check only `passed`. The runner runs each selected file
+// whole, so a profile missing a row of its file still passes all nine; only an
+// extra row, which brings another callback, changes the count.
+const passedOnlyCounts = [
+  ...contextFamilies
+    .filter((family) => !["python", "go"].includes(family))
+    .map((family) => "scripts/verify-" + family + "-context-container.mjs"),
+  ...["laravel", "django", "fastapi", "nuxt", "vue-router"].map(
+    (name) => "scripts/verify-" + name + "-assembly-container.mjs",
+  ),
+  "test/gate-go-extensions.test.ts",
+  "test/gate-attempt-archives.test.ts",
+];
 // These controllers run a profile through the generic runner, which admits any
 // row set, then require exactly `rows` required callbacks from it. An extra
 // unselected row passes the runner but fails the count after running.
@@ -531,7 +628,14 @@ const rowCountControllers = Object.fromEntries(
         "mutation-phpunit",
       ],
     ],
-  ].map(([controller, profiles]) => [controller, { rows: 9, profiles }]),
+  ].map(([controller, profiles]) => [
+    controller,
+    {
+      rows: 9,
+      profiles,
+      ...(passedOnlyCounts.includes(controller) ? { passedOnly: true } : {}),
+    },
+  ]),
 );
 // The installed acceptance callback in each of these profiles' selected test
 // file runs the whole profile from a fresh package and requires exactly nine
@@ -546,81 +650,6 @@ const uncountedInstalledProfiles = [
   "tasks-matrix",
   "terraform-extensions",
 ];
-// verify-import-context-package.mjs installs these profiles into a fresh
-// consumer with only these acceptance files, then runs the whole profile there.
-const installedHarness = {
-  controller: "scripts/verify-import-context-package.mjs",
-  profiles: [
-    "assembly-django",
-    "assembly-fastapi",
-    "assembly-laravel",
-    "assembly-nuxt",
-    "assembly-vue-router",
-    "confidence-provenance",
-    ...contextFamilies.map((family) => "context-" + family),
-    "cpp-extensions",
-    "dotnet-format-extensions",
-    "dotnet-fsharp-format",
-    "dotnet-generator-extensions",
-    "helm-extensions",
-    "host-session-readiness",
-    "javascript-extensions",
-    "jvm-analyzer-extensions",
-    "jvm-wrappers",
-    "kotlin-extensions",
-    "kubernetes-extensions",
-    "kustomize-extensions",
-    "multi-candidate-workflow",
-    "php-extensions",
-    "python-extensions",
-    "ruby-extensions",
-    "rust-extensions",
-    "scala-extensions",
-    "swift-extensions",
-    "terraform-extensions",
-  ],
-  files: [
-    "import-context",
-    "review-polyglot",
-    "review-context-limits",
-    "import-history",
-    ...contextFamilies.map((family) => "gate-context-" + family),
-    "gate-assembly-nuxt",
-    "gate-javascript-extensions",
-    "gate-rust-extensions",
-    "gate-kotlin-extensions",
-    "gate-jvm-analyzer-extensions",
-    "gate-kubernetes-extensions",
-    "gate-kustomize-extensions",
-    "gate-dotnet-fsharp-format",
-    "gate-dotnet-format-extensions",
-    "gate-dotnet-generator-extensions",
-    "gate-ruby-extensions",
-    "gate-swift-extensions",
-    "gate-helm-extensions",
-    "helm-extensions-surfaces",
-    "helm-extensions-lifecycle",
-    "gate-terraform-extensions",
-    "terraform-extensions-surfaces",
-    "terraform-extensions-lifecycle",
-    "gate-cpp-extensions",
-    "cpp-extensions-surfaces",
-    "cpp-extensions-cancel",
-    "gate-confidence-provenance",
-    "review-findings",
-    "review-workflow-findings",
-    "gate-multi-candidate-workflow",
-    "gate-scala-extensions",
-    "gate-jvm-wrappers",
-    "gate-php-extensions",
-    "gate-python-extensions",
-    "gate-assembly-laravel",
-    "gate-assembly-django",
-    "gate-assembly-fastapi",
-    "gate-assembly-vue-router",
-    "gate-host-session-readiness",
-  ].map((name) => "dist/test/" + name + ".test.js"),
-};
 // resolveRequirements in required-test-evidence.mjs runs a profile only when it
 // holds 1 to 256 rows, each with a file path of at most 4096 characters. It
 // resolves each path first, so a path component longer than the filesystem's
@@ -1014,7 +1043,13 @@ try {
     )
       return false;
     const distinct = new Set(rows.map(address));
-    if (entry.rows !== undefined && distinct.size !== entry.rows) return false;
+    if (
+      entry.rows !== undefined &&
+      distinct.size !== entry.rows &&
+      (entry.countedBy === undefined ||
+        rows.some((row) => row.name === entry.countedBy))
+    )
+      return false;
     if (entry.disjoint && distinct.size !== rows.length) return false;
     if (rows.some((row) => row.file === entry.outsideFile)) return false;
     if (entry.files && rows.some((row) => !entry.files.includes(row.file)))
@@ -1051,9 +1086,36 @@ try {
       .filter((profile) => !uncountedInstalledProfiles.includes(profile.id))
       .map((profile) => [
         "test/gate-" + profile.id + ".test.ts",
-        { rows: 9, profiles: controllerProfiles[profile.id] ?? [profile.id] },
+        {
+          rows: 9,
+          profiles: controllerProfiles[profile.id] ?? [profile.id],
+          ...(passedOnlyCounts.includes("test/gate-" + profile.id + ".test.ts")
+            ? { passedOnly: true }
+            : {}),
+        },
       ]),
   );
+  const countDiffers = (rows, rule) =>
+    rule.passedOnly ? rows.length > rule.rows : rows.length !== rule.rows;
+  // ci-full-suite-shards.mjs admits every profile of its shared full-suite
+  // list before any shard runs, so each selected profile in it depends on all
+  // of them.
+  const fullSuite = read(root, "scripts/ci-full-suite-profiles.json").value;
+  assert.ok(
+    Array.isArray(fullSuite.profiles) &&
+      fullSuite.profiles.every((profile) => typeof profile === "string"),
+    "Invalid full-suite profile list",
+  );
+  const cohorts = [
+    ...companionCohorts,
+    ...admissionProfiles
+      .filter((owner) => fullSuite.profiles.includes(owner))
+      .map((profile) => ({
+        profile,
+        controller: "scripts/ci-full-suite-shards.mjs",
+        cohort: fullSuite.profiles.filter((other) => other !== profile),
+      })),
+  ];
   const admissionRefusals = [];
   for (const owner of admissionProfiles) {
     const rows = current[owner] ?? [];
@@ -1089,13 +1151,13 @@ try {
       if (canonical(arranged(rows.map(key))) !== canonical(arranged(expected)))
         refuse(selector.controller, "selector-rows-differ");
     }
-    for (const entry of companionCohorts)
+    for (const entry of cohorts)
       if (entry.profile === owner && !cohortAdmitted(entry))
         refuse(entry.controller, "companion-cohort-differs");
     if (!witnessRowsPresent && sharedWitnessSelector.dependents.includes(owner))
       refuse(sharedWitnessSelector.controller, "shared-selector-rows-differ");
     for (const [controller, rule] of Object.entries(rowCountControllers))
-      if (rule.profiles.includes(owner) && rows.length !== rule.rows)
+      if (rule.profiles.includes(owner) && countDiffers(rows, rule))
         refuse(controller, "row-count-differs");
     if (
       installedHarness.profiles.includes(owner) &&
@@ -1103,7 +1165,7 @@ try {
     )
       refuse(installedHarness.controller, "installed-harness-differs");
     for (const [controller, rule] of Object.entries(installedCountCallbacks))
-      if (rule.profiles.includes(owner) && rows.length !== rule.rows)
+      if (rule.profiles.includes(owner) && countDiffers(rows, rule))
         refuse(controller, "installed-count-differs");
   }
   process.stdout.write(
@@ -1146,7 +1208,7 @@ try {
       controllerAdmission: {
         controllerProfiles: admissionProfiles.length,
         dedicatedSelectorProfiles: Object.keys(dedicatedSelectors).sort(),
-        companionCohorts,
+        companionCohorts: cohorts,
         sharedSelectors: [
           {
             controller: sharedWitnessSelector.controller,

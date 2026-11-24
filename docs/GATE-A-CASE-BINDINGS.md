@@ -82,8 +82,9 @@ when:
     containers first run a baseline batch and require an exact count from it:
     `python` 5, `php-tools` with `php-review` 14, the five Rust baseline
     profiles 39, `laravel-cache-runtime-bindings` 1, `laravel` with
-    `laravel-cache` 9 sharing no pair, `frameworks` 8 and `nuxt` 7. A batch
-    counts a pair filed in two of its profiles once;
+    `laravel-cache` 9 sharing no pair and filed only in `laravel.test.js` or
+    `laravel-cache.test.js`, `frameworks` 8 and `nuxt` 7. A batch counts a pair
+    filed in two of its profiles once;
   - other extension containers run a baseline batch whose receipt they compare
     with the sum of its profile lengths, so its profiles may share no pair:
     `review` with `review-probe` and `review-scoring` (confidence-provenance),
@@ -108,9 +109,13 @@ when:
   - the Go workflow step validates `go-extensions`, `go-installed-harness`,
     `review-context-limits` and `host-session-readiness` together before it
     runs any, so a refusal of either selected profile also stops the other.
-    `review-context-limits` runs in that batch, and its installed callback in
-    `test/review-context-limits.test.ts` requires nine passes from the whole
-    profile;
+    `review-context-limits` runs in that batch. While it holds its installed
+    callback in `test/review-context-limits.test.ts`, that callback installs
+    the whole profile through the installed harness and requires nine passes,
+    so its rows must also be filed in the harness files;
+  - `ci-full-suite-shards.mjs` admits every profile in
+    `scripts/ci-full-suite-profiles.json`, which the audit reads, before any
+    shard runs. Each selected profile in that list depends on all the others;
   - the ARM64 Tasks runtime command runs `lifecycle-runtime-bindings` under
     `set -eu` before the lifecycle and evaluation controllers, and the ARM64
     provenance command runs only after that command succeeds;
@@ -129,15 +134,18 @@ when:
 - a controller requires an exact number of required callbacks after running
   the profile through the generic runner (`row-count-differs`). The runner
   admits extra rows, so an unselected row in, for example, `context-go` passes
-  it and fails `verify-consumer-witness-profile.mjs`, which expects 9. The
-  report lists these controllers under `rowCountControllers`;
+  it and fails `verify-consumer-witness-profile.mjs`, which expects 9. A
+  controller that checks only the passed count (`passedOnly`) runs each file
+  whole, so it refuses only an extra row. The report lists these controllers
+  under `rowCountControllers`;
 - the installed acceptance callback in the profile's selected test file
   requires an exact count (`installed-count-differs`). It runs the whole
   profile from a fresh package and expects nine passes. Every selected
   profile's callback does so except those of `assembly-nuxt`, `cpp-extensions`,
   `helm-extensions`, `native-license-provenance`, `resource-release-readiness`,
-  `tasks-matrix` and `terraform-extensions`. The report lists these callbacks
-  under `installedCountCallbacks`;
+  `tasks-matrix` and `terraform-extensions`. The Go extension and attempt
+  archive callbacks check only passes. The report lists these callbacks under
+  `installedCountCallbacks`;
 - a row is filed in a test file the installed harness does not copy
   (`installed-harness-differs`). `verify-import-context-package.mjs` installs
   most selected profiles into a fresh consumer with a fixed list of acceptance
@@ -148,7 +156,8 @@ test runs each exported selector against the same manifest variants and requires
 the same verdict. For the inline checks, the runner bounds, the baseline batches
 and the counts, it pins their source text instead: it reads each batch a
 controller passes to `verify-required-native-tests.mjs` and the check applied to
-its receipt, and every count in the block that checks that profile's
+its receipt (every count asserted on that receipt), and every count in the
+block that checks that profile's
 receipts, a zero included, so neither a count in another profile's block nor
 the first of several receipts can stand in for the rest. The batch, installed-callback and
 installed-harness tables must equal what it reads.
