@@ -53,11 +53,13 @@ const controllerProfiles = {
 // the rows as written; the others compare them sorted. The .NET generator
 // compares against its shard manifest, whose source partitions are exactly the
 // selected cases. `companions` are other profiles the selector requires at an
-// exact duplicate-free size, none filed in this profile's default file.
+// exact duplicate-free size, none filed in this profile's default file. A
+// `serialized` selector compares each row's JSON text, so its key order counts.
 const dedicatedSelectors = {
   "cpp-extensions": {
     controller: "scripts/selected-clang-consumer-witness.mjs",
     ordered: false,
+    serialized: true,
     extra: ["cpp-extensions compiler formatter analyzer acceptance"],
   },
   "dotnet-generator-extensions": {
@@ -477,19 +479,24 @@ try {
     const selector = dedicatedSelectors[owner];
     if (!selector) continue;
     const profile = inventory.extensionProfiles.find((p) => p.id === owner);
+    const key = selector.serialized
+      ? (row) => JSON.stringify(row)
+      : (row) => canonical([row.file, row.name]);
     const expected = [
       ...profile.acceptanceCases.map((entry) =>
-        canonical([
-          alternateAcceptanceFiles[owner]?.[entry.id] ?? profile.acceptanceFile,
-          entry.name,
-        ]),
+        key({
+          file:
+            alternateAcceptanceFiles[owner]?.[entry.id] ??
+            profile.acceptanceFile,
+          name: entry.name,
+        }),
       ),
       ...(selector.extra ?? []).map((name) =>
-        canonical([profile.acceptanceFile, name]),
+        key({ file: profile.acceptanceFile, name }),
       ),
     ];
     const arranged = (list) => (selector.ordered ? list : [...list].sort());
-    if (canonical(arranged(addresses)) !== canonical(arranged(expected)))
+    if (canonical(arranged(rows.map(key))) !== canonical(arranged(expected)))
       admissionRefusals.push({
         profile: owner,
         controller: selector.controller,

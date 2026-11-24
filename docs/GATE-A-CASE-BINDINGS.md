@@ -53,7 +53,8 @@ when:
   `native-license-provenance`, `resource-release-readiness` and
   `independent-evaluation-protocol`. Each selector requires exactly the selected
   cases at their bound files. The C++ selector also requires the unselected
-  `cpp-extensions compiler formatter analyzer acceptance` row and ignores order.
+  `cpp-extensions compiler formatter analyzer acceptance` row. It ignores row
+  order but compares each row's JSON text, so `file` must precede `name`.
   The .NET generator selector ignores order. The others require the selected
   order;
 - the Tasks selector's preserved `mcp-tasks` cohort is not exactly 10 distinct
@@ -64,9 +65,11 @@ runs each exported selector against the same manifest variants and requires the
 same verdict. For the two inline checks it pins the source text instead.
 `--require-frozen` exits 2 on any admission refusal.
 
-The existing C++, Terraform and Helm extension container controllers select
-these manifest profiles through `verify-required-native-tests.mjs`; source and
-offline installed acceptance retain their required callbacks. The historical
+The existing Terraform and Helm extension container controllers select these
+manifest profiles through `verify-required-native-tests.mjs`. The C++ container
+runs source acceptance through `verify-selected-clang-consumers.mjs`, which takes
+its rows from the dedicated C++ selector described above. Source and offline
+installed acceptance retain their required callbacks. The historical
 [C++](measurements/cpp-extensions-2026-10-10.json),
 [Terraform](measurements/terraform-extensions-2026-10-11.json) and
 [Helm](measurements/helm-extensions-2026-10-11.json) observations include passed

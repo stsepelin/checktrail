@@ -839,6 +839,15 @@ test("finite inventory selector admission agrees with every dedicated controller
       },
     ],
     [
+      "field order swapped",
+      (rows) => {
+        for (const id of ids) {
+          const { file, name } = rows[id]![3]!;
+          rows[id]![3] = { name, file };
+        }
+      },
+    ],
+    [
       "first row repeated",
       (rows) => {
         for (const id of ids) rows[id]!.push({ ...rows[id]![0]! });
