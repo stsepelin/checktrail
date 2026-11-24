@@ -171,9 +171,9 @@
       "sha256": "c05ea089c636142b7b0d3affe7ca5b6687e0b77cff2b4fd186fcc8020d4aa863"
     },
     {
-      "bytes": 10872,
+      "bytes": 11332,
       "path": "producer_adapter.py",
-      "sha256": "63ef5c5edd3e903d9ee530bc4759f71adf38af6c10176c2837923baf9f956f11"
+      "sha256": "381ca9f96ab4bc08744b8e724ad04d6bd0d18b287c517757e048ff5aedef5813"
     },
     {
       "bytes": 14775,
@@ -181,9 +181,9 @@
       "sha256": "ffa3bef275d074dd883308d70055b01f7e3264b2f0c34d277d4585b12b76ee4d"
     },
     {
-      "bytes": 40561,
+      "bytes": 42171,
       "path": "test_producer_adapter.py",
-      "sha256": "70ed42d9e458cefa5053b844aa2211f9fae560922b0eb9435610f3617d49295f"
+      "sha256": "74be182aaa5681dca7da40550502abf1776b17354a35a8552409e1905c0cc4f5"
     },
     {
       "bytes": 22364,

@@ -86,6 +86,27 @@ class Adapter(unittest.TestCase):
         self.assertEqual(row, GOOD)
         self.assertEqual(self.calls[-1][0], ['docker', 'unpause', 'b' * 64])
         self.assertTrue(all(x[2] == 70 for x in self.calls)); self.assertEqual(self.c.state['phaseDeadline'], -1)
+    def test_refused_inspection_transport_is_unavailable_and_never_suppresses_the_inverse(self):
+        # common.process refuses a command it cannot start or whose output
+        # overflows; after an ambiguous pause that read must not skip unpause.
+        real = self.c.cmd
+        for stage in ['inspect', 'ls']:
+            with self.subTest(stage=stage):
+                self.calls.clear(); self.row = {**GOOD, 'exitCode': 1} if stage == 'ls' else copy.deepcopy(GOOD)
+                def refusing(args, seconds, check, cap):
+                    if args[1:3] == ['container', stage]: self.calls.append((args, seconds, None, cap)); raise common.Refusal('owned command incomplete; receipt retained 6143')
+                    return real(args, seconds, check, cap)
+                self.c.cmd = refusing
+                try:
+                    with self.assertRaises(a.MetadataUnavailable) as caught: self.run_at_zero(self.api.inspect_id, 'b' * 64, 60)
+                    self.assertIsInstance(caught.exception.__cause__, common.Refusal)
+                    self.assertEqual(self.run_at_zero(self.api.unpause_id, 'b' * 64, 60), GOOD)
+                finally: self.c.cmd = real
+                self.assertEqual(self.calls[-1][0], ['docker', 'unpause', 'b' * 64])
+    def test_positively_foreign_identity_still_forbids_the_inverse_after_a_complete_read(self):
+        self.obj['Config']['Labels'] = {'org.checktrail.sdk10.run': '6143'}
+        with self.assertRaises(p.Refusal): self.run_at_zero(self.api.unpause_id, 'b' * 64, 60)
+        self.assertFalse(any(call[0][1] == 'unpause' for call in self.calls))
     def test_invalid_state_metadata_does_not_suppress_inverse_on_positive_bound_identity(self):
         self.obj['State']['Paused'] = None
         self.assertEqual(self.run_at_zero(self.api.unpause_id, 'b' * 64, 60), GOOD)

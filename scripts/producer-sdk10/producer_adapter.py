@@ -10,7 +10,7 @@ import os
 import re
 import stat
 import time
-from common import encoded, freeze, hash_file, owned_labels, read_json, syncdir
+from common import Refusal as TransportRefusal, encoded, freeze, hash_file, owned_labels, read_json, syncdir
 from producer_pause import Refusal, identity, need, complete_command, absent_inverse_observation
 
 class MetadataUnavailable(RuntimeError):
@@ -49,13 +49,21 @@ class ProducerAPI:
         finally:
             c.state['phaseDeadline'] = previous
 
+    def observe(self, args, deadline, failure):
+        # A transport that refuses to start or overflows its bound observed
+        # nothing, so it is unavailable metadata, never a lifecycle refusal.
+        try:
+            return self.command(args, deadline)
+        except (TransportRefusal, OSError) as error:
+            raise MetadataUnavailable(failure) from error
+
     def inspect_id(self, container_id, deadline):
         need(container_id == self.binding['id'], 'foreign-lifecycle-id')
-        row, body = self.command(['container', 'inspect', container_id], deadline)
+        row, body = self.observe(['container', 'inspect', container_id], deadline, 'inspect-transport-refused')
         if type(row.get('exitCode')) is not int or row.get('reason') is not None or row.get('ownedChildStarted') is not True or row.get('ownedChildReaped') is not True:
             raise MetadataUnavailable('inspect-transport-incomplete')
         if row.get('exitCode') != 0:
-            listing, path = self.command(['container', 'ls', '-aq', '--no-trunc', '--filter', 'id=' + container_id], deadline)
+            listing, path = self.observe(['container', 'ls', '-aq', '--no-trunc', '--filter', 'id=' + container_id], deadline, 'exact-id-listing-refused')
             if not complete_command(listing): raise MetadataUnavailable('exact-id-listing-incomplete')
             value = path.read_bytes()
             if value == b'': return None
