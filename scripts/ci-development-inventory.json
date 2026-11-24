@@ -28,7 +28,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "0e3ce0a2ea48ed954e457d463a8a215ade970196"
+      "hash": "a32cb5ef9d62ba62f7a962bfddb9a86f150f0c90"
     },
     {
       "path": ".github/native-rust198-notices/notice_custody.py",
@@ -63,7 +63,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d4c75a0c534c7a65e564185ebf9b357a1b7a0f2f"
+      "hash": "f228320ff53f1755696713861a0fd20f3dcb2c9f"
     },
     {
       "path": ".github/native-rust198-notices/test_notice_custody.py",
@@ -77,7 +77,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "70ae36a34b8b423c8873db674568059bc1d92628"
+      "hash": "0c40dfca1853c1700129220cf412fefffa3641e0"
     },
     {
       "path": ".github/native-rust198/admission.py",
@@ -91,7 +91,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "3ab43c7cd579f867f922016687045ae9c1ad68ef"
+      "hash": "d2a5ccab588532a34a6233482b82a764d654b7e9"
     },
     {
       "path": ".github/native-rust198/launch.py",
@@ -119,14 +119,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a4cee6d44e124ad15eedbc613d113f6c35bde8de"
+      "hash": "c8d126ffa464c515fbea502773542e6683d5a824"
     },
     {
       "path": ".github/native-rust198/producer.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a6470877780b567f63b585367856307bead6af76"
+      "hash": "7a14ef42f4aa168787fcaaa690b8a6db0fc43024"
     },
     {
       "path": ".github/native-rust198/profile.json",
@@ -189,14 +189,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2f52d89e23b73586a39a076299d221274d18fd9f"
+      "hash": "121f39c3cbddf6bbab0fae790fbedb65525d9357"
     },
     {
       "path": ".github/native-rust198/test_inner_failure_observation.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d67a5199137537dd16aa478200630b5fbebf4b2e"
+      "hash": "5d4538eade59ec584e7bcb0bc09c5322843a3706"
     },
     {
       "path": ".github/native-rust198/test_materializer.py",
@@ -217,7 +217,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "43d52d2b53509476355c743b4808e031920d7c9a"
+      "hash": "0fd2a1d62c995852125fc8ec9366bc7d9b0d3fea"
     },
     {
       "path": ".github/native-rust198/test_volume_lifecycle.py",
@@ -1043,7 +1043,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "560bd51c2f5735f8f9272c373e9b0c5e3426a8ae"
+      "hash": "bb69c58f18e3aa3e8722a8ba5a9ec750a8759455"
     },
     {
       "path": "docs/GCC-STAGED-CONTINUATION.md",
@@ -10591,14 +10591,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "67bb5a6f5449f30d62b4cecafcca6ce19c9b88f7"
+      "hash": "2fc8754be6b4f027dd34f09ffee36d38b605fefa"
     },
     {
       "path": "scripts/producer-qualification/gcc-hosted-main05.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a14d3425c5e207a6de0bd5dc0731dd11c1e2c639"
+      "hash": "35a4a56a1f920e391e0cbfec109249aafb44eba7"
     },
     {
       "path": "scripts/producer-qualification/gcc-hosted-phase0-capacity.py",
@@ -10668,7 +10668,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "9c17233098c17a246c281e1e79a05f72cf3b012d"
+      "hash": "1c0dd92875bf921f9503ecaed6ce8ce1bcd27955"
     },
     {
       "path": "scripts/producer-qualification/gcc-main05-prepare.py",
@@ -10682,7 +10682,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "11eaf1fd480bdb3689dd8c54e77f400fdffc0eac"
+      "hash": "690ee6396cbcd15bb921910e7e1948c93350b571"
     },
     {
       "path": "scripts/producer-qualification/gcc-main05-sdk-image.py",
@@ -10738,28 +10738,28 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ba6ed24802b21657093c44325157dd0179e7a813"
+      "hash": "604de440181a6c1a8df3fc5c19ae58c38d71fdd9"
     },
     {
       "path": "scripts/producer-qualification/gcc-native05-checkpoint-profile.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "351ed943d793430c7ab2d9b29267b88614646126"
+      "hash": "a00043a34f780734f8f71439444c7bfab315a87f"
     },
     {
       "path": "scripts/producer-qualification/gcc-native05-retention-scope.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "847e3db9986433630c7ee1d74b81dbfa7da686b2"
+      "hash": "5ad47e74466b0e6a4bf9866de44af8674c150c5c"
     },
     {
       "path": "scripts/producer-qualification/gcc-native05-sdk-local.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6628a3800dee5fa37542cc2a150af5535d2ce86b"
+      "hash": "43ad15c59287e22ccefa1624b650939e154ae852"
     },
     {
       "path": "scripts/producer-qualification/gcc-phase0-transport.py",
@@ -10794,14 +10794,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "676a6c73335d394d236eb16cec764badbeaabfb6"
+      "hash": "c0f9f47757a8a40b010251e3356a9c8aba73e8cd"
     },
     {
       "path": "scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ee7c29162193a3280b2375092d01ca6d0fa5e7c3"
+      "hash": "4ac042fc842f7b535dd64f9b29ec0ea396bfec3f"
     },
     {
       "path": "scripts/producer-qualification/gcc-sdk-reconstruct.py",
@@ -11137,7 +11137,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ef370d5dda68e1be24851414af24f0cf45909849"
+      "hash": "f376a41f202e22e8403d3978cb1d441da083fd89"
     },
     {
       "path": "scripts/producer-sdk10/PROTECTED-CONTROLS.json",
@@ -11193,14 +11193,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "0872e87e7873ae196db45df1df87177f6aebca32"
+      "hash": "33cbc1d37c8d4ea82ec28133ec156f69281b12c6"
     },
     {
       "path": "scripts/producer-sdk10/envelope.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d4c75a0c534c7a65e564185ebf9b357a1b7a0f2f"
+      "hash": "f228320ff53f1755696713861a0fd20f3dcb2c9f"
     },
     {
       "path": "scripts/producer-sdk10/git_ack.py",
@@ -11228,14 +11228,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "a7dedffd227389b0c2065a34b4c64a00a1339b90"
+      "hash": "a2732c6931038d20d4aab59ad637fda3c89a4d95"
     },
     {
       "path": "scripts/producer-sdk10/make_workflow.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "951291ff14863412e6fde92154a063588fc4c71f"
+      "hash": "7464a3ecce2bfd928de5108bb2e58b2ec4ee7d37"
     },
     {
       "path": "scripts/producer-sdk10/meter.py",
@@ -11263,7 +11263,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "10f4b619f5f7622b365b3918fe01a986963e2f27"
+      "hash": "eeeb2967ef7a8df83d8766c5784d3eac819f36af"
     },
     {
       "path": "scripts/producer-sdk10/owned_image.py",
@@ -11312,7 +11312,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "004934e4cca203cf94ef84a225ee13eb61e11daa"
+      "hash": "23ed44604b157722007966d11c656c9826a46e17"
     },
     {
       "path": "scripts/producer-sdk10/target_pause_controls.py",
@@ -11361,21 +11361,21 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8d9ecb5994bb2f50410a97b13cefd90361d147cb"
+      "hash": "186a42f58bc2855ca1b0d8f71cdb4b0e18fe51e9"
     },
     {
       "path": "scripts/producer-sdk10/test_core.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "be362497431a8b1241005f9ba3170f0dbfaab8fa"
+      "hash": "ba2a92f92b8662c30996411ccc593fbc3bd199fe"
     },
     {
       "path": "scripts/producer-sdk10/test_crypto.mjs",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "f0f47ba2193e0734651349811b373a4601f36f45"
+      "hash": "b4825e658ec83b4373fbc9be24ae5408cde23a53"
     },
     {
       "path": "scripts/producer-sdk10/test_deadlines.py",
@@ -11389,7 +11389,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "13776fdfa6c9a8a0e70c6ce1d10758462149eb50"
+      "hash": "29666d02ae456a777e4e9f6a73c34c67906a078c"
     },
     {
       "path": "scripts/producer-sdk10/test_live_resource.py",
@@ -11410,7 +11410,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "320aed628a0dbca9a32be34616e77e8707384d2e"
+      "hash": "96b8c9f04dfed7a4c15bc8b94c526e5ebcdf9cca"
     },
     {
       "path": "scripts/producer-sdk10/test_native_identity.py",
@@ -11424,14 +11424,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "9bf619694a561dc0d2a4535cfced655948e72111"
+      "hash": "9c2b29fc69b4b7c3c5efc4011f5a81b14c24e8e3"
     },
     {
       "path": "scripts/producer-sdk10/test_producer_adapter.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "fa00e93ebab4014f0c92efb8d571131343c3380a"
+      "hash": "4b28ae571cd773ba31349f2c1060dc0b77f4a32d"
     },
     {
       "path": "scripts/producer-sdk10/test_producer_pause.py",
@@ -19166,7 +19166,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4565f362d94b061b26d85310959f9edfb6301377"
+      "hash": "e30e61a6b33f0cef8b5f7f92f7ef5b3b88767b02"
     },
     {
       "path": "test/gcc-hosted-carrier.test.ts",
@@ -19229,7 +19229,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "9da10107cb7a4bf5ba581e4df048a17ba8148c9c"
+      "hash": "57e2af1fba076cb909dff246789d828131d3afaf"
     },
     {
       "path": "test/gcc-main05-export-cases.py",
@@ -19264,7 +19264,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ff762f8b3ba6f35a31f32dbd325616246a70909b"
+      "hash": "68f9bf4e827598f4ca48540e33a0123f7dc44c99"
     },
     {
       "path": "test/gcc-main05-retain-cases.py",
@@ -19334,28 +19334,28 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e61c1e3ac487ee8a0280bce70f834699ced419ce"
+      "hash": "d6370c10f8cae807fd24a8e4f7026df193eb0022"
     },
     {
       "path": "test/gcc-native05-noexport-cases.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "ff28a4a77043180defbe69b07a9e89ec03c69ed2"
+      "hash": "57f5e7e2edaff3b699061b9839c9c28367a3f0af"
     },
     {
       "path": "test/gcc-native05-sdk-local-cases.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "7954d456b2ff5d07d52d5a7fb75feb737d64cfa4"
+      "hash": "bc100a706d2fd90b08ca5c5387b8e7e4db70bec9"
     },
     {
       "path": "test/gcc-native05-synthetic-fixture.py",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "31c1a4fe2a0e87cfe0831af0ae81a47c813d7cbb"
+      "hash": "04e9e92e3fbd1d982e145c43c3906742c40036b2"
     },
     {
       "path": "test/gcc-phase0-transport-cases.py",
@@ -19418,7 +19418,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "6e8aaf3e11f03772134ecdfb3d759e4c8a12596e"
+      "hash": "d9434da7eb92554eafb082b8f92afc2e48dc7c9d"
     },
     {
       "path": "test/gcc-sdk-reconstruction-cases.py",
