@@ -3,7 +3,7 @@ Imports and plan validation execute no archive, SDK or upstream source code.
 """
 from pathlib import Path
 import hashlib,io,json,os,posixpath,shutil,stat,sys,time,types
-HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
+HERE=Path(__file__).resolve().parent
 from admission import read_once
 REUSE={'inventory.py':'7f689abe1aa8a90a6c66107e90f47add20deb963f12d240cfeeaadd3ed432138','common.py':'c7d863cf1502600b11754d9d5aed90511481a6959f2a4d3b4a68ad3616eee72f','POLICY.json':'b9d8b09325cf578f618adeb896eff7f66c7f1dd15fb24b789a9a8144f9880fe5'}
 def need(v,m):

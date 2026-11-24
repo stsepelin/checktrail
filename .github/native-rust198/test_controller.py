@@ -688,7 +688,7 @@ class InputCustodyTests(unittest.TestCase):
   root.chmod(0o755)
   for name in bodies:(root/name).chmod(0o644);(root/name).write_bytes(b"VALUE='replaced-6151'\nraise SystemExit('replaced-6151')\n")
   swap=SecondOpenSwap({root/name:None for name in bodies})
-  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache),swap:
+  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache),swap:
    with self.assertRaises(SystemExit) as raised:L.run_verified(root,verified,['observe'])
   self.assertEqual(repr(('verified-6151',hashlib.sha256(bodies['producer.py']).hexdigest())),raised.exception.code)
   self.assertEqual({str(root/name):0 for name in bodies},swap.opens)
@@ -696,12 +696,20 @@ class InputCustodyTests(unittest.TestCase):
   root,manifest,bodies=self.cohort()
   producer=b"import os,sys\nsys.path.insert(0,os.path.dirname(__file__))\nimport synthetic_helper_6151 as helper\ntry:\n import synthetic_planted_6151\nexcept ImportError:\n raise SystemExit('refused-6151 '+helper.VALUE)\nraise SystemExit('imported-'+synthetic_planted_6151.VALUE)\n"
   bodies={**bodies,'producer.py':producer};root.chmod(0o755);(root/'synthetic_planted_6151.py').write_bytes(b"VALUE='planted-6151'\n")
-  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache):
+  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache):
    with self.assertRaises(SystemExit) as raised:L.run_verified(root,bodies,['observe'])
   self.assertEqual('refused-6151 verified-6151',raised.exception.code)
+ def test_launch_never_imports_from_a_directory_added_after_verification(self):
+  # A controller module whose __file__ resolves through a replaced symlink adds a
+  # directory outside the cohort; nothing in it may be imported.
+  root,manifest,bodies=self.cohort();elsewhere=self.root/'elsewhere-6151';elsewhere.mkdir();(elsewhere/'synthetic_planted_6151.py').write_bytes(b"VALUE='planted-elsewhere-6151'\n")
+  producer=("import sys\nsys.path.insert(0,%r)\ntry:\n import synthetic_planted_6151\nexcept ImportError:\n raise SystemExit('refused-6151')\nraise SystemExit('imported-'+synthetic_planted_6151.VALUE)\n" % str(elsewhere)).encode()
+  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules),mock.patch.dict(sys.path_importer_cache):
+   with self.assertRaises(SystemExit) as raised:L.run_verified(root,{**bodies,'producer.py':producer},['observe'])
+  self.assertEqual('refused-6151',raised.exception.code)
  def test_launch_refuses_a_cohort_module_imported_before_verification(self):
   root,manifest,bodies=self.cohort();stale=types.ModuleType('synthetic_helper_6151');stale.VALUE='unverified-6151'
-  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules,{'synthetic_helper_6151':stale}),mock.patch.dict(sys.path_importer_cache):
+  with mock.patch.object(sys,'meta_path',list(sys.meta_path)),mock.patch.object(sys,'path_hooks',list(sys.path_hooks)),mock.patch.object(sys,'path',list(sys.path)),mock.patch.object(sys,'argv',list(sys.argv)),mock.patch.dict(sys.modules,{'synthetic_helper_6151':stale}),mock.patch.dict(sys.path_importer_cache):
    with self.assertRaisesRegex(ValueError,'^Controller module imported before cohort verification$'):L.run_verified(root,bodies,['observe'])
 
 if __name__=='__main__':unittest.main()

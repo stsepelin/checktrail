@@ -49,14 +49,16 @@ class InnerFailure(unittest.TestCase):
   reason='root-request-required';good=self.trace(reason)
   for stdout,stderr in [(b'',self.trace('prefix-'+reason)),(b'',self.trace(reason+'-suffix')),(b'',self.trace(reason,Path('/unrelated/firstparty.py'))),(b'',good+b'extra\n'),(b'',good.replace(b'Traceback (most recent call last):\n',b'')),(b'UNEMITTED-SOURCE-OR-SLA',good)]:
    with self.subTest(stderrSHA=hashlib.sha256(stderr).hexdigest()):r=self.failed(subprocess.CompletedProcess([],2,stdout,stderr));self.assertEqual('unknown-inner-failure',r['classification']['kind']);self.assertIsNone(r['classification']['reasonIdentifier']);self.assertNotIn('UNEMITTED',json.dumps(r));self.assertEqual(hashlib.sha256(stdout).hexdigest(),r['stdout']['sha256'])
- def test_exact_python_open_permission_family_only_for_known_alias_and_controller(self):
-  script=HERE/'reused_admission.py'
-  for number,message in [(13,b'Permission denied'),(1,b'Operation not permitted')]:
-   stderr=os.fsencode(sys.executable)+b": can't open file '"+os.fsencode(script)+b"': [Errno "+str(number).encode()+b'] '+message+b'\n';r=self.failed(subprocess.CompletedProcess([],2,b'',stderr));self.assertEqual('stock-python-cannot-open-firstparty-controller-permission-refusal',r['classification']['kind']);self.assertEqual(number,r['classification']['osErrno']);self.assertNotIn(str(script),json.dumps(r))
- def test_permission_message_near_misses_remain_unknown(self):
-  good=b"/usr/bin/python3: can't open file '"+os.fsencode(HERE/'reused_admission.py')+b"': [Errno 13] Permission denied\n"
-  for bad in [good.replace(b'/usr/bin/python3',b'/unreviewed/python3'),good.replace(b'reused_admission.py',b'other.py'),good.replace(b'Errno 13',b'Errno 2'),good+b'raw-extra',good.replace(b'Permission denied',b'Permission deniedx')]:
-   r=self.failed(subprocess.CompletedProcess([],2,b'',bad));self.assertEqual('unknown-inner-failure',r['classification']['kind'])
+ def test_bootstrap_open_refusal_family_records_only_the_errno(self):
+  for number in [13,1]:
+   stderr=b'permission-helper-open-refused: [Errno '+str(number).encode()+b']\n';r=self.failed(subprocess.CompletedProcess([],2,b'',stderr))
+   self.assertEqual({'kind':'firstparty-bootstrap-cannot-open-staged-helper','reasonIdentifier':None,'osErrno':number},r['classification'])
+ def test_bootstrap_open_refusal_near_misses_remain_unknown(self):
+  good=b'permission-helper-open-refused: [Errno 13]\n'
+  # An interpreter startup message cannot come from a -c bootstrap, so it is not this refusal.
+  stock=b"/usr/bin/python3: can't open file '"+os.fsencode(HERE/'reused_admission.py')+b"': [Errno 13] Permission denied\n"
+  for stdout,bad in [(b'',good.replace(b'Errno 13',b'Errno 2')),(b'',good+b'raw-extra'),(b'',good.replace(b'refused',b'refusedx')),(b'UNEMITTED-7731',good),(b'',stock)]:
+   with self.subTest(stderrSHA=hashlib.sha256(bad).hexdigest(),stdout=stdout):r=self.failed(subprocess.CompletedProcess([],2,stdout,bad));self.assertEqual('unknown-inner-failure',r['classification']['kind'])
  def test_success_preserves_exact_original_run_arguments_and_receipt(self):
   body=json.dumps({'metadataEndpointSha256':'a'*64}).encode();response=subprocess.CompletedProcess([],0,body,b'')
   with mock.patch.object(H.subprocess,'run',return_value=response) as called:r=H.observe_inner(self.module,self.argv,self.env,self.receipts,.25)
@@ -292,28 +294,37 @@ class VerifiedHelperExecution(unittest.TestCase):
   self.original=(HERE/'reused_admission.py').read_bytes();(self.controller/'reused_admission.py').write_bytes(self.original);self.marker=self.root/'replacement-ran-8273'
   self.replacement=('import pathlib,sys\npathlib.Path(%r).write_text("replacement 8273")\nprint(\'{"replacement":8273}\')\n' % str(self.marker)).encode()
  def tearDown(self):self.temp.cleanup()
- def probe(self,module,replace_controller=False,replace_staged=False):
+ def probe(self,module,replace_controller=False,replace_staged=False,unreadable=False,fifo=False):
   output=self.root/('output-%d' % len(list(self.root.iterdir())));output.mkdir();helper=H.PL.stage_inner_helper(module,output)
   if replace_controller:(self.controller/'reused_admission.py').write_bytes(self.replacement)
   if replace_staged:helper.chmod(0o644);helper.write_bytes(self.replacement)
+  if unreadable:helper.chmod(0o000)
+  if fifo:helper.unlink();os.mkfifo(helper)
   stand_in=next(Path(c) for c in ['/usr/bin/true','/bin/true'] if os.path.isfile(c) and os.stat(c).st_uid==0)
   tree=self.root/'selected-8273';tree.mkdir(exist_ok=True);(tree/'entry-8273').write_bytes(b'synthetic selected entry 8273')
   frame=module.snapshot([tree],module.Bounds());identity={'uid':os.getuid(),'gid':os.getgid(),'groups':sorted({os.getgid(),*os.getgroups()})}
   request=output/'request.json';request.write_text(json.dumps({'frame':frame,'controller':{'file':str(stand_in),'sha256':hashlib.sha256(stand_in.read_bytes()).hexdigest(),'uid':os.getuid()+1},'identity':identity}))
   command=H.PL.inner_command(module,helper,request);child=[sys.executable,*command[command.index('/usr/bin/python3')+1:]]
-  return subprocess.run(child,cwd='/',input=b'',capture_output=True,env={'PATH':'/usr/bin:/bin','LC_ALL':'C'},timeout=60,check=False),helper
+  return subprocess.run(child,cwd='/',input=b'',capture_output=True,env={'PATH':'/usr/bin:/bin','LC_ALL':'C'},timeout=20,check=False),helper
  def verified(self):
   with mock.patch.object(H,'HERE',self.controller):return H.guard()
  def assert_verified_helper_ran(self,result,helper):
   # This suite does not run as root, so the pinned helper's own first check refuses
   # the fixture request; that refusal, raised from the staged copy, is the witness.
   self.assertEqual((1,b''),(result.returncode,result.stdout),result.stderr[-400:])
-  self.assertEqual({'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':'root-request-required'},H.classify_inner_failure(result.stdout,result.stderr,helper,(sys.executable,)))
+  self.assertEqual({'kind':'closed-firstparty-inner-need-refusal','reasonIdentifier':'root-request-required'},H.classify_inner_failure(result.stdout,result.stderr,helper))
   self.assertFalse(self.marker.exists())
  def test_controller_file_replaced_after_verification_never_runs(self):
   result,helper=self.probe(self.verified(),replace_controller=True);self.assert_verified_helper_ran(result,helper)
  def test_unchanged_helper_runs_through_the_bootstrap(self):
   result,helper=self.probe(self.verified());self.assert_verified_helper_ran(result,helper)
+ def test_unreadable_staged_copy_is_a_bootstrap_open_refusal(self):
+  result,helper=self.probe(self.verified(),unreadable=True)
+  self.assertEqual((2,b'',b'permission-helper-open-refused: [Errno 13]\n'),(result.returncode,result.stdout,result.stderr))
+  self.assertEqual({'kind':'firstparty-bootstrap-cannot-open-staged-helper','reasonIdentifier':None,'osErrno':13},H.classify_inner_failure(result.stdout,result.stderr,helper))
+ def test_staged_copy_replaced_by_a_fifo_is_refused_without_blocking(self):
+  result,_=self.probe(self.verified(),fifo=True)
+  self.assertNotEqual(0,result.returncode);self.assertTrue(result.stderr.endswith(b'permission-helper-not-a-bounded-single-link-file\n'));self.assertFalse(self.marker.exists())
  def test_staged_copy_replaced_before_the_child_reads_it_is_refused(self):
   result,_=self.probe(self.verified(),replace_staged=True)
   self.assertNotEqual(0,result.returncode);self.assertEqual(b'',result.stdout);self.assertTrue(result.stderr.endswith(b'permission-helper-sha256-differs\n'));self.assertFalse(self.marker.exists())

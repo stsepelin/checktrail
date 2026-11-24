@@ -75,14 +75,14 @@ INNER_HELPER='VERIFIED-PERMISSION-HELPER.py'
 INNER_HELPER_BYTES=1024**2
 # The build account runs this from argv, so no file can stand in for it. It reads the
 # staged helper once, refuses unless those bytes have the sha256 the root controller
-# pinned, and executes exactly those bytes. An unopenable helper is reported in the
-# interpreter's own wording, which classify_inner_failure() recognizes.
+# pinned, and executes exactly those bytes. A helper it cannot open is reported as
+# its own bounded refusal with the errno only, never as an interpreter startup error.
 INNER_BOOTSTRAP='\n'.join([
  'import hashlib,os,stat,sys',
  'path,expected=sys.argv[1],sys.argv[2]',
- 'try:fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)',
+ 'try:fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)',
  'except OSError as error:',
- ' sys.stderr.write("/usr/bin/python3: can\'t open file %r: [Errno %d] %s\\n"%(path,error.errno,error.strerror));raise SystemExit(2)',
+ ' sys.stderr.write("permission-helper-open-refused: [Errno %d]\\n"%error.errno);raise SystemExit(2)',
  'try:',
  ' s=os.fstat(fd)',
  ' if not(stat.S_ISREG(s.st_mode) and s.st_nlink==1 and 0<s.st_size<='+str(INNER_HELPER_BYTES)+'):raise SystemExit("permission-helper-not-a-bounded-single-link-file")',
@@ -133,6 +133,7 @@ def access_canary(module,bounds,controller,output,identity,context,runner_uid,ob
   return {'firstPartyOnlyNonemptyAccessCanaryObserved':True,'payloadReadBytesVerifiedByLegacyHashCheck':len(payload),'payloadSHA256':hashlib.sha256(payload).hexdigest(),'selectedFirstpartyAndAncestorEntries':len(frame),'allAncestorsTraversableReadableAndProtected':True,'identity':identity,'commands':receipts,'secondsLimit':30,'costChargedInsideExistingPermissionPhase':True,'SDKBytesReadByThisCanary':0,'SDKFrameOrNativeAdmissionCredit':False}
  finally:
   if descriptor is not None:os.close(descriptor)
-  for file in [request,canary,helper]:
-   if file is not None and file.exists() and not file.is_symlink():file.unlink()
-  Path(output).chmod(0o700)
+  try:
+   for file in [request,canary,helper]:
+    if file is not None and file.exists() and not file.is_symlink():file.unlink()
+  finally:Path(output).chmod(0o700)

@@ -69,14 +69,13 @@ class InnerPermissionProbeRefusal(ValueError):
 def stream_observation(body):
  return {'available':isinstance(body,bytes),'bytes':len(body) if isinstance(body,bytes) else None,'sha256':hashlib.sha256(body).hexdigest() if isinstance(body,bytes) else None}
 
-def classify_inner_failure(stdout,stderr,script,python_aliases):
+def classify_inner_failure(stdout,stderr,script):
  # Classification never changes admission and never returns an input snippet/path.
  if stdout!=b'' or not isinstance(stderr,bytes):return {'kind':'unknown-inner-failure','reasonIdentifier':None}
+ # placement.INNER_BOOTSTRAP reports a staged helper it could not open this way.
+ for number in (1,13):
+  if stderr==b'permission-helper-open-refused: [Errno '+str(number).encode()+b']\n':return {'kind':'firstparty-bootstrap-cannot-open-staged-helper','reasonIdentifier':None,'osErrno':number}
  encoded=os.fsencode(script)
- for alias in set(python_aliases):
-  for number,message in [(13,b'Permission denied'),(1,b'Operation not permitted')]:
-   expected=os.fsencode(alias)+b": can't open file '"+encoded+b"': [Errno "+str(number).encode()+b'] '+message+b'\n'
-   if stderr==expected:return {'kind':'stock-python-cannot-open-firstparty-controller-permission-refusal','reasonIdentifier':None,'osErrno':number}
  if stderr.startswith(b'Traceback (most recent call last):\n') and stderr.count(b'Traceback (most recent call last):\n')==1:
   for reason in sorted(INNER_NEED_IDS):
    # CPython 3.11+ may underline this exact selected raise statement.
@@ -107,7 +106,7 @@ def observe_inner(module,argv,env,receipts,timeout):
   observation['classification']={'kind':'original-command-output-bound-refused','reasonIdentifier':None};raise InnerPermissionProbeRefusal(observation) from None
  receipts.append({'argv':argv,'exitCode':response.returncode,'stdoutBytes':len(response.stdout),'stdoutSHA256':hashlib.sha256(response.stdout).hexdigest(),'stderrBytes':len(response.stderr),'stderrSHA256':hashlib.sha256(response.stderr).hexdigest()})
  if response.returncode!=0:
-  observation['classification']=classify_inner_failure(response.stdout,response.stderr,inner_helper(argv),('/usr/bin/python3',sys.executable));raise InnerPermissionProbeRefusal(observation) from None
+  observation['classification']=classify_inner_failure(response.stdout,response.stderr,inner_helper(argv));raise InnerPermissionProbeRefusal(observation) from None
  try:
   value=json.loads(response.stdout)
   D.need(isinstance(value,dict) and isinstance(value.get('metadataEndpointSha256'),str),'First-party inner JSON shape')

@@ -50,13 +50,24 @@ class Unsearchable:
  def find_spec(self,name,target=None):return None
  def invalidate_caches(self):pass
 
+def search_only(entries):
+ """Path hook that lets path-based finders search only the given sys.path entries."""
+ allowed=frozenset(entries)
+ def hook(entry):
+  if entry in allowed:raise ImportError('searched by the next path hook')
+  return Unsearchable()
+ return hook
+
 def run_verified(root,bodies,arguments):
  # A module imported before verification would be reused instead of the verified bytes.
  need(not [name for name in bodies if name.endswith('.py') and '/' not in name and name!='producer.py' and name[:-3] in sys.modules],'Controller module imported before cohort verification')
  modules=VerifiedModules(root,bodies);main=types.ModuleType('__main__');main.__file__=str(root/'producer.py');main.__loader__=modules
- # Controller modules add their own directories to sys.path. No path-based finder may
- # search those directories, so a file that appears there after verification is never imported.
- for folder in {str((root/name).parent) for name in bodies}:sys.path_importer_cache[folder]=Unsearchable()
+ # Controller modules add directories to sys.path, resolved against the live filesystem.
+ # Only entries present before verification, other than the controller's own
+ # directories, stay searchable, so no file outside the verified bytes is imported.
+ folders={str((root/name).parent) for name in bodies}
+ for folder in folders:sys.path_importer_cache[folder]=Unsearchable()
+ sys.path_hooks.insert(0,search_only([entry for entry in sys.path if entry not in folders]))
  sys.meta_path.insert(0,modules);sys.argv=[main.__file__,*arguments];sys.modules['__main__']=main
  exec(compile(bodies['producer.py'],main.__file__,'exec'),main.__dict__)
 

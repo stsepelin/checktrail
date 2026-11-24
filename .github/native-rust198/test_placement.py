@@ -112,6 +112,17 @@ class Placement(unittest.TestCase):
    return base(module,argv,env,receipts,timeout)
   with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),run)
   self.assertEqual([(p['host']/P.INNER_HELPER,module.verifiedSource,module.verifiedSHA256,True,True)],seen);self.assertEqual([],list(p['host'].iterdir()))
+ def test_output_turns_private_again_when_staged_helper_cleanup_fails(self):
+  p=self.layout();module,bounds=self.fake_module();base=self.observe(deny=True)
+  def run(module,argv,env,receipts,timeout):
+   helper=Path(argv[-4]);helper.unlink();helper.mkdir();(helper/'occupied-3307').write_bytes(b'3307')
+   return base(module,argv,env,receipts,timeout)
+  try:
+   with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view),self.assertRaises(OSError):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),run)
+   self.assertEqual(0o700,stat.S_IMODE(p['host'].stat().st_mode))
+  finally:
+   occupied=p['host']/P.INNER_HELPER
+   if occupied.is_dir():(occupied/'occupied-3307').unlink();occupied.rmdir()
  def test_helper_bytes_that_do_not_match_their_pin_are_never_staged(self):
   p=self.layout();module,bounds=self.fake_module();module.verifiedSource=b'# replaced helper 4729\n'
   with mock.patch.object(P,'PARENT',self.parent),mock.patch.object(P,'status',side_effect=self.root_view),self.assertRaisesRegex(ValueError,'^verified-permission-helper-bytes$'):P.access_canary(module,bounds,p['controller'],p['host'],self.identity,self.context,os.getuid(),self.observe())

@@ -5,24 +5,24 @@
     "sha256": "fcebd6bdb2a9c008cd8ac6ad64f99b6542e5df9a1992952a33ca7a4ead4d2150"
   },
   {
-    "bytes": 20343,
+    "bytes": 20202,
     "file": "host_probe.py",
-    "sha256": "115c38a6ea84ee2897fa460b6181ceda0c7b4bc5911c53d8b3df16a205dd8e5e"
+    "sha256": "2864cb26320465f1a597178ea045605afd2a29fb316ac2837a1dac8d10eb8521"
   },
   {
-    "bytes": 5274,
+    "bytes": 5722,
     "file": "launch.py",
-    "sha256": "2fbf7fe23b11e9ada6aeb345cb50455fbf339bd229f31fce547a3b64ef581934"
+    "sha256": "8c4ece97b78b4a7c863e75b869dbbcfa1d1e95329ea15af53443bdef461ec070"
   },
   {
-    "bytes": 11038,
+    "bytes": 11009,
     "file": "materializer.py",
-    "sha256": "53f4784303c2df2bc22221361b98ff80b2a0d24dd75bc9d88916f1344be55fc6"
+    "sha256": "f9bd630f34d55c90493c2a995c64cad169bb7d257f88a7defdca8e7405bbadb5"
   },
   {
-    "bytes": 12479,
+    "bytes": 12491,
     "file": "placement.py",
-    "sha256": "53b872d04859d45dceef816226d5030ca666e98d26643b5a1c6653417f3121d4"
+    "sha256": "262238fc296d77ceb6a12d36140e95b1ce194fa7874e0b7659a599e452d30d5c"
   },
   {
     "bytes": 17510,
@@ -75,14 +75,14 @@
     "sha256": "c415de7356e9232818dae9cb6a3230a127c08fe21f2d82b7ddf4093111413159"
   },
   {
-    "bytes": 74735,
+    "bytes": 75997,
     "file": "test_controller.py",
-    "sha256": "3e3cf0f59f8d8c284b30a2d705951de9971e0cc166fba5add2ed5cbb46458e75"
+    "sha256": "7ea34e2ee32cc9525eea026a925e6bf0aa9c484a5b07d8857e14448f1d8b09ec"
   },
   {
-    "bytes": 40635,
+    "bytes": 41380,
     "file": "test_inner_failure_observation.py",
-    "sha256": "6f5c7c7ee905f7fd1885902c86276960e06136f801a8a9f2085754fcf6f6cbea"
+    "sha256": "d64be3917a6e71529c6757a0f8df40f204bbbd40f18d74e52ce9ef639fa2c075"
   },
   {
     "bytes": 10450,
@@ -90,9 +90,9 @@
     "sha256": "7e99ea6772c0d0ccb89cc67ee55fc2cbb2b06b2c456b2b9a540a47b7d787dd0e"
   },
   {
-    "bytes": 20817,
+    "bytes": 21602,
     "file": "test_placement.py",
-    "sha256": "ab45f57dd96e2dcc32844635acd700f377f899d3524b584be9bbb2e892bbdc48"
+    "sha256": "0e54f30c580f4071169122ce4dd51ddb9497130a04b4db64033f8dd8aa54e0f5"
   },
   {
     "bytes": 30124,
