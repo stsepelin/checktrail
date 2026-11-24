@@ -4,7 +4,7 @@ import hashlib
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from make_workflow import generate as generate_native, CHECKOUT, UPLOAD
+from make_workflow import generate as generate_native, CHECKOUT, ENTRY, UPLOAD
 
 def generate(folder, destination):
     # Same exact source manifest; native workflow stays a distinct ungranted
@@ -12,7 +12,6 @@ def generate(folder, destination):
     inert = destination.with_name('ORIGINAL-NATIVE-UNGRANTED.yml')
     data = generate_native(folder, inert)
     pin = data['manifestSHA256']
-    source = 'scripts/producer-sdk10'
     lines = ['# FIRST-PARTY CONTROLS ONLY. No original SDK/source/key/export execution.',
              'name: SDK10 owned pause controls', 'on:', '  workflow_dispatch:', '    inputs:',
              '      nonce:', '        description: Exact reviewed fresh controls-only nonce',
@@ -27,13 +26,13 @@ def generate(folder, destination):
              '          persist-credentials: false', '          fetch-depth: 1',
              '      - name: Focused first-party synthetic controls without keys or Docker',
              '        shell: bash', '        run: |',
-             '          python3 -I -S -B ' + source + '/test_producer_pause.py',
-             '          python3 -I -S -B ' + source + '/test_producer_adapter.py',
-             '          python3 -I -S -B ' + source + '/test_live_resource.py',
-             '          python3 -I -S -B ' + source + '/test_target_pause_controls.py',
+             '          ' + ENTRY + 'test_producer_pause.py',
+             '          ' + ENTRY + 'test_producer_adapter.py',
+             '          ' + ENTRY + 'test_live_resource.py',
+             '          ' + ENTRY + 'test_target_pause_controls.py',
              '      - name: Actual owned inert Docker pause and strict sampler controls',
              '        shell: bash',
-             '        run: python3 -I -S -B ' + source + '/target_pause_controls.py --nonce "$CHECKTRAIL_NONCE" --manifest-sha256 "$CHECKTRAIL_MANIFEST_SHA256"',
+             '        run: ' + ENTRY + 'target_pause_controls.py --nonce "$CHECKTRAIL_NONCE" --manifest-sha256 "$CHECKTRAIL_MANIFEST_SHA256"',
              '      - name: Retain finite first-party controls metadata only',
              '        if: always()', '        uses: actions/upload-artifact@' + UPLOAD,
              '        with:', '          name: sdk10-owned-pause-controls-${{ github.run_id }}-1-${{ inputs.nonce }}',

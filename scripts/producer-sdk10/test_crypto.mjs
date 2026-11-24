@@ -1,6 +1,6 @@
 import {Buffer} from 'node:buffer';import process from 'node:process';import console from 'node:console';
 import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';import assert from 'node:assert/strict';
-import {encrypt,decrypt,signAck,verifyAck,MAX_BYTES,canonical} from './envelope.mjs';
+import {encrypt,decrypt,signAck,verifyAck,publicKey,MAX_BYTES,canonical} from './envelope.mjs';
 const root=process.argv[2];fs.mkdirSync(root,{mode:0o700});const rows=[];let seq=0;
 async function test(name,fn){try{await fn();rows.push({name,passed:true});}catch(e){rows.push({name,passed:false,error:e.message});throw e;}}
 function pair(label){const k=crypto.generateKeyPairSync('rsa',{modulusLength:3072});const file=path.join(root,label+'.TEST-ONLY-PRIVATE.pem');fs.writeFileSync(file,k.privateKey.export({type:'pkcs8',format:'pem'}),{flag:'wx',mode:0o600});return {file,jwk:k.publicKey.export({format:'jwk'})};}
@@ -18,6 +18,12 @@ await test('12GiB plaintext excludes mandatory encryption overhead',async()=>{co
 await test('private JWK fields cannot enter public envelope',async()=>{await assert.rejects(encrypt({source,out:path.join(root,'private-jwk'),context,plaintext,publicJWK:{...key.jwk,d:'forbidden'},seconds:10}));});
 await test('fresh96bit nonce makes separate envelope identities',async()=>{const e=await encrypt({source,out:path.join(root,'second.ct10'),context,plaintext,publicJWK:key.jwk,seconds:10});assert.notEqual(e.headerSHA256,envelope.headerSHA256);assert.notEqual(e.sha256,envelope.sha256);});
 await test('atomic acceptance never overwrites an existing output',async()=>{const out=path.join(root,'already-present');fs.writeFileSync(out,'existing',{flag:'wx',mode:0o600});await assert.rejects(encrypt({source,out,context,plaintext,publicJWK:key.jwk,seconds:10}));assert.equal(fs.readFileSync(out,'utf8'),'existing');});
+function padded(value){return Buffer.concat([Buffer.alloc(1),Buffer.from(value,'base64url')]).toString('base64url');}
+function generated(bits){return crypto.generateKeyPairSync('rsa',{modulusLength:bits}).publicKey.export({format:'jwk'});}
+await test('384..512-byte JWK modulus below 3072 bits or non-canonical is refused',async()=>{const short=generated(3064),clear=generated(3071);assert.equal(Buffer.from(short.n,'base64url').length,383);assert.equal(Buffer.from(clear.n,'base64url').length,384);assert(Buffer.from(clear.n,'base64url')[0]<0x80);
+ for(const [label,jwk] of [['leading-zero-3064',{...short,n:padded(short.n)}],['high-bit-clear-384-byte',clear],['leading-zero-3072',{...key.jwk,n:padded(key.jwk.n)}],['leading-zero-exponent',{...key.jwk,e:padded(key.jwk.e)}]])assert.throws(()=>publicKey(jwk),/RSA3072\.\.4096 recipient modulus|canonical public RSA JWK/,label);
+ await assert.rejects(encrypt({source,out:path.join(root,'padded-recipient'),context,plaintext,publicJWK:{...key.jwk,n:padded(key.jwk.n)},seconds:10}));assert.equal(fs.existsSync(path.join(root,'padded-recipient')),false);});
+await test('canonical 3072 and 4096 bit recipients are accepted',async()=>{const large=generated(4096);for(const [jwk,bits] of [[key.jwk,3072],[large,4096]])assert.equal(publicKey(jwk).asymmetricKeyDetails.modulusLength,bits);});
 const payload={context,kind:'synthetic-hash-only-ack',ciphertextSHA256:envelope.sha256};const ack=signAck({payload,privateKey:key.file});
 await test('RSA-PSS local ACK valid exact expected payload',async()=>{assert.equal(verifyAck({ack,expected:payload,publicJWK:key.jwk}).operatorSignatureVerified,true);});
 await test('RSA-PSS wrong key refuses',async()=>{assert.throws(()=>verifyAck({ack,expected:payload,publicJWK:wrong.jwk}));});

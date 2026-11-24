@@ -39,19 +39,30 @@ def compiler_invocation(executable,argv):
 
 def process_directory(pid):return pathlib.Path('/proc')/str(pid)
 
+def assembly_path(proc,argument):return proc/'root'/argument.lstrip('/') if argument.startswith('/') else proc/'cwd'/argument
+def process_maps_file(proc,dev,inode):
+ """Whether the process maps file (dev, inode); reads only its bounded mapping table."""
+ with (proc/'maps').open('rb') as f:maps=f.read(2*1024**2+1)
+ need(len(maps)<=2*1024**2,'bounded observed compiler process mappings')
+ for line in maps.decode('utf8','replace').splitlines():
+  fields=line.split(None,5)
+  if len(fields)<5:continue
+  match=re.fullmatch(r'([0-9a-fA-F]+):([0-9a-fA-F]+)',fields[3])
+  if match and fields[4].isdigit() and (int(match[1],16),int(match[2],16),int(fields[4]))==(os.major(dev),os.minor(dev),inode):return True
+ return False
+def assembly_argument_mapped(proc,argument):
+ """Cheap pre-check for a pending managed host: stat and mapping table only, no content hash."""
+ try:
+  s=assembly_path(proc,argument).lstat()
+  return stat.S_ISREG(s.st_mode) and process_maps_file(proc,s.st_dev,s.st_ino)
+ except (OSError,Refusal):return False
 def compiler_assembly_identity(proc,argument,deadline=None):
  deadline=time.monotonic()+5 if deadline is None else deadline
- path=proc/'root'/argument.lstrip('/') if argument.startswith('/') else proc/'cwd'/argument
+ path=assembly_path(proc,argument)
  result={'argument':argument,'state':'UNASSESSED','actualAssemblyMappedInObservedProcess':False,'compilerAssemblyVersionInferred':False}
  try:
   identity=file_identity(path,128*1024**2,deadline);result.update(state='PHYSICAL_ARGUMENT_BOUND_MAPPING_UNASSESSED',physicalIdentity=identity)
-  with (proc/'maps').open('rb') as f:maps=f.read(2*1024**2+1)
-  need(len(maps)<=2*1024**2,'bounded observed compiler process mappings')
-  for line in maps.decode('utf8','replace').splitlines():
-   fields=line.split(None,5)
-   if len(fields)<5:continue
-   match=re.fullmatch(r'([0-9a-fA-F]+):([0-9a-fA-F]+)',fields[3])
-   if match and fields[4].isdigit() and (int(match[1],16),int(match[2],16),int(fields[4]))==(os.major(identity['dev']),os.minor(identity['dev']),identity['inode']):need(file_identity(path,128*1024**2,deadline)==identity,'compiler assembly changed across process mapping observation');result.update(state='PHYSICAL_COMPILER_ARGUMENT_AND_PROCESS_MAPPING_BOUND',actualAssemblyMappedInObservedProcess=True);break
+  if process_maps_file(proc,identity['dev'],identity['inode']):need(file_identity(path,128*1024**2,deadline)==identity,'compiler assembly changed across process mapping observation');result.update(state='PHYSICAL_COMPILER_ARGUMENT_AND_PROCESS_MAPPING_BOUND',actualAssemblyMappedInObservedProcess=True)
  except (OSError,Refusal):pass
  return result
 def output(values):
@@ -116,8 +127,13 @@ class Controller:
   return obj
  def stop_owned(self,name):
   obj=self.own_container(name)
-  if obj is None:return True
   native=name in [self.state['prefix']+'-original-build',self.state['prefix']+'-original-tests']
+  if obj is None:
+   # A renamed producer leaves its name absent while its registered ID still
+   # runs and writes the volume; only absence of that exact ID is quiescence.
+   if native and name in self.state.get('nativeProducers',{}):
+    api=ProducerAPI(self,name);need(api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline'])) is None,'registered native producer ID absence')
+   return True
   if native:
    api=ProducerAPI(self,name);actual=api.inspect_id(api.binding['id'],min(self.state['phaseDeadline'],self.state['cleanupDeadline']));need(actual is not None,'owned native immutable identity before stop')
    if actual['State'].get('Paused'):api.unpause_id(api.binding['id'],min(self.state['phaseDeadline'],time.monotonic()+5))
@@ -175,6 +191,9 @@ class Controller:
     with (proc/'cmdline').open('rb') as f:raw_argv=f.read(262145)
     need(len(raw_argv)<=262144 and raw_argv.endswith(b'\0'),'bounded complete native process argv');argv=[os.fsdecode(x) for x in raw_argv[:-1].split(b'\0')];role=compiler_invocation(target,argv)
     if role is None:continue
+    # A pending host was already recorded with its assembly identity. Until the
+    # assembly is mapped, re-hashing it would only spend the shared sample budget.
+    if seen.get(key) is False and role['kind']=='managed-compiler-in-runtime-host' and not assembly_argument_mapped(proc,role['assemblyArgument']):continue
     s=(proc/'exe').stat();stamp=(s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns,s.st_ctime_ns)
     if stamp not in cache:
      need(stat.S_ISREG(s.st_mode) and s.st_size<=256*1024**2,'observed compiler executable size');h=hashlib.sha256();n=0
@@ -219,7 +238,7 @@ class Controller:
        resource_failure={'errorType':type(error).__name__,'privacySafeProjection':error.safe_projection if isinstance(error,ObservationIncomplete) else None};freeze(logs/(label+'-LIVE-RESOURCE-FAILURE.json'),encoded({'context':self.ctx,**resource_failure}));reason='live resource observation incomplete';break
       last_sample=now
      time.sleep(.5)
-    if reason:self.docker(['stop','--time','20',name],seconds=30,check=False)
+    if reason:self.docker(['stop','--time','20',producer_binding['id']],seconds=30,check=False)
     try:code=child.wait(timeout=30)
     except subprocess.TimeoutExpired:code=None
    finally:
@@ -367,7 +386,10 @@ def finalize(nonce,pin):
   except BaseException:cleanup.append({'kind':'volume','name':volume_name,'positiveOwnedAbsenceObserved':False,'inspectionUnavailable':True});continue
   if volume is not None:
    if recovered:
-    try:cleanup.append(remove_owned_volume(c,volume_name))
+    # The full record (inspect object, mount path, argv, error text) stays in
+    # the private evidence receipt remove_owned_volume freezes; the terminal
+    # is printed, so it carries only the privacy-safe projection.
+    try:record=remove_owned_volume(c,volume_name);public=record.get('privacySafeProjection');need(type(public) is dict,'owned volume cleanup projection');cleanup.append(public)
     except BaseException:cleanup.append({'kind':'volume','name':volume_name,'positiveOwnedAbsenceObserved':False})
    else:cleanup.append({'kind':'volume','name':volume_name,'retainedBecauseIndependentRecoveryIncomplete':True,'hostedRunnerDisposalMayRemoveRetainedVolume':True})
   else:cleanup.append({'kind':'volume','name':volume_name,'positiveOwnedAbsenceObserved':True})

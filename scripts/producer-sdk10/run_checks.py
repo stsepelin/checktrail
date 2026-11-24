@@ -1,14 +1,15 @@
 """Run only first-party synthetic controls; never imports SDK/project bodies.
 
-Until bound_tests() has verified the directory, this file imports only the
+Until reviewed_names() has verified the directory, this file imports only the
 standard library: the directory is not on sys.path, and isolated mode (-I)
-keeps the interpreter from adding it as the script directory.
+keeps the interpreter from adding it as the script directory. The --entry
+mode applies the same order to one pinned script and its arguments.
 """
 import sys
 # A cache written beside the verified files would itself be an unreviewed entry.
 sys.dont_write_bytecode=True
 if __name__=='__main__' and not sys.flags.isolated:raise SystemExit('run_checks.py must run isolated (python3 -I) so its directory is not importable before verification')
-import argparse,hashlib,json,os,pathlib,resource,subprocess,time,unittest
+import argparse,hashlib,json,os,pathlib,resource,runpy,subprocess,time,unittest
 HERE=pathlib.Path(__file__).resolve().parent
 class Unreviewed(RuntimeError):pass
 def need(value,message):
@@ -22,7 +23,12 @@ def importable(folder):
  if str(folder) not in sys.path:sys.path.insert(0,str(folder))
 
 def bound_tests(folder,pin):
- """Return the test modules of an exactly reviewed control directory.
+ """Return the test modules of an exactly reviewed control directory."""
+ names=reviewed_names(folder,pin)
+ tests=sorted(x[:-3] for x in names if x.startswith('test_') and x.endswith('.py'));need(tests,'nonempty reviewed Python controls');return tests
+
+def reviewed_names(folder,pin):
+ """Return every entry name of an exactly reviewed first-party directory.
 
  The directory is first on sys.path while the controls run, so any entry in it
  can be imported by name, not only test_*.py files. Every entry must therefore
@@ -43,7 +49,19 @@ def bound_tests(folder,pin):
   names+=frozen(json.loads(protected)['files'])
  need(len(names)==len(set(names)),'each control file pinned once')
  unexpected=sorted(set(os.listdir(folder))-set(names)-{'MANIFEST.json'});need(not unexpected,'unreviewed entry in executed control directory: '+', '.join(unexpected[:8]))
- tests=sorted(x[:-3] for x in names if x.startswith('test_') and x.endswith('.py'));need(tests,'nonempty reviewed Python controls');return tests
+ return names
+
+def verified_entry(pin,argv):
+ """Run one pinned first-party script only after its whole directory verifies.
+
+ Entry scripts put their own directory on sys.path and import siblings at
+ module level, before any check of their own can run, so the operator pin is
+ checked here first. Until then nothing from the directory is importable.
+ """
+ need(type(argv) is list and argv,'pinned first-party entry script required')
+ script=argv[0];need(type(script) is str and script.endswith('.py') and '/' not in script and '\\' not in script and script!='run_checks.py','direct first-party entry script name')
+ need(script in reviewed_names(HERE,pin),'entry script is not a reviewed first-party file: '+script)
+ sys.argv=[str(HERE/script),*argv[1:]];runpy.run_path(str(HERE/script),run_name='__main__');return 0
 
 def worker(out,pin):
  names=bound_tests(HERE,pin);importable(HERE);from common import encoded,freeze
@@ -66,7 +84,9 @@ def run(out,pin):
  freeze(out/'RESULT.json',encoded(value));print(json.dumps(value));return 0
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--out',type=pathlib.Path,required=True);p.add_argument('--manifest-sha256');p.add_argument('--python-worker',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--out',type=pathlib.Path);p.add_argument('--manifest-sha256');p.add_argument('--python-worker',action='store_true');p.add_argument('--entry',nargs=argparse.REMAINDER,help='pinned script and its arguments, run after verification');a=p.parse_args()
  need(a.manifest_sha256,'reviewed first-party manifest pin required')
+ if a.entry is not None:raise SystemExit(verified_entry(a.manifest_sha256,a.entry))
+ need(a.out is not None,'synthetic control output root required')
  if a.python_worker:raise SystemExit(worker(a.out,a.manifest_sha256))
  raise SystemExit(run(a.out,a.manifest_sha256))

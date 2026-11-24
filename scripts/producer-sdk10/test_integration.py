@@ -25,7 +25,9 @@ class IntegrationControls(unittest.TestCase):
    if owned_abort and count[0]>0:return None
    value=copy.deepcopy(obj);value['HostConfig']['CapAdd']=caps if count[0]==0 and caps is not None else terminal_caps if count[0]>0 and terminal_caps is not None else obj['HostConfig']['CapAdd'];count[0]+=1;return value
   c.own_container=own_container
+  self.docker_calls=[]
   def docker(args,**kwargs):
+   self.docker_calls.append(list(args))
    if args[0]=='cp':
     member='START' if 'START.json' in args[1] else 'RESULT';value={**base,'originalExitCode':None if member=='START' else 0,'supervisorExitCode':0}
     if receipt_change:receipt_change(value)
@@ -145,7 +147,38 @@ class IntegrationControls(unittest.TestCase):
   with mock.patch.object(driver.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(driver.time,'sleep'),mock.patch.object(driver,'observe_live_resource',side_effect=driver.ObservationIncomplete(projection)):
    result,calls,deadline=self.native(live_poll=lambda:clock.__setitem__(0,121),deadline_seconds=360)
   self.assertEqual(result['exitCode'],0);self.assertEqual(result['stopReason'],'live resource observation incomplete');self.assertEqual(result['liveResourceFailure']['privacySafeProjection'],projection);self.assertTrue((self.root/'evidence'/'original-build-LIVE-RESOURCE-FAILURE.json').exists())
- def test_finalize_calls_single_delete_reconciliation_under_same300second_cleanup_cap(self):
+ def test_resource_cutoff_stops_the_registered_producer_id_not_its_name(self):
+  # The first poll is still running, so the loop sees the log flood and cuts off.
+  result,_,_=self.native(limit=4,body=b'flood-7741 beyond the remaining log budget',live_poll=lambda:None)
+  self.assertIn('log bound',result['stopReason'])
+  stops=[x for x in self.docker_calls if x[0]=='stop'];self.assertEqual(stops,[['stop','--time','20','a'*64]])
+ def finalize_cleanup(self,refusal=None):
+  # Real remove_owned_volume over a synthetic daemon whose inspect object and
+  # command receipt carry private host details.
+  mount='/var/lib/docker/volumes/private-mount-9157/_data';(self.root/'evidence').mkdir(parents=True)
+  c=type('SyntheticController',(),{})();c.root=self.root;c.ctx=self.ctx;c.profile={'limits':{'cleanupSeconds':300}}
+  c.state={'phaseDeadline':time.monotonic()+900,'cleanupDeadline':time.monotonic()+900,'operatorFullRoundtripAcknowledged':True,'captureReady':True,'containers':[],'volume':'owned-work-9157','tempVolume':'owned-temp-9157','imageAliasCreated':False,'windows':{},'build':{'exitCode':0,'stopReason':None},'test':{'exitCode':0,'stopReason':None}}
+  present={'owned-work-9157','owned-temp-9157'}
+  def inspect(kind,name):return {'Name':name,'Labels':common.owned_labels(self.ctx),'Mountpoint':mount,'Driver':'local'} if name in present else None
+  def volume_owned(name):
+   if refusal:raise common.Refusal(refusal)
+   return inspect('volume',name)
+  def docker(args,seconds=60,check=True):present.discard(args[-1]);return {'argv':['docker',*args],'exitCode':0,'reason':None,'ownedChildStarted':True,'ownedChildReaped':True,'stderrPath':mount+'/stderr-9157'},None
+  c.inspect=inspect;c.volume_owned=volume_owned;c.docker=docker;printed=[]
+  with mock.patch.object(driver,'load_controller',return_value=c),mock.patch.object(driver,'finalize_image_inputs'),mock.patch.object(driver,'output'),mock.patch('builtins.print',side_effect=lambda *a,**k:printed.append(' '.join(map(str,a)))),self.assertRaises(SystemExit):driver.finalize('synthetic','a'*64)
+  line=[x for x in printed if x.startswith('CHECKTRAIL_SDK10_TERMINAL=')][-1];return json.loads(line.split('=',1)[1]),line,(self.root/'TERMINAL.json').read_text()
+ def test_printed_terminal_carries_only_the_volume_cleanup_projection(self):
+  for refusal in [None,'private-error-9157 under /home/runner/private-9157']:
+   with self.subTest(refusal=refusal),self.temp_subdir():
+    terminal,line,stored=self.finalize_cleanup(refusal)
+    for text in [line,stored]:
+     for private in ['private-mount-9157','private-error-9157','Mountpoint','originalOwnedIdentity','removeCommand','privateCleanupError','argv','stderrPath']:self.assertNotIn(private,text)
+    volumes=[x for x in terminal['cleanup'] if x.get('kind')=='sdk10-owned-volume-cleanup-v1']
+    self.assertEqual([(x['role'],x['positiveOwnedAbsenceObserved'],x['rawNamesPathsArgvOrErrorBodiesEmitted']) for x in volumes],[('work',refusal is None,False),('temp',refusal is None,False)])
+    self.assertIs(terminal['allOwnedCleanupPositivelyObserved'],refusal is None)
+    receipt=(self.root/'evidence'/'CLEANUP-work-RESULT.json').read_text()
+    self.assertIn('private-error-9157' if refusal else 'private-mount-9157',receipt)
+
   c=type('SyntheticController',(),{})();c.root=self.root;c.ctx=self.ctx;c.profile={'limits':{'cleanupSeconds':300}};c.state={'phaseDeadline':20000,'cleanupDeadline':21000,'operatorFullRoundtripAcknowledged':True,'captureReady':True,'containers':[],'volume':'owned-work','tempVolume':'owned-temp','imageAliasCreated':False,'windows':{}};c.inspect=lambda kind,name:{'Name':name}
   def removed(controller,name):return {'kind':'volume','name':name,'positiveOwnedAbsenceObserved':True}
   with mock.patch.object(driver,'load_controller',return_value=c),mock.patch.object(driver,'remove_owned_volume',side_effect=removed) as remove,mock.patch.object(driver.time,'monotonic',return_value=1000),mock.patch.object(driver,'output'),mock.patch('builtins.print'),self.assertRaises(SystemExit) as stopped:driver.finalize('synthetic','a'*64)

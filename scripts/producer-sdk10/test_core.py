@@ -203,5 +203,48 @@ class Controls(unittest.TestCase):
   with patch.object(run_checks,'HERE',bundle),patch.object(run_checks.subprocess,'run') as child,self.assertRaisesRegex(run_checks.Unreviewed,'unreviewed entry in executed control directory: test_unlisted_marker.py'):run_checks.run(out,value)
   child.assert_not_called();self.assertFalse(out.exists());self.assertEqual(list(markers.iterdir()),[])
   (bundle/'test_unlisted_marker.py').unlink();self.assertEqual(run_checks.bound_tests(bundle,value),['test_listed_marker','test_protected_marker'])
+ def entry_bundle(self,listed=True):
+  # An entry script that, like driver.py, puts its directory on sys.path and
+  # imports a sibling at module level; both imports write marker files.
+  bundle,markers,control,pin=self.control_bundle()
+  (bundle/'helper_marker.py').write_text('import pathlib\npathlib.Path('+repr(str(markers/'helper'))+').write_text("imported-4421")\n')
+  (bundle/'entry_marker.py').write_text('import pathlib,sys\nsys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))\nimport helper_marker\npathlib.Path('+repr(str(markers/'entry'))+').write_text(" ".join(sys.argv[1:]))\nraise SystemExit(7 if "--exit-7" in sys.argv else 0)\n')
+  (bundle/'PROTECTED-CONTROLS.json').write_bytes(common.encoded({'schemaVersion':1,'firstPartyControlsOnly':True,'files':[{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in ['test_protected_marker.py']]}))
+  names=['run_checks.py','common.py','test_listed_marker.py','PROTECTED-CONTROLS.json','entry_marker.py']+(['helper_marker.py'] if listed else [])
+  raw=common.encoded({'schemaVersion':1,'files':[{'path':x,'bytes':len((bundle/x).read_bytes()),'sha256':hashlib.sha256((bundle/x).read_bytes()).hexdigest()} for x in names]});(bundle/'MANIFEST.json').write_bytes(raw)
+  return bundle,markers,hashlib.sha256(raw).hexdigest()
+ def entry(self,bundle,pin,*argv):
+  done=subprocess.run([sys.executable,'-I','-S','-B',str(bundle/'run_checks.py'),'--manifest-sha256',pin,'--entry',*argv],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
+  return done.returncode,done.stdout.decode('utf8','replace')
+ def test_pinned_entry_script_runs_with_its_arguments_and_exit_status(self):
+  bundle,markers,pin=self.entry_bundle()
+  code,log=self.entry(bundle,pin,'entry_marker.py','finalize','--nonce','synthetic-4421','--manifest-sha256',pin);self.assertEqual(code,0,log)
+  self.assertEqual((markers/'helper').read_text(),'imported-4421');self.assertEqual((markers/'entry').read_text(),'finalize --nonce synthetic-4421 --manifest-sha256 '+pin)
+  code,log=self.entry(bundle,pin,'entry_marker.py','--exit-7');self.assertEqual(code,7,log)
+ def test_entry_script_and_its_siblings_are_verified_before_any_import(self):
+  cases=[('changed-sibling','frozen first-party control file changed: helper_marker.py'),('unlisted-sibling','unreviewed entry in executed control directory: helper_marker.py'),('wrong-pin','operator-reviewed first-party bundle manifest'),
+   ('unreviewed-entry','entry script is not a reviewed first-party file: absent_entry.py'),('path-entry','direct first-party entry script name'),('verifier-entry','direct first-party entry script name')]
+  for case,expected in cases:
+   with self.subTest(case=case):
+    bundle,markers,pin=self.entry_bundle(listed=case!='unlisted-sibling');script='entry_marker.py'
+    if case=='changed-sibling':(bundle/'helper_marker.py').write_bytes((bundle/'helper_marker.py').read_bytes()+b'# foreign-4421\n')
+    if case=='wrong-pin':pin='0'*64
+    if case=='unreviewed-entry':script='absent_entry.py'
+    if case=='path-entry':script='../bundle/entry_marker.py'
+    if case=='verifier-entry':script='run_checks.py'
+    code,log=self.entry(bundle,pin,script,'finalize','--nonce','synthetic-4421')
+    self.assertNotEqual(code,0);self.assertIn(expected,log);self.assertEqual(list(markers.iterdir()),[])
+ def test_every_generated_first_party_step_enters_through_the_pinned_verifier(self):
+  import make_pause_workflow,make_workflow
+  folder=self.root/'generated'/'scripts'/'producer-sdk10';folder.mkdir(parents=True)
+  for name in make_workflow.FILES:(folder/name).write_bytes((ROOT/name).read_bytes())
+  make_pause_workflow.generate(folder,self.root/'generated'/'pause.yml')
+  entry='python3 -I -S -B scripts/producer-sdk10/run_checks.py --manifest-sha256 "$CHECKTRAIL_MANIFEST_SHA256" --entry '
+  for workflow,controls,entries in [('pause.yml',0,5),('ORIGINAL-NATIVE-UNGRANTED.yml',1,1+49*3+1)]:
+   with self.subTest(workflow=workflow):
+    commands=[x.strip().removeprefix('run: ') for x in (self.root/'generated'/workflow).read_text().splitlines() if 'python' in x or '.py' in x]
+    routed=[x for x in commands if x.startswith(entry)];checked=[x for x in commands if x.startswith('python3 -I -S -B scripts/producer-sdk10/run_checks.py --out ')]
+    self.assertEqual(sorted(routed+checked),sorted(commands));self.assertEqual((len(checked),len(routed)),(controls,entries))
+    for command in routed:self.assertIn(command[len(entry):].split()[0],make_workflow.FILES)
 if __name__=='__main__':
  result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Controls));print(json.dumps({'testsRun':result.testsRun,'failures':len(result.failures),'errors':len(result.errors),'skips':len(result.skipped),'nativeUpstreamDockerNetworkActions':0}));sys.exit(not result.wasSuccessful())

@@ -213,4 +213,52 @@ class ObserverControls(unittest.TestCase):
     record=common.read_json(evidence/'POST-BUILD-SDK-OUTPUTS.json');self.assertTrue((evidence/'PRE-TEST-OUTPUT-IDENTITIES.json').exists())
     self.assertEqual(record['outputInventoryComplete'],not linked);self.assertEqual([x['path'] for x in record['candidates']],[] if linked else [str(archive)])
 
+ def test_unobservable_final_sdk_tree_is_incomplete_without_custody_and_does_not_stop_the_observer(self):
+  # A symlink with an archive name is refused by the inventory. The final scan
+  # must record that, not raise: the after-observer gates stopped capture.
+  def link(archive):(archive.parent/'dotnet-sdk-latest-7193.tar.gz').symlink_to(archive)
+  def build_and_link(archive):self.sdk(path=archive);link(archive)
+  cases=[('linked-during-tests',lambda a:self.sdk(path=a),link,'post-build-before-test-record',True,False),('regular-through-tests',lambda a:self.sdk(path=a),lambda a:None,'post-build-before-test-record',True,True),
+   ('linked-without-test-phase',build_and_link,None,'final-tree-no-test-phase-admitted',False,False),('regular-without-test-phase',lambda a:self.sdk(path=a),None,'final-tree-no-test-phase-admitted',True,True)]
+  for name,build,tests,source,selected,retained in cases:
+   with self.subTest(name=name):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name)
+    row,path=self.phases(build,tests)
+    self.assertEqual(row['buildOutputObservation'],source);self.assertIs(row['validatedBuildArchiveBytesUnchangedForStoppedCapture'],retained);self.assertIs(row['selectedSDKArchiveMetadataAndAttributionObserved'],selected)
+    self.assertIs(row['finalOutputInventoryComplete'],retained);self.assertEqual(row['buildOutputsAbsentOrReplacedAtFinalObservation'],[]);self.assertEqual(row['outputsFirstObservedAfterBuildNotCredited'],[])
+    if name=='linked-during-tests':self.assertEqual([(x['path'],x['finalObservation']) for x in row['candidates']],[(path,'not-found-in-incomplete-final-inventory')]);self.assertEqual(row['finalOutputInventoryErrorType'],'Refusal')
+    if name=='linked-without-test-phase':self.assertEqual(row['candidates'],[]);self.assertEqual(row['state'],'INCOMPLETE final SDK output observation')
+    self.assertTrue((self.root/'evidence/ORIGINAL-NATURAL-TEST-REPORTS.json').exists())
+ def after_reports(self,place,baseline=True):
+  # Drives the production after phase over a source tree with one tracked
+  # passing report outside artifacts/TestResults, as a checkout can carry.
+  evidence=self.root/'evidence';source=self.root/'source';staging=self.root/'staging'
+  for folder in [evidence,source/'tests/fixtures',source/'artifacts/TestResults',staging]:folder.mkdir(parents=True)
+  tracked=source/'tests/fixtures/passing-5527.trx';tracked.write_bytes(b'<TestRun><Results><UnitTestResult outcome="Passed"/></Results><ResultSummary outcome="Completed"><Counters total="1" executed="1" passed="1"/></ResultSummary></TestRun>')
+  n,h=common.hash_file(tracked)
+  if baseline:common.freeze(evidence/'source-before.json',common.encoded({'schemaVersion':1,'entries':[{'path':'tests/fixtures/passing-5527.trx','kind':'regular','mode':0o644,'bytes':n,'sha256':h}]}))
+  common.freeze(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json',common.encoded(observer.output_inventory([str(source)],time.monotonic()+10,'test-reports')))
+  common.freeze(evidence/'original-tests-TERMINAL.json',common.encoded({'originalCodeExecuted':True,'exitCode':0,'stopReason':None}))
+  place(source/'artifacts/TestResults',tracked)
+  with mock.patch.object(observer,'SDK_OUTPUT_ROOTS',[str(staging)]),mock.patch.object(observer,'SOURCE_ROOT',str(source)):observer.phase('after',{'source':{'commit':'a'*40},'targetRID':'linux-musl-arm64'},evidence,time.monotonic()+30)
+  return common.read_json(evidence/'ORIGINAL-NATURAL-TEST-REPORTS.json')
+ def test_tracked_passing_report_copied_into_test_results_earns_no_fresh_credit(self):
+  def copied(results,tracked):(results/'run-5527').mkdir();(results/'run-5527/copied.trx').write_bytes(tracked.read_bytes())
+  row=self.after_reports(copied)
+  self.assertEqual([(Path(x['path']).name,x['changedSinceProtectedPreTestSnapshot'],x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('copied.trx',True,True,False)])
+  self.assertFalse(row['allCreditedFreshTestsPassed']);self.assertTrue(row['trackedSourceBaselineAvailable'])
+ def test_new_report_beside_a_tracked_passing_fixture_is_credited_only_with_a_tracked_baseline(self):
+  def fresh(results,tracked):(results/'fresh-5527.trx').write_bytes(tracked.read_bytes().replace(b'<UnitTestResult outcome="Passed"/>',b'<UnitTestResult testName="fresh-5527" outcome="Passed"/>'))
+  for baseline in [True,False]:
+   with self.subTest(baseline=baseline):
+    self.temp.cleanup();self.temp=tempfile.TemporaryDirectory(prefix='sdk10-observer-synthetic-');self.root=Path(self.temp.name)
+    row=self.after_reports(fresh,baseline)
+    self.assertEqual([(Path(x['path']).name,x['matchesTrackedSourceContent'],x['eligibleForPassingCredit']) for x in row['reports']],[('fresh-5527.trx',not baseline,baseline)])
+    self.assertIs(row['allCreditedFreshTestsPassed'],baseline);self.assertIs(row['trackedSourceBaselineAvailable'],baseline)
+ def test_unobservable_report_tree_is_recorded_incomplete_and_the_sdk_record_still_frozen(self):
+  def linked(results,tracked):(results/'linked-6203.trx').symlink_to(tracked)
+  row=self.after_reports(linked)
+  self.assertEqual(row,{'state':'INCOMPLETE after-test observation','errorType':'Refusal','passingCredit':False})
+  self.assertFalse(common.read_json(self.root/'evidence/FRESH-SELECTED-SDK-OUTPUTS.json')['validatedBuildArchiveBytesUnchangedForStoppedCapture'])
+
 if __name__=='__main__':unittest.main(verbosity=2)

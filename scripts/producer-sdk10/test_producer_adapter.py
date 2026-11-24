@@ -264,4 +264,62 @@ class Adapter(unittest.TestCase):
         self.assertIs(caught.exception.__cause__,secondary);self.assertIsNone(self.api.preservation)
         self.assertFalse(any(x[0][1:3]==['rm','-f'] for x in self.calls))
 
+class DockerTable(unittest.TestCase):
+    """A real Controller over a synthetic daemon table keyed by immutable ID."""
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
+        root = Path(self.temp.name); (root / 'evidence').mkdir()
+        self.ctx = {'run': 4417, 'attempt': 1, 'nonce': 'synthetic-table', 'head': 'a' * 40}
+        self.name = 'ct-sdk10-synthetic-table-original-tests'; self.id = '4' * 64; self.foreign = 'f' * 64
+        c = object.__new__(driver.Controller); c.root = root; c.ctx = self.ctx; c.save = lambda: None
+        c.state = {'prefix': 'ct-sdk10-synthetic-table', 'containers': [self.name], 'phaseDeadline': time.monotonic() + 600, 'cleanupDeadline': time.monotonic() + 600}
+        self.table = {}; self.effects = []; self.counter = 0
+        def cmd(args, seconds=60, check=True, cap=2 * 1024 ** 2):
+            self.assertEqual(args[0], 'docker'); args = args[1:]; self.counter += 1
+            out = root / ('transport-' + str(self.counter)); out.write_bytes(b''); row = copy.deepcopy(GOOD)
+            def find(key): return [x for x in self.table.values() if x['Id'] == key or x['Name'] == '/' + key]
+            if args[:2] == ['container', 'inspect']:
+                found = find(args[2])
+                if found: out.write_bytes(common.encoded(copy.deepcopy(found)))
+                else: row['exitCode'] = 1
+            elif args[:2] == ['container', 'ls']:
+                selector = args[-1]
+                ids = [x['Id'] for x in self.table.values() if (selector.startswith('id=') and x['Id'] == selector[3:]) or (selector.startswith('name=^/') and x['Name'] == '/' + selector[7:-1])]
+                out.write_bytes(''.join(x + '\n' for x in ids).encode())
+            elif args[0] in ['stop', 'rm', 'unpause', 'pause']:
+                target = args[-1]; self.effects.append((args[0], target))
+                for x in find(target):
+                    if args[0] == 'stop': x['State']['Running'] = False
+                    if args[0] == 'rm': del self.table[x['Id']]
+            elif args[0] == 'cp': self.effects.append(('cp', args[1]))
+            else: self.fail('unexpected synthetic docker command ' + repr(args))
+            common.need(not check or row['exitCode'] == 0, 'first-party command incomplete: docker')
+            return row, out
+        c.cmd = cmd; self.c = c
+        original = self.container(self.id, self.name)
+        a.ProducerAPI.register(c, self.name, original, {'context': self.ctx}, ['./build.sh', '--synthetic-table'])
+    def container(self, identity, name, labels=True, running=True):
+        value = {'Id': identity, 'Name': '/' + name, 'Config': {'Labels': common.owned_labels(self.ctx) if labels else {'synthetic': 'foreign-4417'}}, 'State': {'Running': running, 'Paused': False}}
+        self.table[identity] = value; return value
+    def test_renamed_running_producer_gets_no_quiescence_credit_from_name_absence(self):
+        self.container(self.id, 'renamed-producer-4417')
+        with self.assertRaises((common.Refusal, p.Refusal, a.MetadataUnavailable)): self.c.stop_owned(self.name)
+        self.assertTrue(self.table[self.id]['State']['Running']); self.assertEqual(self.effects, [])
+    def test_exact_producer_id_absence_is_quiescence(self):
+        self.table.clear()
+        self.assertIs(self.c.stop_owned(self.name), True); self.assertEqual(self.effects, [])
+    def test_running_producer_under_its_own_name_is_stopped_and_removed_by_exact_id(self):
+        self.container(self.id, self.name)
+        self.assertIs(self.c.stop_owned(self.name), True)
+        self.assertEqual(self.table, {}); self.assertEqual([x for x in self.effects if x[0] != 'cp'], [('stop', self.id), ('rm', self.id)])
+    def test_name_rebound_to_a_foreign_container_is_never_stopped(self):
+        cases = [('renamed-original-forged-labels', True, True), ('renamed-original-foreign-labels', True, False), ('removed-original-forged-labels', False, True)]
+        for case, keep_original, labels in cases:
+            with self.subTest(case=case):
+                self.table.clear(); self.effects.clear()
+                if keep_original: self.container(self.id, 'renamed-producer-4417')
+                self.container(self.foreign, self.name, labels=labels)
+                with self.assertRaises((common.Refusal, p.Refusal, a.MetadataUnavailable)): self.c.stop_owned(self.name)
+                self.assertTrue(self.table[self.foreign]['State']['Running']); self.assertEqual(self.effects, [])
+
 if __name__ == '__main__': unittest.main()

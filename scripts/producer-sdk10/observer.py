@@ -138,18 +138,32 @@ def newly_attributed(path,identity,before,kind,roots):
   if (identity['bytes'],identity['sha256'])==(old['bytes'],old['sha256']):return False
  return True
 
-def reports(source,deadline,tracked_paths=(),test_started_wall=None,before=None,original_test=None):
+def tracked_content_identities(baseline):
+ """Content identities of tracked regular files, or None without a usable baseline."""
+ if not(type(baseline) is dict and type(baseline.get('entries')) is list):return None
+ rows=set()
+ for row in baseline['entries']:
+  if not(type(row) is dict and type(row.get('path')) is str):return None
+  if row.get('kind')!='regular':continue
+  if not(type(row.get('bytes')) is int and re.fullmatch(r'[0-9a-f]{64}',str(row.get('sha256','')))):return None
+  rows.add((row['bytes'],row['sha256']))
+ return frozenset(rows)
+def reports(source,deadline,tracked_paths=(),test_started_wall=None,before=None,original_test=None,tracked_contents=frozenset()):
+ # The pre-test snapshot holds only reports already under artifacts/TestResults,
+ # so a tracked passing report copied there from elsewhere in the source tree
+ # would look new to it; its content still matches the tracked baseline.
+ # tracked_contents=None means that baseline is unavailable, so nothing is credited.
  source=str(pathlib.Path(source).absolute());rows=[];command_passed=type(original_test) is dict and original_test.get('originalCodeExecuted') is True and type(original_test.get('exitCode')) is int and original_test.get('exitCode')==0 and original_test.get('stopReason') is None
  inventory=output_inventory([source],deadline,'test-reports');seen=set()
  for path,identity in inventory['entries'].items():
-  p=pathlib.Path(path);relative=p.relative_to(source).as_posix();row={'path':path,'identity':identity,'bytes':identity['bytes'],'sha256':identity['sha256'],'duplicateBody':False,'preexistingTrackedFixture':relative in tracked_paths,'changedSinceProtectedPreTestSnapshot':newly_attributed(path,identity,before,'test-reports',[source]),'originalTestCommandPositivelyPassed':command_passed}
+  p=pathlib.Path(path);relative=p.relative_to(source).as_posix();row={'path':path,'identity':identity,'bytes':identity['bytes'],'sha256':identity['sha256'],'duplicateBody':False,'preexistingTrackedFixture':relative in tracked_paths,'matchesTrackedSourceContent':tracked_contents is None or (identity['bytes'],identity['sha256']) in tracked_contents,'changedSinceProtectedPreTestSnapshot':newly_attributed(path,identity,before,'test-reports',[source]),'originalTestCommandPositivelyPassed':command_passed}
   try:row.update(natural=natural_report(read_observed(p,identity,32*1024**2)),naturalReportParsed=True)
   except (ValueError,ET.ParseError,Refusal,OSError):row['naturalReportParsed']=False
-  row['eligibleForPassingCredit']=not row['preexistingTrackedFixture'] and row['changedSinceProtectedPreTestSnapshot'] and command_passed
+  row['eligibleForPassingCredit']=not row['preexistingTrackedFixture'] and not row['matchesTrackedSourceContent'] and row['changedSinceProtectedPreTestSnapshot'] and command_passed
   if row['eligibleForPassingCredit']:row['duplicateBody']=identity['sha256'] in seen;seen.add(identity['sha256'])
   rows.append(row)
  eligible=[row for row in rows if row['eligibleForPassingCredit']];credited=[row['natural'] for row in eligible if row.get('naturalReportParsed') and not row['duplicateBody'] and row['natural']['tests']>0];observed=[x for row in credited for x in row.get('outcomes',[])];counts={x:observed.count(x) for x in sorted(set(observed))};unavailable=not inventory['snapshotComplete'] or any(not row.get('naturalReportParsed') or row['natural']['tests']==0 for row in eligible)
- return {'reports':rows,'reportInventoryComplete':inventory['snapshotComplete'],'unlistedDirectories':inventory['unlistedDirectories'],'naturalOutcomeCounts':counts,'allCreditedFreshTestsPassed':bool(observed) and all(row['allReportedTestsPassed'] for row in credited) and not unavailable,'protectedPreCommandIdentitySnapshotRequired':True,'staleFutureMtimeOrTrackedFixtureReportsGivenPassingCredit':False,'skippedUnavailableOrEmptyCountAsPassing':False,'allPossibleUpstreamTestSuiteCoverageClaimed':False}
+ return {'reports':rows,'reportInventoryComplete':inventory['snapshotComplete'],'trackedSourceBaselineAvailable':tracked_contents is not None,'unlistedDirectories':inventory['unlistedDirectories'],'naturalOutcomeCounts':counts,'allCreditedFreshTestsPassed':bool(observed) and all(row['allReportedTestsPassed'] for row in credited) and not unavailable,'protectedPreCommandIdentitySnapshotRequired':True,'staleFutureMtimeOrTrackedFixtureReportsGivenPassingCredit':False,'skippedUnavailableOrEmptyCountAsPassing':False,'allPossibleUpstreamTestSuiteCoverageClaimed':False}
 
 def arm64_musl_elf(f,size):
  head=f.read(64)
@@ -201,6 +215,9 @@ def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
 SOURCE_ROOT='/work/source'
 SDK_OUTPUT_ROOTS=['/work/staging','/work/source/artifacts']
 def optional_json(path):return read_json(path) if pathlib.Path(path).exists() else None
+UNOBSERVABLE=(Refusal,OSError,ValueError)
+def unobserved_sdks(error,state):
+ return {'candidates':[],'outputInventoryComplete':False,'selectedSDKArchiveMetadataAndAttributionObserved':False,'productOrBuildQualificationClaimed':False,'observedAfterBuildStoppedBeforeTestPhase':True,'state':state,'errorType':type(error).__name__}
 def post_build_sdks(roots,profile,deadline,evidence):
  """Validate SDK archives after the build stops and before the test phase.
 
@@ -212,7 +229,7 @@ def post_build_sdks(roots,profile,deadline,evidence):
  # An unobservable output tree is recorded as an incomplete observation
  # without build credit; it must not keep the original tests from starting.
  try:value={**fresh_sdks(roots,profile,deadline,optional_json(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-build-TERMINAL.json')),'observedAfterBuildStoppedBeforeTestPhase':True}
- except (Refusal,OSError,ValueError) as error:value={'candidates':[],'outputInventoryComplete':False,'selectedSDKArchiveMetadataAndAttributionObserved':False,'productOrBuildQualificationClaimed':False,'observedAfterBuildStoppedBeforeTestPhase':True,'state':'INCOMPLETE post-build SDK output observation','errorType':type(error).__name__}
+ except UNOBSERVABLE as error:value=unobserved_sdks(error,'INCOMPLETE post-build SDK output observation')
  freeze(evidence/'POST-BUILD-SDK-OUTPUTS.json',encoded(value));return value
 def build_sdk_outputs(roots,profile,deadline,evidence):
  """Report build SDK output from the post-build record, never the final tree.
@@ -226,9 +243,19 @@ def build_sdk_outputs(roots,profile,deadline,evidence):
  evidence=pathlib.Path(evidence);recorded=optional_json(evidence/'POST-BUILD-SDK-OUTPUTS.json')
  if recorded is not None:value=recorded;source='post-build-before-test-record'
  elif any((evidence/x).exists() for x in ['PRE-TEST-OUTPUT-IDENTITIES.json','original-tests-TERMINAL.json']):value={'candidates':[],'outputInventoryComplete':False,'selectedSDKArchiveMetadataAndAttributionObserved':False,'productOrBuildQualificationClaimed':False};source='INCOMPLETE test phase admitted without a post-build SDK output record'
- else:value={**fresh_sdks(roots,profile,deadline,optional_json(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-build-TERMINAL.json')),'observedAfterBuildStoppedBeforeTestPhase':True};source='final-tree-no-test-phase-admitted'
+ else:
+  source='final-tree-no-test-phase-admitted'
+  try:value={**fresh_sdks(roots,profile,deadline,optional_json(evidence/'PRE-BUILD-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-build-TERMINAL.json')),'observedAfterBuildStoppedBeforeTestPhase':True}
+  except UNOBSERVABLE as error:value=unobserved_sdks(error,'INCOMPLETE final SDK output observation')
  # With no test phase the tree fresh_sdks just inventoried is the final one.
- final=output_inventory(roots,deadline,'sdk-archives') if source=='post-build-before-test-record' else {'snapshotComplete':value['outputInventoryComplete'],'entries':{row['path']:row['archive'] for row in value['candidates']}}
+ # An unobservable final tree is an incomplete final inventory: recorded
+ # archives are then neither reported lost nor retained for custody, and the
+ # observer still finishes so stopped capture can run.
+ final_error=None
+ if source=='post-build-before-test-record':
+  try:final=output_inventory(roots,deadline,'sdk-archives')
+  except UNOBSERVABLE as error:final={'snapshotComplete':False,'entries':{}};final_error=type(error).__name__
+ else:final={'snapshotComplete':value['outputInventoryComplete'],'entries':{row['path']:row['archive'] for row in value['candidates']}}
  built=set();changed=[]
  for row in value['candidates']:
   now=final['entries'].get(row['path']);identity=(row['archive']['bytes'],row['archive']['sha256']);built.add((row['path'],*identity))
@@ -239,9 +266,23 @@ def build_sdk_outputs(roots,profile,deadline,evidence):
  # Stopped capture packs this same final /work tree, so custody holds a validated
  # build archive only if its exact bytes are still there, unchanged.
  retained=final['snapshotComplete'] is True and any(row.get('selectedSDKArchiveMetadataAndAttributionMatched') is True and row['finalObservation']=='unchanged' for row in value['candidates'])
- return {**value,'buildOutputObservation':source,'finalOutputInventoryComplete':final['snapshotComplete'],'buildOutputsAbsentOrReplacedAtFinalObservation':changed,'outputsFirstObservedAfterBuildNotCredited':later,'validatedBuildArchiveBytesUnchangedForStoppedCapture':retained}
+ return {**value,'buildOutputObservation':source,'finalOutputInventoryComplete':final['snapshotComplete'],'finalOutputInventoryErrorType':final_error,'buildOutputsAbsentOrReplacedAtFinalObservation':changed,'outputsFirstObservedAfterBuildNotCredited':later,'validatedBuildArchiveBytesUnchangedForStoppedCapture':retained}
 def after(profile,evidence,deadline,test_started_wall=None):
- evidence=pathlib.Path(evidence);before=read_json(evidence/'source-before.json') if (evidence/'source-before.json').exists() else None;endpoint=tracked_after(SOURCE_ROOT,before,deadline) if before is not None else {'state':'INCOMPLETE original materialization; no valid tracked baseline','passingCredit':False};freeze(evidence/'SOURCE-ENDPOINT-CHANGES.json',encoded(endpoint));freeze(evidence/'ACTUAL-CMAKE-COMPILER-SELECTION.json',encoded({'records':cmake_records(SOURCE_ROOT,deadline),'packageLabelsAloneAreExecutionEvidence':False}));freeze(evidence/'ORIGINAL-NATURAL-TEST-REPORTS.json',encoded(reports(SOURCE_ROOT,deadline,{x['path'] for x in before['entries']} if before else (),test_started_wall,read_json(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json') if (evidence/'PRE-TEST-OUTPUT-IDENTITIES.json').exists() else None,read_json(evidence/'original-tests-TERMINAL.json') if (evidence/'original-tests-TERMINAL.json').exists() else None)));freeze(evidence/'FRESH-SELECTED-SDK-OUTPUTS.json',encoded(build_sdk_outputs(SDK_OUTPUT_ROOTS,profile,deadline,evidence)))
+ """Freeze every after-test observation; stopped capture runs only once this returns.
+
+ A record that cannot be observed is frozen as incomplete without credit, so
+ it neither suppresses the remaining records nor the capture of logs and
+ failure evidence.
+ """
+ evidence=pathlib.Path(evidence);before=read_json(evidence/'source-before.json') if (evidence/'source-before.json').exists() else None
+ def observe(name,build):
+  try:value=build()
+  except UNOBSERVABLE+(ET.ParseError,) as error:value={'state':'INCOMPLETE after-test observation','errorType':type(error).__name__,'passingCredit':False}
+  freeze(evidence/name,encoded(value))
+ observe('SOURCE-ENDPOINT-CHANGES.json',lambda:tracked_after(SOURCE_ROOT,before,deadline) if before is not None else {'state':'INCOMPLETE original materialization; no valid tracked baseline','passingCredit':False})
+ observe('ACTUAL-CMAKE-COMPILER-SELECTION.json',lambda:{'records':cmake_records(SOURCE_ROOT,deadline),'packageLabelsAloneAreExecutionEvidence':False})
+ observe('ORIGINAL-NATURAL-TEST-REPORTS.json',lambda:reports(SOURCE_ROOT,deadline,{x['path'] for x in before['entries']} if before else (),test_started_wall,optional_json(evidence/'PRE-TEST-OUTPUT-IDENTITIES.json'),optional_json(evidence/'original-tests-TERMINAL.json'),tracked_content_identities(before)))
+ observe('FRESH-SELECTED-SDK-OUTPUTS.json',lambda:build_sdk_outputs(SDK_OUTPUT_ROOTS,profile,deadline,evidence))
 def phase(mode,profile,evidence,deadline,test_started_wall=None):
  evidence=pathlib.Path(evidence)
  if mode=='probe':image_probe(profile,evidence)

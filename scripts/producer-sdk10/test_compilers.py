@@ -89,4 +89,19 @@ class CompilerControls(unittest.TestCase):
    for _ in range(3):seen,events=sample()
   self.assertEqual(examined.call_count,1);self.assertEqual(seen,{(222,'12345'):True});self.assertEqual([x['actualSourceCompilerProcessObserved'] for x in events],[True])
 
+ def test_pending_managed_host_assembly_is_not_rehashed_until_it_is_mapped(self):
+  # The whole-assembly hash spends the shared 5-second sample budget, so a
+  # pending host is re-hashed only after its mapping appears.
+  proc,binary,assembly=self.proc(mapped=False);assembly.write_bytes(b'distinct inert synthetic compiler assembly 6481'*4096);sample=self.sampler(proc);real=driver.file_identity;hashed=[]
+  def counting(path,*a,**kw):
+   if Path(path).name=='csc.dll':hashed.append(str(path))
+   return real(path,*a,**kw)
+  with mock.patch.object(driver,'file_identity',side_effect=counting):
+   for _ in range(4):seen,events=sample()
+   self.assertEqual(len(hashed),1);self.assertEqual(seen,{(222,'12345'):False})
+   (proc/'maps').write_text('1000-2000 r--p 0 00:00 999 /sdk/csc.dll\n');seen,events=sample();self.assertEqual(len(hashed),1)
+   self.map_assembly(proc,assembly);seen,events=sample()
+  self.assertEqual(len(hashed),3);self.assertEqual(seen,{(222,'12345'):True});self.assertEqual([x['actualSourceCompilerProcessObserved'] for x in events],[False,True])
+  self.assertEqual(events[1]['compilerAssemblyIdentity']['physicalIdentity']['sha256'],common.hash_file(assembly)[1])
+
 if __name__=='__main__':unittest.main(verbosity=2)
