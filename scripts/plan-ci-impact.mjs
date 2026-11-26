@@ -483,7 +483,7 @@ function inventoryEntries(rows, manifest, lock, graph) {
       };
     });
 }
-function parseInventory(text) {
+export function parseDevelopmentInventory(text) {
   const value = jsonObject(text, developmentInventoryPath);
   exactKeys(value, ["schemaVersion", "scope", "entries"]);
   assert.equal(value.schemaVersion, 1);
@@ -886,7 +886,7 @@ export function classifyDevelopmentBump(options) {
       profile0.object === profile1.object,
     "Inventory profile must be the same regular data blob at both bound revisions",
   );
-  const profile = parseInventory(
+  const profile = parseDevelopmentInventory(
     treeText(repository, head, afterRows, developmentInventoryPath),
   );
   requireInventory(

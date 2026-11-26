@@ -1,0 +1,157 @@
+{
+  "allowedOriginalPhase": "native",
+  "completeKnownPriorNativeAttempts": [],
+  "configuration": {
+    "generatedParametersSha256": "ebb5621011fafaef09c7ab90cf541c646a7881d6ad8c9e635778183a5dc2bbff",
+    "originalRulePins": {
+      "debian/rules": "e99bd407df7ea7d0b26428416c048c482a30e55aa581781f842292b7182fdaf9",
+      "debian/rules.conf": "bd3f27b8a03e471ba176706f6a13ea9826c6fbf3a66ad4c218e64c31d8b66822",
+      "debian/rules.defs": "deb0936094dbb29e48ce0b35828abc91ebaec50eadef8440306e12896c581a84",
+      "debian/rules2": "4ff468f979ae27278dcda93188f9dcf1c5de24d451d5e2050b454908854164ad"
+    },
+    "passedVariableValues": {
+      "CFLAGS": "",
+      "CXXFLAGS": "",
+      "LDFLAGS": "",
+      "LIBCFLAGS": "",
+      "LIBCXXFLAGS": ""
+    },
+    "profile": "debian-gcc12-hosted-continuation-v1",
+    "schemaVersion": 1,
+    "variables": {
+      "BOOT_CFLAGS": "",
+      "BOOT_LDFLAGS": "-Wl,-z,relro",
+      "CC": "x86_64-linux-gnu-gcc-12",
+      "CFLAGS_FOR_BUILD": "",
+      "CFLAGS_FOR_TARGET": "",
+      "CONFARGS": "-v --with-pkgversion='Debian___12.2.0-14+deb12u1' --with-bugurl='file:///usr/share/doc/gcc-12/README.Bugs' --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only  --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id  --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/source/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/source/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu",
+      "CXX": "x86_64-linux-gnu-g++-12",
+      "CXXFLAGS_FOR_BUILD": "",
+      "CXXFLAGS_FOR_TARGET": "",
+      "DEB_BUILD_OPTIONS": "parallel=4",
+      "DEB_BUILD_PROFILES": "",
+      "DEB_HOST_ARCH": "amd64",
+      "DEB_STAGE": "",
+      "DEB_TARGET_ARCH": "amd64",
+      "LDFLAGS_FOR_BUILD": "",
+      "LDFLAGS_FOR_TARGET": "-Wl,-z,relro",
+      "NJOBS": "-j 4",
+      "NJOBS_TESTS": "-j 4",
+      "SET_LOCPATH": "",
+      "SET_PATH": "PATH=/build/source/bin:/usr/lib/x86_64-linux-gnu/gcc/bin:$PATH",
+      "SET_SHELL": "",
+      "STAGE1_CFLAGS": "",
+      "STAGE1_LDFLAGS": "",
+      "bootstrap_target": "bootstrap",
+      "build_arch_dependencies": "stamps/05-build-stamp stamps/05-build-jit-stamp stamps/05-build-nvptx-stamp stamps/05-build-gcn-stamp stamps/05-build-hppa64-stamp stamps/06-check-stamp",
+      "build_dependencies": "stamps/05-build-stamp stamps/05-build-jit-stamp stamps/05-build-nvptx-stamp stamps/05-build-gcn-stamp stamps/05-build-hppa64-stamp stamps/06-check-stamp",
+      "build_indep_dependencies": "stamps/05-build-stamp stamps/05-build-jit-stamp stamps/05-build-nvptx-stamp stamps/05-build-gcn-stamp stamps/05-build-hppa64-stamp stamps/06-check-stamp stamps/05-build-html-stamp stamps/05-build-doxygen-stamp stamps/05-build-gnatdoc-stamp",
+      "build_type": "build-native",
+      "check_dependencies": "stamps/06-check-stamp",
+      "configure_dependencies": "stamps/04-configure-stamp",
+      "distrelease": "bookworm",
+      "distribution": "Debian",
+      "flags_to_pass": "CFLAGS CXXFLAGS LIBCFLAGS LIBCXXFLAGS LDFLAGS",
+      "install_dependencies": "stamps/07-install-stamp stamps/07-install-jit-stamp stamps/06-install-nvptx-stamp stamps/06-install-gcn-stamp stamps/07-install-hppa64-stamp",
+      "single_package": "",
+      "with_ada": "yes",
+      "with_base_only": "",
+      "with_check": "yes",
+      "with_cxx": "yes",
+      "with_hppa64": "yes",
+      "with_jit": "yes",
+      "with_offload_gcn": "yes",
+      "with_offload_nvptx": "yes"
+    }
+  },
+  "configureLedger": {
+    "attempts": [
+      {
+        "attempt": 0,
+        "checkpointSha256": "3eff87d27334ddc28ea76b49cd59f0bc6e7d02b108d4a66bb8c7194e8e32dbbf",
+        "command": [
+          "dpkg-buildpackage",
+          "-b",
+          "-us",
+          "-uc",
+          "--jobs=4",
+          "--rules-target=configure"
+        ],
+        "exitCode": 0,
+        "nativeSeconds": 88.46255479500002,
+        "outcome": "completed",
+        "phase": "configure",
+        "predecessorSha256": null,
+        "quiescenceObserved": true,
+        "requiredStamps": ["stamps/04-configure-stamp"],
+        "sequence": 0,
+        "stampIdentities": ["stamps/04-configure-stamp"],
+        "terminalObserved": true
+      }
+    ],
+    "configurationSha256": "0c08604bb36390d97a8697dda36f8468f6a7cd90b3fd3ed00c9ee285325b9a35",
+    "profile": "debian-gcc12-hosted-continuation-v1",
+    "schemaVersion": 1
+  },
+  "gateAComplete": false,
+  "historySourceIsOperatorFrozenNotToolArguments": true,
+  "knownNativeAttemptCountAtOperatorFreeze": 0,
+  "operatorExecutionTrustGranted": false,
+  "operatorFreezeScope": "Only the authenticated configure receipt is in this initial history; any later native attempt requires reviewed complete-history source pins.",
+  "phaseLedger": {
+    "attempts": [
+      {
+        "attempt": 0,
+        "checkpointSha256": "3eff87d27334ddc28ea76b49cd59f0bc6e7d02b108d4a66bb8c7194e8e32dbbf",
+        "command": [
+          "dpkg-buildpackage",
+          "-b",
+          "-us",
+          "-uc",
+          "--jobs=4",
+          "--rules-target=configure"
+        ],
+        "exitCode": 0,
+        "nativeSeconds": 88.46255479500002,
+        "outcome": "completed",
+        "phase": "configure",
+        "predecessorSha256": null,
+        "quiescenceObserved": true,
+        "requiredStamps": ["stamps/04-configure-stamp"],
+        "sequence": 0,
+        "stampIdentities": ["stamps/04-configure-stamp"],
+        "terminalObserved": true
+      }
+    ],
+    "configurationSha256": "0c08604bb36390d97a8697dda36f8468f6a7cd90b3fd3ed00c9ee285325b9a35",
+    "profile": "debian-gcc12-hosted-continuation-v1",
+    "schemaVersion": 1
+  },
+  "predecessorRoot": {
+    "archiveBytes": 699109163,
+    "archiveSha256": "3eff87d27334ddc28ea76b49cd59f0bc6e7d02b108d4a66bb8c7194e8e32dbbf",
+    "binding": {
+      "catalogSha256": "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd",
+      "configurationSha256": "0c08604bb36390d97a8697dda36f8468f6a7cd90b3fd3ed00c9ee285325b9a35",
+      "image": "docker.io/coqorg/coq@sha256:1f69b9224f068d408e6be7a3f536f67395d00c3497b97bdb99ee2d2c4c91954c",
+      "packageInventorySha256": "491ce49be97d97a50c383d56711ede5d97de6f80db731c3941304f464a780f7c",
+      "phase": "configure",
+      "platform": "linux/amd64",
+      "predecessorSha256": null,
+      "profile": "debian-gcc12-hosted-continuation-v1",
+      "sequence": 0,
+      "sourceEpochSha256": "de149f92f8f759c24f821ded2c91ced31e006c4ad08be9e6956edf0444bedd77",
+      "sourceVersion": "12.2.0-14+deb12u1"
+    },
+    "externalSdkSha256": "248633f163abe316ed8e475bf86a8d56ae2d7c9fb21f7b9abe8abf1867caea46",
+    "manifestSha256": "aeacd92ddbfed4c327fdbbf2faf95459f77fb7f9fdef3d10c2680e20659d3390"
+  },
+  "profile": "debian-gcc12-hosted-continuation-v1",
+  "qualifiedConfigureOrigin": {
+    "attempt": 1,
+    "head": "9b237f06213d06bca5f94340c59bd40b2dccccd3",
+    "jobId": 134241750848,
+    "runId": 44140525465
+  },
+  "schemaVersion": 1
+}

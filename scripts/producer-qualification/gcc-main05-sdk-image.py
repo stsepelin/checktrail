@@ -1,0 +1,278 @@
+"""Local ephemeral SDK carrier from one witnessed STOPPED original materializer.
+
+No registry publication or GCC target occurs here. The enclosing reviewed host
+controller must first execute and authenticate the original SDK reconstruction,
+including its physical package/compiler/header/library comparison. This helper
+refuses a running, failed, unowned or different-command materializer and records
+actual local image ancestry/configuration before any later native container.
+"""
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import re
+import uuid
+
+
+def load(name):
+    path=Path(__file__).with_name(name);spec=importlib.util.spec_from_file_location(path.stem.replace('-','_'),path)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
+
+
+sdk=load('gcc-hosted-sdk.py')
+h=sdk.h
+codec=sdk.codec
+require=h.require
+
+
+def validate_stopped(owner,name,identifier,proof):
+    require(re.fullmatch('checktrail-gcc-sdk-[a-f0-9]{32}',name) and owner['Id']==identifier and
+            owner['Config']['Labels']['io.checktrail.gcc-staged-owner']==name,'Owned original SDK materializer required')
+    require(owner['Config']['Image']==codec.IMAGE and owner['Config']['Entrypoint']==['/usr/bin/env'] and
+            owner['Config']['Cmd']==['-i',*[k+'='+v for k,v in sdk.stage.FIXED_ENVIRONMENT.items()],*sdk.BODY],
+            'SDK image carrier cannot commit another source command/environment')
+    require(owner['State']['Running'] is False and owner['State']['Status']=='exited' and
+            owner['State']['Pid']==0 and owner['State']['ExitCode']==0 and owner['State']['OOMKilled'] is False,
+            'Genuine stopped zero SDK process family required before local snapshot')
+    require(type(owner['SizeRw']) is int and 0<owner['SizeRw']<=8*h.GIB,
+            'Actual SDK writable-layer storage missing or exceeds bounded local reserve')
+    require(proof['state']=='sdk-material-reconstructed-and-physically-verified' and
+            proof['packageInventoryMatches'] is True and proof['sdkMaterialReconstructionObserved'] is True and
+            proof['generatedStatePhysicallyValidated'] is True and proof['allTimestampWritesPrecededFinalValidators'] is True and
+            proof['softwareAndGeneratedStateContract']=='gcc12-original-sdk-generated-state-v1' and
+            proof['historicalCacheBodyEqualityClaimed'] is False and
+            proof['originalGccTargetInvoked'] is False and proof['originalPhaseAdvanced'] is False and
+            proof['wholeRootIdentityClaimed'] is False,'Physical original software reconstruction required')
+    return owner['SizeRw']
+
+
+def validate_local_image(image,identifier,tag,base):
+    require(re.fullmatch('sha256:[a-f0-9]{64}',identifier) and image['Id']==identifier and
+            image['Os']=='linux' and image['Architecture']=='amd64' and tag in image['RepoTags'],
+            'Actual local derived SDK image identity differs')
+    original=base['RootFS']['Layers'];derived=image['RootFS']['Layers']
+    require(base['Os']=='linux' and base['Architecture']=='amd64' and base['RootFS']['Type']=='layers' and
+            image['RootFS']['Type']=='layers' and len(original)>0 and
+            all(re.fullmatch('sha256:[a-f0-9]{64}',layer) for layer in original) and
+            derived[:len(original)]==original and len(derived)==len(original)+1 and
+            re.fullmatch('sha256:[a-f0-9]{64}',derived[-1]),'Local SDK image does not retain exact observed original layers')
+    require(image['Config']['User']=='0:0' and image['Config']['WorkingDir']=='/work',
+            'Local SDK materializer runtime configuration differs')
+    return {'localImageId':identifier,'localOwnedTag':tag,'observedOriginalImageId':base['Id'],
+            'originalRootfsLayers':original,'additionalLocalLayer':derived[-1],
+            'wholeRootIdentityClaimed':False,'registryPublicationPerformed':False,
+            'native05Executed':False,'gateAComplete':False}
+
+
+def owned_json(path,value):
+    descriptor=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+    with os.fdopen(descriptor,'wb') as stream:
+        stream.write(codec.canonical(value));stream.flush();os.fsync(stream.fileno())
+
+
+def commit_prepared(name,identifier,base,proof,output,docker=h.docker):
+    """Operator-only local snapshot; caller owns removal of this exact new ID.
+
+    A caller-selected repository, image, command or destination is not accepted.
+    `docker` is an internal synthetic-control injection, not a CLI/MCP argument.
+    This does not by itself authenticate base/SDK observations; the enclosing
+    fixed native controller must produce those receipts physically.
+    """
+    require(output.is_dir() and not output.is_symlink(),'Physical owned observation directory required')
+    # The stopped materializer is read and committed by its admitted ID; its
+    # name may be rebound to another container at any moment.
+    require(re.fullmatch('[a-f0-9]{64}',identifier),'Owned original SDK materializer required')
+    owner=json.loads(docker(['inspect','--size',identifier]))[0]
+    owned_json(output/'SDK-STOPPED-FOR-SNAPSHOT.json',owner)
+    size=validate_stopped(owner,name,identifier,proof)
+    tag='checktrail-gcc-main05-sdk:'+name.rsplit('-',1)[1]
+    require(not docker(['image','ls','--no-trunc','--quiet',tag]).strip(),'Existing SDK tag cannot be overwritten')
+    owned_json(output/'SDK-SNAPSHOT-MATERIAL-PROOF.json',proof)
+    owned_json(output/'SDK-LOCAL-SNAPSHOT-REQUEST.json',{'command':['docker','commit','--pause=true',identifier,tag],
+        'sourceContainerId':identifier,'sourceOwnerName':name,'localOwnedTag':tag,'ownedTagWasAbsentObserved':True,
+        'stoppedContainerSha256':hashlib.sha256(codec.canonical(owner)).hexdigest(),
+        'materialProofSha256':hashlib.sha256(codec.canonical(proof)).hexdigest(),'native05Executed':False})
+    directory=os.open(output,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+    try:os.fsync(directory)
+    finally:os.close(directory)
+    actual=docker(['commit','--pause=true',identifier,tag],timeout=300).decode().strip()
+    # Retain the actual command result/identity even if subsequent validation
+    # refuses; do not promote a malformed identity or delete an unknown image.
+    (output/'SDK-LOCAL-SNAPSHOT-COMMAND.json').write_bytes(codec.canonical({'command':['docker','commit','--pause=true',identifier,tag],
+        'returnedLocalImageId':actual,'sourceContainerId':identifier,'observedSizeRwBytes':size,
+        'registryPublicationPerformed':False,'native05Executed':False}))
+    require(re.fullmatch('sha256:[a-f0-9]{64}',actual),'Unusable local SDK snapshot identity')
+    image=json.loads(docker(['image','inspect',actual]))[0]
+    (output/'SDK-LOCAL-IMAGE-OBSERVATION.json').write_bytes(codec.canonical(image))
+    record=validate_local_image(image,actual,tag,base)
+    record.update(originalMaterializerContainerId=identifier,materialProofSha256=hashlib.sha256(codec.canonical(proof)).hexdigest(),
+                  materializerWritableLayerBytes=size,ephemeralLocalImageCleanupRequired=True)
+    (output/'SDK-LOCAL-IMAGE.json').write_bytes(codec.canonical(record));return record
+
+
+def chain_ids(layers):
+    """Layer chain IDs of an image's RootFS diff IDs, as Docker names released layers."""
+    chain=[];current=None
+    for layer in layers:
+        current=layer if current is None else 'sha256:'+hashlib.sha256((current+' '+layer).encode()).hexdigest()
+        chain.append(current)
+    return chain
+
+
+def remove_owned_tag(tag,observed,layers,docker,result):
+    """Remove the exact owned tag reference, never an image ID.
+
+    Docker deletes the image only when no other tag still holds it, so an
+    alias another client added survives with its image. The tag is re-read
+    just before the removal. Docker offers no compare-and-delete, so a rebind
+    in the instant between that read and the removal cannot be prevented; it
+    is detected from the removal's own response, which may delete only the
+    observed image, and from the observed image afterwards, which must carry
+    no owned tag and be either gone or held only by foreign tags. --no-prune
+    keeps untagged parent images, and a response that deletes anything but
+    the observed image and its own released layers is refused.
+    """
+    listed=docker(['image','ls','--no-trunc','--quiet',tag]).decode().splitlines()
+    require(listed==[observed],'Owned SDK tag no longer names the observed image; refuse removal')
+    def foreign(condition,message):
+        # A removal that may have reached another image is terminal: a later
+        # retry that finds the owned image gone cannot disprove it.
+        if not condition:result['foreignImageDeletionSuspected']=True
+        require(condition,message)
+    response=docker(['image','rm','--no-prune',tag],timeout=30).decode().splitlines()
+    deleted=[line[len('Deleted: '):].strip() for line in response if line.startswith('Deleted: ')]
+    require(not docker(['image','ls','--no-trunc','--quiet',tag]).strip(),'Exact owned SDK tag remains after removal')
+    present=set(docker(['image','ls','--all','--no-trunc','--quiet']).decode().splitlines())
+    if observed in present:
+        foreign(not deleted,'Removing the owned SDK tag deleted an image other than the observed one')
+        remaining=json.loads(docker(['image','inspect',observed]))[0]
+        aliases=remaining.get('RepoTags') or []
+        require(remaining['Id']==observed and tag not in aliases,'Owned SDK tag still names the observed image')
+        foreign(aliases,'Owned SDK image survived removal of its only tag; the tag may have named another image')
+        result['unrelatedRemainingAliasesProtected']=aliases
+    else:
+        foreign(deleted[:1]==[observed],'Owned SDK tag removal did not delete the observed image')
+        foreign(set(deleted[1:])<=set(chain_ids(layers)),'Removing the owned SDK tag deleted an image other than the observed one')
+
+
+RECOVERY_TAGS='SDK-IMAGE-RECOVERY-TAGS.json'
+
+
+def recovery_tags(output,tag):
+    path=output/RECOVERY_TAGS
+    if not os.path.lexists(path):return []
+    h.digest_file(path,maximum=1024**2);tags=json.loads(path.read_bytes())['proposedTags']
+    require(type(tags) is list and all(type(t) is str and re.fullmatch(re.escape(tag)+'-removal-[a-f0-9]{32}',t) for t in tags),
+            'Owned SDK recovery tag record differs')
+    return tags
+
+
+def propose_recovery_tag(output,tag,spare):
+    """Durably append `spare` to the recovery tag record before it is created."""
+    path=output/RECOVERY_TAGS;staging=output/(RECOVERY_TAGS+'.partial')
+    if os.path.lexists(staging):os.unlink(staging)
+    owned_json(staging,{'proposedTags':[*recovery_tags(output,tag),spare]})
+    os.replace(staging,path)
+    directory=os.open(output,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+    try:os.fsync(directory)
+    finally:os.close(directory)
+
+
+def cleanup_owned(output,docker=h.docker):
+    """Recover a created image even when commit_prepared never returned.
+
+    Delete only the one exact owned new tag, or its independently returned
+    untagged image ID. Never prune, force image deletion, or remove other tags.
+    A mismatched identity remains retained and makes cleanup unqualified.
+    """
+    request_path=output/'SDK-LOCAL-SNAPSHOT-REQUEST.json'
+    if not os.path.lexists(request_path):
+        require(not os.path.lexists(output/'SDK-LOCAL-SNAPSHOT-COMMAND.json'),'Image command exists without its pre-effect ownership reservation')
+        return {'state':'local-sdk-snapshot-not-requested','ownedImageCleanupComplete':True}
+    def read(path):
+        h.digest_file(path,maximum=1024**2)
+        return json.loads(path.read_bytes())
+    request=read(request_path);owner=read(output/'SDK-STOPPED-FOR-SNAPSHOT.json');proof=read(output/'SDK-SNAPSHOT-MATERIAL-PROOF.json')
+    name=request['sourceOwnerName'];tag=request['localOwnedTag'];identifier=request['sourceContainerId']
+    validate_stopped(owner,name,identifier,proof)
+    require(tag=='checktrail-gcc-main05-sdk:'+name.rsplit('-',1)[1] and
+            request['command']==['docker','commit','--pause=true',identifier,tag] and request['ownedTagWasAbsentObserved'] is True and
+            request['stoppedContainerSha256']==hashlib.sha256(codec.canonical(owner)).hexdigest() and
+            request['materialProofSha256']==hashlib.sha256(codec.canonical(proof)).hexdigest(),
+            'Exact pre-effect SDK image/tag ownership reservation differs')
+    returned=None;command_path=output/'SDK-LOCAL-SNAPSHOT-COMMAND.json'
+    if os.path.lexists(command_path):
+        command=read(command_path)
+        require(command['command']==request['command'] and command['sourceContainerId']==identifier,'Actual SDK snapshot command ownership differs')
+        value=command['returnedLocalImageId']
+        if isinstance(value,str) and re.fullmatch('sha256:[a-f0-9]{64}',value):returned=value
+    cleanup_path=output/'SDK-IMAGE-CLEANUP.json'
+    earlier=read(cleanup_path) if os.path.lexists(cleanup_path) else {}
+    if earlier.get('foreignImageDeletionSuspected') is True:
+        cleanup_path.write_bytes(codec.canonical({**earlier,'ownedImageCleanupComplete':False}))
+        raise ValueError('An earlier owned SDK image removal may have deleted another image; cleanup stays unqualified')
+    listed=docker(['image','ls','--no-trunc','--quiet',tag]).decode().splitlines()
+    require(len(listed)<=1,'Owned SDK image tag is ambiguous')
+    result={'schemaVersion':1,'state':'local-sdk-image-cleanup-unqualified','tag':tag,'returnedLocalImageId':returned,
+            'onlyExactOwnedResourcesTargeted':True,'unrelatedTagsRemoved':False,'imagePrunePerformed':False,
+            'originalGccTargetInvoked':False,'gateAComplete':False,'ownedImageCleanupComplete':False}
+    try:
+        for spare in recovery_tags(output,tag):
+            # A recovery tag an earlier attempt proposed may exist even though
+            # its command never answered; only the returned image can carry it.
+            held=docker(['image','ls','--no-trunc','--quiet',spare]).decode().splitlines()
+            if held:
+                require(returned is not None and held==[returned],'Owned SDK recovery tag names another image; refuse removal')
+                layers=json.loads(docker(['image','inspect',returned]))[0]['RootFS']['Layers']
+                remove_owned_tag(spare,returned,layers,docker,result)
+                result.setdefault('recoveryTagsRemoved',[]).append(spare)
+        if listed:
+            actual=json.loads(docker(['image','inspect',tag]))[0]
+            (output/'SDK-IMAGE-CLEANUP-OBSERVED.json').write_bytes(codec.canonical(actual))
+            observed=actual['Id']
+            require(re.fullmatch('sha256:[a-f0-9]{64}',observed) and listed==[observed] and tag in actual['RepoTags'],
+                    'Actual owned image tag identity differs')
+            if returned is not None:require(observed==returned,'Owned tag was rebound to a different image; refuse deletion')
+            else:require((actual['Config'].get('Labels') or {}).get('io.checktrail.gcc-staged-owner')==name,
+                         'Ambiguous commit output lacks independent observed owner label')
+            remove_owned_tag(tag,observed,actual['RootFS']['Layers'],docker,result)
+            result.update(state='local-sdk-owned-tag-removed',ownedImageCleanupComplete=True,observedLocalImageId=observed)
+        elif returned is not None:
+            # The tag may have been removed before a prior cleanup response was
+            # retained. Recover only this exact returned ID; protect all aliases.
+            present=set(docker(['image','ls','--all','--no-trunc','--quiet']).decode().splitlines())
+            if returned in present:
+                actual=json.loads(docker(['image','inspect',returned]))[0]
+                (output/'SDK-IMAGE-CLEANUP-OBSERVED.json').write_bytes(codec.canonical(actual))
+                require(actual['Id']==returned,'Exact returned SDK image identity differs')
+                if not actual.get('RepoTags'):
+                    # Removing by ID would also take a tag another client adds
+                    # meanwhile. `docker tag` replaces any existing binding, so
+                    # the image gets a fresh unpredictable owned tag that no
+                    # other client can hold, and only that tag is removed.
+                    spare=tag+'-removal-'+uuid.uuid4().hex
+                    # A tag command can create the tag and still fail to answer,
+                    # so the proposed tag is durable before the command runs.
+                    propose_recovery_tag(output,tag,spare)
+                    docker(['tag',returned,spare],timeout=30)
+                    remove_owned_tag(spare,returned,actual['RootFS']['Layers'],docker,result)
+                else:result['unrelatedRemainingAliasesProtected']=actual['RepoTags']
+            result.update(state='local-sdk-owned-tag-absent-returned-image-reconciled',ownedImageCleanupComplete=True)
+        else:
+            result.update(state='local-sdk-image-absence-unqualified-after-ambiguous-commit',ownedImageCleanupComplete=False,
+                          unknownUnreferencedImageRemovalAssessed=False)
+            raise ValueError('No returned SDK image identity/tag; complete owned image cleanup is unproven')
+        # A recovery tag command that timed out can still finish after the
+        # checks above. Recovery tags are unpredictable, so any binding of one
+        # is owned; the owned tag counts while it still names the owned image.
+        owned_images={returned,result.get('observedLocalImageId')}-{None}
+        remaining=[name for name in recovery_tags(output,tag) if docker(['image','ls','--no-trunc','--quiet',name]).strip()]
+        remaining+=[tag] if set(docker(['image','ls','--no-trunc','--quiet',tag]).decode().split())&owned_images else []
+        if remaining:
+            result.update(ownedImageCleanupComplete=False,ownedTagsRemaining=remaining)
+            raise ValueError('An owned SDK image tag is still present after cleanup; retry before claiming completion')
+        return result
+    except BaseException as error:
+        result['error']=str(error)[:2000];raise
+    finally:(output/'SDK-IMAGE-CLEANUP.json').write_bytes(codec.canonical(result))

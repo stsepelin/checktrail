@@ -1,0 +1,263 @@
+{
+  "artifactUploads": 0,
+  "cacheWrites": 0,
+  "freshApprovalReviewRequired": true,
+  "gateAComplete": false,
+  "inputPreparationSeconds": 3300,
+  "native05Authorized": false,
+  "offHostRawCustody": false,
+  "opaqueWrapperLogBytes": 16777216,
+  "originalOfflineAptCommand": [
+    "apt-get",
+    "-o",
+    "APT::Get::AllowUnauthenticated=false",
+    "-o",
+    "Acquire::AllowInsecureRepositories=false",
+    "-o",
+    "Acquire::AllowDowngradeToInsecureRepositories=false",
+    "-o",
+    "Acquire::Check-Valid-Until=true",
+    "-o",
+    "Dir::Cache::archives=/var/cache/apt/archives/gcc-12",
+    "--yes",
+    "--no-download",
+    "--no-install-recommends",
+    "build-dep",
+    "/inputs/gcc-12/gcc-12_12.2.0-14+deb12u1.dsc"
+  ],
+  "originalSdkStdoutBytes": 536870912,
+  "previousPolicySha256": "53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9",
+  "purpose": "on-host-original-sdk-validation-with-minimized-public-receipt",
+  "receiptBytes": 16384,
+  "revision": "live-sample-tolerance-and-container-id-v6",
+  "revisionApproval": {
+    "addedRuntimeFiles": [
+      "scripts/producer-qualification/gcc-sdk-structured-diagnostics.py",
+      "scripts/producer-qualification/binutils-image-identity.mjs",
+      "scripts/producer-qualification/binutils-acquisition-plan.mjs",
+      "scripts/producer-qualification/binutils-retention-observer.mjs",
+      "scripts/producer-qualification/c-producer-profile.mjs",
+      "scripts/qualify-binutils-producer.mjs",
+      "scripts/producer-qualification/binutils.v1.json",
+      "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
+      "scripts/producer-qualification/binutils-prepare-inputs.py",
+      "scripts/producer-qualification/binutils-expectations.v1.json",
+      "scripts/producer-qualification/gcc-local-12h-policy.v1.json",
+      "scripts/producer-qualification/gcc-local-wall-policy.v1.json"
+    ],
+    "approvedBy": "operator",
+    "approvedOn": "2026-11-24",
+    "changedRuntimeFiles": [
+      "scripts/producer-qualification/gcc-hosted-carrier.py",
+      "scripts/producer-qualification/gcc-hosted-sdk.py",
+      "scripts/producer-qualification/gcc-hosted-phase0-capacity.py",
+      "scripts/producer-qualification/gcc-sdk-derived-run.py"
+    ],
+    "scope": [
+      "Live sampling: live capacity samples skip entries unlinked between their parent listing and their own lstat, readlink or listing, bounded by LIVE_VANISHED_CEILING per sample; the sampled root must exist, and stopped admission, checkpoint and relocation scans stay strict.",
+      "Container identity: once a create returns its container ID, every start, attach, signal, copy, terminal inspection and removal in the hosted configure carrier and the SDK reconstruction addresses that ID; a name is read only to admit the created container or to reconcile a create that returned no ID, and that reconciliation removes the ID it observed.",
+      "Import order: the on-host receipt entry verifies its policy, the checkout and every runtimeFiles pin with the standard library before loading any sibling, reads no adjacent bytecode cache, and every first-party module it loads or executes, including the JavaScript import closure of the two acquisition entry points, is pinned as a runtimeFiles row.",
+      "Restore capacity: gcc-hosted-phase0-capacity.py admits phase 0 only when free scratch also holds a second uncompressed tree of up to the state ceiling, the readback the carrier restores beside the original tree and the checkpoint before its 8 GiB floor.",
+      "Bounded native waits: in gcc-hosted-carrier.py every live capacity sample, selector wait and post-EOF wait is bounded by the smaller of the remaining native allowance and the remaining source-job time above the finalization reserve.",
+      "Descriptor walk: gcc-hosted-carrier.py measures state from directory descriptors opened with O_NOFOLLOW and O_DIRECTORY, reads each directory one name at a time under the sample deadline and resolves every name relative to the directory that listed it, so a directory replaced by a symlink is never entered; live samples count such an entry within LIVE_VANISHED_CEILING, stopped scans refuse it and any measured directory no longer at its name, and a walk deeper than 256 levels is refused.",
+      "Not-started generator: gcc-sdk-derived-run.py re-reads the command and whole-operation budget after journaling a request and records a not-started terminal instead of starting a generator once that budget is spent.",
+      "Git configuration: gcc-hosted-carrier.py runs git with no system or global configuration, no outside attribute files, no hooks, no textconv or external diff and no fetch of a missing object, and refuses a checkout whose own configuration, found as git finds it, names a filter, diff, fsmonitor, hooks or include program before git starts.",
+      "Verified execution: the on-host receipt reads the policy once and parses the bytes it checked, keeps the bytes of every runtimeFiles row it verified, writes them into a fresh private directory under a sticky parent (files 0444 or 0555, directories 0555) and from then on loads Python helpers, reads the policy and runs the Node acquisition entry points and their imports only from that copy, with Python's bytecode cache prefix inside it; gcc-hosted-sdk.py takes its controls from its own directory, which outside the receipt must be the attested checkout, and every file the staged acquisition code reads beside itself is pinned as a runtimeFiles row.",
+      "Protected host Node: gcc-hosted-carrier.py hashes the admitted host Node while copying it into a fresh private directory under a sticky parent and runs --version from, and returns, that 0555 copy, so the tool-cache path is never executed after its bytes were hashed; the path is opened nonblocking so a FIFO is refused. The carrier reads binutils-image-identity.mjs with its own code and gcc-hosted-sdk.py loads gcc-sdk-material.py with its own code, so neither helper is read from its path again later.",
+      "Allowance before start: gcc-hosted-carrier.py recomputes the native and source-job allowance immediately before docker start --attach and records a not-started attempt instead of starting the container when it is exhausted.",
+      "Further changes approved by the operator on 2026-11-24: gcc-hosted-phase0-capacity.py, gcc-hosted-carrier.py, gcc-sdk-derived-run.py and gcc-hosted-sdk.py, as listed above, and the added rows binutils.v1.json, binutils-apt-index-preparation.v1.json, binutils-prepare-inputs.py, binutils-expectations.v1.json, gcc-local-12h-policy.v1.json and gcc-local-wall-policy.v1.json. No command, image or other runtime file changes; the limit changes are the restore-tree term of the phase-0 scratch budget and the state depth ceiling."
+    ]
+  },
+  "runtimeFiles": [
+    {
+      "bytes": 13709,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-capacity.py",
+      "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d"
+    },
+    {
+      "bytes": 59982,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
+      "sha256": "113a5db0bcc7c4837a1b9a3c1a197c0eda3ff30e37071a5cbd323ba33ee5e548"
+    },
+    {
+      "bytes": 7585,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-phase0-capacity.py",
+      "sha256": "ee1192ba5e30b1697cf25fdcc05bf28142a89644a04186c612f1298c81d9a720"
+    },
+    {
+      "bytes": 23406,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-sdk.py",
+      "sha256": "0af7aaecd14a63b3e7e620f23ef344529259c0f8141a2de81df6f36141b7cb76"
+    },
+    {
+      "bytes": 10473,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-hosted-stage.py",
+      "sha256": "21c1020e4a36b67f8ebf4037099f59c79899b69b5e042d8cd40e2d5e0c9c1f20"
+    },
+    {
+      "bytes": 11764,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-phase0-transport.py",
+      "sha256": "c2ce6976e93620c6d47a0723421ffb1c4e450420ca2475355741dbd195033e05"
+    },
+    {
+      "bytes": 34224,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-derived-run.py",
+      "sha256": "f7588867138b11f2fc136f9e4417b811fd62792ece75c78ef66b19048ea18ac8"
+    },
+    {
+      "bytes": 7496,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-derived.py",
+      "sha256": "82db8293f1122ea1361dff6f335c8a3c23bc410d1b2738f27c35f3916c2b5c56"
+    },
+    {
+      "bytes": 7741,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-material.py",
+      "sha256": "965e14a5dc43129cc03d86549e2f283ea5b66a99247fad32ba563168289da9a0"
+    },
+    {
+      "bytes": 9059,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-reconstruct.py",
+      "sha256": "591c43cb9b7a2c2fc168e323887d9ea914465160a94716ef49330d7f9a989947"
+    },
+    {
+      "bytes": 21803,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-staged-checkpoint.py",
+      "sha256": "376971c0196d1e71e47b851f4b33600e0c30537ac6c08ea2f13425ad4260c295"
+    },
+    {
+      "bytes": 4025,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-staged-configuration.mk",
+      "sha256": "057c9532336d74b7f9d8e2fac3c672183aa00beb2fa97d88ec692a49b2212555"
+    },
+    {
+      "bytes": 19801,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-staged-plan.py",
+      "sha256": "9da37512ceda9e3e23218f2c41992a8c29ccdc3f030f10b2cfe8717477a423de"
+    },
+    {
+      "bytes": 908,
+      "mode": 493,
+      "path": "scripts/producer-qualification/gcc-staged-rules2.sh",
+      "sha256": "ff87f224140a50837246cbd3929d6eec39acc0241a10fa70aafa8a194ffe67fb"
+    },
+    {
+      "bytes": 10127,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-main05-sdk.py",
+      "sha256": "89e10a71f2476da82936a2918b52dded52550aa503f4917eccd4f03c72a207ca"
+    },
+    {
+      "bytes": 19001,
+      "mode": 420,
+      "path": "scripts/acquire-binutils-inputs.mjs",
+      "sha256": "522add3ed2a8ee5fcff0cf9415a0b15c31052ddbc22490e303a5e2b406a8831f"
+    },
+    {
+      "bytes": 10524,
+      "mode": 420,
+      "path": "scripts/acquire-c-producer-inputs.mjs",
+      "sha256": "e52df8dd5916f9cbd1949b87c8056b690e37d729d124ad8d7596f4afa49c9729"
+    },
+    {
+      "bytes": 511562,
+      "mode": 420,
+      "path": "scripts/producer-qualification/c-producer-profiles.v1.json",
+      "sha256": "3e22395e92f732e1b30cf972c6f6d660f5e499562038ed31a342b018f8d481bd"
+    },
+    {
+      "bytes": 18176,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-image-identity.v1.json",
+      "sha256": "780c503c94b0e504b57cdd363ec0739d576f5a84c1ba2a608cfb454075b51bb2"
+    },
+    {
+      "bytes": 32052,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-sdk-structured-diagnostics.py",
+      "sha256": "5147df0d9c14d2d48d534d289a4946f6d0fe06dff18a2b80c2b63f48f24a2f73"
+    },
+    {
+      "bytes": 3639,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-image-identity.mjs",
+      "sha256": "6288522acb54d96b69d45d9cb636150a511232e81764d8ae93a5c238fb31eb9a"
+    },
+    {
+      "bytes": 10303,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-acquisition-plan.mjs",
+      "sha256": "6614c7d05bff581bc264a0d2cf1337d4569ee3d5a6180d16df4ae4d23b963a66"
+    },
+    {
+      "bytes": 12643,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-retention-observer.mjs",
+      "sha256": "b0a7bea8b8cc982313bbe34fc41d41c6389fb128826f3949b5192adde50e0d91"
+    },
+    {
+      "bytes": 17891,
+      "mode": 420,
+      "path": "scripts/producer-qualification/c-producer-profile.mjs",
+      "sha256": "6a4c6234a378b1c4a2bc4dc41ae7f4d9f0eb28080599591a757a752c43a53b3d"
+    },
+    {
+      "bytes": 40776,
+      "mode": 420,
+      "path": "scripts/qualify-binutils-producer.mjs",
+      "sha256": "dad2118b97a6273a5a43313d081517f2ccf4192f12d60097c60ddc023bd00fbd"
+    },
+    {
+      "bytes": 163560,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils.v1.json",
+      "sha256": "767cd256f71d7bda5c1f839f7ffb4ca8fb945a5013f4515490ec34f005a91c3c"
+    },
+    {
+      "bytes": 10197,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-apt-index-preparation.v1.json",
+      "sha256": "115447b661ca13d2850429a550e42508cc705cd5a5b8eea4892f4a79e9513e40"
+    },
+    {
+      "bytes": 9467,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-prepare-inputs.py",
+      "sha256": "4d76563525654a6cbffbc84a38e862332270ab914a576d22041145c19d2797a3"
+    },
+    {
+      "bytes": 5509,
+      "mode": 420,
+      "path": "scripts/producer-qualification/binutils-expectations.v1.json",
+      "sha256": "57a74cda3865fd9271176f52bb115033d88f54547a00cf9e581fa2e9226c5ee7"
+    },
+    {
+      "bytes": 1289,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-local-12h-policy.v1.json",
+      "sha256": "1964d3ca86505c6fc12791cd1b58d67cbb5013f20de87300371f7a4652efc3cf"
+    },
+    {
+      "bytes": 1289,
+      "mode": 420,
+      "path": "scripts/producer-qualification/gcc-local-wall-policy.v1.json",
+      "sha256": "9356abbf7cf21ec34646c56a95158414d2832e4402797a77e5dfce0866129bd8"
+    }
+  ],
+  "schemaVersion": 1,
+  "sdkBodySeconds": 1200,
+  "sourceJobSeconds": 21600,
+  "wrapperSeconds": 6600
+}

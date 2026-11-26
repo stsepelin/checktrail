@@ -1,0 +1,47 @@
+# NEW SOURCE-ONLY PROPOSAL. A fresh explicit action/receipt review is required.
+# Existing rejected R4 packet/markers are not used. No SDK artifact is uploaded.
+name: GCC SDK on-host qualification receipt
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: gcc-hosted-configure-checkpoint
+  cancel-in-progress: false
+jobs:
+  gcc-staged-first:
+    if: github.repository == 'stsepelin/checktrail' && github.ref == 'refs/heads/diagnostic/gcc-phase0-original-1117'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 360
+    env:
+      SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        timeout-minutes: 5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        timeout-minutes: 5
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - name: Restore exact previously qualified predecessor
+        id: predecessor
+        timeout-minutes: 10
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/gcc-phase0-transport
+          key: gcc-phase0-9b237f06213d06bca5f94340c59bd40b2dccccd3-44140525465-1
+          fail-on-cache-miss: true
+      - name: Qualify on host and emit only the closed receipt
+        timeout-minutes: 115
+        env:
+          CHECKTRAIL_GITHUB_JOB_TOKEN: ${{ github.token }}
+          CHECKTRAIL_PREDECESSOR_CACHE_HIT: ${{ steps.predecessor.outputs.cache-hit }}
+        run: |
+          CHECKTRAIL_HOST_NODE="$(node --input-type=module --eval 'import { readFileSync, realpathSync } from "node:fs"; import { createHash } from "node:crypto"; const path = realpathSync(process.execPath); process.stdout.write(JSON.stringify({path, sha256: createHash("sha256").update(readFileSync(path)).digest("hex"), version: process.version}));')"
+          export CHECKTRAIL_HOST_NODE
+          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,RUNNER_ARCH,GITHUB_EVENT_NAME,GITHUB_REPOSITORY,GITHUB_REF,GITHUB_SHA,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT,GITHUB_JOB,RUNNER_TEMP,GITHUB_WORKSPACE,CHECKTRAIL_GITHUB_JOB_TOKEN,CHECKTRAIL_HOST_NODE,CHECKTRAIL_PREDECESSOR_CACHE_HIT \
+            python3 -I -B scripts/producer-qualification/gcc-sdk-onhost-receipt.py \
+            qualify-on-host --operator-trust-execution
