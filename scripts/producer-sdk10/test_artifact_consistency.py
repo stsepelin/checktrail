@@ -29,6 +29,14 @@ class Controls(unittest.TestCase):
   self.assertEqual(m.expected_descriptor(self.meta,observed,self.ctx)['digest'],'sha256:'+'b'*64)
   # Never reported by the service at custody: an absent digest stays acceptable.
   self.assertIsNone(m.expected_descriptor(vanished,self.row,self.ctx)['digest'])
+ def test_digest_first_reported_during_the_wait_is_verified_and_then_kept(self):
+  # The pre-delete descriptor had no digest; a later 200 may supply the one
+  # matching the retained ZIP, once, and must keep it.
+  undigested={**self.meta,'digest':None};expected=m.expected_descriptor(undigested,self.row,self.ctx);self.assertIsNone(expected['digest'])
+  with mock.patch.object(m.time,'sleep'):
+   self.assertEqual(m.wait_exact_absence(self.calls([undigested,self.meta,self.meta,None]),self.row,self.ctx,100,expected),{'exact404':True,'observations':4})
+   for label,values,message in [('vanished',[self.meta,undigested],'same owned descriptor during bounded consistency wait'),('wrong',[{**self.meta,'digest':'sha256:'+'4'*60+'3517'}],'same original immutable owned ZIP descriptor')]:
+    with self.subTest(label=label),self.assertRaisesRegex(m.Refusal,message):m.wait_exact_absence(self.calls(values),self.row,self.ctx,100,expected)
  def test_persistent200_never_becomes_absence_and_has_exact_request_bound(self):
   c=self.calls([self.meta]*16)
   with mock.patch.object(m.time,'sleep'),self.assertRaisesRegex(m.Refusal,'consistency wait exhausted'):m.wait_exact_absence(c,self.row,self.ctx,100,self.expected)

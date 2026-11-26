@@ -31,9 +31,9 @@
       "sha256": "0c508b7be789f4db711bfa53fd196857252fbd3d1723644f098da93cc0a09ca8"
     },
     {
-      "bytes": 20928,
+      "bytes": 21203,
       "path": "collect.py",
-      "sha256": "fa5dab20316f42a3520008e30570280b3b4ea4ec86bacdce5894345622fada69"
+      "sha256": "62fb56793383b9823fb2da02cfa32708b9474c8c08ee853d8e4e5baf116ad7c0"
     },
     {
       "bytes": 1986,
@@ -131,9 +131,9 @@
       "sha256": "058ce0485dfcdaca6f7e91b36fc41f4551654d2b1b1b3ac9c856d7810143f6b1"
     },
     {
-      "bytes": 4286,
+      "bytes": 5220,
       "path": "test_artifact_consistency.py",
-      "sha256": "24c603816b1ee8b912b4ade94ed22b57dd3480afcb36c4f0af899e3951872162"
+      "sha256": "ac2579a1ca6264b7f6591e516d4225683383a6d57630bd6f8e19d09c0718e3ab"
     },
     {
       "bytes": 7526,

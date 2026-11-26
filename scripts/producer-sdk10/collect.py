@@ -45,7 +45,11 @@ def wait_exact_absence(calls,row,ctx,deadline,expected):
   need(time.monotonic()<deadline-2,'original recovery deadline before absence observation');value=calls.metadata('repos/stsepelin/checktrail/actions/artifacts/'+str(row['artifactID']),missing=True)
   if value is None:
    need(time.monotonic()<deadline-1,'exact404 observation within original recovery budget');return {'exact404':True,'observations':attempt+1}
-  need(expected_descriptor(value,row,ctx)==expected,'same owned descriptor during bounded consistency wait')
+  got=expected_descriptor(value,row,ctx)
+  # A digest absent before delete may appear once, already checked against the
+  # retained ZIP by expected_descriptor(); from then on it must stay the same.
+  if expected['digest'] is None and got['digest'] is not None:expected={**expected,'digest':got['digest']}
+  need(got==expected,'same owned descriptor during bounded consistency wait')
   need(attempt<15 and time.monotonic()<deadline-2,'bounded post-delete consistency wait exhausted');time.sleep(1)
  raise Refusal('unreachable absence loop')
 def delete_after_custody(row,ctx,deadline,stop,final_roundtrip=False):
