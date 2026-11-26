@@ -1,9 +1,9 @@
 {
   "files": [
     {
-      "bytes": 17697,
+      "bytes": 24095,
       "path": "owned_image.py",
-      "sha256": "2182b83bef5b41e8683b96155424142be7cdfc7d3eb68895f050ddb53f882369"
+      "sha256": "6ded099ebe1568fa08ae4bf0ea08e9aed09882f4c1671dd7aee481fc25296866"
     },
     {
       "bytes": 8838,
@@ -196,9 +196,9 @@
       "sha256": "41998071c7f98dd082dcc249b7400b953b3ec332b3c61c78187f6c86f20f66f3"
     },
     {
-      "bytes": 65597,
+      "bytes": 74787,
       "path": "test_target_pause_controls.py",
-      "sha256": "cc54f441f20ebbf03d6d110905bea367694683a3838820c1caa124d7b7ae8e58"
+      "sha256": "be362f707c86560b85078d12c986bb9794d9565541d993021ceab0e5c57977ae"
     },
     {
       "bytes": 3492,
