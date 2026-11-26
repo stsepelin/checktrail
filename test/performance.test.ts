@@ -18,10 +18,14 @@ test("performance samples reject fast failures, incomplete test execution and in
     projects: string,
     files: string,
   ) =>
+    // The limit only stops a hung worker; a loaded hosted runner can take
+    // several seconds to start one, which is not what this test measures.
     spawnSync(process.execPath, [worker, directory, mode, projects, files], {
       encoding: "utf8",
-      timeout: 5000,
+      timeout: 60000,
     });
+  const outcome = (result: ReturnType<typeof invoke>) =>
+    JSON.stringify({ signal: result.signal, stderr: result.stderr });
   for (const mode of ["plan", "validate"]) {
     const good = invoke(root, mode, "1", "2");
     assert.equal(good.status, 0, good.stderr);
@@ -45,7 +49,7 @@ test("performance samples reject fast failures, incomplete test execution and in
     ["1", "3"],
   ]) {
     const wrong = invoke(root, "plan", projects!, files!);
-    assert.equal(wrong.status, 1);
+    assert.equal(wrong.status, 1, outcome(wrong));
     assert.equal(wrong.stdout, "");
   }
   for (const content of [
@@ -58,7 +62,7 @@ test("performance samples reject fast failures, incomplete test execution and in
       "value.test.js": content,
     });
     const result = invoke(broken, "validate", "1", "2");
-    assert.equal(result.status, 1);
+    assert.equal(result.status, 1, outcome(result));
     assert.equal(result.stdout, "");
   }
 });
