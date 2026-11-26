@@ -50,11 +50,17 @@ Context collection must remain
 non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
 conservative impact fallback.
 
-Gate A retains full upstream producer-build closure for the selected artifacts,
-including compiler, SDK and bootstrap build inputs and complete original notices.
-Verified pinned releases, payload reconstruction and source attribution contribute
-to that evidence. Unreproduced producer builds and unknown inputs remain open
-Gate A work; upstream reproducibility is not deferred to a later gate.
+Gate A retains upstream producer closure for the selected artifacts, including
+compiler, SDK and bootstrap build inputs and complete original notices. Each
+producer closes either as source-built, from a retained completed build within
+its recorded scope or a new attempt that completes in one free standard hosted
+job, or as publisher-attested, with the exact release
+artifact verified against the publisher's own signature or signed checksums, as
+defined by the [closure plan's producer budget revision](GATE-A-CLOSURE-PLAN.md#2a-producer-budget-revision-2026-11-24).
+The two classifications are recorded separately and a publisher-attested row
+claims no source build. Unknown inputs and unverifiable artifacts remain open
+Gate A work; source reproduction of publisher-attested producers moves to the
+post-Gate-A queue.
 The [hosted execution plan](HOSTED-PRODUCER-PLAN.md) uses standard public GitHub
 runners for this work; a historical SDK observed in delivered bytes is distinct
 from an SDK version explicitly required by the original recipe. Current hosted

@@ -3,9 +3,15 @@
 Gate A producer work uses standard GitHub-hosted runners available to public
 repositories. It does not depend on a dedicated host, a paid larger runner or an
 operator supplying an old Apple SDK. Full selected producer, compiler, SDK,
-bootstrap and original-notice closure remains required. Each completed build
-qualifies its recorded inputs and environment; historical publisher binary
-equality is a separate observation.
+bootstrap and original-notice closure remains required, under the closure plan's
+[producer budget revision](GATE-A-CLOSURE-PLAN.md#2a-producer-budget-revision-2026-11-24):
+a new source-build attempt must complete in one standard job within five hours;
+retained completed builds keep counting within their recorded scope. A producer
+whose measured attempt exhausts that budget, or that the operator explicitly
+excepts, becomes eligible for publisher attestation and stays open until that
+evidence is verified. Each completed build qualifies its
+recorded inputs and environment; historical publisher binary equality is a
+separate observation.
 
 GitHub limits each hosted job to [six hours](https://docs.github.com/en/actions/reference/limits).
 Preparation, stopping, retention, upload and runner finalization consume that same
@@ -29,7 +35,13 @@ compiler smoke profile, separate from Checktrail adapter acceptance and the
 historical full producer observations below. No hosted pass is claimed before
 an actual run.
 
-## GCC: implement bounded continuation
+## GCC: bounded continuation (diagnostic only)
+
+The [closure plan's producer budget revision](GATE-A-CLOSURE-PLAN.md#2a-producer-budget-revision-2026-11-24)
+removes multi-job continuation from the Gate A closure path; GCC 12 closes as a
+publisher-attested producer. The continuation design below stays as diagnostic
+tooling and its controls stay in ordinary validation, but no Gate A item waits
+on a run of it.
 
 The existing profile selects Debian GCC 12.2.0-14+deb12u1 and
 `dpkg-buildpackage -b -us -uc --jobs=4`. Its interrupted observation did not retain
