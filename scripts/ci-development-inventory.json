@@ -815,6 +815,20 @@
       "hash": "036905f86b9a3fbf6bb8768b19174870a13e09fa"
     },
     {
+      "path": "docs/GATE-A-CASE-BINDINGS.md",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "7d7f0292f8fdfbc3cc436d0acfcb4e40d6e6a091"
+    },
+    {
+      "path": "docs/GATE-A-CLOSURE-PLAN.md",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "7c50aabe808bb47939de3ef41efea740c8f80256"
+    },
+    {
       "path": "docs/GO-BUILD.md",
       "mode": "100644",
       "type": "blob",
@@ -1197,7 +1211,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "22e3c9b6cda680243b85e4aeffa5cf6c0c543eca"
+      "hash": "425c9341e7de81769082adb87612cc26e1f46faa"
     },
     {
       "path": "docs/PLAYWRIGHT.md",
@@ -1302,7 +1316,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "641870cfb73ce5b7c72114a4874d64e8176365df"
+      "hash": "24b75419c8b8fe03c08b1e6fed0e420064acbaa9"
     },
     {
       "path": "docs/REVIEW-BEHAVIOR.md",
@@ -1568,7 +1582,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "3256b41edeb1da6e72dff7055cc303e100998d1f"
+      "hash": "c9fdebe84a6655c5c72037b471bc69d6f543145c"
     },
     {
       "path": "docs/RUBY-EXTENSIONS.md",
@@ -6853,14 +6867,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "protected-lock-sha256",
-      "hash": "446459962d552db191b7afe3af6457170a3df7add17aa40ea9fe7ef9420782eb"
+      "hash": "8153aaec9c095ce0048c4810b48fd174df2a02a92bdfd40b59f8aac250cd0af6"
     },
     {
       "path": "package.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "root-manifest-sha256",
-      "hash": "87e9cb9107917361c66eab6a5a9c470a0c543c5f742ea9da219b56c3826e7361"
+      "hash": "53f8614f50dd3c8fd85f97a86d2a430c447f7d1a7214a3563d1b1619b964baf0"
     },
     {
       "path": "packs/actionlint.json",
@@ -8344,7 +8358,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e8f99ab27ec1cc21dfbe200e53a6d53c62d5dc7a"
+      "hash": "1f34386bc19f9304f66cb0b63fce1dd4ee21a0de"
     },
     {
       "path": "scripts/audit-php-review-tools.mjs",
@@ -9849,7 +9863,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "96554a561b229b186488b02bccef9c684b6b4d95"
+      "hash": "a2137c873940f7994d6f7b56ebf902ef755d2636"
     },
     {
       "path": "scripts/prepare-playwright-tools.mjs",
@@ -18116,7 +18130,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2d7863b188a5a375643cc2025d4a9e5bf506d6a5"
+      "hash": "98599d39980eade2995d2b28ca435a65910707a3"
     },
     {
       "path": "test/gate-javascript-extensions.test.ts",
@@ -19425,7 +19439,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "8030d9a1d1a57195b78abe31634b50a1770d4704"
+      "hash": "3332173788f4aea2ffe169138960a770bf16618e"
     },
     {
       "path": "test/prepare-ubuntu-mirrors.test.ts",

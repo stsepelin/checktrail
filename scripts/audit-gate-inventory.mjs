@@ -1,14 +1,18 @@
 import assert from "node:assert/strict";
+import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import {
   constants,
   closeSync,
   fstatSync,
+  lstatSync,
   openSync,
   readFileSync,
+  readdirSync,
   realpathSync,
 } from "node:fs";
 import path from "node:path";
+import ts from "typescript";
 import process from "node:process";
 const BASELINE =
   "04b2ba50cb1e4516d5472ff2412478b75ec5f5803de34d62fa4b78237a1d5568";
@@ -20,6 +24,648 @@ const obligations = [
   ...Array.from({ length: 8 }, (_, i) => "R" + (i + 1)),
   ...Array.from({ length: 17 }, (_, i) => "E" + (i + 1)),
 ];
+// These selected cases use separate controllers in their existing manifest profile.
+// Pin the whole address: matching a name elsewhere is not a binding.
+const alternateAcceptanceFiles = {
+  "cpp-extensions": {
+    privacy: "dist/test/cpp-extensions-surfaces.test.js",
+    lifecycle: "dist/test/cpp-extensions-cancel.test.js",
+  },
+  "terraform-extensions": {
+    privacy: "dist/test/terraform-extensions-surfaces.test.js",
+    lifecycle: "dist/test/terraform-extensions-lifecycle.test.js",
+  },
+  "helm-extensions": {
+    privacy: "dist/test/helm-extensions-surfaces.test.js",
+    lifecycle: "dist/test/helm-extensions-lifecycle.test.js",
+  },
+};
+// The native verifier refuses to select the aggregate mutation profile: each of
+// its cases runs in every per-family cohort (verify-required-native-tests.mjs).
+const controllerProfiles = {
+  "mutation-runners": [
+    "mutation-vitest",
+    "mutation-jest",
+    "mutation-pytest",
+    "mutation-phpunit",
+  ],
+};
+// These controllers take a profile's manifest rows through a dedicated selector
+// rather than the generic native verifier. Each refuses the whole profile before
+// any callback runs unless its rows equal the selected cases at their bound
+// files, plus `extra` names in the default file. `selection` names the selected
+// profile whose cases a per-family cohort must hold. An `ordered` selector
+// compares the rows as written; the others compare them sorted. The .NET
+// generator compares against its shard manifest, whose source partitions are
+// exactly the selected cases. A `serialized` selector compares each row's JSON
+// text, so its key order counts.
+const mutationCohort = {
+  controller: "scripts/verify-mutation-container.mjs",
+  ordered: true,
+  selection: "mutation-runners",
+};
+const dedicatedSelectors = {
+  "cpp-extensions": {
+    controller: "scripts/selected-clang-consumer-witness.mjs",
+    ordered: false,
+    serialized: true,
+    extra: ["cpp-extensions compiler formatter analyzer acceptance"],
+  },
+  "dotnet-generator-extensions": {
+    controller: "scripts/dotnet-generator-shards.mjs",
+    ordered: false,
+  },
+  "scala-extensions": {
+    controller: "scripts/scala-native-ci-phases.mjs",
+    ordered: true,
+  },
+  "ruby-extensions": {
+    controller: "scripts/ruby-extensions-acceptance-selection.mjs",
+    ordered: true,
+  },
+  "consumer-impact": {
+    controller: "scripts/consumer-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "multi-candidate-workflow": {
+    controller: "scripts/review-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "confidence-provenance": {
+    controller: "scripts/review-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "attempt-archives": {
+    controller: "scripts/attempt-whole-evidence.mjs",
+    ordered: true,
+  },
+  "lifecycle-platforms": {
+    controller: "scripts/verify-lifecycle-platforms.mjs",
+    ordered: true,
+  },
+  "tasks-matrix": {
+    controller: "scripts/tasks-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "native-license-provenance": {
+    controller: "scripts/native-provenance-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "resource-release-readiness": {
+    controller: "scripts/verify-resource-release-readiness.mjs",
+    ordered: true,
+  },
+  "independent-evaluation-protocol": {
+    controller: "scripts/evaluation-runtime-evidence.mjs",
+    ordered: true,
+  },
+  "mutation-vitest": mutationCohort,
+  "mutation-jest": mutationCohort,
+  "mutation-pytest": mutationCohort,
+  "mutation-phpunit": mutationCohort,
+};
+const contextFamilies = [
+  "python",
+  "go",
+  "php",
+  "rust",
+  "java",
+  "kotlin",
+  "scala",
+  "csharp",
+  "fsharp",
+  "vb",
+  "ruby",
+  "swift",
+  "c",
+  "cpp",
+  "hcl",
+  "yaml",
+];
+// verify-import-context-package.mjs installs these profiles into a fresh
+// consumer with only these acceptance files, then runs the whole profile there.
+const installedHarness = {
+  controller: "scripts/verify-import-context-package.mjs",
+  profiles: [
+    "assembly-django",
+    "assembly-fastapi",
+    "assembly-laravel",
+    "assembly-nuxt",
+    "assembly-vue-router",
+    "confidence-provenance",
+    ...contextFamilies.map((family) => "context-" + family),
+    "cpp-extensions",
+    "dotnet-format-extensions",
+    "dotnet-fsharp-format",
+    "dotnet-generator-extensions",
+    "helm-extensions",
+    "host-session-readiness",
+    "javascript-extensions",
+    "jvm-analyzer-extensions",
+    "jvm-wrappers",
+    "kotlin-extensions",
+    "kubernetes-extensions",
+    "kustomize-extensions",
+    "multi-candidate-workflow",
+    "php-extensions",
+    "python-extensions",
+    "ruby-extensions",
+    "rust-extensions",
+    "scala-extensions",
+    "swift-extensions",
+    "terraform-extensions",
+  ],
+  files: [
+    "import-context",
+    "review-polyglot",
+    "review-context-limits",
+    "import-history",
+    ...contextFamilies.map((family) => "gate-context-" + family),
+    "gate-assembly-nuxt",
+    "gate-javascript-extensions",
+    "gate-rust-extensions",
+    "gate-kotlin-extensions",
+    "gate-jvm-analyzer-extensions",
+    "gate-kubernetes-extensions",
+    "gate-kustomize-extensions",
+    "gate-dotnet-fsharp-format",
+    "gate-dotnet-format-extensions",
+    "gate-dotnet-generator-extensions",
+    "gate-ruby-extensions",
+    "gate-swift-extensions",
+    "gate-helm-extensions",
+    "helm-extensions-surfaces",
+    "helm-extensions-lifecycle",
+    "gate-terraform-extensions",
+    "terraform-extensions-surfaces",
+    "terraform-extensions-lifecycle",
+    "gate-cpp-extensions",
+    "cpp-extensions-surfaces",
+    "cpp-extensions-cancel",
+    "gate-confidence-provenance",
+    "review-findings",
+    "review-workflow-findings",
+    "gate-multi-candidate-workflow",
+    "gate-scala-extensions",
+    "gate-jvm-wrappers",
+    "gate-php-extensions",
+    "gate-python-extensions",
+    "gate-assembly-laravel",
+    "gate-assembly-django",
+    "gate-assembly-fastapi",
+    "gate-assembly-vue-router",
+    "gate-host-session-readiness",
+  ].map((name) => "dist/test/" + name + ".test.js"),
+};
+// Other profiles a controller requires before it accepts the selected profile.
+// Every cohort profile must hold 1 to `maxRows` rows (256 by default) without
+// a repeated address. Then, by rule:
+// - `rows`: the cohort's distinct addresses number exactly this many, which is
+//   what a runner batch over those profiles reports as required;
+// - `disjoint`: no address appears in two cohort profiles;
+// - `outsideFile`: no cohort row is filed in this test file;
+// - `preserved`: the cohort holds exactly its preserved baseline rows, which
+//   the .NET shard manifest partitions;
+// - `files`: every cohort row is filed in one of these test files;
+// - `absentNames`: no cohort row has one of these names, which the controller
+//   expects as unrequired callbacks in the batch's test files;
+// - `fileOrder`: these files first appear in this order. The runner runs a
+//   batch's files in the order they first appear, and the controller compares
+//   their unrequired callbacks in that order;
+// - `shards`: the runner admits each of this many shards (row index modulo
+//   the count) on its own, so the row limit applies per shard, not to the
+//   whole cohort;
+// - `countedBy`: `rows` applies only while the cohort holds the callback with
+//   this name, since that callback asserts the count and runs only when
+//   selected.
+// - `sha256`: the cohort's ordered file/name list has this canonical digest,
+//   the exact list the controller's foundation module compares against.
+const companionCohorts = [
+  {
+    profile: "tasks-matrix",
+    controller: "scripts/tasks-runtime-evidence.mjs",
+    cohort: ["mcp-tasks"],
+    rows: 10,
+    outsideFile: "dist/test/gate-tasks-matrix.test.js",
+  },
+  {
+    profile: "dotnet-generator-extensions",
+    controller: "scripts/dotnet-generator-shards.mjs",
+    cohort: [
+      "dotnet-build",
+      "dotnet-test",
+      "dotnet-generated",
+      "dotnet-method",
+    ],
+    maxRows: 128,
+    disjoint: true,
+    preserved: true,
+  },
+  {
+    profile: "consumer-impact",
+    controller: "scripts/consumer-foundation-evidence.mjs",
+    cohort: ["consumer-impact-foundation"],
+    sha256: "e15c204ed472bffdc3feb1b29a4ab0a865f9863b40862266a3bd83c80876e2db",
+  },
+  {
+    profile: "attempt-archives",
+    controller: "scripts/attempt-foundation-evidence.mjs",
+    cohort: ["attempt-journal-foundation"],
+    sha256: "9e3bee327fd5dc23bd80b6feec2e94067c6103893f2dbf9e43054a921ed56539",
+  },
+  {
+    profile: "attempt-archives",
+    controller: "scripts/attempt-foundation-evidence.mjs",
+    cohort: ["attempt-output-foundation"],
+    sha256: "1ff71872718b3e140bec7a74563b9d67c73c6898943dbcacc58324e080b984f4",
+  },
+  {
+    profile: "python-extensions",
+    controller: "scripts/verify-python-extensions-container.mjs",
+    cohort: ["python"],
+    rows: 5,
+  },
+  {
+    profile: "php-extensions",
+    controller: "scripts/verify-php-extensions-container.mjs",
+    cohort: ["php-tools", "php-review"],
+    rows: 14,
+  },
+  {
+    profile: "rust-extensions",
+    controller: "scripts/verify-rust-extensions-container.mjs",
+    cohort: ["rust", "rust-format", "clippy", "rust-tests", "rust-workspace"],
+    rows: 39,
+  },
+  {
+    profile: "assembly-laravel",
+    controller: "scripts/verify-laravel-assembly-container.mjs",
+    cohort: ["laravel-cache-runtime-bindings"],
+    rows: 1,
+  },
+  // verify-laravel-cache.mjs refuses a row outside laravelCacheHarnessFiles
+  // before it runs any.
+  {
+    profile: "assembly-laravel",
+    controller: "scripts/laravel-cache-runtime-evidence.mjs",
+    cohort: ["laravel", "laravel-cache"],
+    rows: 9,
+    disjoint: true,
+    files: ["dist/test/laravel.test.js", "dist/test/laravel-cache.test.js"],
+  },
+  {
+    profile: "assembly-django",
+    controller: "scripts/verify-django-assembly-container.mjs",
+    cohort: ["frameworks"],
+    rows: 8,
+  },
+  {
+    profile: "assembly-fastapi",
+    controller: "scripts/verify-fastapi-assembly-container.mjs",
+    cohort: ["frameworks"],
+    rows: 8,
+  },
+  {
+    profile: "assembly-nuxt",
+    controller: "scripts/verify-nuxt-assembly-container.mjs",
+    cohort: ["nuxt"],
+    rows: 7,
+  },
+  // Containers that first run a preserved baseline batch through the generic
+  // runner, which refuses a repeated pair within any one of its profiles. A
+  // `disjoint` batch is compared with the sum of its profile lengths.
+  ...[
+    ["helm-extensions", "verify-helm-extensions-container", ["helm"]],
+    [
+      "confidence-provenance",
+      "verify-confidence-provenance",
+      ["review", "review-probe", "review-scoring"],
+      true,
+    ],
+    [
+      "dotnet-format-extensions",
+      "verify-dotnet-format-extensions-container",
+      ["dotnet-build", "dotnet-format", "dotnet-generated"],
+      true,
+    ],
+    [
+      "dotnet-fsharp-format",
+      "verify-fsharp-format-container",
+      ["dotnet-build", "dotnet-format"],
+      true,
+    ],
+    [
+      "jvm-analyzer-extensions",
+      "verify-jvm-analyzer-extensions-container",
+      ["java", "spotbugs", "detekt"],
+      true,
+    ],
+    [
+      "jvm-wrappers",
+      "verify-jvm-wrappers-container",
+      ["java", "maven", "gradle"],
+      true,
+    ],
+    [
+      "kotlin-extensions",
+      "verify-kotlin-extensions-container",
+      ["kotlin", "java"],
+      true,
+    ],
+    [
+      "kubernetes-extensions",
+      "verify-kubernetes-extensions-container",
+      ["kubeconform", "kustomize"],
+      true,
+    ],
+    [
+      "kustomize-extensions",
+      "verify-kustomize-extensions-container",
+      ["kubeconform", "kustomize"],
+      true,
+    ],
+    [
+      "scala-extensions",
+      "verify-scala-extensions-container",
+      ["scala", "java"],
+      true,
+    ],
+    [
+      "swift-extensions",
+      "verify-swift-extensions-container",
+      ["swift", "swift-tools"],
+      true,
+    ],
+  ].map(([profile, script, cohort, disjoint]) => ({
+    profile,
+    controller: "scripts/" + script + ".mjs",
+    cohort,
+    ...(disjoint ? { disjoint } : {}),
+  })),
+  {
+    profile: "cpp-extensions",
+    controller: "scripts/verify-cpp-extensions-container.mjs",
+    cohort: ["cpp-tools"],
+    absentNames: [
+      "C/C++ planning is data only and rejects undeclared CMake commands and missing source scope",
+    ],
+  },
+  {
+    profile: "terraform-extensions",
+    controller: "scripts/verify-terraform-extensions-container.mjs",
+    cohort: ["terraform"],
+    absentNames: [
+      "Terraform native process observer binds exact tool-collection and validation parent phases with native identity and current owned workspace",
+      "Terraform native process observer rejects phase suffixes unrelated runner identities workspace aliases and processes that exit or change parent before admission",
+      "Terraform native process observer resolves the installed engine symlink before exact parent matching",
+      "Terraform planning reads all JSON module files without executing native tools and rejects empty provider module function duplicate and omitted scope",
+    ],
+    fileOrder: [
+      "dist/test/terraform-reached.test.js",
+      "dist/test/terraform.test.js",
+    ],
+  },
+  // These package checks install the baseline into a fresh consumer with only
+  // their listed test files, then run the whole profile there.
+  ...[
+    [
+      "cpp-extensions",
+      "cpp-tools",
+      [
+        "cpp-tools",
+        "cpp-tools-lifecycle",
+        "cpp-controls",
+        "cpp-protocol",
+        "cpp-tools-surfaces",
+        "cpp-tools-cancel",
+      ],
+    ],
+    [
+      "helm-extensions",
+      "helm",
+      ["helm", "helm-scope", "helm-lifecycle", "helm-surfaces"],
+    ],
+    [
+      "terraform-extensions",
+      "terraform",
+      [
+        "terraform",
+        "terraform-lifecycle",
+        "terraform-reached",
+        "terraform-surfaces",
+      ],
+    ],
+  ].map(([profile, cohort, names]) => ({
+    profile,
+    controller: "scripts/verify-" + cohort + "-package.mjs",
+    cohort: [cohort],
+    files: names.map((name) => "dist/test/" + name + ".test.js"),
+  })),
+  // verify-ruby-tools-baseline.mjs refuses a repeated pair in the whole
+  // baseline before it selects a shard. CI runs only its three shard phases;
+  // its unsharded default mode, run without a phase, would also need the
+  // whole list within the row limit. The eight preserved rows keep each shard
+  // nonempty.
+  {
+    profile: "ruby-extensions",
+    controller: "scripts/verify-ruby-tools-baseline.mjs",
+    cohort: ["ruby-tools"],
+    shards: 3,
+  },
+  // The Go workflow step validates all four profiles of its batch before it
+  // runs any, so each selected profile depends on the other three.
+  ...[
+    ["go-extensions", "host-session-readiness"],
+    ["host-session-readiness", "go-extensions"],
+  ].map(([profile, other]) => ({
+    profile,
+    controller: ".github/workflows/ci.yml",
+    cohort: [other, "go-installed-harness", "review-context-limits"],
+  })),
+  // review-context-limits runs in that batch. Its installed callback runs the
+  // whole profile from the installed harness and requires nine passes.
+  ...["go-extensions", "host-session-readiness"].map((profile) => ({
+    profile,
+    controller: "test/review-context-limits.test.ts",
+    cohort: ["review-context-limits"],
+    rows: 9,
+    countedBy:
+      "expanded context original controls execute against a fresh offline installed runtime",
+    files: installedHarness.files,
+  })),
+  // The ARM64 Tasks runtime command runs this batch under `set -eu` before the
+  // lifecycle and evaluation controllers, and the provenance command runs only
+  // after that command succeeds.
+  ...[
+    "lifecycle-platforms",
+    "independent-evaluation-protocol",
+    "native-license-provenance",
+  ].map((profile) => ({
+    profile,
+    controller: "scripts/verify-tasks-runtime-arm64.mjs",
+    cohort: ["lifecycle-runtime-bindings"],
+  })),
+  // The lifecycle controller runs its platform's foundation batch, whose files
+  // must belong to lifecycleHarnessFiles in lifecycle-runtime-evidence.mjs.
+  // The installed lifecycle controller compares the batch receipt with the
+  // sum of the two profile lengths.
+  ...[
+    ["posix-cleanup", "posix-owner"],
+    ["windows-process", "physical-process-output"],
+  ].map((cohort) => ({
+    profile: "lifecycle-platforms",
+    controller: "scripts/verify-lifecycle-platforms.mjs",
+    cohort,
+    disjoint: true,
+    files: [
+      "gate-lifecycle-platforms",
+      "process-tree",
+      "posix-owner",
+      "runner",
+      "process-output",
+      "windows-contract",
+      "windows-process",
+      "windows-resource",
+      "windows-workspace",
+      "windows-resource-native",
+    ].map((name) => "dist/test/" + name + ".test.js"),
+  })),
+];
+// selectConsumerWitnessRequirements reads the broken, fixed and near-miss rows
+// of every consumer witness family from `profiles`. The controller of each of
+// them calls it, and so does the selected Clang consumer acceptance that the
+// C++ controller dispatches. One family's missing row refuses every dependent.
+const witnessProfiles = [
+  "consumer-impact",
+  "javascript-extensions",
+  ...contextFamilies.map((family) => "context-" + family),
+];
+const sharedWitnessSelector = {
+  controller: "scripts/consumer-witness-evidence.mjs",
+  cases: ["broken", "fixed", "near-miss"],
+  profiles: witnessProfiles,
+  dependents: [...witnessProfiles, "cpp-extensions"],
+};
+// These controllers check only `passed`. The runner runs each selected file
+// whole, so a profile missing a row of its file still passes all nine; only an
+// extra row, which brings another callback, changes the count.
+const passedOnlyCounts = [
+  ...contextFamilies
+    .filter((family) => !["python", "go"].includes(family))
+    .map((family) => "scripts/verify-" + family + "-context-container.mjs"),
+  ...["laravel", "django", "fastapi", "nuxt", "vue-router"].map(
+    (name) => "scripts/verify-" + name + "-assembly-container.mjs",
+  ),
+  "test/gate-go-extensions.test.ts",
+  "test/gate-attempt-archives.test.ts",
+];
+// These controllers run a profile through the generic runner, which admits any
+// row set, then require exactly `rows` required callbacks from it. An extra
+// unselected row passes the runner but fails the count after running.
+const rowCountControllers = Object.fromEntries(
+  [
+    [
+      "scripts/verify-consumer-witness-profile.mjs",
+      contextFamilies.map((family) => "context-" + family),
+    ],
+    ...contextFamilies
+      .filter((family) => !["python", "go"].includes(family))
+      .map((family) => [
+        "scripts/verify-" + family + "-context-container.mjs",
+        ["context-" + family],
+      ]),
+    [
+      "scripts/verify-javascript-extensions-container.mjs",
+      ["javascript-extensions"],
+    ],
+    ["scripts/verify-consumer-project-profile.mjs", ["javascript-extensions"]],
+    ["scripts/verify-python-extensions-container.mjs", ["python-extensions"]],
+    ["scripts/verify-php-extensions-container.mjs", ["php-extensions"]],
+    ["scripts/verify-rust-extensions-container.mjs", ["rust-extensions"]],
+    ["scripts/verify-jvm-wrappers-container.mjs", ["jvm-wrappers"]],
+    ["scripts/verify-kotlin-extensions-container.mjs", ["kotlin-extensions"]],
+    ["scripts/verify-scala-extensions-container.mjs", ["scala-extensions"]],
+    [
+      "scripts/verify-jvm-analyzer-extensions-container.mjs",
+      ["jvm-analyzer-extensions"],
+    ],
+    [
+      "scripts/verify-dotnet-format-extensions-container.mjs",
+      ["dotnet-format-extensions"],
+    ],
+    ["scripts/verify-fsharp-format-container.mjs", ["dotnet-fsharp-format"]],
+    ["scripts/verify-swift-extensions-container.mjs", ["swift-extensions"]],
+    [
+      "scripts/verify-kustomize-extensions-container.mjs",
+      ["kustomize-extensions"],
+    ],
+    [
+      "scripts/verify-kubernetes-extensions-container.mjs",
+      ["kubernetes-extensions"],
+    ],
+    ["scripts/verify-laravel-assembly-container.mjs", ["assembly-laravel"]],
+    ["scripts/verify-django-assembly-container.mjs", ["assembly-django"]],
+    ["scripts/verify-fastapi-assembly-container.mjs", ["assembly-fastapi"]],
+    ["scripts/verify-nuxt-assembly-container.mjs", ["assembly-nuxt"]],
+    [
+      "scripts/verify-vue-router-assembly-container.mjs",
+      ["assembly-vue-router"],
+    ],
+    ["scripts/verify-confidence-provenance.mjs", ["confidence-provenance"]],
+    [
+      "scripts/verify-review-runtime-package.mjs",
+      ["multi-candidate-workflow", "confidence-provenance"],
+    ],
+    [
+      "scripts/verify-tasks-runtime-arm64.mjs",
+      ["confidence-provenance", "lifecycle-platforms"],
+    ],
+    ["scripts/verify-consumer-impact-whole-package.mjs", ["consumer-impact"]],
+    ["scripts/verify-lifecycle-platforms-package.mjs", ["lifecycle-platforms"]],
+    [
+      "scripts/verify-mutation-package.mjs",
+      [
+        "mutation-vitest",
+        "mutation-jest",
+        "mutation-pytest",
+        "mutation-phpunit",
+      ],
+    ],
+  ].map(([controller, profiles]) => [
+    controller,
+    {
+      rows: 9,
+      profiles,
+      ...(passedOnlyCounts.includes(controller) ? { passedOnly: true } : {}),
+    },
+  ]),
+);
+// The installed acceptance callback in each of these profiles' selected test
+// file runs the whole profile from a fresh package and requires exactly nine
+// passes, so an extra row fails it. The callbacks of the profiles listed
+// first assert no such count.
+const uncountedInstalledProfiles = [
+  "assembly-nuxt",
+  "cpp-extensions",
+  "helm-extensions",
+  "native-license-provenance",
+  "resource-release-readiness",
+  "tasks-matrix",
+  "terraform-extensions",
+];
+// resolveRequirements in required-test-evidence.mjs runs a profile only when it
+// holds 1 to 256 rows, each with a file path of at most 4096 characters. It
+// resolves each path first, so a path component longer than the filesystem's
+// 255-byte name limit fails there too.
+const maxProfileRows = 256;
+const maxFileCharacters = 4096;
+const maxNameBytes = 255;
+const resolvable = (file) =>
+  file.length <= maxFileCharacters &&
+  file.split("/").every((part) => Buffer.byteLength(part) <= maxNameBytes);
+const genericRunner = "scripts/required-test-evidence.mjs";
+// The compiled test file names ci-full-suite-shards.mjs partitions.
+const fullSuiteFilePattern = /^[a-z0-9][a-z0-9-]*\.test\.js$/u;
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const canonical = (value) =>
   JSON.stringify(value, (_key, item) =>
@@ -267,8 +913,12 @@ try {
       "Selection metadata cannot assert acceptance or quality",
     );
   // These are declaration counts, separate from execution and acceptance.
-  const sharedCases = new Set();
-  for (const rows of Object.values(current)) {
+  // Controller bindings address a case by its owning profile key as well as
+  // file and name, and count occurrences: the native runner refuses a repeated
+  // address. The legacy visibility report matches file and name in any profile.
+  const sharedCases = new Map();
+  const visibleCases = new Set();
+  for (const [owner, rows] of Object.entries(current)) {
     assert.ok(
       Array.isArray(rows),
       "Required native manifests must contain arrays",
@@ -294,14 +944,16 @@ try {
           row.name.length <= 512,
         "Invalid required native case name",
       );
-      sharedCases.add(canonical([row.file, row.name]));
+      const address = canonical([owner, row.file, row.name]);
+      sharedCases.set(address, (sharedCases.get(address) ?? 0) + 1);
+      visibleCases.add(canonical([row.file, row.name]));
     }
   }
   let casesInSharedManifest = 0;
   const outsideSharedManifest = [];
   for (const profile of inventory.extensionProfiles) {
     const present = profile.acceptanceCases.filter((entry) =>
-      sharedCases.has(canonical([profile.acceptanceFile, entry.name])),
+      visibleCases.has(canonical([profile.acceptanceFile, entry.name])),
     ).length;
     casesInSharedManifest += present;
     if (present !== profile.acceptanceCases.length)
@@ -320,6 +972,313 @@ try {
     casesInSharedManifest + casesOutsideSharedManifest,
     selectedCases,
   );
+  const alternateBindings = [];
+  const unresolvedBindings = [];
+  let declaredFileBindings = 0;
+  for (const profile of inventory.extensionProfiles) {
+    for (const entry of profile.acceptanceCases) {
+      const alternate = alternateAcceptanceFiles[profile.id]?.[entry.id];
+      const file = alternate ?? profile.acceptanceFile;
+      const binding = {
+        profile: profile.id,
+        caseId: entry.id,
+        file,
+        name: entry.name,
+      };
+      if (alternate) {
+        const matches = (current[profile.id] ?? []).filter(
+          (row) => row.name === entry.name,
+        );
+        if (matches.length === 1 && matches[0].file === file)
+          alternateBindings.push(binding);
+        else unresolvedBindings.push(binding);
+      } else if (
+        (controllerProfiles[profile.id] ?? [profile.id]).every(
+          (owner) =>
+            sharedCases.get(canonical([owner, file, entry.name])) === 1,
+        )
+      ) {
+        declaredFileBindings++;
+      } else unresolvedBindings.push(binding);
+    }
+  }
+  assert.equal(
+    declaredFileBindings + alternateBindings.length + unresolvedBindings.length,
+    selectedCases,
+    "Every selected case must have one binding disposition",
+  );
+  // A controller validates a profile's full row set, selected or not, before
+  // running any of it: one refusal stops every case the profile would run.
+  // The aggregate mutation profile is not a controller profile.
+  const admissionProfiles = [
+    ...new Set(
+      inventory.extensionProfiles.flatMap(
+        (profile) => controllerProfiles[profile.id] ?? [profile.id],
+      ),
+    ),
+  ].sort();
+  const address = (row) => canonical([row.file, row.name]);
+  // The generic runner's own admission: 1 to `limit` rows, no repeated
+  // file/name pair. The same pair in another profile is a separate requirement.
+  const runnable = (rows, limit = maxProfileRows) =>
+    Array.isArray(rows) &&
+    rows.length > 0 &&
+    rows.length <= limit &&
+    rows.every((row) => resolvable(row.file)) &&
+    new Set(rows.map(address)).size === rows.length;
+  const cohortAdmitted = (entry) => {
+    const lists = entry.cohort.map((owner) => current[owner]);
+    const limit = entry.shards ? Infinity : entry.maxRows;
+    if (!lists.every((rows) => runnable(rows, limit))) return false;
+    const rows = lists.flat();
+    if (
+      entry.shards &&
+      Array.from({ length: entry.shards }, (_, shard) =>
+        rows.filter((_row, index) => index % entry.shards === shard),
+      ).some((shard) => shard.length === 0 || shard.length > maxProfileRows)
+    )
+      return false;
+    const firsts = (entry.fileOrder ?? []).map((file) =>
+      rows.findIndex((row) => row.file === file),
+    );
+    if (
+      firsts.some(
+        (at, index) => at < 0 || (index > 0 && at < firsts[index - 1]),
+      )
+    )
+      return false;
+    const distinct = new Set(rows.map(address));
+    if (
+      entry.rows !== undefined &&
+      distinct.size !== entry.rows &&
+      (entry.countedBy === undefined ||
+        rows.some((row) => row.name === entry.countedBy))
+    )
+      return false;
+    if (entry.disjoint && distinct.size !== rows.length) return false;
+    if (rows.some((row) => row.file === entry.outsideFile)) return false;
+    if (entry.files && rows.some((row) => !entry.files.includes(row.file)))
+      return false;
+    if (rows.some((row) => entry.absentNames?.includes(row.name))) return false;
+    if (
+      entry.preserved &&
+      canonical([...distinct].sort()) !==
+        canonical(
+          entry.cohort
+            .flatMap((owner) => baseline.value[owner])
+            .map(address)
+            .sort(),
+        )
+    )
+      return false;
+    return (
+      entry.sha256 === undefined ||
+      digest(canonical(rows.map((row) => [row.file, row.name]))) ===
+        entry.sha256
+    );
+  };
+  const witnessRowsPresent = sharedWitnessSelector.profiles.every((owner) => {
+    const profile = inventory.extensionProfiles.find((p) => p.id === owner);
+    return sharedWitnessSelector.cases.every((id) => {
+      const entry = profile.acceptanceCases.find((row) => row.id === id);
+      return (current[owner] ?? []).some(
+        (row) => row.file === profile.acceptanceFile && row.name === entry.name,
+      );
+    });
+  });
+  const installedCountCallbacks = Object.fromEntries(
+    inventory.extensionProfiles
+      .filter((profile) => !uncountedInstalledProfiles.includes(profile.id))
+      .map((profile) => [
+        "test/gate-" + profile.id + ".test.ts",
+        {
+          rows: 9,
+          profiles: controllerProfiles[profile.id] ?? [profile.id],
+          ...(passedOnlyCounts.includes("test/gate-" + profile.id + ".test.ts")
+            ? { passedOnly: true }
+            : {}),
+        },
+      ]),
+  );
+  const countDiffers = (rows, rule) =>
+    rule.passedOnly ? rows.length > rule.rows : rows.length !== rule.rows;
+  // ci-full-suite-shards.mjs admits every profile of its shared full-suite
+  // list before any shard runs, so each selected profile in it depends on all
+  // of them.
+  const fullSuite = read(root, "scripts/ci-full-suite-profiles.json").value;
+  assert.ok(
+    Array.isArray(fullSuite.profiles) &&
+      fullSuite.profiles.every((profile) => typeof profile === "string"),
+    "Invalid full-suite profile list",
+  );
+  const cohorts = [
+    ...companionCohorts,
+    ...admissionProfiles
+      .filter((owner) => fullSuite.profiles.includes(owner))
+      .map((profile) => ({
+        profile,
+        controller: "scripts/ci-full-suite-shards.mjs",
+        cohort: fullSuite.profiles.filter((other) => other !== profile),
+      })),
+  ];
+  const admissionRefusals = [];
+  // selectFullSuiteRequirements refuses the whole list before any shard runs
+  // when it is empty, longer than 256 or names a profile twice. That fails the
+  // full-suite job even when no selected profile is in the list, so strict
+  // freeze also refuses the list itself.
+  // The same whole-list checks selectFullSuiteRequirements makes, in order;
+  // the shard inventory is the test/*.test.ts sources it compiles from.
+  const fullSuiteTestFiles = new Set();
+  const fullSuiteListProblems = [];
+  const testDirectory = path.join(root, "test");
+  const testDirectoryStat = lstatSync(testDirectory, { throwIfNoEntry: false });
+  if (!testDirectoryStat?.isDirectory())
+    fullSuiteListProblems.push("test-sources-not-a-physical-directory");
+  else
+    for (const name of readdirSync(testDirectory))
+      if (name.endsWith(".test.ts")) {
+        const compiled = name.replace(/\.ts$/u, ".js");
+        if (!lstatSync(path.join(testDirectory, name)).isFile())
+          fullSuiteListProblems.push("test-source-not-a-regular-file:" + name);
+        if (!fullSuiteFilePattern.test(compiled))
+          fullSuiteListProblems.push("test-source-name:" + name);
+        fullSuiteTestFiles.add("dist/test/" + compiled);
+      }
+  // partitionFullSuiteFiles needs between 3 and 4096 files for its shards.
+  if (fullSuiteTestFiles.size < 3 || fullSuiteTestFiles.size > 4096)
+    fullSuiteListProblems.push("test-source-count");
+  // The shard snapshots all of dist/test and captureCompiledEngine refuses
+  // more than 4096 files. The pinned compiler resolves the program from
+  // tsconfig.json and names every output it would emit for each source under
+  // test/, including imported helpers outside the include patterns. Sources
+  // are parsed and resolved, never executed.
+  if (testDirectoryStat?.isDirectory()) {
+    const configDiagnostics = [];
+    const parsed = ts.getParsedCommandLineOfConfigFile(
+      path.join(root, "tsconfig.json"),
+      {},
+      {
+        ...ts.sys,
+        onUnRecoverableConfigFileDiagnostic: (diagnostic) =>
+          configDiagnostics.push(diagnostic),
+      },
+    );
+    if (!parsed || configDiagnostics.length > 0)
+      fullSuiteListProblems.push("compiler-configuration-unreadable");
+    else {
+      const program = ts.createProgram({
+        rootNames: parsed.fileNames,
+        options: parsed.options,
+      });
+      // Outputs are counted by where they land, so a source reached through
+      // a link or an import from anywhere still counts once per output path.
+      const compiledRoot = path.resolve(root, "dist", "test") + path.sep;
+      const emitted = new Set();
+      for (const source of program.getSourceFiles()) {
+        if (source.isDeclarationFile) continue;
+        // getOutputFileNames names outputs only for root names; an imported
+        // source is resolved but not a root, so it is asked about as one.
+        const asRoot = parsed.fileNames.includes(source.fileName)
+          ? parsed
+          : { ...parsed, fileNames: [...parsed.fileNames, source.fileName] };
+        for (const output of ts.getOutputFileNames(
+          asRoot,
+          source.fileName,
+          !ts.sys.useCaseSensitiveFileNames,
+        ))
+          if (path.resolve(output).startsWith(compiledRoot))
+            emitted.add(path.resolve(output));
+      }
+      const outputs = emitted.size;
+      if (outputs > 4096)
+        fullSuiteListProblems.push("compiled-test-file-count");
+    }
+  }
+  const fullSuiteList = fullSuite.profiles;
+  if (fullSuiteList.length === 0 || fullSuiteList.length > 256)
+    fullSuiteListProblems.push("list-size");
+  if (new Set(fullSuiteList).size !== fullSuiteList.length)
+    fullSuiteListProblems.push("duplicate-profile");
+  if (
+    fullSuiteList.some((profile) =>
+      [
+        "mutation-runners",
+        "mutation-vitest",
+        "mutation-jest",
+        "mutation-pytest",
+        "mutation-phpunit",
+      ].includes(profile),
+    )
+  )
+    fullSuiteListProblems.push("native-mutation-profile");
+  for (const profile of new Set(fullSuiteList)) {
+    if (!Object.hasOwn(current, profile)) {
+      fullSuiteListProblems.push("unknown-profile:" + profile);
+      continue;
+    }
+    const rows = current[profile];
+    if (rows.length === 0 || rows.length > 256)
+      fullSuiteListProblems.push("profile-row-limit:" + profile);
+    if (new Set(rows.map((row) => address(row))).size !== rows.length)
+      fullSuiteListProblems.push("duplicate-callback:" + profile);
+    if (rows.some((row) => !fullSuiteTestFiles.has(row.file)))
+      fullSuiteListProblems.push("file-outside-test-inventory:" + profile);
+  }
+  const fullSuiteListAdmitted = fullSuiteListProblems.length === 0;
+  const fullSuiteBlockedProfiles = fullSuiteListAdmitted
+    ? []
+    : admissionProfiles.filter((profile) => fullSuiteList.includes(profile));
+  for (const owner of admissionProfiles) {
+    const rows = current[owner] ?? [];
+    const refuse = (controller, reason) =>
+      admissionRefusals.push({ profile: owner, controller, reason });
+    if (new Set(rows.map(address)).size !== rows.length)
+      refuse(genericRunner, "duplicate-address");
+    if (rows.length === 0 || rows.length > maxProfileRows)
+      refuse(genericRunner, "row-limit");
+    if (rows.some((row) => !resolvable(row.file)))
+      refuse(genericRunner, "address-limit");
+    const selector = dedicatedSelectors[owner];
+    if (selector) {
+      const selection = selector.selection ?? owner;
+      const profile = inventory.extensionProfiles.find(
+        (p) => p.id === selection,
+      );
+      const key = selector.serialized ? (row) => JSON.stringify(row) : address;
+      const expected = [
+        ...profile.acceptanceCases.map((entry) =>
+          key({
+            file:
+              alternateAcceptanceFiles[selection]?.[entry.id] ??
+              profile.acceptanceFile,
+            name: entry.name,
+          }),
+        ),
+        ...(selector.extra ?? []).map((name) =>
+          key({ file: profile.acceptanceFile, name }),
+        ),
+      ];
+      const arranged = (list) => (selector.ordered ? list : [...list].sort());
+      if (canonical(arranged(rows.map(key))) !== canonical(arranged(expected)))
+        refuse(selector.controller, "selector-rows-differ");
+    }
+    for (const entry of cohorts)
+      if (entry.profile === owner && !cohortAdmitted(entry))
+        refuse(entry.controller, "companion-cohort-differs");
+    if (!witnessRowsPresent && sharedWitnessSelector.dependents.includes(owner))
+      refuse(sharedWitnessSelector.controller, "shared-selector-rows-differ");
+    for (const [controller, rule] of Object.entries(rowCountControllers))
+      if (rule.profiles.includes(owner) && countDiffers(rows, rule))
+        refuse(controller, "row-count-differs");
+    if (
+      installedHarness.profiles.includes(owner) &&
+      rows.some((row) => !installedHarness.files.includes(row.file))
+    )
+      refuse(installedHarness.controller, "installed-harness-differs");
+    for (const [controller, rule] of Object.entries(installedCountCallbacks))
+      if (rule.profiles.includes(owner) && countDiffers(rows, rule))
+        refuse(controller, "installed-count-differs");
+  }
   process.stdout.write(
     JSON.stringify({
       schemaVersion: 1,
@@ -348,6 +1307,44 @@ try {
         alternateControllersAssessed: false,
         nativeExecutionAssessed: false,
       },
+      controllerCaseBindings: {
+        plannedCases: selectedCases,
+        declaredFileBindings,
+        alternateFileBindings: alternateBindings.length,
+        unresolvedCases: unresolvedBindings.length,
+        alternateBindings,
+        unresolvedBindings,
+        nativeExecutionAssessed: false,
+      },
+      controllerAdmission: {
+        controllerProfiles: admissionProfiles.length,
+        dedicatedSelectorProfiles: Object.keys(dedicatedSelectors).sort(),
+        companionCohorts: cohorts,
+        sharedSelectors: [
+          {
+            controller: sharedWitnessSelector.controller,
+            profiles: sharedWitnessSelector.profiles,
+            dependents: sharedWitnessSelector.dependents,
+          },
+        ],
+        rowCountControllers: Object.entries(rowCountControllers).map(
+          ([controller, rule]) => ({ controller, ...rule }),
+        ),
+        installedCountCallbacks: Object.entries(installedCountCallbacks).map(
+          ([controller, rule]) => ({ controller, ...rule }),
+        ),
+        maxProfileRows,
+        maxFileCharacters,
+        maxNameBytes,
+        installedHarness,
+        fullSuiteListAdmitted,
+        fullSuiteListProblems,
+        fullSuiteBlockedProfiles,
+        refusedProfiles: new Set(admissionRefusals.map((row) => row.profile))
+          .size,
+        refusals: admissionRefusals,
+        nativeExecutionAssessed: false,
+      },
       unresolvedFreezeDecisions: inventory.unresolvedFreezeDecisions.length,
       frozen: inventory.frozen,
       implementationAcceptanceAssessed: false,
@@ -355,7 +1352,13 @@ try {
       qualityAssessed: false,
     }) + "\n",
   );
-  if (process.argv[3] === "--require-frozen" && !inventory.frozen)
+  if (
+    process.argv[3] === "--require-frozen" &&
+    (!inventory.frozen ||
+      unresolvedBindings.length > 0 ||
+      admissionRefusals.length > 0 ||
+      !fullSuiteListAdmitted)
+  )
     process.exitCode = 2;
 } catch (error) {
   process.stderr.write(
