@@ -1,4 +1,5 @@
 """Synthetic lifecycle/SDK/selection controls; Docker and upstream never run."""
+import atexit
 import base64
 import contextlib
 import copy
@@ -8,6 +9,7 @@ import importlib.util
 import io
 import json
 import os
+import shlex
 import shutil
 import subprocess
 from pathlib import Path
@@ -33,8 +35,21 @@ def configuration(**options):
     return value
 
 
-def node_record():
-    path = Path(shutil.which('node')).resolve(strict=True)
+NODE_LAUNCHER_HOME = Path(tempfile.mkdtemp(prefix='gcc-node-launcher-synthetic-')).resolve()
+atexit.register(shutil.rmtree, NODE_LAUNCHER_HOME, True)
+
+
+def node_record(home=None):
+    """An admissible host Node record for a launcher that execs this host's node.
+
+    Admission runs a private copy of the admitted executable. A dynamically
+    linked node (as Homebrew builds it) cannot find its loader-relative
+    libraries from a copy, so the admitted executable here is a small script.
+    """
+    path = Path(home or NODE_LAUNCHER_HOME) / 'node'
+    if not path.exists():
+        real = Path(shutil.which('node')).resolve(strict=True)
+        path.write_text('#!/bin/sh\nexec %s "$@"\n' % shlex.quote(str(real)));path.chmod(0o755)
     return {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
             'version': subprocess.check_output([str(path), '--version'], text=True).strip()}
 
@@ -194,6 +209,30 @@ class Host(unittest.TestCase):
             changed = {**record, field: value}
             with self.subTest(field=field), self.assertRaises((ValueError, FileNotFoundError)):
                 h.admit_host_node(changed)
+
+    def test_host_node_replaced_after_hashing_is_never_run(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-node-swap-synthetic-') as name:
+            home=Path(name).resolve();record=node_record(home);path=Path(record['path']);marker=home/'replaced-node-ran.marker'
+            replacement='#!/bin/sh\necho replaced-node-ran-137 > %s\necho %s\n'%(shlex.quote(str(marker)),record['version'])
+            real_run=subprocess.run;swapped=[]
+            def run(command,**options):
+                # The tool-cache path is rewritten after its bytes were hashed
+                # and before anything is executed.
+                if not swapped:path.write_text(replacement);swapped.append(True)
+                return real_run(command,**options)
+            with mock.patch.object(h.subprocess,'run',side_effect=run):runtime=h.admit_host_node(record)
+            self.assertEqual(swapped,[True]);self.assertFalse(marker.exists(),'A host Node replaced after hashing ran')
+            # The returned executable, which the acquisition steps run, is not the replaced path either.
+            self.assertEqual(subprocess.run([runtime['path'],'--version'],capture_output=True,text=True,timeout=30).stdout.strip(),record['version'])
+            self.assertFalse(marker.exists(),'The returned host Node path runs the replacement');self.assertNotEqual(runtime['path'],str(path))
+            copy=Path(runtime['path']);self.assertEqual(stat.S_IMODE(copy.stat().st_mode),0o555)
+            self.assertEqual(stat.S_IMODE(copy.parent.stat().st_mode),0o700);self.assertEqual(copy.stat().st_uid,os.geteuid())
+            self.assertEqual(hashlib.sha256(copy.read_bytes()).hexdigest(),record['sha256'])
+
+    def test_unchanged_host_node_is_admitted_from_its_protected_copy(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-node-copy-synthetic-') as name:
+            record=node_record(Path(name).resolve());runtime=h.admit_host_node(record)
+            self.assertEqual((runtime['sha256'],runtime['version'],runtime['admittedPath']),(record['sha256'],record['version'],record['path']))
 
     def test_both_original_docker_id_forms_bind_the_same_pinned_layers_and_repository(self):
         image, selected, registry, manifest_digest = image_fixture()
@@ -560,7 +599,7 @@ class Host(unittest.TestCase):
 
     def test_timeout_never_promotes_a_zero_attach_return_or_invents_native_exit(self):
         with tempfile.TemporaryDirectory(prefix='gcc-timeout-synthetic-') as name:
-            output=Path(name).resolve();(output/'state').mkdir();ticks=iter([0,100,100,100,100])
+            output=Path(name).resolve();(output/'state').mkdir();ticks=iter([0,0,100,100,100,100])
             with self.assertRaisesRegex(ValueError,'cutoff'):self.observation(output,clock=lambda:next(ticks))
             attempt=json.loads((output/'ATTEMPT.json').read_bytes())
             self.assertIsNone(attempt['nativeOriginalCommandExitCode']);self.assertTrue(attempt['allElapsedTimeMustBeChargedOnRetry'])
@@ -637,6 +676,27 @@ class Host(unittest.TestCase):
             granted=self.bounded_observation(output,maximum=1800,service_left=2700)
             self.assertEqual(granted['sample'],[30]);self.assertEqual(granted['wait'],[10])
             self.assertTrue(granted['select'] and all(value==1 for value in granted['select']))
+
+    def test_exhausted_allowance_never_starts_the_container_and_records_it(self):
+        for maximum,service_left in [(60,-0.25),(0,1000)]:
+            with self.subTest(maximum=maximum,service_left=service_left),tempfile.TemporaryDirectory(prefix='gcc-not-started-synthetic-') as name:
+                output=Path(name).resolve();(output/'state').mkdir()
+                service={'remainingSeconds':h.capacity.FINALIZE_SECONDS+service_left,'capturedMonotonic':7300.0}
+                with mock.patch.object(h.subprocess,'Popen') as start,mock.patch.object(h,'docker') as docker,\
+                     mock.patch.object(h.time,'monotonic',return_value=7300.0):
+                    try:h.native_observation(output,SYNTHETIC_ID,maximum,service);error=None
+                    except Exception as raised:error=raised
+                self.assertEqual(start.call_count,0,'docker start --attach ran with no allowance left');docker.assert_not_called()
+                self.assertRegex(str(error),'exhausted before start')
+                attempt=json.loads((output/'ATTEMPT.json').read_bytes())
+                self.assertIs(attempt['containerStarted'],False);self.assertIsNone(attempt['nativeOriginalCommandExitCode'])
+                self.assertEqual(attempt['elapsedSeconds'],0);self.assertFalse((output/'native.log').exists())
+
+    def test_allowance_left_at_start_still_starts_the_container(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-started-synthetic-') as name:
+            output=Path(name).resolve();(output/'state').mkdir()
+            granted=self.bounded_observation(output,maximum=0.375,service_left=1000)
+            self.assertEqual(granted['sample'],[0.375])
 
     def test_late_zero_terminal_after_last_pipe_read_still_refuses(self):
         with tempfile.TemporaryDirectory(prefix='gcc-late-terminal-synthetic-') as name:

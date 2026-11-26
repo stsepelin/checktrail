@@ -30,15 +30,26 @@ def without_package_pin(root):
  value=copy.deepcopy(root);row={'bytes':len(fixture.PACKAGES),'sha256':hashlib.sha256(fixture.PACKAGES).hexdigest()}
  value['native05Evidence']['excludedNewSdkBodyPins'].remove(row);return value
 
+def staged_copy(root):
+ """Stand-in for the verified private copy, with the calls that used it."""
+ staged=Path(root)/'synthetic-verified-copy-137';used=[]
+ def stage(repository):
+  (staged/'scripts/producer-qualification').mkdir(parents=True,exist_ok=True);used.append(('stage',Path(repository)));return staged
+ return staged,used,mock.patch.object(A.local,'stage_source',side_effect=stage)
+
+
 class FixedComposition(unittest.TestCase):
  def test_original_constructor_then_actual_reader_then_authenticated_baseline(self):
   with tempfile.TemporaryDirectory() as td:
    root=Path(td).resolve();sdk=root/'sdk-frame';predecessor=root/'predecessor';(predecessor/'__carrier_work').mkdir(parents=True)
    (predecessor/S.BASELINE).write_bytes(b'Synthetic authenticated predecessor baseline');calls=[]
    facts=sdk_receipt();facts={k:facts[k] for k in ['counts','hashes','sdkContainerExitCode','sdkContainerQuiescent','ownedSdkCleanupObserved','sdkContainerSeconds']}
-   def constructor(*_):calls.append('original-constructor');sdk.mkdir();return {'predecessor':predecessor,'originalMarker':True}
-   def reader(*_):
-    calls.append('physical-reader');self.assertTrue(sdk.is_dir());self.assertEqual(calls,['original-constructor','physical-reader'])
+   staged,used,staging=staged_copy(root)
+   def constructor(*_,controls):
+    calls.append('original-constructor');self.assertEqual(controls,staged/'scripts/producer-qualification')
+    sdk.mkdir();return {'predecessor':predecessor,'originalMarker':True}
+   def reader(*_,source):
+    calls.append('physical-reader');self.assertEqual(source,staged);self.assertTrue(sdk.is_dir());self.assertEqual(calls,['original-constructor','physical-reader'])
     (sdk/'native.log').write_bytes(b'Synthetic original SDK-only output')
     prepared=root/'sdk-private/independent-sdk-controls/prepared-sdk';prepared.mkdir(parents=True)
     for name in {*V.load('gcc-main05-sdk.py').FILES,'PREPARED-SDK-MANIFEST.json'}:(prepared/name).write_bytes(('Synthetic SDK '+name).encode())
@@ -49,8 +60,9 @@ class FixedComposition(unittest.TestCase):
    baseline=A.profile.scope.historical_baseline
    def pin(state):calls.append('historical-baseline');self.assertEqual(state,predecessor);return baseline(state)
    with mock.patch.dict(os.environ,{'GITHUB_SHA':HEAD}),mock.patch.object(A.prepare,'reconstruct_for_main',side_effect=constructor),\
-        mock.patch.object(A.local,'verify_prepared',side_effect=reader),mock.patch.object(A.profile.scope,'historical_baseline',side_effect=pin),mock.patch.object(A.profile,'reserve_before_native',wraps=A.profile.reserve_before_native) as reservation:
+        mock.patch.object(A.local,'verify_prepared',side_effect=reader),mock.patch.object(A.profile.scope,'historical_baseline',side_effect=pin),mock.patch.object(A.profile,'reserve_before_native',wraps=A.profile.reserve_before_native) as reservation,staging:
     result=A.reconstruct_verified(root,root,sdk,root)
+   self.assertEqual(used,[('stage',root)])
    reservation.assert_called_once();self.assertEqual(reservation.call_args.args[0],sdk)
    self.assertEqual(calls,['original-constructor','physical-reader','historical-baseline'])
    self.assertTrue(result['originalMarker']);self.assertTrue(result['native05SdkScope']['historicalSdkReceipt']['sdkVerifiedOnHost'])
@@ -60,13 +72,14 @@ class FixedComposition(unittest.TestCase):
   for stage in ['constructor','reader']:
    with self.subTest(stage=stage),tempfile.TemporaryDirectory() as td:
     root=Path(td).resolve();calls=[]
-    def ctor(*_):
+    staged,used,staging=staged_copy(root)
+    def ctor(*_,**__):
      calls.append('constructor')
      if stage=='constructor':raise ValueError('Synthetic raw SDK failure details')
      return {'predecessor':root/'unused'}
-    def reader(*_):calls.append('reader');raise ValueError('Synthetic raw SDK failure details')
+    def reader(*_,**__):calls.append('reader');raise ValueError('Synthetic raw SDK failure details')
     with mock.patch.dict(os.environ,{'GITHUB_SHA':HEAD}),mock.patch.object(A.prepare,'reconstruct_for_main',side_effect=ctor),\
-         mock.patch.object(A.local,'verify_prepared',side_effect=reader),mock.patch.object(A.profile.scope,'historical_baseline') as baseline:
+         mock.patch.object(A.local,'verify_prepared',side_effect=reader),mock.patch.object(A.profile.scope,'historical_baseline') as baseline,staging:
      with self.assertRaisesRegex(ValueError,'failed before GCC start'):A.reconstruct_verified(root,root,root/'sdk',root)
      baseline.assert_not_called()
     value=json.loads((root/'SDK-ONHOST-RECEIPT.json').read_bytes())
@@ -205,7 +218,7 @@ class FixedComposition(unittest.TestCase):
  def test_v4_requires_the_revised_policy_and_v3_still_decodes_only_under_its_own_policy(self):
   with tempfile.TemporaryDirectory() as td:
    args,scope,result,root=captured(Path(td).resolve());state=args[0]/'state'
-   self.assertEqual((V.PROFILE,V.SDK_POLICY_SHA256),('gcc-native05-gcc-only-checkpoint-v4','dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b'))
+   self.assertEqual((V.PROFILE,V.SDK_POLICY_SHA256),('gcc-native05-gcc-only-checkpoint-v4','1e8fe16ba8192347186097b7bc331bb3ae1d5dbf480ae138723a2610642604a8'))
    self.assertEqual((V.V3_PROFILE,V.V3_SDK_POLICY_SHA256),('gcc-native05-gcc-only-checkpoint-v3','53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'))
    self.assertEqual(V.receipt.POLICY_SHA256,V.SDK_POLICY_SHA256)
    self.assertEqual(root['native05Evidence']['profile'],V.PROFILE)
@@ -315,10 +328,11 @@ class FixedComposition(unittest.TestCase):
   for failure in ['constructor','reader']:
    with self.subTest(failure=failure),tempfile.TemporaryDirectory() as td:
     base=Path(td).resolve();output=base/'gcc-main05';start=HOST.start
-    def constructor(*_):
+    def constructor(*_,**__):
      if failure=='constructor':raise ValueError('Synthetic private constructor detail')
      return {'predecessor':base/'not-used'}
-    with mock.patch.dict(os.environ,{'RUNNER_TEMP':str(base),'GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':HEAD}),\
+    _,_,staging=staged_copy(base)
+    with mock.patch.dict(os.environ,{'RUNNER_TEMP':str(base),'GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':HEAD}),staging,\
      mock.patch.object(start.os,'getuid',return_value=0),mock.patch.object(start,'operator_ledger',return_value={}),\
      mock.patch.object(start.assembly.prepare,'reconstruct_for_main',side_effect=constructor),\
      mock.patch.object(start.assembly.local,'verify_prepared',side_effect=ValueError('Synthetic private reader detail')),\

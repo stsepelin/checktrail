@@ -33,6 +33,7 @@ def load(name,alias):
 carrier=load('gcc-hosted-carrier.py','identity_carrier')
 sdk=load('gcc-hosted-sdk.py','identity_sdk')
 prepare=load('gcc-main05-prepare.py','identity_prepare')
+local=load('gcc-native05-sdk-local.py','identity_local')
 start=load('gcc-main05-start.py','identity_start')
 observer=start.observer
 BASE_IMAGE={'Id':'sha256:'+'4a'*32,'Os':'linux','Architecture':'amd64','RepoTags':[],
@@ -384,6 +385,43 @@ class Identity(unittest.TestCase):
                 try:cleanup=prepare.image_stage.cleanup_owned(frame)
                 except Exception as raised:cleanup=raised
         return daemon,error,prepared,cleanup,json.loads((frame/'SDK-FOR-MAIN.json').read_bytes())
+
+    def staged_controls_run(self,*,swap):
+        """Stage a pinned checkout copy, optionally rewrite one control in the
+        checkout afterwards, then run the real constructor on the staged copy."""
+        root=self.folder();checkout=root/'checkout';staging=root/'staging';staging.mkdir(mode=0o700)
+        policy_relative=local.POLICY_PATH;policy=json.loads((ROOT/policy_relative).read_bytes())
+        for relative in [policy_relative,*[row['path'] for row in policy['runtimeFiles']]]:
+            target=checkout/relative;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/relative,target)
+        control=checkout/'scripts/producer-qualification/gcc-sdk-reconstruct.py';original=control.read_bytes()
+        with mock.patch.object(local.receipt,'STAGING_PARENT',str(staging)),mock.patch.dict(local.receipt.VERIFIED),\
+             mock.patch.object(sys,'pycache_prefix',sys.pycache_prefix):
+            staged=local.stage_source(checkout)
+            try:
+                if swap:control.write_bytes(original+b'\nraise SystemExit("swapped control ran 137")\n')
+                inputs=root/'inputs';inputs.mkdir();(root/'gcc-main05').mkdir();frame=root/'gcc-main05/sdk-frame'
+                daemon=Daemon(rebind=False,exit_code=0,body=self.proof_body(frame/'observations'))
+                resources={'context':{'GITHUB_REF':sdk.PREDECESSOR['ref']}}
+                def copy(source,target,pin):
+                    # Inputs stay synthetic; controls are really copied and pinned.
+                    if target.parent.name=='controls':return real_copy(source,target,pin)
+                    copy_input(source,target,pin)
+                real_copy=prepare.h.copy_pinned
+                with daemon.serving(),self.sdk_patches(prepare,root,resources),mock.patch.object(prepare.h,'copy_pinned',side_effect=copy):
+                    try:prepare.reconstruct_for_main(checkout,inputs,frame,controls=staged/'scripts/producer-qualification')
+                    except Exception:pass
+                copied=(frame/'controls/gcc-sdk-reconstruct.py').read_bytes()
+            finally:local.receipt.remove_staged()
+        return original,copied
+
+    def test_control_rewritten_after_staging_is_never_the_one_copied_into_the_sdk(self):
+        original,copied=self.staged_controls_run(swap=True)
+        self.assertFalse(b'swapped control ran 137' in copied,'A control rewritten after staging was copied into the SDK')
+        self.assertEqual(hashlib.sha256(copied).hexdigest(),hashlib.sha256(original).hexdigest())
+
+    def test_unchanged_staged_control_is_copied_into_the_sdk(self):
+        original,copied=self.staged_controls_run(swap=False)
+        self.assertEqual(copied,original)
 
     def test_main05_sdk_materializer_commits_and_removes_only_admitted_container_and_image_ids(self):
         for rebind in [True,False]:

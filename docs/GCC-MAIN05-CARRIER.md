@@ -64,7 +64,9 @@ rebind in the instant before removal cannot be prevented; a removal response
 that deleted any image other than the owned one and its own released layers,
 or an owned image left untagged, keeps cleanup unqualified, including on any
 later retry that finds the owned image gone. An untagged owned image is recovered through a fresh
-unpredictable tag, never by ID and never by rebinding the owned tag. Actual SDK/native elapsed
+unpredictable tag, never by ID and never by rebinding the owned tag; that tag
+is recorded before its command runs, so a retry removes it even when the
+command created it and never answered. Actual SDK/native elapsed
 time remains charged when later checks or retention fail. A genuine zero with
 an unconfirmed family creates a charged `terminal-incomplete` row with no
 checkpoint. Such a row blocks every continuation; there is no caller Boolean
@@ -115,7 +117,14 @@ only from there, with Python's bytecode cache prefix inside that directory, so
 a checkout change after verification is never executed.
 Every file that staged acquisition code names beside itself is a `runtimeFiles`
 row, and `gcc-hosted-sdk.py` takes its controls from its own directory, which
-outside the receipt must be the checkout it attests. The
+outside the receipt must be the checkout it attests. The native05 assembly
+stages the same verified copy before the SDK constructor runs, and both the
+controls copied into the SDK container and the verification after it read
+that copy. The admitted host Node is hashed while it is copied into a private
+0555 executable, and only that copy runs, for its version check and for every
+acquisition step. The configure carrier recomputes its allowance immediately
+before `docker start --attach` and records a not-started attempt when none is
+left. The
 same amended v6 also pins
 `gcc-hosted-phase0-capacity.py` and `gcc-sdk-derived-run.py` at changed bytes.
 Phase-0 admission budgets the second uncompressed tree the carrier restores

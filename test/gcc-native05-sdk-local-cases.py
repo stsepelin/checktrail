@@ -183,6 +183,10 @@ class LocalSdk(unittest.TestCase):
    p=copy/'scripts/producer-qualification/gcc-staged-plan.py';body=p.read_bytes();p.write_bytes(body[:-1]+(b' ' if body[-1:]!=b' ' else b'\n'))
    with self.assertRaisesRegex(ValueError,'R3 SDK runtime source changed'):m.source_policy(copy)
  def test_no_phase_command_or_execution_boolean_parameter_can_supply_authority(self):
-  self.assertEqual(list(inspect.signature(m.verify_prepared).parameters),['repository','sdk_frame','private','docker'])
+  parameters=inspect.signature(m.verify_prepared).parameters
+  self.assertEqual(list(parameters),['repository','sdk_frame','private','docker','source'])
+  # `source` names only where the approved bytes are read; source_policy still
+  # requires them to be exactly the pinned policy and runtime files.
+  self.assertIs(parameters['source'].kind,inspect.Parameter.KEYWORD_ONLY);self.assertIsNone(parameters['source'].default)
 
 if __name__=='__main__':unittest.main(verbosity=2)

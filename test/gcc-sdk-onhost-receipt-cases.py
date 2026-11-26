@@ -194,14 +194,14 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
 
     def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
         root,_,_,good,_=self.run_entry(self.noisy)
-        current='dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b'
+        current='1e8fe16ba8192347186097b7bc331bb3ae1d5dbf480ae138723a2610642604a8'
         v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
         v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
         self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
         decoders={current:m.validate_receipt,v5:m.validate_historical_v5_receipt,v4:m.validate_historical_v4_receipt}
         # Earlier v6 amendments never authorized a run, so no receipt or
         # checkpoint carries their digests and no decoder keeps them.
-        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261','1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6','df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f']
+        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261','1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6','df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f','dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b']
         self.assertNotIn(current,retired)
         for digest in retired:
             for decode in decoders.values():
@@ -739,9 +739,7 @@ class VerifiedExecution(unittest.TestCase):
   return base,copy,markers,head
  def entry(self,base,copy,head,swap,**extra):
   temp=base/'runner-temp';temp.mkdir();staging=base/'staging';staging.mkdir(mode=0o700);report=base/'report.json'
-  node=Path(shutil.which('node')).resolve(strict=True)
-  record={'path':str(node),'sha256':hashlib.sha256(node.read_bytes()).hexdigest(),
-          'version':subprocess.run([str(node),'--version'],capture_output=True,check=True,timeout=30).stdout.decode().strip()}
+  record=CheckoutGitConfig.carrier_cases.node_record()
   env={'RUNNER_TEMP':str(temp),'GITHUB_WORKSPACE':str(copy),'GITHUB_SHA':head,'CHECKTRAIL_HOST_NODE':json.dumps(record),'PATH':'/usr/bin:/bin',
        'SYNTHETIC_SWAP_CONFIG':json.dumps({'swap':swap,'stagingParent':str(staging),'report':str(report),**extra})}
   completed=subprocess.run([sys.executable,'-I','-B','-c',SWAP_DRIVER,str(copy/self.RECEIPT)],env=env,capture_output=True,timeout=300)

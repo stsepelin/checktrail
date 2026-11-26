@@ -321,6 +321,31 @@ class FailedSnapshotCleanup(unittest.TestCase):
             self.assertNotIn('foreignImageDeletionSuspected',json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes()))
             self.assertTrue(m.cleanup_owned(output,flaky)['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
 
+    def test_recovery_tag_created_by_a_command_that_timed_out_is_reconciled_on_retry(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');del table.tags[TAG]
+            created=[]
+            def timing_out(args,**kw):
+                if args[0]=='tag' and not created:
+                    # The daemon creates the tag, but its answer never arrives.
+                    docker(args,**kw);created.append(args[2]);raise ValueError('Fixed Docker operation failed: synthetic tag timeout 137')
+                return docker(args,**kw)
+            with self.assertRaisesRegex(ValueError,'synthetic tag timeout 137'):m.cleanup_owned(output,timing_out)
+            self.assertEqual(len(created),1);self.assertIn(created[0],table.tags)
+            self.assertFalse(json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())['ownedImageCleanupComplete'])
+            result=m.cleanup_owned(output,timing_out)
+            self.assertEqual([tag for tag in table.tags if tag.startswith(TAG)],[],'An owned recovery tag survived a completed cleanup')
+            self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
+            self.assertEqual(result['recoveryTagsRemoved'],created)
+
+    def test_recovery_tag_record_naming_another_image_refuses_removal(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');del table.tags[TAG]
+            spare=TAG+'-removal-'+'c4'*16;m.propose_recovery_tag(output,TAG,spare)
+            table.images[FOREIGN_IMAGE]=dict(table.images[IMAGE],Id=FOREIGN_IMAGE);table.bind(spare,FOREIGN_IMAGE)
+            with self.assertRaisesRegex(ValueError,'recovery tag names another image'):m.cleanup_owned(output,docker)
+            self.assertIn(FOREIGN_IMAGE,table.images);self.assertEqual(table.tags[spare],FOREIGN_IMAGE)
+
     def test_released_layers_of_the_owned_image_are_accepted_in_the_response(self):
         layers=['sha256:'+'5'*64,'sha256:'+'6'*64]
         top='sha256:'+hashlib.sha256(('sha256:'+'5'*64+' '+'sha256:'+'6'*64).encode()).hexdigest()

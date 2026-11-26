@@ -23,11 +23,16 @@ def reconstruct_verified(repository,inputs,sdk_frame,output):
  private=Path(output)/'sdk-private';private.mkdir(mode=0o700)
  actual={}
  def fixed_work():
-  actual['prepared']=prepare.reconstruct_for_main(repository,inputs,sdk_frame)
-  actual['verified']=local.verify_prepared(repository,sdk_frame,private)
+  # The policy and runtime files are verified and copied privately before the
+  # constructor runs; the SDK container's controls and the verification after
+  # it both read that one copy.
+  staged=local.stage_source(repository)
+  actual['prepared']=prepare.reconstruct_for_main(repository,inputs,sdk_frame,controls=staged/'scripts/producer-qualification')
+  actual['verified']=local.verify_prepared(repository,sdk_frame,private,source=staged)
   actual['baseline']=profile.scope.historical_baseline(actual['prepared']['predecessor'])
   return actual['verified']['sdkFactsForClosedReceipt']
- sdk_receipt=local.receipt.guarded(fixed_work,private,os.environ['GITHUB_SHA'])
+ try:sdk_receipt=local.receipt.guarded(fixed_work,private,os.environ['GITHUB_SHA'])
+ finally:local.receipt.remove_staged()
  # This record is an SDK-only subaction before any original GCC start. The
  # native05Invoked=false field retains precisely that historical meaning.
  (Path(output)/'SDK-ONHOST-RECEIPT.json').write_bytes(local.receipt.canonical(sdk_receipt))

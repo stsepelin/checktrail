@@ -63,6 +63,8 @@
       "Not-started generator: gcc-sdk-derived-run.py re-reads the command and whole-operation budget after journaling a request and records a not-started terminal instead of starting a generator once that budget is spent.",
       "Git configuration: gcc-hosted-carrier.py runs git with no system or global configuration, no outside attribute files, no hooks, no textconv or external diff and no fetch of a missing object, and refuses a checkout whose own configuration, found as git finds it, names a filter, diff, fsmonitor, hooks or include program before git starts.",
       "Verified execution: the on-host receipt reads the policy once and parses the bytes it checked, keeps the bytes of every runtimeFiles row it verified, writes them into a fresh private directory under a sticky parent (files 0444 or 0555, directories 0555) and from then on loads Python helpers, reads the policy and runs the Node acquisition entry points and their imports only from that copy, with Python's bytecode cache prefix inside it; gcc-hosted-sdk.py takes its controls from its own directory, which outside the receipt must be the attested checkout, and every file the staged acquisition code reads beside itself is pinned as a runtimeFiles row.",
+      "Protected host Node: gcc-hosted-carrier.py hashes the admitted host Node while copying it into a fresh private directory under a sticky parent and runs --version from, and returns, that 0555 copy, so the tool-cache path is never executed after its bytes were hashed.",
+      "Allowance before start: gcc-hosted-carrier.py recomputes the native and source-job allowance immediately before docker start --attach and records a not-started attempt instead of starting the container when it is exhausted.",
       "Further changes approved by the operator on 2026-11-24: gcc-hosted-phase0-capacity.py, gcc-hosted-carrier.py, gcc-sdk-derived-run.py and gcc-hosted-sdk.py, as listed above, and the added rows binutils.v1.json, binutils-apt-index-preparation.v1.json, binutils-prepare-inputs.py, binutils-expectations.v1.json, gcc-local-12h-policy.v1.json and gcc-local-wall-policy.v1.json. No command, image or other runtime file changes; the limit changes are the restore-tree term of the phase-0 scratch budget and the state depth ceiling."
     ]
   },
@@ -74,10 +76,10 @@
       "sha256": "911eb056fa5a35b147c22a227ff789df95be0108089db6ae7b8a163b9a32763d"
     },
     {
-      "bytes": 56507,
+      "bytes": 59219,
       "mode": 420,
       "path": "scripts/producer-qualification/gcc-hosted-carrier.py",
-      "sha256": "7f5141dfa08907d2b311c148c50efc1569b019621672aad9a76a14bb03e3bd1e"
+      "sha256": "800a4a22603be637e300fd9b26ecfbcfa70e7eb4ef19089eab3dfcf1b9b3249e"
     },
     {
       "bytes": 7585,

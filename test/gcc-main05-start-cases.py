@@ -77,11 +77,11 @@ class RuntimePreparation(unittest.TestCase):
  def test_outer_recovers_owned_image_even_when_sdk_materializer_created_it_but_returned_nothing(self):
   with tempfile.TemporaryDirectory() as name:
    root=Path(name).resolve();output=root/'gcc-main05'
-   def incomplete(repository,inputs,frame):
+   def incomplete(repository,inputs,frame,**_):
     frame.mkdir();(frame/'SDK-LOCAL-SNAPSHOT-COMMAND.json').write_bytes(b'Synthetic retained actual created-image receipt')
     raise ValueError('Synthetic original SDK post-commit validation failure')
    with mock.patch.dict(os.environ,{'RUNNER_TEMP':str(root),'GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40}),mock.patch.object(m.os,'getuid',return_value=0),\
-        mock.patch.object(m.prepare,'reconstruct_for_main',side_effect=incomplete),\
+        mock.patch.object(m.assembly.local,'stage_source',side_effect=lambda repository:Path(repository)/'synthetic-verified-copy-137'),mock.patch.object(m.prepare,'reconstruct_for_main',side_effect=incomplete),\
         mock.patch.object(m,'preparation_failure',return_value={'state':'synthetic separately tested timing journal'}) as journal,\
         mock.patch.object(m.image,'cleanup_owned',return_value={'ownedImageCleanupComplete':True}) as cleanup,mock.patch.object(m.h,'docker') as docker:
     with self.assertRaisesRegex(ValueError,'failed before GCC start'):m.create_runtime(root,root,output)
@@ -93,7 +93,7 @@ class RuntimePreparation(unittest.TestCase):
   with tempfile.TemporaryDirectory() as name:
    root=Path(name).resolve();output=root/'gcc-main05'
    with mock.patch.dict(os.environ,{'RUNNER_TEMP':str(root),'GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40}),mock.patch.object(m.os,'getuid',return_value=0),\
-        mock.patch.object(m.prepare,'reconstruct_for_main',side_effect=ValueError('Synthetic original failure')),\
+        mock.patch.object(m.assembly.local,'stage_source',side_effect=lambda repository:Path(repository)/'synthetic-verified-copy-137'),mock.patch.object(m.prepare,'reconstruct_for_main',side_effect=ValueError('Synthetic original failure')),\
         mock.patch.object(m,'preparation_failure',return_value={'state':'synthetic separately tested timing journal'}),\
         mock.patch.object(m.image,'cleanup_owned',side_effect=ValueError('Synthetic image cleanup unavailable')):
     with self.assertRaisesRegex(ValueError,'failed before GCC start'):m.create_runtime(root,root,output)

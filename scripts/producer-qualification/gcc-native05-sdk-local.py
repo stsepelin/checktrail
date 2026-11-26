@@ -15,7 +15,20 @@ sdk=load('gcc-main05-sdk.py')
 image=load('gcc-main05-sdk-image.py')
 h=image.h
 require=h.require
-POLICY_SHA256='dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b'
+POLICY_SHA256='1e8fe16ba8192347186097b7bc331bb3ae1d5dbf480ae138723a2610642604a8'
+
+POLICY_PATH='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json'
+
+def stage_source(repository):
+ """Verify the policy and every runtimeFiles row once and copy those bytes
+ into the receipt's private staging tree. Reconstruction and verification
+ then both read this one copy, never the runner-owned checkout again."""
+ repository=h.physical(Path(repository))
+ raw,mode=receipt.pinned_bytes(repository/POLICY_PATH,65536)
+ require(receipt.hashlib.sha256(raw).hexdigest()==POLICY_SHA256,'Unchanged approved SDK policy required')
+ files=receipt.verify_runtime_files(repository,json.loads(raw))
+ require(POLICY_PATH not in files,'Original R3 SDK runtime source changed')
+ return receipt.stage_verified({**files,POLICY_PATH:(raw,mode)})
 
 def source_policy(repository):
  repository=h.physical(Path(repository))
@@ -28,14 +41,17 @@ def source_policy(repository):
           'Original R3 SDK runtime source changed')
  return policy
 
-def verify_prepared(repository,sdk_frame,private,docker=h.docker):
+def verify_prepared(repository,sdk_frame,private,docker=h.docker,*,source=None):
  """Inspect the actual NEW local family; docker is a synthetic-test seam only.
 
  There is no boolean/phase/command/trust parameter. All returned facts come from
  the physical SDK family, stopped snapshot witnesses and a current image read.
- The caller still needs a separately granted fixed operator action.
+ The caller still needs a separately granted fixed operator action. `source`
+ is the staged verified copy whose bytes the constructor used; the checkout
+ itself is read only for its git identity.
  """
- policy=source_policy(repository);sdk_frame=h.physical(Path(sdk_frame));private=h.physical(Path(private))
+ source=Path(repository) if source is None else Path(source)
+ policy=source_policy(source);sdk_frame=h.physical(Path(sdk_frame));private=h.physical(Path(private))
  require(sdk_frame.is_dir() and private.is_dir() and sdk_frame!=private and sdk_frame not in private.parents and private not in sdk_frame.parents,
          'Separate physical local SDK and reader frames required')
  result=receipt.read_json(sdk_frame/'SDK-FOR-MAIN.json')
@@ -67,7 +83,7 @@ def verify_prepared(repository,sdk_frame,private,docker=h.docker):
  original=json.loads(docker(['image','inspect',image.codec.IMAGE]))
  require(type(original) is list and len(original)==1,'One exact currently inspected original base required')
  runtime=h.admit_host_node(json.loads(os.environ['CHECKTRAIL_HOST_NODE']),private)
- registry=receipt.read_json(Path(repository)/'scripts/producer-qualification/binutils-image-identity.v1.json')
+ registry=receipt.read_json(source/'scripts/producer-qualification/binutils-image-identity.v1.json')
  admitted=h.validate_image(original[0],image.codec.IMAGE,registry,runtime)
  require(result['image']==admitted and original[0]['Id']==local['observedOriginalImageId'] and
          original[0]['RootFS']['Layers']==local['originalRootfsLayers'],'SDK image base differs from original pinned registry admission')

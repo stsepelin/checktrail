@@ -25,7 +25,9 @@ codec=sdk.codec
 require=h.require
 
 
-def reconstruct_for_main(repository,inputs,frame):
+def reconstruct_for_main(repository,inputs,frame,*,controls=None):
+    """`controls` is the staged verified copy of scripts/producer-qualification;
+    the controls copied into the SDK container and the catalog come from it."""
     require(not frame.exists() and not frame.is_symlink(),'Fresh fixed SDK-for-main frame required')
     require(frame==Path(os.environ['RUNNER_TEMP']).resolve()/'gcc-main05/sdk-frame',
             'Fixed owned SDK-for-main frame path required')
@@ -43,7 +45,8 @@ def reconstruct_for_main(repository,inputs,frame):
         result['predecessorCache']=sdk.verify_cache_identity(api)
         transport=Path(os.environ['RUNNER_TEMP']).resolve()/'gcc-phase0-transport'
         predecessor,expected=sdk.verify_predecessor(transport,frame)
-        controls=repository/'scripts/producer-qualification';raw=(controls/'c-producer-profiles.v1.json').read_bytes()
+        controls=Path(repository)/'scripts/producer-qualification' if controls is None else Path(controls)
+        raw=(controls/'c-producer-profiles.v1.json').read_bytes()
         require(hashlib.sha256(raw).hexdigest()==codec.CATALOG,'Original source/input catalog differs')
         catalog=json.loads(raw);profile=catalog['profiles']['gcc-12']
         require(catalog['image']==codec.IMAGE and catalog['platform']=='linux/amd64' and

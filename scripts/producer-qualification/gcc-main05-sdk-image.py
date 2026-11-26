@@ -156,6 +156,29 @@ def remove_owned_tag(tag,observed,layers,docker,result):
         foreign(set(deleted[1:])<=set(chain_ids(layers)),'Removing the owned SDK tag deleted an image other than the observed one')
 
 
+RECOVERY_TAGS='SDK-IMAGE-RECOVERY-TAGS.json'
+
+
+def recovery_tags(output,tag):
+    path=output/RECOVERY_TAGS
+    if not os.path.lexists(path):return []
+    h.digest_file(path,maximum=1024**2);tags=json.loads(path.read_bytes())['proposedTags']
+    require(type(tags) is list and all(type(t) is str and re.fullmatch(re.escape(tag)+'-removal-[a-f0-9]{32}',t) for t in tags),
+            'Owned SDK recovery tag record differs')
+    return tags
+
+
+def propose_recovery_tag(output,tag,spare):
+    """Durably append `spare` to the recovery tag record before it is created."""
+    path=output/RECOVERY_TAGS;staging=output/(RECOVERY_TAGS+'.partial')
+    if os.path.lexists(staging):os.unlink(staging)
+    owned_json(staging,{'proposedTags':[*recovery_tags(output,tag),spare]})
+    os.replace(staging,path)
+    directory=os.open(output,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+    try:os.fsync(directory)
+    finally:os.close(directory)
+
+
 def cleanup_owned(output,docker=h.docker):
     """Recover a created image even when commit_prepared never returned.
 
@@ -195,6 +218,15 @@ def cleanup_owned(output,docker=h.docker):
             'onlyExactOwnedResourcesTargeted':True,'unrelatedTagsRemoved':False,'imagePrunePerformed':False,
             'originalGccTargetInvoked':False,'gateAComplete':False,'ownedImageCleanupComplete':False}
     try:
+        for spare in recovery_tags(output,tag):
+            # A recovery tag an earlier attempt proposed may exist even though
+            # its command never answered; only the returned image can carry it.
+            held=docker(['image','ls','--no-trunc','--quiet',spare]).decode().splitlines()
+            if held:
+                require(returned is not None and held==[returned],'Owned SDK recovery tag names another image; refuse removal')
+                layers=json.loads(docker(['image','inspect',returned]))[0]['RootFS']['Layers']
+                remove_owned_tag(spare,returned,layers,docker,result)
+                result.setdefault('recoveryTagsRemoved',[]).append(spare)
         if listed:
             actual=json.loads(docker(['image','inspect',tag]))[0]
             (output/'SDK-IMAGE-CLEANUP-OBSERVED.json').write_bytes(codec.canonical(actual))
@@ -220,6 +252,9 @@ def cleanup_owned(output,docker=h.docker):
                     # the image gets a fresh unpredictable owned tag that no
                     # other client can hold, and only that tag is removed.
                     spare=tag+'-removal-'+uuid.uuid4().hex
+                    # A tag command can create the tag and still fail to answer,
+                    # so the proposed tag is durable before the command runs.
+                    propose_recovery_tag(output,tag,spare)
                     docker(['tag',returned,spare],timeout=30)
                     remove_owned_tag(spare,returned,actual['RootFS']['Layers'],docker,result)
                 else:result['unrelatedRemainingAliasesProtected']=actual['RepoTags']

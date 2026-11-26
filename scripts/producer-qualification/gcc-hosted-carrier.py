@@ -5,6 +5,7 @@ service context. No argument can select source commands, a repository, image,
 remote destination, flags, a larger quota or a different producer.
 """
 import argparse
+import atexit
 import errno
 import hashlib
 import importlib.util
@@ -16,6 +17,7 @@ import shutil
 import signal
 import stat
 import subprocess
+import tempfile
 import time
 import uuid
 
@@ -274,6 +276,46 @@ def validate_daemon(daemon, resources, output):
             'dockerAndStateShareFilesystem': root.stat().st_dev == output.stat().st_dev}
 
 
+# Admitted executables run from a private copy of the bytes that were hashed,
+# never from their tool-cache path, which another user may be able to replace.
+PROTECTED_PARENT = '/tmp'
+
+
+def protected_executable(path, expected_sha256, maximum):
+    """Copy `path` while hashing it into a fresh private directory; 0555 file.
+
+    The bytes written are exactly the bytes hashed, so the copy runs only if
+    those bytes match `expected_sha256`. The directory is root-owned 0700
+    under a sticky parent, so nobody else can edit or rename it.
+    """
+    parent = Path(os.path.realpath(PROTECTED_PARENT))
+    info = parent.lstat()
+    require(stat.S_ISDIR(info.st_mode) and info.st_uid in (0, os.geteuid()) and
+            (info.st_mode & stat.S_ISVTX or not info.st_mode & 0o022), 'Protected executable parent unavailable')
+    folder = Path(tempfile.mkdtemp(prefix='checktrail-admitted-', dir=parent))
+    atexit.register(shutil.rmtree, folder, True)
+    target = folder / path.name
+    observed = hashlib.sha256()
+    size = 0
+    source = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | getattr(os, 'O_CLOEXEC', 0))
+    try:
+        require(stat.S_ISREG(os.fstat(source).st_mode), 'Bounded ordinary file required')
+        with os.fdopen(os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o700), 'wb') as sink:
+            while True:
+                raw = os.read(source, 1024 ** 2)
+                if not raw:
+                    break
+                size += len(raw)
+                require(size <= maximum, 'Bounded ordinary file required')
+                observed.update(raw)
+                sink.write(raw)
+    finally:
+        os.close(source)
+    require(observed.hexdigest() == expected_sha256, 'Host Node bytes differ across operator transition')
+    os.chmod(target, 0o555)
+    return target, {'bytes': size, 'sha256': observed.hexdigest()}
+
+
 def admit_host_node(record, output=None):
     observation = {'requestedRuntime': record}
     if output is not None:
@@ -290,13 +332,12 @@ def admit_host_node(record, output=None):
     # The trusted setup workflow binds this exact physical executable's bytes
     # and version. Hosted tool-cache write bits are observed, not a new policy.
     require(stat.S_ISREG(mode) and mode & 0o111, 'Host Node must be a regular executable')
-    pin = digest_file(path, maximum=256 * 1024 ** 2)
-    require(pin['sha256'] == record['sha256'], 'Host Node bytes differ across operator transition')
-    version = subprocess.run([str(path), '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    copy, pin = protected_executable(path, record['sha256'], 256 * 1024 ** 2)
+    version = subprocess.run([str(copy), '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              timeout=10, check=True, env=HOST_ENV).stdout.decode().strip()
     require(version == record['version'] and version.startswith('v') and int(version.split('.')[0][1:]) >= 22,
             'Host Node version differs or is incompatible')
-    return {'path': str(path), **pin, 'version': version, 'physicalExecutableVerified': True}
+    return {'path': str(copy), 'admittedPath': str(path), **pin, 'version': version, 'physicalExecutableVerified': True}
 
 
 def observed_image_fields(image):
@@ -512,6 +553,24 @@ def native_observation(output, identifier, maximum_seconds, service_clock, *, sc
     require(scope in ['configure', 'sdk-reconstruction'], 'Unknown fixed hosted observation scope')
     container_id(identifier)
     start = time.monotonic()
+    def allowance():
+        # Every blocking step below may spend only what is left of BOTH the
+        # native allowance and the source-job time above its finalization reserve.
+        now = time.monotonic()
+        return min(maximum_seconds - (now - start),
+                   service_clock['remainingSeconds'] - (now - service_clock['capturedMonotonic']) - capacity.FINALIZE_SECONDS)
+
+    if allowance() <= 0:
+        # Nothing was started: the container is still the created one its
+        # caller removes, and no native time was spent.
+        (output / 'ATTEMPT.json').write_bytes(canonical({
+            'schemaVersion': 1, 'elapsedSeconds': 0, 'nativePhase': scope, 'containerStarted': False,
+            'sourceJobSecondsRemaining': service_clock['remainingSeconds'] -
+                (time.monotonic() - service_clock['capturedMonotonic']),
+            'nativeOriginalCommandExitCode': None, 'originalCommandTerminalAssessed': False, 'containerState': None,
+            'cutoffOrRetentionError': 'Native allowance exhausted before start', 'checkpointCompleted': False,
+            'allElapsedTimeMustBeChargedOnRetry': True}) + b'\n')
+        raise ValueError('Native allowance exhausted before start; the container was not started')
     process = subprocess.Popen(['/usr/bin/docker', 'start', '--attach', identifier], env=HOST_ENV,
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
     selector = selectors.DefaultSelector()
@@ -520,13 +579,6 @@ def native_observation(output, identifier, maximum_seconds, service_clock, *, sc
     next_sample = 0
     samples = []
     failure = None
-    def allowance():
-        # Every blocking step below may spend only what is left of BOTH the
-        # native allowance and the source-job time above its finalization reserve.
-        now = time.monotonic()
-        return min(maximum_seconds - (now - start),
-                   service_clock['remainingSeconds'] - (now - service_clock['capturedMonotonic']) - capacity.FINALIZE_SECONDS)
-
     try:
         with (output / 'native.log').open('xb') as log:
             while selector.get_map():
