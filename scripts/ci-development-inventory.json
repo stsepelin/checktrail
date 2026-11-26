@@ -7098,14 +7098,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "protected-lock-sha256",
-      "hash": "591e03205a9b1ebe7df5fe20b6d48c4e5d193d79"
+      "hash": "1c57d4a14ae5f8ef525904dc4e9ee4a3fb9fcc1c0db2f65f1472f33c6081966b"
     },
     {
       "path": "package.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "root-manifest-sha256",
-      "hash": "48e5c3cb4f4d03ad50cb7ed45c54f025da846ec7"
+      "hash": "18e07fea728617e7a08fcb28e6992459678a78458bef78eb38e907fe5c775659"
     },
     {
       "path": "packs/actionlint.json",
@@ -9863,7 +9863,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4252abcee50ae8ac86ab4071f0690fb64117d46b"
+      "hash": "14395b0899b8fd71169e7d7983572db1ce204054"
     },
     {
       "path": "scripts/playwright-tools/package-lock.json",
@@ -17598,7 +17598,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "d755bd322a0694e3d6c564fd9b40be9b68d6a651"
+      "hash": "47b302a53dfd0597bbe72b6e9d7afea89df69552"
     },
     {
       "path": "test/ci-duration-workflow.test.ts",

@@ -21,6 +21,7 @@ const {
   dependencyHostCondition,
   captureDevelopmentInventory,
   developmentInventoryPath,
+  parseDevelopmentInventory,
   qualificationInputs,
 } = await import(
   new URL("../../scripts/plan-ci-impact.mjs", import.meta.url).href
@@ -1497,4 +1498,27 @@ test("whole manifest projection retains conditional exports and imports key orde
         /audited inventory/,
       );
     });
+});
+
+// The planner reads this profile only when classifying a dependency bump, so a
+// malformed row would otherwise surface first on a Dependabot PR.
+test("the committed development inventory parses under the planner's own row rules", async () => {
+  const text = await readFile(
+    path.join(repository, developmentInventoryPath),
+    "utf8",
+  );
+  const profile = parseDevelopmentInventory(text) as {
+    entries: { path: string; fingerprint: string; hash: string }[];
+  };
+  assert.ok(profile.entries.length > 0);
+  const metadata = profile.entries.filter((row) =>
+    ["package.json", "package-lock.json"].includes(row.path),
+  );
+  assert.deepEqual(
+    metadata.map((row) => [row.path, row.fingerprint, row.hash.length]),
+    [
+      ["package-lock.json", "protected-lock-sha256", 64],
+      ["package.json", "root-manifest-sha256", 64],
+    ],
+  );
 });
