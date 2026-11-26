@@ -6,6 +6,18 @@ from types import SimpleNamespace
 from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import host_probe as H
+
+def root_owned_stand_in():
+ """A root-owned regular file addressed by its own resolved path.
+
+ true(1) can itself be a link, for example to a multicall coreutils binary,
+ so the link target is used rather than the link.
+ """
+ for candidate in ['/usr/bin/true','/bin/true',sys.executable]:
+  try:resolved=Path(candidate).resolve(strict=True)
+  except OSError:continue
+  if resolved.is_file() and not resolved.is_symlink() and resolved.stat().st_uid==0:return resolved
+ return None
 HERE=Path(__file__).resolve().parent
 HELPER=b'# synthetic verified permission helper 3391\n'
 class InnerFailure(unittest.TestCase):
@@ -241,7 +253,7 @@ class PermissionAccessRestore(unittest.TestCase):
  def test_real_pinned_failure_rows_name_ancestors_outside_the_frame_and_symlink_targets(self):
   # The writable directory is an ancestor of the snapshot root, so the pinned
   # producer names a path the frame does not contain; that row is still valid.
-  module=H.guard();controller=next((Path(c) for c in ['/usr/bin/true','/bin/true'] if os.path.isfile(c) and Path(c).resolve(strict=True)==Path(c) and os.stat(c).st_uid==0),None)
+  module=H.guard();controller=root_owned_stand_in()
   self.assertIsNotNone(controller,'a root-owned regular controller stand-in is required')
   tree=self.root/'selected-9137';(tree/'nested').mkdir(parents=True);(tree/'tool-9137').write_bytes(b'synthetic tool 9137');(tree/'tool-9137').chmod(0o755);(tree/'notes-5813').write_bytes(b'synthetic notes 5813');(tree/'notes-5813').chmod(0o644);(tree/'nested'/'entry-137').write_bytes(b'synthetic nested 137');os.symlink('tool-9137',tree/'link-to-tool')
   frame=module.snapshot([tree],module.Bounds());identity={'uid':os.getuid()+1,'gid':20,'groups':[20]};request={'file':str(controller),'sha256':module.digest(controller.read_bytes()),'uid':os.getuid()}
@@ -255,7 +267,7 @@ class PermissionAccessRestore(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'execution not required for listed entry'):H.require_consistent_inner_result(changed,frame,identity)
  def test_real_pinned_inner_results_satisfy_the_consistency_rules(self):
   # The pinned producer, not a fixture, decides which result shapes are reachable.
-  module=H.guard();controller=next((Path(c) for c in ['/usr/bin/true','/bin/true'] if os.path.isfile(c) and Path(c).resolve(strict=True)==Path(c) and os.stat(c).st_uid==0),None)
+  module=H.guard();controller=root_owned_stand_in()
   self.assertIsNotNone(controller,'a root-owned regular controller stand-in is required')
   tree=self.root/'selected-5813';tree.mkdir()
   for n in range(103):(tree/('entry-%03d'%n)).write_bytes(b'synthetic selected entry %d' % (5813+n))
@@ -300,7 +312,7 @@ class VerifiedHelperExecution(unittest.TestCase):
   if replace_staged:helper.chmod(0o644);helper.write_bytes(self.replacement)
   if unreadable:helper.chmod(0o000)
   if fifo:helper.unlink();os.mkfifo(helper)
-  stand_in=next(Path(c) for c in ['/usr/bin/true','/bin/true'] if os.path.isfile(c) and os.stat(c).st_uid==0)
+  stand_in=root_owned_stand_in();self.assertIsNotNone(stand_in,'a root-owned regular controller stand-in is required')
   tree=self.root/'selected-8273';tree.mkdir(exist_ok=True);(tree/'entry-8273').write_bytes(b'synthetic selected entry 8273')
   frame=module.snapshot([tree],module.Bounds());identity={'uid':os.getuid(),'gid':os.getgid(),'groups':sorted({os.getgid(),*os.getgroups()})}
   request=output/'request.json';request.write_text(json.dumps({'frame':frame,'controller':{'file':str(stand_in),'sha256':hashlib.sha256(stand_in.read_bytes()).hexdigest(),'uid':os.getuid()+1},'identity':identity}))

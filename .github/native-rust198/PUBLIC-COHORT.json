@@ -80,9 +80,9 @@
     "sha256": "d7ea6401237a4150891677c3cb7cc0bc23cdcaff98d160f29c63e3469eb392fb"
   },
   {
-    "bytes": 41380,
+    "bytes": 41618,
     "file": "test_inner_failure_observation.py",
-    "sha256": "d64be3917a6e71529c6757a0f8df40f204bbbd40f18d74e52ce9ef639fa2c075"
+    "sha256": "d5c8eb527b8bf6bd50bdc09709452ec35845163089a35c087c7949c848f6ae81"
   },
   {
     "bytes": 10450,
