@@ -315,19 +315,23 @@ class PhysicalImage(unittest.TestCase):
         calls=[];state={'imageAlias':alias,'imageAliasCreated':False,'preparationDeadline':100,'cleanupDeadline':100};live={'alias':False,'canonical':False,'preexistingParent':True};c=SimpleNamespace(root=self.root,ctx=self.ctx,profile={'image':selected},state=state,save=lambda:None)
         base_tags=['foreign-cache:keep'] if preexisting=='foreign-tag' else []
         foreign={'Id':'sha256:'+'f'*64,'Architecture':'amd64','Os':'linux','RootFS':{'Layers':['sha256:'+'f'*64]},'RepoTags':[alias],'RepoDigests':[]}
-        def inspect(kind,name):
-            calls.append(['inspect',kind,name])
-            if name==alias and live.get('foreignAlias'):return copy.deepcopy(foreign)
-            if name==image['Id']:return {**copy.deepcopy(image),'RepoTags':[],'RepoDigests':[]} if live.get('retained') and not live['alias'] and not live['canonical'] else copy.deepcopy(image) if live['alias'] or live['canonical'] or live.get('retained') else None
-            exists=live['canonical'] if name==selected['reference'] else live['alias']
-            if not exists:return None
-            tags=base_tags+([alias] if live['alias'] else [])
+        derived=alias.rsplit(':',1)[0]+'@sha256:'+selected['manifestSHA256']
+        def ours():
+            # The admitted image as Docker reports it, from the references it still holds.
+            if not(live['alias'] or live['canonical'] or live.get('retained') or live.get('extraTags')):return None
+            tags=base_tags+list(live.get('extraTags',[]))+([alias] if live['alias'] else [])
             if backend in ['containerd','canonical-tag-only'] and live['canonical']:tags+=[selected['reference']]
             if fault=='foreign-tag':tags+=['foreign-concurrent:keep']
             digests=([selected['reference']] if live['canonical'] else [])
-            if backend in ['containerd','derived-digest-only'] and live['alias']:digests+=[alias.rsplit(':',1)[0]+'@sha256:'+selected['manifestSHA256']]
+            if backend in ['containerd','derived-digest-only'] and live['alias']:digests+=[derived]
             if fault=='foreign-digest':digests+=['foreign.invalid/image@sha256:'+'f'*64]
             return {**copy.deepcopy(image),'RepoTags':tags,'RepoDigests':digests}
+        def inspect(kind,name):
+            calls.append(['inspect',kind,name])
+            if name==alias and live.get('foreignAlias'):return copy.deepcopy(foreign)
+            if name==image['Id']:return ours()
+            exists=live['canonical'] if name==selected['reference'] else live['alias']
+            return ours() if exists else None
         def cmd(args,**kwargs):
             self.assertEqual(args,['docker','image','ls','--all','--quiet','--no-trunc']);self.assertEqual(kwargs,{'seconds':30,'check':False,'cap':65536});calls.append(['baseline',*args])
             if live.get('listing-unavailable'):path=self.root/'control/listing.stdout';path.write_bytes(b'');return {**GOOD,'reason':'owned command deadline'},path
@@ -348,20 +352,36 @@ class PhysicalImage(unittest.TestCase):
                     for name,raw in bodies.items():
                         info=tarfile.TarInfo(name);info.size=len(raw);archive.addfile(info,io.BytesIO(raw))
             if args[:2]==['image','rm']:
-                # Removal by the admitted image ID; the response lists what Docker removed.
-                self.assertEqual(args[2:],['--force','--no-prune',image['Id']]);lines=[]
-                if fault=='rebind-alias':live['alias']=False;live['foreignAlias']=True
-                if fault!='removal-present':
-                    lines+=(['Untagged: '+alias] if live['alias'] else [])+(['Untagged: '+selected['reference']] if live['canonical'] and fault!='removal-canonical-present' else [])
-                    if fault=='foreign-untagged':lines.append('Untagged: foreign-cache:keep')
-                    live['alias']=False
-                    if fault=='removal-canonical-present':live['retained']=True
-                    else:live['canonical']=False;live['retained']=False;lines+=['Deleted: '+image['Id']]+(['Deleted: sha256:'+diffs[0]] if backend=='classic' else [])
-                    if fault=='foreign-deleted':lines.append('Deleted: '+foreign['Id'])
-                if fault=='removal-throws-absent':raise TimeoutError('inert ambiguous delete after both gone')
-                out=self.root/'control'/('image-rm-'+str(len(calls))+'.stdout');out.write_text(''.join(x+'\n' for x in lines))
-                if fault in ['removal-present','removal-ambiguous-absent']:return {**GOOD,'reason':'owned command deadline'},out
-                return GOOD,out
+                # Docker semantics without force: removal by name untags only that
+                # name and deletes content only with its last reference; removal by
+                # ID is refused while references span repositories or a container
+                # uses the image. Force is not modelled, so any use of it fails.
+                self.assertNotIn('--force',args);self.assertEqual(args[2:3],['--no-prune']);self.assertEqual(len(args),4);target=args[3];lines=[];code=0
+                out=self.root/'control'/('image-rm-'+str(len(calls))+'.stdout')
+                if fault=='removal-present':out.write_text('');return {**GOOD,'reason':'owned command deadline'},out
+                if target==alias:
+                    if fault=='rebind-alias':live['alias']=False;live['foreignAlias']=True
+                    if live.get('foreignAlias'):live['foreignAlias']=False;live['foreignDeleted']=True;lines=['Untagged: '+alias,'Deleted: '+foreign['Id']]
+                    elif live['alias']:
+                        had_derived=backend in ['containerd','derived-digest-only'];live['alias']=False;lines=['Untagged: '+alias]+(['Untagged: '+derived] if had_derived else [])
+                        if ours() is None:lines.append('Deleted: '+image['Id'])
+                    else:code=1
+                elif target==image['Id']:
+                    if fault=='concurrent-tag':live['extraTags']=['foreign-cache:keep']
+                    obj=ours();names=sorted(set(obj['RepoTags']+obj['RepoDigests'])) if obj else []
+                    repos={x.split('@',1)[0] if '@' in x else x.rsplit(':',1)[0] for x in names}
+                    if obj is None or len(repos)>1 or live.get('inUse'):code=1
+                    elif fault=='removal-canonical-present':lines=[];code=0
+                    else:
+                        lines=['Untagged: '+x for x in names]+['Deleted: '+image['Id']]+(['Deleted: sha256:'+diffs[0]] if backend=='classic' else [])
+                        live.update(alias=False,canonical=False,retained=False)
+                        if fault=='foreign-untagged':lines.append('Untagged: foreign-cache:keep')
+                        if fault=='foreign-deleted':lines.append('Deleted: '+foreign['Id'])
+                        if fault=='removal-throws-absent':raise TimeoutError('inert ambiguous delete after both gone')
+                else:code=1
+                out.write_text(''.join(x+'\n' for x in lines))
+                if fault=='removal-ambiguous-absent' and target==image['Id']:return {**GOOD,'reason':'owned command deadline'},out
+                return ({**GOOD,'exitCode':code} if code else GOOD),out
             return GOOD,None
         c.inspect=inspect;c.docker=docker;c.cmd=cmd;return c,calls,live,image
     def image_scope(self):
@@ -406,19 +426,20 @@ class PhysicalImage(unittest.TestCase):
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             with self.assertRaises(TimeoutError):t.prove_control_image(c,100)
             self.assertTrue(c.state['ownedImageInputsReserved']);self.assertTrue(live['alias']);self.assertTrue(t.cleanup_image_inputs(c,100)['positiveOwnedAbsenceObserved'])
-        self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--force','--no-prune',image['Id']]])
-    def test_only_the_admitted_image_is_removed_once_by_its_id_with_final_absence(self):
+        self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',c.state['imageAlias']],['image','rm','--no-prune',image['Id']]])
+    def test_normal_path_untags_the_alias_then_removes_the_content_by_id_with_credit(self):
         c,calls,_,image=self.model()
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
-            t.prove_control_image(c,100);row=t.cleanup_image_inputs(c,100);self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertTrue(row['removedImageEstablished'])
+            t.prove_control_image(c,100);row=t.cleanup_image_inputs(c,100);self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertTrue(row['removedImageEstablished']);self.assertFalse(row['leftInPlace'])
             with self.assertRaisesRegex(common.Refusal,'one image inputs cleanup'):t.cleanup_image_inputs(c,100)
-        self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--force','--no-prune',image['Id']]])
-        self.assertEqual(row['operations'][0]['removalResponse'],{'untagged':[c.state['imageAlias'],c.profile['image']['reference']],'deleted':[image['Id'],'sha256:'+c.profile['image']['diffIDs'][0]]})
+        self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',c.state['imageAlias']],['image','rm','--no-prune',image['Id']]])
+        self.assertEqual([(x['kind'],x.get('untagged'),x.get('deleted')) for x in row['operations']][0],('alias-untag',[c.state['imageAlias']],[]))
+        self.assertEqual(row['operations'][1]['removalResponse'],{'untagged':[c.profile['image']['reference']],'deleted':[image['Id'],'sha256:'+c.profile['image']['diffIDs'][0]]})
     def test_still_present_after_ambiguous_delete_never_repeats_request(self):
         c,calls,_,_=self.model(fault='removal-present')
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             t.prove_control_image(c,100)
-            with self.assertRaisesRegex(common.Refusal,'image removal response must establish'):t.cleanup_image_inputs(c,100)
+            with self.assertRaisesRegex(common.Refusal,'alias untag response must be complete'):t.cleanup_image_inputs(c,100)
             with self.assertRaisesRegex(common.Refusal,'one image inputs cleanup'):t.cleanup_image_inputs(c,100)
         self.assertEqual(len([x for x in calls if x[:2]==['image','rm']]),1)
     def test_absence_after_ambiguous_delete_is_recorded_without_credit_or_second_delete(self):
@@ -427,7 +448,7 @@ class PhysicalImage(unittest.TestCase):
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             t.prove_control_image(c,100)
             with self.assertRaisesRegex(common.Refusal,'complete image removal response'):t.cleanup_image_inputs(c,100)
-        proof=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertTrue(proof['positiveOwnedAliasAbsenceObserved']);self.assertFalse(proof['positiveOwnedAbsenceObserved']);self.assertEqual(proof['operations'][0]['removeCommand']['reason'],'owned command deadline');self.assertEqual(len([x for x in calls if x[:2]==['image','rm']]),1)
+        proof=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertTrue(proof['positiveOwnedAliasAbsenceObserved']);self.assertFalse(proof['positiveOwnedAbsenceObserved']);self.assertEqual(proof['operations'][1]['removeCommand']['reason'],'owned command deadline');self.assertEqual(len([x for x in calls if x[:2]==['image','rm']]),2)
     def test_existing_foreign_alias_refuses_before_image_pull_or_cleanup_reservation(self):
         c,calls,live,_=self.model();live['alias']=True
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0),self.assertRaisesRegex(common.Refusal,'initially absent'):t.prove_control_image(c,100)
@@ -460,7 +481,7 @@ class PhysicalImage(unittest.TestCase):
         c,calls,live,image=self.model(preexisting='unrelated')
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             self.assertTrue(t.prove_control_image(c,100)['imageConfigAndRawLayersPhysicallyVerified']);row=t.cleanup_image_inputs(c,100)
-        self.assertTrue(row['positiveOwnedCanonicalAbsenceObserved']);self.assertTrue(row['positiveOwnedAliasAbsenceObserved']);self.assertFalse(live['canonical']);self.assertFalse(live['alias']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--force','--no-prune',image['Id']]])
+        self.assertTrue(row['positiveOwnedCanonicalAbsenceObserved']);self.assertTrue(row['positiveOwnedAliasAbsenceObserved']);self.assertFalse(live['canonical']);self.assertFalse(live['alias']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',c.state['imageAlias']],['image','rm','--no-prune',image['Id']]])
     def test_canonical_preexists_refuses_before_pull_and_no_ownership_reservation(self):
         c,calls,live,_=self.model();live['canonical']=True
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0),self.assertRaisesRegex(common.Refusal,'canonical image initially absent'):t.prove_control_image(c,100)
@@ -474,7 +495,7 @@ class PhysicalImage(unittest.TestCase):
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             with self.assertRaises(TimeoutError):t.prove_control_image(c,100)
             row=t.cleanup_image_inputs(c,100)
-        self.assertTrue(row['positiveOwnedCanonicalAbsenceObserved']);self.assertFalse(live['canonical']);self.assertFalse(live['alias']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--force','--no-prune',image['Id']]])
+        self.assertTrue(row['positiveOwnedCanonicalAbsenceObserved']);self.assertFalse(live['canonical']);self.assertFalse(live['alias']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',image['Id']]])
     def test_foreign_tags_or_digests_after_owned_proof_forbid_delete(self):
         base=self.root
         for field,extra in [('RepoTags','foreign-cache:keep'),('RepoDigests','foreign.invalid/x@sha256:'+'f'*64)]:
@@ -500,7 +521,7 @@ class PhysicalImage(unittest.TestCase):
         c,calls,live,_=self.model(fault='removal-canonical-present');cleanup=[]
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             t.prove_control_image(c,100);driver.finalize_image_inputs(c,True,cleanup)
-        self.assertFalse(cleanup[0]['positiveOwnedAbsenceObserved']);row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertTrue(row['positiveOwnedAliasAbsenceObserved']);self.assertFalse(row['positiveOwnedCanonicalAbsenceObserved']);self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertIsNotNone(row['operations'][0]['removeCommand']);self.assertFalse(row['operations'][0]['removedImageEstablished']);self.assertEqual(len([x for x in calls if x[:2]==['image','rm']]),1)
+        self.assertFalse(cleanup[0]['positiveOwnedAbsenceObserved']);row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertTrue(row['positiveOwnedAliasAbsenceObserved']);self.assertFalse(row['positiveOwnedCanonicalAbsenceObserved']);self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertIsNotNone(row['operations'][1]['removeCommand']);self.assertFalse(row['operations'][1]['removedImageEstablished']);self.assertEqual(len([x for x in calls if x[:2]==['image','rm']]),2)
     def test_missing_required_image_ownership_after_recovery_is_explicit_incomplete(self):
         import driver
         c,calls,live,_=self.model();cleanup=[]
@@ -512,11 +533,12 @@ class PhysicalImage(unittest.TestCase):
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             t.prove_control_image(c,100);ownership=self.root/'control/IMAGE-INPUT-OWNERSHIP.json';value=common.read_json(ownership);value['context']={**self.ctx,'nonce':'foreign-context'};ownership.chmod(0o600);ownership.write_bytes(common.encoded(value));driver.finalize_image_inputs(c,True,cleanup)
         self.assertEqual(len(cleanup),1);self.assertFalse(cleanup[0]['positiveOwnedAbsenceObserved']);self.assertEqual(cleanup[0]['cleanupErrorType'],'Refusal');self.assertTrue(live['alias']);self.assertTrue(live['canonical']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[])
-    def test_containerd_exact_names_pass_physical_proof_and_one_delete_by_image_id(self):
-        c,calls,live,image=self.model(backend='containerd')
+    def test_containerd_alias_untag_includes_its_derived_digest_and_the_content_goes_by_id(self):
+        c,calls,live,image=self.model(backend='containerd');derived=c.state['imageAlias'].rsplit(':',1)[0]+'@sha256:'+c.profile['image']['manifestSHA256']
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             t.prove_control_image(c,100);row=t.cleanup_image_inputs(c,100)
-        self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertFalse(live['alias']);self.assertFalse(live['canonical']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--force','--no-prune',image['Id']]]);self.assertEqual([x['deleteTarget'] for x in row['operations']],[image['Id']])
+        self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertFalse(live['alias']);self.assertFalse(live['canonical']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',c.state['imageAlias']],['image','rm','--no-prune',image['Id']]])
+        self.assertEqual(row['operations'][0]['untagged'],[c.state['imageAlias'],derived]);self.assertEqual(row['operations'][0]['deleted'],[]);self.assertEqual(row['operations'][1]['removalResponse']['untagged'],[c.profile['image']['reference']])
     def test_finite_classic_and_derived_exact_reference_forms_are_valid_near_misses(self):
         base=self.root
         for backend in ['classic','canonical-tag-only','derived-digest-only']:
@@ -531,10 +553,10 @@ class PhysicalImage(unittest.TestCase):
         self.assertEqual(owned_image.references(valid,alias,canonical,True)['repoDigestCount'],2)
         for field,items in [('RepoTags',[alias+'-suffix',canonical]),('RepoTags',[alias,canonical+'-suffix']),('RepoDigests',[canonical,derived+'-suffix']),('RepoDigests',[canonical,derived.replace('controls-owned','controls-owned-foreign')]),('RepoTags',[alias,alias]),('RepoDigests',[canonical,canonical]),('RepoTags',None),('RepoDigests',[True])]:
             with self.subTest(field=field,items=items),self.assertRaises(common.Refusal):owned_image.references({**valid,field:items},alias,canonical,True)
-    def test_classic_last_tag_removes_both_so_no_second_operation_or_request(self):
+    def test_alias_untag_never_deletes_while_the_canonical_reference_holds_the_content(self):
         c,calls,_,_=self.model()
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):t.prove_control_image(c,100);row=t.cleanup_image_inputs(c,100)
-        self.assertEqual(len(row['operations']),1);self.assertTrue((self.root/'control/IMAGE-DELETE-REQUEST.json').exists());self.assertEqual(len([x for x in calls if x[:2]==['image','rm']]),1)
+        self.assertEqual([x['kind'] for x in row['operations']],['alias-untag','content-delete']);self.assertEqual(row['operations'][0]['deleted'],[]);self.assertFalse(row['aliasReboundToOtherContent'])
     def test_unavailable_alias_inspection_after_delete_blocks_canonical_operation(self):
         c,calls,_,_=self.model(backend='containerd')
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
@@ -551,16 +573,18 @@ class PhysicalImage(unittest.TestCase):
             t.prove_control_image(c,100)
             with self.assertRaisesRegex(common.Refusal,'complete image removal response'):t.cleanup_image_inputs(c,100)
         row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json')
-        self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertTrue(row['positiveOwnedAliasAbsenceObserved']);self.assertEqual(len(row['operations']),1);op=row['operations'][0];self.assertIsNone(op['removeCommand']);self.assertEqual(op['operatorCommandErrorType'],'TimeoutError');self.assertNotIn('exitCode',op);self.assertNotIn('ownedChildStarted',op)
-    def test_alias_rebound_during_removal_gives_no_credit_and_never_touches_the_other_image(self):
-        # Another client moves the owned alias to other content as the removal
-        # starts; removal by ID leaves that content and its name alone.
+        self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertTrue(row['positiveOwnedAliasAbsenceObserved']);self.assertEqual(len(row['operations']),2);op=row['operations'][1];self.assertIsNone(op['removeCommand']);self.assertEqual(op['operatorCommandErrorType'],'TimeoutError');self.assertNotIn('exitCode',op);self.assertNotIn('ownedChildStarted',op)
+    def test_alias_rebound_before_its_untag_gives_no_credit_and_the_record_says_so(self):
+        # Another client moves the owned alias to other content just before the
+        # untag. Docker has no conditional untag, so that content loses the name
+        # (and, being unreferenced, is deleted); the response shows it, nothing
+        # more is removed and no credit is given.
         c,calls,live,image=self.model(fault='rebind-alias')
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
             t.prove_control_image(c,100)
-            with self.assertRaisesRegex(common.Refusal,'both exact newly owned image inputs finally absent'):t.cleanup_image_inputs(c,100)
-        self.assertTrue(live['foreignAlias']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--force','--no-prune',image['Id']]])
-        row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertFalse(row['positiveOwnedAliasAbsenceObserved']);self.assertTrue(row['operations'][0]['removedImageEstablished'])
+            with self.assertRaisesRegex(common.Refusal,'alias untag deleted content: the alias was rebound'):t.cleanup_image_inputs(c,100)
+        self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',c.state['imageAlias']]]);self.assertTrue(live['canonical'])
+        row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertTrue(row['aliasReboundToOtherContent']);self.assertEqual(row['operations'][0]['deleted'],['sha256:'+'f'*64])
     def test_admitted_image_left_without_names_is_removed_by_id_and_only_then_credited(self):
         # Both names went before cleanup. Unnamed admitted content is removed by
         # its ID; with no content left nothing is deleted and no deletion is claimed.
@@ -572,7 +596,7 @@ class PhysicalImage(unittest.TestCase):
                 with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
                     t.prove_control_image(c,100);live.update(alias=False,canonical=False,retained=retained);row=t.cleanup_image_inputs(c,100)
                 self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertIs(row['removedImageEstablished'],retained);self.assertIs(row['deleteAttempted'],retained)
-                self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--force','--no-prune',image['Id']]] if retained else []);self.assertFalse(live.get('retained'))
+                self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',image['Id']]] if retained else []);self.assertFalse(live.get('retained'))
     def test_unavailable_image_id_listing_after_removal_gives_no_credit(self):
         c,calls,live,image=self.model()
         with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
@@ -583,7 +607,56 @@ class PhysicalImage(unittest.TestCase):
                 return value
             c.docker=docker
             with self.assertRaisesRegex(common.Refusal,'owned image delete effects remain unassessed'):t.cleanup_image_inputs(c,100)
-        row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertFalse(row['operations'][0]['positiveOwnedImageAbsenceObserved'])
+        row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertFalse(row['operations'][-1]['positiveOwnedImageAbsenceObserved'])
+    def fresh_model(self,**kwargs):
+        self.temp.cleanup();self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name)
+        for name in ['control','evidence']:(self.root/name).mkdir()
+        return self.model(**kwargs)
+    def test_image_another_client_tags_or_uses_is_left_in_place_without_credit(self):
+        # A tag in another repository, added as the removal by ID starts, or a
+        # container using the image: Docker refuses without force, the image and
+        # the foreign tag stay, and the run's cleanup is incomplete.
+        for case in ['concurrent-tag','in-use']:
+            with self.subTest(case=case):
+                c,calls,live,image=self.fresh_model(fault='concurrent-tag' if case=='concurrent-tag' else None)
+                with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
+                    t.prove_control_image(c,100);live['inUse']=case=='in-use'
+                    with self.assertRaisesRegex(common.Refusal,'owned image left in place'):t.cleanup_image_inputs(c,100)
+                self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',c.state['imageAlias']],['image','rm','--no-prune',image['Id']]]);self.assertTrue(live['canonical'])
+                if case=='concurrent-tag':self.assertEqual(live['extraTags'],['foreign-cache:keep'])
+                row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');op=row['operations'][1]
+                self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertTrue(row['leftInPlace']);self.assertTrue(op['leftInPlace']);self.assertIs(op['leftInPlaceBecauseForceRequired'],case=='concurrent-tag');self.assertEqual(op['refusalReason'],'removal by ID without force refused, exit 1')
+    def test_foreign_tag_seen_before_the_removal_by_id_never_issues_it(self):
+        c,calls,live,image=self.model()
+        with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
+            t.prove_control_image(c,100);real=c.docker
+            def docker(args,**kwargs):
+                value=real(args,**kwargs)
+                if args[:2]==['image','rm'] and args[-1]==c.state['imageAlias']:live['extraTags']=['foreign-cache:keep']
+                return value
+            c.docker=docker
+            with self.assertRaisesRegex(common.Refusal,'exactly the owned remaining references'):t.cleanup_image_inputs(c,100)
+        self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',c.state['imageAlias']]]);self.assertEqual(live['extraTags'],['foreign-cache:keep']);self.assertTrue(live['canonical'])
+        self.assertFalse(common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json')['positiveOwnedAbsenceObserved'])
+    def test_left_in_place_image_makes_the_production_cleanup_incomplete(self):
+        import driver
+        for fault,complete in [('concurrent-tag',False),(None,True)]:
+            with self.subTest(fault=fault):
+                c,calls,live,_=self.fresh_model(fault=fault);cleanup=[]
+                with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):t.prove_control_image(c,100);driver.finalize_image_inputs(c,True,cleanup)
+                self.assertEqual([(x['kind'],x['positiveOwnedAbsenceObserved']) for x in cleanup],[('owned-image-inputs',complete)])
+    def test_no_sdk10_image_removal_command_forces(self):
+        # Every list literal that names an image removal, in every first-party
+        # module of the bundle, is checked; force must never appear in one.
+        import ast
+        bundle=common.verified_bundle();checked=[]
+        for name in sorted(x for x in bundle.files if x.endswith('.py') and not x.startswith('test_')):
+            for node in ast.walk(ast.parse(bundle.files[name])):
+                if isinstance(node,(ast.List,ast.Tuple)):
+                    words=[x.value for x in node.elts if isinstance(x,ast.Constant) and type(x.value) is str]
+                    if 'rm' in words and ('image' in words or 'rmi' in words):checked.append(name);self.assertFalse({'--force','-f'}&set(words),(name,words))
+                if isinstance(node,ast.Constant) and type(node.value) is str and name=='owned_image.py':self.assertNotIn('--force',node.value,name)
+        self.assertIn('owned_image.py',checked)
     def test_removal_response_naming_other_content_gives_no_credit(self):
         for fault,message in [('foreign-deleted','deleted only the admitted image and its layers'),('foreign-untagged','untagged only the owned references')]:
             with self.subTest(fault=fault):
@@ -593,7 +666,7 @@ class PhysicalImage(unittest.TestCase):
                 with self.image_scope(),patch.object(t.time,'monotonic',return_value=0):
                     t.prove_control_image(c,100)
                     with self.assertRaisesRegex(common.Refusal,message):t.cleanup_image_inputs(c,100)
-                row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertFalse(row['removedImageEstablished']);self.assertIn(message,row['operations'][0]['removalResponseError'])
+                row=common.read_json(self.root/'control/IMAGE-INPUT-CLEANUP-RESULT.json');self.assertFalse(row['positiveOwnedAbsenceObserved']);self.assertFalse(row['removedImageEstablished']);self.assertIn(message,row['operations'][-1]['removalResponseError'])
     def test_late_final_image_cleanup_persistence_retains_absences_without_budget_credit(self):
         import owned_image
         c,_,_,_=self.model();clock=[0]
@@ -607,14 +680,14 @@ class PhysicalImage(unittest.TestCase):
         for backend in ['classic','containerd']:
             self.root=base/backend;self.root.mkdir();(self.root/'control').mkdir();(self.root/'evidence').mkdir();c,calls,live,_=self.model(backend=backend,preexisting='parent')
             with self.subTest(backend=backend),self.image_scope(),patch.object(t.time,'monotonic',return_value=0):t.prove_control_image(c,100);row=t.cleanup_image_inputs(c,100)
-            self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertTrue(live['preexistingParent']);self.assertTrue(all(x[2:4]==['--force','--no-prune'] and len(x)==5 for x in calls if x[:2]==['image','rm']))
+            self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertTrue(live['preexistingParent']);self.assertTrue(all(x[2]=='--no-prune' and len(x)==4 for x in calls if x[:2]==['image','rm']))
         self.root=base
     def test_pull_consuming_save_scratch_refuses_before_tag_save_and_retains_owned_cleanup(self):
         c,calls,live,image=self.model();nine=9*1024**3
         with patch.object(t.shutil,'disk_usage',side_effect=[SimpleNamespace(free=nine),SimpleNamespace(free=nine-1)]) as disks,patch.object(t.time,'monotonic',return_value=0):
             with self.assertRaisesRegex(common.Refusal,'after pull before tag/save'):t.prove_control_image(c,100)
             self.assertEqual(disks.call_count,2);self.assertTrue(live['canonical']);self.assertFalse(live['alias']);self.assertEqual([x[0] for x in calls if x[0]!='inspect'],['baseline','pull']);row=t.cleanup_image_inputs(c,100)
-        self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--force','--no-prune',image['Id']]])
+        self.assertTrue(row['positiveOwnedAbsenceObserved']);self.assertEqual([x for x in calls if x[:2]==['image','rm']],[['image','rm','--no-prune',image['Id']]])
     def test_exact_nine_gib_postpull_scratch_near_miss_permits_original_tag_and_save(self):
         c,calls,_,_=self.model();nine=9*1024**3
         with patch.object(t.shutil,'disk_usage',side_effect=[SimpleNamespace(free=nine),SimpleNamespace(free=nine)]) as disks,patch.object(t.time,'monotonic',return_value=0):row=t.prove_control_image(c,100)

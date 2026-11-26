@@ -3,9 +3,11 @@
 Deleting the last tag may delete its image and digest references. Consequently
 both selected inputs must start absent; no preexisting input may be adopted.
 Only the original pinned canonical reference and one exact owned alias are in
-scope. Cleanup removes the admitted image by its immutable ID, never by a name
-another client could rebind, and is credited only when Docker's response names
-that image as deleted. It is not a claim to reclaim daemon bytes.
+scope. Cleanup never forces: it untags the owned alias by name, then removes
+the content by its immutable ID, and on a shared daemon leaves the image in
+place, without cleanup credit, whenever Docker would need force. It is
+credited only when Docker's responses name exactly the owned references and
+the admitted image. It is not a claim to reclaim daemon bytes.
 """
 import hashlib
 import re
@@ -97,23 +99,36 @@ def layer_ids(diff_ids):
     return set(names) | set(chains)
 
 
-def removal_response(command, path, image_id, refs, layers):
-    """What a complete `docker image rm` response says it removed, refused unless it is only this image.
-
-    Every line must be an Untagged line for one of the owned references or a
-    Deleted line for the admitted image or one of its layers, and the admitted
-    image itself must be among the deleted.
-    """
+def removal_lines(command, path):
+    """The Untagged and Deleted names of one complete `docker image rm` response."""
     need(type(command) is dict and command.get('exitCode') == 0 and command.get('reason') is None and path is not None, 'complete image removal response')
     raw = path.read_bytes(); need(len(raw) <= 65536, 'bounded image removal response')
     untagged = []; deleted = []
     for line in raw.decode('utf8').splitlines():
         match = re.fullmatch(r'(Untagged|Deleted): (\S+)', line); need(match is not None, 'recognized image removal response line')
         (untagged if match.group(1) == 'Untagged' else deleted).append(match.group(2))
-    need(set(untagged) <= refs and len(untagged) == len(set(untagged)), 'image removal untagged only the owned references')
-    need(set(deleted) <= {image_id} | layers and len(deleted) == len(set(deleted)), 'image removal deleted only the admitted image and its layers')
+    need(len(untagged) == len(set(untagged)) and len(deleted) == len(set(deleted)), 'each removed name reported once')
+    return untagged, deleted
+
+
+def removal_response(command, path, image_id, refs, layers):
+    """What a complete removal by ID says it removed, refused unless it is only this image.
+
+    Every line must be an Untagged line for one of the owned references or a
+    Deleted line for the admitted image or one of its layers, and the admitted
+    image itself must be among the deleted.
+    """
+    untagged, deleted = removal_lines(command, path)
+    need(set(untagged) <= refs, 'image removal untagged only the owned references')
+    need(set(deleted) <= {image_id} | layers, 'image removal deleted only the admitted image and its layers')
     need(image_id in deleted, 'image removal response establishes the admitted image was deleted')
     return {'untagged': untagged, 'deleted': deleted}
+
+
+def repositories(obj):
+    """The repository names an inspected image is referenced from."""
+    names = list(obj.get('RepoTags') or []) + list(obj.get('RepoDigests') or [])
+    return sorted({x.split('@', 1)[0] if '@' in x else x.rsplit(':', 1)[0] for x in names if type(x) is str})
 
 
 def cleanup_image_inputs(c, deadline):
@@ -166,41 +181,89 @@ def cleanup_image_inputs(c, deadline):
         if not(admitted.get('context') == c.ctx and admitted.get('baselineSHA256') == baseline_pin and admitted.get('ownedNewSelectedContent') is True):return None
         return admitted.get('actualRuntimeImageID')
 
-    def remove_once(image_id):
+    def untag_alias(image_id):
+        """Untag the owned alias by name; the canonical digest reference keeps the content."""
+        marker = c.root / 'control' / 'IMAGE-UNTAG-ALIAS-REQUEST.json'
+        outcome = c.root / 'control' / 'IMAGE-UNTAG-ALIAS-RESULT.json'
+        need(not marker.exists() and not outcome.exists(), 'the owned alias untag is at most once')
+        need(time.monotonic() < deadline, 'same owned image deadline before alias untag')
+        now = c.inspect('image', alias)
+        need(type(now) is dict and now.get('Id') == image_id, 'owned alias names the admitted image immediately before its untag')
+        freeze(marker, encoded({'context': c.ctx, 'kind': 'alias-untag', 'deleteTarget': alias, 'admittedImageID': image_id, 'baselineSHA256': baseline_pin}))
+        # Docker has no conditional untag: another client could still move this
+        # alias between the inspection above and the command below. The name is
+        # unique to this run and owned by it, so only misuse rebinds it, and a
+        # Deleted line in the response then shows content was removed through
+        # it; that is recorded and no credit is given.
+        command = None; path = None; command_error = None
+        try:command, path = c.docker(['image', 'rm', '--no-prune', alias], seconds=min(30, max(.001, deadline - time.monotonic())), check=False)
+        except BaseException as error:command_error = type(error).__name__
+        untagged = None; deleted = None; response_error = None
+        try:untagged, deleted = removal_lines(command, path)
+        except BaseException as error:response_error = str(error) if isinstance(error, Refusal) else type(error).__name__
+        inspection_error = None
+        try:inspect_both()
+        except BaseException as error:inspection_error = type(error).__name__
+        rebound = bool(deleted)
+        row = {'kind': 'alias-untag', 'deleteTarget': alias, 'removeCommand': command, 'operatorCommandErrorType': command_error, 'untagged': untagged, 'deleted': deleted, 'removalResponseError': response_error, 'aliasReboundToOtherContent': rebound, 'inspectionErrorType': inspection_error, 'inspectionErrors': dict(inspection_errors), 'positiveOwnedAliasAbsenceObserved': 'alias' not in inspection_errors and state['alias'] is None}
+        freeze(outcome, encoded(row)); operations.append(row)
+        need(inspection_error is None, 'owned alias untag effects remain unassessed after unavailable inspection')
+        need(untagged is not None, 'alias untag response must be complete: ' + str(response_error))
+        need(not rebound, 'alias untag deleted content: the alias was rebound to other content')
+        need(set(untagged) <= {alias, reference_sets(alias, canonical)} and alias in untagged, 'alias untag removed only the owned alias forms')
+        need(state['alias'] is None, 'alias still present or uncertain after its untag')
+
+    def remove_content(image_id, expected_names):
+        """Remove the admitted content by ID without force; leave it in place if Docker refuses."""
         marker = c.root / 'control' / 'IMAGE-DELETE-REQUEST.json'
         outcome = c.root / 'control' / 'IMAGE-DELETE-RESULT.json'
         need(not marker.exists() and not outcome.exists(), 'the owned image delete is at most once')
         need(time.monotonic() < deadline, 'same owned image deadline before exact image delete')
-        freeze(marker, encoded({'context': c.ctx, 'deleteTarget': image_id, 'alias': alias, 'canonical': canonical, 'baselineSHA256': baseline_pin}))
-        # By immutable ID: a rebound alias names other content and is never touched.
+        before = c.inspect('image', image_id)
+        need(type(before) is dict and before.get('Id') == image_id and type(before.get('RepoTags')) is list and type(before.get('RepoDigests')) is list and sorted(before['RepoTags']) + sorted(before['RepoDigests']) in expected_names, 'admitted image holds exactly the owned remaining references immediately before its removal')
+        freeze(marker, encoded({'context': c.ctx, 'kind': 'content-delete', 'deleteTarget': image_id, 'alias': alias, 'canonical': canonical, 'baselineSHA256': baseline_pin}))
         command = None; path = None; command_error = None
-        try:command, path = c.docker(['image', 'rm', '--force', '--no-prune', image_id], seconds=min(30, max(.001, deadline - time.monotonic())), check=False)
+        try:command, path = c.docker(['image', 'rm', '--no-prune', image_id], seconds=min(30, max(.001, deadline - time.monotonic())), check=False)
         except BaseException as error:command_error = type(error).__name__
+        refused = type(command) is dict and command.get('reason') is None and type(command.get('exitCode')) is int and command['exitCode'] != 0
         response = None; response_error = None
-        try:response = removal_response(command, path, image_id, {alias, canonical, reference_sets(alias, canonical)}, layer_ids(c.profile['image']['diffIDs']))
-        except BaseException as error:response_error = str(error) if isinstance(error, Refusal) else type(error).__name__
-        inspection_error = None; image_absent = None
-        try:inspect_both(); image_absent = image_id not in present_ids()
+        if not refused:
+            try:response = removal_response(command, path, image_id, {alias, canonical, reference_sets(alias, canonical)}, layer_ids(c.profile['image']['diffIDs']))
+            except BaseException as error:response_error = str(error) if isinstance(error, Refusal) else type(error).__name__
+        inspection_error = None; image_absent = None; after = None
+        try:
+            inspect_both(); image_absent = image_id not in present_ids()
+            if refused and not image_absent:after = c.inspect('image', image_id)
         except BaseException as error:inspection_error = type(error).__name__
-        row = {'deleteTarget': image_id, 'removeCommand': command, 'operatorCommandErrorType': command_error, 'removalResponse': response, 'removalResponseError': response_error, 'removedImageEstablished': response is not None, 'positiveOwnedImageAbsenceObserved': image_absent is True, 'inspectionErrorType': inspection_error, 'inspectionErrors': dict(inspection_errors), 'positiveOwnedAliasAbsenceObserved': 'alias' not in inspection_errors and state['alias'] is None, 'positiveOwnedCanonicalAbsenceObserved': 'canonical' not in inspection_errors and state['canonical'] is None}
+        # Without force Docker refuses an image referenced from several
+        # repositories or used by a container; it then stays in place.
+        left = refused and image_absent is False
+        row = {'kind': 'content-delete', 'deleteTarget': image_id, 'removeCommand': command, 'operatorCommandErrorType': command_error, 'removalResponse': response, 'removalResponseError': response_error, 'removedImageEstablished': response is not None, 'positiveOwnedImageAbsenceObserved': image_absent is True,
+               'leftInPlace': left, 'leftInPlaceBecauseForceRequired': left and type(after) is dict and len(repositories(after)) > 1, 'refusalReason': 'removal by ID without force refused, exit ' + str(command['exitCode']) if refused else None,
+               'inspectionErrorType': inspection_error, 'inspectionErrors': dict(inspection_errors), 'positiveOwnedAliasAbsenceObserved': 'alias' not in inspection_errors and state['alias'] is None, 'positiveOwnedCanonicalAbsenceObserved': 'canonical' not in inspection_errors and state['canonical'] is None}
         freeze(outcome, encoded(row)); operations.append(row)
         need(inspection_error is None, 'owned image delete effects remain unassessed after unavailable inspection')
         need(time.monotonic() < deadline, 'same owned image deadline after delete effects persistence')
+        need(not left, 'owned image left in place: Docker refused its removal without force')
         need(response is not None, 'image removal response must establish that only the admitted image was deleted: ' + str(response_error))
         need(image_absent is True, 'admitted image positively absent by its ID')
 
     try:
         current = inspect_both(); validate(current)
         # validate() admits a remaining alias only beside the same canonical image.
-        if current['canonical'] is not None:remove_once(current['canonical']['Id'])
+        if current['canonical'] is not None:
+            image_id = current['canonical']['Id']
+            if current['alias'] is not None:untag_alias(image_id)
+            # Left: the canonical digest reference, which some backends also list as a tag.
+            remove_content(image_id, [[canonical], [canonical, canonical]])
         elif admitted_id() is not None and admitted_id() in present_ids():
             # Both names are gone but the admitted new content remains under no name.
             image_id = admitted_id(); obj = c.inspect('image', image_id)
             need(image_id not in old['fullImageIDs'] and type(obj) is dict and obj.get('Id') == image_id and obj.get('RepoTags') == [] and obj.get('RepoDigests') == [] and obj.get('RootFS', {}).get('Layers') == ['sha256:' + x for x in c.profile['image']['diffIDs']], 'unnamed remaining content is exactly the admitted new image')
-            remove_once(image_id)
+            remove_content(image_id, [[]])
         need(not inspection_errors and state['alias'] is None and state['canonical'] is None, 'both exact newly owned image inputs finally absent within original deadline')
     except BaseException as error:failure = error
-    row = {'context': c.ctx, 'deleteAttempted': bool(operations) or (c.root / 'control' / 'IMAGE-DELETE-REQUEST.json').exists(), 'operations': operations, 'inspectionErrors': dict(inspection_errors), 'positiveOwnedAliasAbsenceObserved': 'alias' not in inspection_errors and state['alias'] is None, 'positiveOwnedCanonicalAbsenceObserved': 'canonical' not in inspection_errors and state['canonical'] is None, 'removedImageEstablished': bool(operations) and all(x['removedImageEstablished'] for x in operations), 'positiveOwnedAbsenceObserved': failure is None and not inspection_errors and state['alias'] is None and state['canonical'] is None and all(x['removedImageEstablished'] and x['positiveOwnedImageAbsenceObserved'] for x in operations), 'cleanupErrorType': type(failure).__name__ if failure is not None else None, 'daemonLayersOrBytesReclaimedAssessed': False}
+    row = {'context': c.ctx, 'deleteAttempted': bool(operations) or any((c.root / 'control' / x).exists() for x in ['IMAGE-UNTAG-ALIAS-REQUEST.json', 'IMAGE-DELETE-REQUEST.json']), 'operations': operations, 'inspectionErrors': dict(inspection_errors), 'positiveOwnedAliasAbsenceObserved': 'alias' not in inspection_errors and state['alias'] is None, 'positiveOwnedCanonicalAbsenceObserved': 'canonical' not in inspection_errors and state['canonical'] is None, 'removedImageEstablished': any(x['kind'] == 'content-delete' for x in operations) and all(x['removedImageEstablished'] for x in operations if x['kind'] == 'content-delete'), 'leftInPlace': any(x.get('leftInPlace') for x in operations), 'aliasReboundToOtherContent': any(x.get('aliasReboundToOtherContent') for x in operations), 'positiveOwnedAbsenceObserved': failure is None and not inspection_errors and state['alias'] is None and state['canonical'] is None and all(x['removedImageEstablished'] and x['positiveOwnedImageAbsenceObserved'] for x in operations if x['kind'] == 'content-delete'), 'cleanupErrorType': type(failure).__name__ if failure is not None else None, 'daemonLayersOrBytesReclaimedAssessed': False}
     row = deadline_receipt(result, row, deadline, {'positiveOwnedAbsenceObserved': False, 'cleanupBudgetExhausted': True}, began)
     if failure is not None:raise failure
     need(not row['completionBudgetExhausted'], 'owned image cleanup final persistence deadline')
