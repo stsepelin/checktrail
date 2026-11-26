@@ -310,8 +310,11 @@ Dispatch once for the intended qualification candidate and let that run finish
 independently of routine source repairs. The existing `cancel-in-progress: false`
 policy preserves an active observation when another commit is pushed. Evidence
 remains bound to its captured source frame; a previous run cannot be relabeled
-as proof for a newer revision. Passing PR checks does not establish full original
-GCC producer-build closure, which remains required for Gate A.
+as proof for a newer revision. Passing PR checks does not establish an original
+GCC producer build. Gate A no longer waits on this run: GCC 12 closes as a
+publisher-attested producer under the
+[closure plan's producer budget revision](GATE-A-CLOSURE-PLAN.md#2a-producer-budget-revision-2026-11-24),
+and this workflow remains diagnostic.
 
 Startup, live observation, export and replay all bind an explicit closed profile
 name to the frozen source/version/catalog.
@@ -359,8 +362,9 @@ failed or unsupported test outcomes under its unchanged defaults. Full producer
 ancestry, original notice closure, historical consumption and Gate A remain
 unverified by the observer. Earlier GLIBC source revisions remain separate.
 
-The [hosted continuation plan](HOSTED-PRODUCER-PLAN.md#gcc-implement-bounded-continuation)
-tracks the next execution path within standard hosted job limits. The existing
+The [hosted continuation plan](HOSTED-PRODUCER-PLAN.md#gcc-bounded-continuation-diagnostic-only)
+describes the diagnostic continuation design within standard hosted job limits;
+it is not a Gate A execution path. The existing
 single-job observer remains a bounded, potentially incomplete observation; its
 internal twelve-hour command limit does not provide twelve hours of hosted time.
 No dedicated-host capacity request is a prerequisite of that next plan.

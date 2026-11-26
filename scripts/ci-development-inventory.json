@@ -714,7 +714,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "4ea6c344ad82db75ecbedb09c750aedb1cea6a01"
+      "hash": "f35e0329a5e99d9bbd0b81d3e412b2a075261ea3"
     },
     {
       "path": "docs/CHECKSTYLE.md",
@@ -1032,11 +1032,18 @@
       "hash": "036905f86b9a3fbf6bb8768b19174870a13e09fa"
     },
     {
+      "path": "docs/GATE-A-CASE-BINDINGS.md",
+      "mode": "100644",
+      "type": "blob",
+      "fingerprint": "git-blob-sha1",
+      "hash": "7d7f0292f8fdfbc3cc436d0acfcb4e40d6e6a091"
+    },
+    {
       "path": "docs/GATE-A-CLOSURE-PLAN.md",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "12d3088c564928e00d2c1369db72bfc690c153bd"
+      "hash": "c863d65cbcbb810b13716ce71bce9df9dcf4d281"
     },
     {
       "path": "docs/GCC-MAIN05-CARRIER.md",
@@ -1127,7 +1134,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "f91e9b50a119aa874dc98c98e0c2238ae4264800"
+      "hash": "e3f6024537fc960b3acd1f8523a8801f16ea3677"
     },
     {
       "path": "docs/IMPACT-MEASUREMENT.md",
@@ -1309,7 +1316,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "374392bc72eefbf48500bc02163b22c03a3e8a39"
+      "hash": "c7112bbcdc4ee91f76f1e123ff1dbdb4a202a3ed"
     },
     {
       "path": "docs/NATIVE-JSON-PROBES.md",
@@ -1540,7 +1547,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "24b75419c8b8fe03c08b1e6fed0e420064acbaa9"
+      "hash": "bd441e4aabdf01d7d22bb64ffda8f4a6a96eff41"
     },
     {
       "path": "docs/REVIEW-BEHAVIOR.md",
@@ -7091,14 +7098,14 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "protected-lock-sha256",
-      "hash": "8153aaec9c095ce0048c4810b48fd174df2a02a92bdfd40b59f8aac250cd0af6"
+      "hash": "591e03205a9b1ebe7df5fe20b6d48c4e5d193d79"
     },
     {
       "path": "package.json",
       "mode": "100644",
       "type": "blob",
       "fingerprint": "root-manifest-sha256",
-      "hash": "53f8614f50dd3c8fd85f97a86d2a430c447f7d1a7214a3563d1b1619b964baf0"
+      "hash": "48e5c3cb4f4d03ad50cb7ed45c54f025da846ec7"
     },
     {
       "path": "packs/actionlint.json",
@@ -8582,7 +8589,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "e8f99ab27ec1cc21dfbe200e53a6d53c62d5dc7a"
+      "hash": "1f34386bc19f9304f66cb0b63fce1dd4ee21a0de"
     },
     {
       "path": "scripts/audit-php-review-tools.mjs",
@@ -19019,7 +19026,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "2d7863b188a5a375643cc2025d4a9e5bf506d6a5"
+      "hash": "98599d39980eade2995d2b28ca435a65910707a3"
     },
     {
       "path": "test/gate-javascript-extensions.test.ts",
