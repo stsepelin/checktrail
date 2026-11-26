@@ -152,6 +152,20 @@ def cleanup_image_inputs(c, deadline):
             references(obj, alias, canonical, a is not None)
             need(obj['Id'] == current['Id'] and obj['Architecture'] == 'amd64' and obj['Os'] == 'linux' and obj['RootFS']['Layers'] == ['sha256:' + x for x in c.profile['image']['diffIDs']], 'same newly owned selected image content before cleanup')
 
+    def present_ids():
+        # inspect() falls back to a reference filter, which never matches an ID; list complete IDs instead.
+        row, path = c.cmd(['docker', 'image', 'ls', '--all', '--quiet', '--no-trunc'], seconds=30, check=False, cap=65536)
+        need(row.get('exitCode') == 0 and row.get('reason') is None and row.get('ownedChildStarted') is True and row.get('ownedChildReaped') is True and path.stat().st_size <= 65536, 'bounded complete image-ID listing')
+        ids = path.read_bytes().decode('ascii').splitlines(); need(all(re.fullmatch('sha256:[0-9a-f]{64}', x) for x in ids), 'full image IDs in the listing')
+        return set(ids)
+
+    def admitted_id():
+        admission = c.root / 'control' / 'IMAGE-PULL-ADMISSION.json'
+        if not admission.exists():return None
+        admitted = read_json(admission, 65536)
+        if not(admitted.get('context') == c.ctx and admitted.get('baselineSHA256') == baseline_pin and admitted.get('ownedNewSelectedContent') is True):return None
+        return admitted.get('actualRuntimeImageID')
+
     def remove_once(image_id):
         marker = c.root / 'control' / 'IMAGE-DELETE-REQUEST.json'
         outcome = c.root / 'control' / 'IMAGE-DELETE-RESULT.json'
@@ -166,7 +180,7 @@ def cleanup_image_inputs(c, deadline):
         try:response = removal_response(command, path, image_id, {alias, canonical, reference_sets(alias, canonical)}, layer_ids(c.profile['image']['diffIDs']))
         except BaseException as error:response_error = str(error) if isinstance(error, Refusal) else type(error).__name__
         inspection_error = None; image_absent = None
-        try:inspect_both(); image_absent = c.inspect('image', image_id) is None
+        try:inspect_both(); image_absent = image_id not in present_ids()
         except BaseException as error:inspection_error = type(error).__name__
         row = {'deleteTarget': image_id, 'removeCommand': command, 'operatorCommandErrorType': command_error, 'removalResponse': response, 'removalResponseError': response_error, 'removedImageEstablished': response is not None, 'positiveOwnedImageAbsenceObserved': image_absent is True, 'inspectionErrorType': inspection_error, 'inspectionErrors': dict(inspection_errors), 'positiveOwnedAliasAbsenceObserved': 'alias' not in inspection_errors and state['alias'] is None, 'positiveOwnedCanonicalAbsenceObserved': 'canonical' not in inspection_errors and state['canonical'] is None}
         freeze(outcome, encoded(row)); operations.append(row)
@@ -179,9 +193,14 @@ def cleanup_image_inputs(c, deadline):
         current = inspect_both(); validate(current)
         # validate() admits a remaining alias only beside the same canonical image.
         if current['canonical'] is not None:remove_once(current['canonical']['Id'])
+        elif admitted_id() is not None and admitted_id() in present_ids():
+            # Both names are gone but the admitted new content remains under no name.
+            image_id = admitted_id(); obj = c.inspect('image', image_id)
+            need(image_id not in old['fullImageIDs'] and type(obj) is dict and obj.get('Id') == image_id and obj.get('RepoTags') == [] and obj.get('RepoDigests') == [] and obj.get('RootFS', {}).get('Layers') == ['sha256:' + x for x in c.profile['image']['diffIDs']], 'unnamed remaining content is exactly the admitted new image')
+            remove_once(image_id)
         need(not inspection_errors and state['alias'] is None and state['canonical'] is None, 'both exact newly owned image inputs finally absent within original deadline')
     except BaseException as error:failure = error
-    row = {'context': c.ctx, 'deleteAttempted': bool(operations) or (c.root / 'control' / 'IMAGE-DELETE-REQUEST.json').exists(), 'operations': operations, 'inspectionErrors': dict(inspection_errors), 'positiveOwnedAliasAbsenceObserved': 'alias' not in inspection_errors and state['alias'] is None, 'positiveOwnedCanonicalAbsenceObserved': 'canonical' not in inspection_errors and state['canonical'] is None, 'removedImageEstablished': all(x['removedImageEstablished'] for x in operations), 'positiveOwnedAbsenceObserved': failure is None and not inspection_errors and state['alias'] is None and state['canonical'] is None and all(x['removedImageEstablished'] and x['positiveOwnedImageAbsenceObserved'] for x in operations), 'cleanupErrorType': type(failure).__name__ if failure is not None else None, 'daemonLayersOrBytesReclaimedAssessed': False}
+    row = {'context': c.ctx, 'deleteAttempted': bool(operations) or (c.root / 'control' / 'IMAGE-DELETE-REQUEST.json').exists(), 'operations': operations, 'inspectionErrors': dict(inspection_errors), 'positiveOwnedAliasAbsenceObserved': 'alias' not in inspection_errors and state['alias'] is None, 'positiveOwnedCanonicalAbsenceObserved': 'canonical' not in inspection_errors and state['canonical'] is None, 'removedImageEstablished': bool(operations) and all(x['removedImageEstablished'] for x in operations), 'positiveOwnedAbsenceObserved': failure is None and not inspection_errors and state['alias'] is None and state['canonical'] is None and all(x['removedImageEstablished'] and x['positiveOwnedImageAbsenceObserved'] for x in operations), 'cleanupErrorType': type(failure).__name__ if failure is not None else None, 'daemonLayersOrBytesReclaimedAssessed': False}
     row = deadline_receipt(result, row, deadline, {'positiveOwnedAbsenceObserved': False, 'cleanupBudgetExhausted': True}, began)
     if failure is not None:raise failure
     need(not row['completionBudgetExhausted'], 'owned image cleanup final persistence deadline')

@@ -1,9 +1,9 @@
 {
   "files": [
     {
-      "bytes": 16026,
+      "bytes": 17697,
       "path": "owned_image.py",
-      "sha256": "e388f2e355656be394d31cd8ab8ff8e37e5a7984cb08dbeb3ec3310861ed4491"
+      "sha256": "2182b83bef5b41e8683b96155424142be7cdfc7d3eb68895f050ddb53f882369"
     },
     {
       "bytes": 8838,
@@ -56,9 +56,9 @@
       "sha256": "fd4f390f1412af25241830dc8d63e132c791a517df79ed9ddf211d52d62265fb"
     },
     {
-      "bytes": 8159,
+      "bytes": 8177,
       "path": "meter.py",
-      "sha256": "2aeb32a47180006005f59247dad368618cdfa2d058721747f5c51d99c0aa5399"
+      "sha256": "9221f8389d1b2a5e7871ce1be1afddde185637822be7e1a5015166f5ea2ff073"
     },
     {
       "bytes": 621,
@@ -196,9 +196,9 @@
       "sha256": "41998071c7f98dd082dcc249b7400b953b3ec332b3c61c78187f6c86f20f66f3"
     },
     {
-      "bytes": 63267,
+      "bytes": 65597,
       "path": "test_target_pause_controls.py",
-      "sha256": "25b7231c68934e499f26d66467bcc141226a418d154e76c8896d2de405b9e35a"
+      "sha256": "cc54f441f20ebbf03d6d110905bea367694683a3838820c1caa124d7b7ae8e58"
     },
     {
       "bytes": 3492,
@@ -211,9 +211,9 @@
       "sha256": "7ac1334ff8c015d2ba4f90bdaf9307b9437e3513766effa3c0931812a8e0cef7"
     },
     {
-      "bytes": 11405,
+      "bytes": 11709,
       "path": "test_meter_allocation.py",
-      "sha256": "20f9ffacab2d8deb8abf350f9a4913d72c3fded237b40aab77a7464a8a4f6911"
+      "sha256": "db605e0e6781129b75d7272fd4223f7182c604b3cd2cdfd921cf4e7880037352"
     },
     {
       "bytes": 3368,

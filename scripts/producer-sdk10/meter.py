@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Bounded live metadata meter anchored to no-follow directory descriptors."""
-import array,errno,hashlib,json,os,stat,struct,sys,time
+import array,errno,hashlib,json,os,stat,sys,time
 MAX_ENTRIES=2000000
 class Incomplete(RuntimeError):
  def __init__(self,message,code='non-race-incomplete',retryable=False):super().__init__(message);self.code=code;self.retryable=retryable
@@ -9,15 +9,16 @@ class InodeTable:
 
  A dict of tuples costs about 370 bytes per inode, beyond the sampler's
  256 MiB container at MAX_ENTRIES; these arrays cost 24 bytes per slot at a
- 0.75 load, allocated once. The digest is BLAKE2b of the exact metadata, so
- two different observations of one inode match only by a 64-bit collision.
+ 0.75 load, allocated once. The digest is BLAKE2b of the exact metadata, at
+ any integer width, so two different observations of one inode match only by
+ a 64-bit collision.
  """
  def __init__(self,capacity=MAX_ENTRIES):
   self.capacity=capacity;self.size=capacity*4//3+1;self.count=0
   self.dev=array.array('Q',[0])*self.size;self.ino=array.array('Q',[0])*self.size;self.digest=array.array('Q',[0])*self.size
  def observe(self,dev,ino,observed):
   """None after recording a new inode; otherwise whether it matches its first observation."""
-  value=int.from_bytes(hashlib.blake2b(struct.pack('<6q',*observed),digest_size=8).digest(),'little');slot=((ino*0x9E3779B97F4A7C15)^dev)%self.size
+  value=int.from_bytes(hashlib.blake2b(repr(tuple(observed)).encode(),digest_size=8).digest(),'little');slot=((ino*0x9E3779B97F4A7C15)^dev)%self.size
   while self.ino[slot]:
    if self.ino[slot]==ino+1 and self.dev[slot]==dev:return self.digest[slot]==value
    slot=(slot+1)%self.size

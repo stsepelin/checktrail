@@ -47,6 +47,9 @@ class Allocation(unittest.TestCase):
         self.assertIsNone(table.observe(66,7129,stamp));self.assertTrue(table.observe(66,7129,stamp));self.assertFalse(table.observe(66,7129,stamp[:5]+(2,)))
         self.assertIsNone(table.observe(67,7129,stamp));self.assertIsNone(table.observe(66,0,stamp));self.assertEqual(table.count,3)
         with self.assertRaisesRegex(meter.Incomplete,'unique inode bound'):table.observe(66,7130,stamp)
+        # A timestamp past 2262 does not fit 64 signed bits but is still exact.
+        late=meter.InodeTable(2);far=(0o100644,1,8,2**64+7129,2,1)
+        self.assertIsNone(late.observe(66,1,far));self.assertTrue(late.observe(66,1,far));self.assertFalse(late.observe(66,1,far[:3]+(2**64+7130,)+far[4:]))
     def test_actual_hardlinks_keep_two_paths_and_logical_bodies_but_one_allocated_inode(self):
         first,second=self.pair();s=first.stat();self.assertEqual((s.st_dev,s.st_ino),(second.stat().st_dev,second.stat().st_ino));result=self.sample()
         self.assertTrue(result['samplingComplete']);self.assertEqual(result['members'],2);self.assertEqual(result['regularLogicalBytes'],2*s.st_size)
