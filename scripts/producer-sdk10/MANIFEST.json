@@ -56,9 +56,9 @@
       "sha256": "fd4f390f1412af25241830dc8d63e132c791a517df79ed9ddf211d52d62265fb"
     },
     {
-      "bytes": 6812,
+      "bytes": 8159,
       "path": "meter.py",
-      "sha256": "f386df5fd29f8a240fc4612cfbceea4618f4626ff1b9f77d231a8876b0b15f35"
+      "sha256": "2aeb32a47180006005f59247dad368618cdfa2d058721747f5c51d99c0aa5399"
     },
     {
       "bytes": 621,
@@ -211,9 +211,9 @@
       "sha256": "7ac1334ff8c015d2ba4f90bdaf9307b9437e3513766effa3c0931812a8e0cef7"
     },
     {
-      "bytes": 9728,
+      "bytes": 11405,
       "path": "test_meter_allocation.py",
-      "sha256": "11d26bfdf6d5a68fec1bc7105d415808cca08b256177d5e374ec08f7d8472ec3"
+      "sha256": "20f9ffacab2d8deb8abf350f9a4913d72c3fded237b40aab77a7464a8a4f6911"
     },
     {
       "bytes": 3368,

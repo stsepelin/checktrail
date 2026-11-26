@@ -27,6 +27,26 @@ class Allocation(unittest.TestCase):
     def metadata(self,s,**changes):
         names=['st_dev','st_ino','st_mode','st_size','st_blocks','st_mtime_ns','st_ctime_ns','st_nlink']
         return SimpleNamespace(**{**{n:getattr(s,n) for n in names},**changes})
+    def test_sample_memory_at_the_entry_bound_fits_half_the_sampler_container(self):
+        # tracemalloc peak over two real trees gives the fixed and per-entry
+        # cost; at MAX_ENTRIES the sum must stay within half the 256 MiB
+        # sampler limit, leaving the other half for the interpreter and I/O.
+        import json as json_module, tracemalloc
+        budget=json_module.loads(common.bundle_bytes(Path(meter.__file__).parent/'profile.json'))['limits']['samplerMemory']//2;peaks={}
+        for count in [500,6500]:
+            tree=self.root/('tree-'+str(count));tree.mkdir()
+            for i in range(count):(tree/(str(i)+'-7129')).write_bytes(b'')
+            tracemalloc.start()
+            try:result=meter.sample_once(str(tree),time.monotonic()+60)
+            finally:peak=tracemalloc.get_traced_memory()[1];tracemalloc.stop()
+            self.assertTrue(result['samplingComplete'],result);self.assertEqual(result['uniqueObservedInodes'],count);peaks[count]=peak
+        per_entry=(peaks[6500]-peaks[500])/6000;predicted=peaks[500]+per_entry*(meter.MAX_ENTRIES-500)
+        self.assertLess(predicted,budget,(per_entry,peaks))
+    def test_inode_table_reports_matches_changes_and_its_bound(self):
+        table=meter.InodeTable(3);stamp=(0o100644,7129,8,1,2,1)
+        self.assertIsNone(table.observe(66,7129,stamp));self.assertTrue(table.observe(66,7129,stamp));self.assertFalse(table.observe(66,7129,stamp[:5]+(2,)))
+        self.assertIsNone(table.observe(67,7129,stamp));self.assertIsNone(table.observe(66,0,stamp));self.assertEqual(table.count,3)
+        with self.assertRaisesRegex(meter.Incomplete,'unique inode bound'):table.observe(66,7130,stamp)
     def test_actual_hardlinks_keep_two_paths_and_logical_bodies_but_one_allocated_inode(self):
         first,second=self.pair();s=first.stat();self.assertEqual((s.st_dev,s.st_ino),(second.stat().st_dev,second.stat().st_ino));result=self.sample()
         self.assertTrue(result['samplingComplete']);self.assertEqual(result['members'],2);self.assertEqual(result['regularLogicalBytes'],2*s.st_size)

@@ -1,20 +1,40 @@
 #!/usr/bin/env python3
 """Bounded live metadata meter anchored to no-follow directory descriptors."""
-import os,stat,time,json,sys,errno
+import array,errno,hashlib,json,os,stat,struct,sys,time
+MAX_ENTRIES=2000000
 class Incomplete(RuntimeError):
  def __init__(self,message,code='non-race-incomplete',retryable=False):super().__init__(message);self.code=code;self.retryable=retryable
+class InodeTable:
+ """(dev, inode) to a 64-bit digest of the observed metadata, in three flat arrays.
+
+ A dict of tuples costs about 370 bytes per inode, beyond the sampler's
+ 256 MiB container at MAX_ENTRIES; these arrays cost 24 bytes per slot at a
+ 0.75 load, allocated once. The digest is BLAKE2b of the exact metadata, so
+ two different observations of one inode match only by a 64-bit collision.
+ """
+ def __init__(self,capacity=MAX_ENTRIES):
+  self.capacity=capacity;self.size=capacity*4//3+1;self.count=0
+  self.dev=array.array('Q',[0])*self.size;self.ino=array.array('Q',[0])*self.size;self.digest=array.array('Q',[0])*self.size
+ def observe(self,dev,ino,observed):
+  """None after recording a new inode; otherwise whether it matches its first observation."""
+  value=int.from_bytes(hashlib.blake2b(struct.pack('<6q',*observed),digest_size=8).digest(),'little');slot=((ino*0x9E3779B97F4A7C15)^dev)%self.size
+  while self.ino[slot]:
+   if self.ino[slot]==ino+1 and self.dev[slot]==dev:return self.digest[slot]==value
+   slot=(slot+1)%self.size
+  if self.count>=self.capacity:raise Incomplete('live work meter unique inode bound')
+  self.dev[slot]=dev;self.ino[slot]=ino+1;self.digest[slot]=value;self.count+=1;return None
 def sample_once(root,deadline,hook=None):
- start=time.monotonic();logical=allocated=unique_allocated=members=repeated=0;inodes={};frames=[];reason=None;failure_code=None;retryable=False
+ start=time.monotonic();logical=allocated=unique_allocated=members=repeated=0;inodes=InodeTable();frames=[];reason=None;failure_code=None;retryable=False
  def check(c,message,code='non-race-incomplete',retryable=False):
   if not c:raise Incomplete(message,code,retryable)
  def stamp(s):return (s.st_mode,s.st_size,s.st_blocks,s.st_mtime_ns,s.st_ctime_ns,s.st_nlink)
  def account(s):
   nonlocal allocated,unique_allocated,members,repeated
   check(type(s.st_blocks) is int and s.st_blocks>=0,'inode allocated-block metadata unavailable')
-  key=(s.st_dev,s.st_ino);observed=stamp(s)
-  if key in inodes:
-   check(inodes[key]==observed,'same inode metadata changed between observed paths','inode-observation-changed',True);repeated+=1
-  else:inodes[key]=observed;unique_allocated+=s.st_blocks*512
+  check(0<=s.st_dev<2**64 and 0<=s.st_ino<2**64-1,'inode identity within the table bounds');same=inodes.observe(s.st_dev,s.st_ino,stamp(s))
+  if same is not None:
+   check(same,'same inode metadata changed between observed paths','inode-observation-changed',True);repeated+=1
+  else:unique_allocated+=s.st_blocks*512
   members+=1;allocated+=s.st_blocks*512
  def directory_error(error,message):
   if error.errno in [errno.ENOENT,errno.ENOTDIR,errno.ELOOP]:raise Incomplete(message,'directory-vanished-or-replaced',True)
@@ -37,7 +57,7 @@ def sample_once(root,deadline,hook=None):
    try:entry=next(frame['iterator'])
    except StopIteration:
     binding_same(frame);frame['iterator'].close();os.close(frame['fd']);frames.pop();continue
-   check(members<2000000,'live work meter entry bound')
+   check(members<MAX_ENTRIES,'live work meter entry bound')
    try:before=os.stat(entry.name,dir_fd=frame['fd'],follow_symlinks=False)
    except OSError as e:
     if e.errno==errno.ENOENT:raise Incomplete('entry vanished after enumeration','entry-vanished-during-sample',True)
@@ -69,7 +89,7 @@ def sample_once(root,deadline,hook=None):
   reason=str(e) if isinstance(e,Incomplete) else 'descriptor-based sample unavailable';failure_code=e.code if isinstance(e,Incomplete) else 'descriptor-operation-unavailable';retryable=e.retryable if isinstance(e,Incomplete) else False
  finally:
   for frame in reversed(frames):frame['iterator'].close();os.close(frame['fd'])
- return {'members':members,'regularLogicalBytes':logical,'allocatedBytesWithHardlinkDoubleCounting':allocated,'allocatedBytesUniqueInodes':unique_allocated,'uniqueObservedInodes':len(inodes),'repeatedInodePaths':repeated,'allocationAccounting':'stable-dev-inode-once','elapsedSeconds':time.monotonic()-start,'samplingComplete':reason is None,'incompleteReason':reason,'incompleteCode':failure_code,'retryableDirectoryRace':retryable,'retryableFilesystemRace':retryable,'directoryTraversal':'descriptor-relative O_DIRECTORY|O_NOFOLLOW; original inode bindings rechecked; mounted descendants traversed without a same-device filter','liveConcurrentProducerSnapshotConsistent':False}
+ return {'members':members,'regularLogicalBytes':logical,'allocatedBytesWithHardlinkDoubleCounting':allocated,'allocatedBytesUniqueInodes':unique_allocated,'uniqueObservedInodes':inodes.count,'repeatedInodePaths':repeated,'allocationAccounting':'stable-dev-inode-once','elapsedSeconds':time.monotonic()-start,'samplingComplete':reason is None,'incompleteReason':reason,'incompleteCode':failure_code,'retryableDirectoryRace':retryable,'retryableFilesystemRace':retryable,'directoryTraversal':'descriptor-relative O_DIRECTORY|O_NOFOLLOW; original inode bindings rechecked; mounted descendants traversed without a same-device filter','liveConcurrentProducerSnapshotConsistent':False}
 def sample(root='/work',hook=None):
  start=time.monotonic();deadline=start+20;attempts=[]
  for number in [1,2]:
