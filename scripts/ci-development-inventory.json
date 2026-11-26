@@ -11144,7 +11144,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "93d25cd7c2cd65196488cd773ec8b1904e537e7f"
+      "hash": "6ba7b4ed13fba35e7dfee6bac69b07e9ee74d6fb"
     },
     {
       "path": "scripts/producer-sdk10/PROTECTED-CONTROLS.json",
@@ -11277,7 +11277,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "f97f3cae28c899040ccd16a8d79a052e7db66372"
+      "hash": "a6364dc5590ba6373902e630818c0890ae274d0c"
     },
     {
       "path": "scripts/producer-sdk10/pause_control_worker.py",
@@ -11473,7 +11473,7 @@
       "mode": "100644",
       "type": "blob",
       "fingerprint": "git-blob-sha1",
-      "hash": "bc184f184aded59fb7b1d93d700f58c9b51ff655"
+      "hash": "89a18c7943d7691cfda09ffea1db21e7f09eec19"
     },
     {
       "path": "scripts/producer-sdk10/test_volume_options.py",
