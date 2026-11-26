@@ -1,13 +1,13 @@
 [
   {
-    "bytes": 6119,
+    "bytes": 6477,
     "file": "admission.py",
-    "sha256": "fcebd6bdb2a9c008cd8ac6ad64f99b6542e5df9a1992952a33ca7a4ead4d2150"
+    "sha256": "c316e08404b8eb633680958ff5019bc4ce5752377d5582daf5d928a6f4048cd0"
   },
   {
-    "bytes": 20202,
+    "bytes": 20295,
     "file": "host_probe.py",
-    "sha256": "2864cb26320465f1a597178ea045605afd2a29fb316ac2837a1dac8d10eb8521"
+    "sha256": "e38a323c34518e63feb5b776cb40859b3e97cac074e45a225a0a0f531fc005d9"
   },
   {
     "bytes": 6942,
@@ -17,7 +17,7 @@
   {
     "bytes": 11009,
     "file": "materializer.py",
-    "sha256": "f9bd630f34d55c90493c2a995c64cad169bb7d257f88a7defdca8e7405bbadb5"
+    "sha256": "1a20335573b4898545bfd625cb3e4d90279f241b9b9d98eaef93acd0bf0204e8"
   },
   {
     "bytes": 12491,
@@ -45,9 +45,9 @@
     "sha256": "91f346f5dca73b38a4e3be4d18dd4c7d21f9745a627b4505667101d234d105d5"
   },
   {
-    "bytes": 6806,
+    "bytes": 6796,
     "file": "retention.py",
-    "sha256": "07fd2c72346b0aeda4e294c8607c3f1047fcbe9c019e536814ab39463531b93c"
+    "sha256": "035bbfb0d8cdb06eaffae32ade677e34a182c6be5fc6528f535590d134b087af"
   },
   {
     "bytes": 1463,
@@ -60,9 +60,9 @@
     "sha256": "c7d863cf1502600b11754d9d5aed90511481a6959f2a4d3b4a68ad3616eee72f"
   },
   {
-    "bytes": 15199,
+    "bytes": 15427,
     "file": "reused-inventory/inventory.py",
-    "sha256": "7f689abe1aa8a90a6c66107e90f47add20deb963f12d240cfeeaadd3ed432138"
+    "sha256": "b7f149825ac06f1b10e46f8a83001b017157ad84424705e6dab428b092ed9e14"
   },
   {
     "bytes": 21071,
@@ -75,9 +75,9 @@
     "sha256": "c415de7356e9232818dae9cb6a3230a127c08fe21f2d82b7ddf4093111413159"
   },
   {
-    "bytes": 82326,
+    "bytes": 86824,
     "file": "test_controller.py",
-    "sha256": "d7ea6401237a4150891677c3cb7cc0bc23cdcaff98d160f29c63e3469eb392fb"
+    "sha256": "1d98bb86aadbf80d32f89f873ae9ec171101222e18d26abee3c59c3b2eb88361"
   },
   {
     "bytes": 41618,

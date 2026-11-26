@@ -46,5 +46,11 @@ def read_once(file,maximum,refusal):
  finally:os.close(fd)
  return body,before
 
+def create_private(file):
+ """Create a new file that only its owner can open, in the creating syscall itself.
+ A file created readable and restricted afterwards stays open to any process that
+ opened it in between, so the mode is never widened and then narrowed."""
+ return os.fdopen(os.open(file,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600),'wb')
+
 def validate_operator_grant(file,expected_sha,profile_sha,context,code_sha,host_sha,archives_sha,work):
  need(file==file.resolve(strict=True),'Physical root-owned startup operator grant required');body,s=read_once(file,65536,'Physical root-owned startup operator grant required');need(s.st_uid==0 and stat.S_IMODE(s.st_mode)==0o400,'Physical root-owned startup operator grant required');need(hashlib.sha256(body).hexdigest()==expected_sha,'Operator grant exact bytes');v=json.loads(body);need(v.get('authority')=='explicit-reviewed-workflow-startup' and v.get('profileSHA256')==profile_sha and v.get('controllerCodeSHA256')==code_sha and v.get('runContext')==context and v.get('allowedOperation')=='original-rust198-producer' and v.get('hostReceiptSHA256')==host_sha and v.get('archiveMappingSHA256')==archives_sha and v.get('workNamespace')==str(work),'Operator startup context/profile/code binding');need(v.get('MCPOrModelArgumentAuthority') is False,'A model argument cannot grant execution');return v

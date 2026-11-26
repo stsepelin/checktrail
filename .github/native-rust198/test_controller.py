@@ -119,9 +119,11 @@ class ControlTests(unittest.TestCase):
  def test_native_rejects_unknown_network_before_process_probe(self):
   with mock.patch.object(N,'ps_rows',side_effect=AssertionError('unqualified host cannot invoke ps')):
    with self.assertRaisesRegex(ValueError,'network'):N.Native(self.root,{'buildUid':99})
- def test_host_metadata_fixture_no_sdk_or_source_execution(self):
+ def host_metadata_fixture(self):
   developer=self.root/'Xcode.app/Contents/Developer';sdk=developer/'Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk';sdk.mkdir(parents=True);(sdk/'SDKSettings.json').write_text('{"Version":"26.2"}');(sdk.parent/'MacOSX.sdk').symlink_to(sdk.name);(developer.parent/'Info.plist').write_bytes(plistlib.dumps({'CFBundleShortVersionString':'26.2'}));(developer.parent/'version.plist').write_bytes(plistlib.dumps({'ProductBuildVersion':'synthetic'}));license=developer.parent/'Resources/en.lproj/License.rtf';license.parent.mkdir(parents=True);license.write_bytes(b'{synthetic original SLA}');tool=self.root/'tool';tool.write_bytes(b'synthetic tool bytes, never executed');tool.chmod(0o755)
-  with mock.patch.object(H.shutil,'which',return_value=str(tool)),mock.patch.object(H.subprocess,'run',side_effect=AssertionError('no executable permitted')):value=H.collect_metadata(developer,self.root/'metadata',{'test':'synthetic'},lambda:{'CPUs':3,'RAMBytes':7*A.GIB,'macOS':'15.8.2'})
+  with mock.patch.object(H.shutil,'which',return_value=str(tool)),mock.patch.object(H.subprocess,'run',side_effect=AssertionError('no executable permitted')):return H.collect_metadata(developer,self.root/'metadata',{'test':'synthetic'},lambda:{'CPUs':3,'RAMBytes':7*A.GIB,'macOS':'15.8.2'})
+ def test_host_metadata_fixture_no_sdk_or_source_execution(self):
+  value=self.host_metadata_fixture()
   self.assertEqual('26.2',value['xcodeVersion']);self.assertEqual(14,len(value['tools']));self.assertTrue(value['originalSLATextRetained']);self.assertFalse(value['SLABodyRootReviewed']);self.assertFalse(value['nativeAdmissionGranted']);self.assertFalse(value['SDKCompilerOrSourceExecuted']);self.assertFalse(value['allDeclaredSDKToolBytesHashed'])
 
  def test_whole_observe_success_and_source_uid_native_failure_family(self):
@@ -773,4 +775,66 @@ class LauncherImportTests(unittest.TestCase):
   wanted=first_party_imports();self.assertIn(('plistlib',None),wanted);self.assertIn(('unittest','mock'),wanted)
   body="import importlib,json\nfailed=[]\nfor module,name in %r:\n try:\n  value=importlib.import_module(module)\n  if name is not None and name!='*' and not hasattr(value,name):importlib.import_module(module+'.'+name)\n except Exception as error:failed.append([module,name,type(error).__name__+': '+str(error)])\nraise SystemExit(json.dumps(failed))\n" % (wanted,)
   result=through_launcher(body);self.assertEqual((1,b''),(result.returncode,result.stdout));self.assertEqual([],json.loads(result.stderr))
+class CreationModes:
+ """Records each named file's mode and size as the call that creates it returns.
+
+ os.open, built-in open and io.open (pathlib's Path.open, write_bytes and
+ write_text) are all observed, so a file created readable and narrowed later
+ is seen with its creation mode, before any write or chmod.
+ """
+ def __init__(self,*names):self.names=set(names);self.created=[];self.patches=[]
+ def note(self,path,fd):
+  if not isinstance(path,int) and Path(os.fsdecode(os.fspath(path))).name in self.names:
+   status=os.fstat(fd);self.created.append((Path(os.fsdecode(os.fspath(path))).name,stat.S_IMODE(status.st_mode),status.st_size))
+ def __enter__(self):
+  real_os_open,real_io_open,real_open=os.open,io.open,builtins.open
+  def os_open(path,flags,*args,**kwargs):
+   fd=real_os_open(path,flags,*args,**kwargs)
+   if flags&os.O_CREAT:self.note(path,fd)
+   return fd
+  def wrapped(real):
+   def opening(file,mode='r',*args,**kwargs):
+    stream=real(file,mode,*args,**kwargs)
+    if any(c in mode for c in 'wxa'):self.note(file,stream.fileno())
+    return stream
+   return opening
+  self.patches=[mock.patch.object(os,'open',os_open),mock.patch.object(io,'open',wrapped(real_io_open)),mock.patch.object(builtins,'open',wrapped(real_open))]
+  for item in self.patches:item.start()
+  self.umask=os.umask(0);return self
+ def __exit__(self,*args):
+  os.umask(self.umask)
+  for item in reversed(self.patches):item.stop()
+
+class PrivateCreationTests(unittest.TestCase):
+ """Private files are owner-only from the syscall that creates them, under any umask."""
+ def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.root.chmod(0o755)
+ def tearDown(self):self.temp.cleanup()
+ def test_creation_observer_sees_a_permissive_umask_creation(self):
+  with CreationModes('readable-5521') as modes:(self.root/'readable-5521').write_bytes(b'5521')
+  self.assertEqual([('readable-5521',0o666,0)],modes.created)
+ def test_retained_archive_is_owner_only_before_its_first_byte(self):
+  outputs=self.root/'outputs';outputs.mkdir();(outputs/'a').write_bytes(b'alpha 5521');(outputs/'b').write_bytes(b'beta 5521')
+  with CreationModes('PRIVATE-OUTPUTS.tar.unaccepted') as modes:result=R.retain_private({'dist':outputs},self.root/'PRIVATE-OUTPUTS.tar',{'captureBytes':2*1024**2,'captureFiles':2},{'allBuildUidProcessesStopped':True})
+  self.assertEqual([('PRIVATE-OUTPUTS.tar.unaccepted',0o600,0)],modes.created)
+  self.assertEqual(2,result['membersVerified']);self.assertEqual(0o400,stat.S_IMODE((self.root/'PRIVATE-OUTPUTS.tar').stat().st_mode))
+  import tarfile
+  with tarfile.open(self.root/'PRIVATE-OUTPUTS.tar') as archive:self.assertEqual({'dist/a':b'alpha 5521','dist/b':b'beta 5521'},{m.name:archive.extractfile(m).read() for m in archive.getmembers()})
+ def test_retained_sla_copy_is_owner_only_before_its_first_byte(self):
+  fixture=ControlTests('test_host_metadata_fixture_no_sdk_or_source_execution');fixture.root=self.root
+  with CreationModes('original-Xcode-license.rtf') as modes:value=fixture.host_metadata_fixture()
+  self.assertEqual([('original-Xcode-license.rtf',0o600,0)],modes.created)
+  self.assertEqual(b'{synthetic original SLA}',Path(value['originalSLA']['file']).read_bytes());self.assertEqual(0o400,stat.S_IMODE(Path(value['originalSLA']['file']).stat().st_mode))
+ def test_create_private_refuses_an_existing_name_or_a_final_symlink(self):
+  with CreationModes('private-5521') as modes:
+   with A.create_private(self.root/'private-5521') as stream:stream.write(b'private 5521')
+  self.assertEqual([('private-5521',0o600,0)],modes.created);self.assertEqual(b'private 5521',(self.root/'private-5521').read_bytes())
+  with self.assertRaises(FileExistsError):A.create_private(self.root/'private-5521')
+  (self.root/'target-5521').write_bytes(b'target 5521');(self.root/'link-5521').symlink_to(self.root/'target-5521')
+  with self.assertRaises(OSError):A.create_private(self.root/'link-5521')
+  self.assertEqual(b'target 5521',(self.root/'target-5521').read_bytes())
+ def test_inventory_index_sinks_are_owner_only_before_their_first_byte(self):
+  inventory=P.M.primitives()
+  with CreationModes('MEMBERS.jsonl') as modes:
+   with inventory.private_sink(self.root/'MEMBERS.jsonl') as sink:sink.write(b'{"synthetic":5521}\n')
+  self.assertEqual([('MEMBERS.jsonl',0o600,0)],modes.created);self.assertEqual(b'{"synthetic":5521}\n',(self.root/'MEMBERS.jsonl').read_bytes())
 if __name__=='__main__':unittest.main()

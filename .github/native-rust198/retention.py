@@ -1,7 +1,7 @@
 """Private-host-only retention. No keys, upload, release or export capabilities."""
 from pathlib import Path
 import hashlib,os,re,stat,tarfile,time
-from admission import need
+from admission import create_private,need
 
 def identity(s):
  return (s.st_dev,s.st_ino,s.st_mode,s.st_uid,s.st_gid,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns)
@@ -57,8 +57,8 @@ def readback_private(file,rows,maximum,clock=time.monotonic,deadline=None):
 
 def retain_private(roots,destination,limits,quiescence,clock=time.monotonic):
  need(quiescence.get('allBuildUidProcessesStopped') is True,'No trusted retention before build-UID quiescence');started=clock();deadline=started+600;rows=catalog(roots,limits,clock,deadline);need(not os.path.lexists(destination),'Fresh private retention destination');part=destination.with_name(destination.name+'.unaccepted');need(not os.path.lexists(part),'Preserve prior retention failure');reserved=sum(r['bytes']+1024 for r in rows)+1024*1024;need(reserved<=limits['captureBytes'],'Pre-reserved TAR framing/output bound');need(destination.parent==destination.parent.resolve(strict=True),'Physical private retention parent')
- with part.open('xb') as raw:
-  os.fchmod(raw.fileno(),0o600);bounded=BoundedWriter(raw,reserved)
+ with create_private(part) as raw:
+  bounded=BoundedWriter(raw,reserved)
   with tarfile.open(fileobj=bounded,mode='w',format=tarfile.USTAR_FORMAT) as archive:
    for row in rows:
     need(clock()<deadline,'Private retention deadline');p=Path(row['file']);s=p.lstat();need(list(identity(s))==row['physicalIdentity'],'Output changed before retention');info=tarfile.TarInfo(row['member']);info.size=row['bytes'];info.mode=0o400

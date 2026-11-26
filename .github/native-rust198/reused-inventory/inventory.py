@@ -11,6 +11,10 @@ METADATA=set(json.loads(POLICY_BYTES if 'POLICY_BYTES' in globals() else (HERE/'
 BASES=['license','licenses','copying','copyright','notice','notices','authors','unlicense','third_party_notices','third-party-notices','thirdpartynotices']
 CODE_SUFFIXES={'.rs','.py','.c','.h','.cc','.cpp','.js','.mjs','.ts','.go','.sh','.rb','.java','.swift','.cs'}
 
+def private_sink(path):
+ # Owner-only from the creating syscall; these files are made read-only, never narrowed from readable.
+ return os.fdopen(os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600),'wb')
+
 def hash_file(path):
  h=hashlib.sha256();n=0
  with path.open('rb') as f:
@@ -101,7 +105,7 @@ def inventory(manifest,expected,out):
  info=manifest.lstat();need(manifest==manifest.resolve(strict=True) and stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_size<=65536,'Frozen bounded physical inventory input manifest');descriptor=os.open(manifest,os.O_RDONLY|os.O_NOFOLLOW)
  with os.fdopen(descriptor,'rb') as f:
   observed=os.fstat(f.fileno());need((observed.st_dev,observed.st_ino,observed.st_size)==(info.st_dev,info.st_ino,info.st_size),'Manifest endpoint changed');raw=f.read(65537)
- need(len(raw)==info.st_size and hashlib.sha256(raw).hexdigest()==expected,'Frozen manifest bytes/SHA256');pins=json.loads(raw);need(len(pins)==4 and {p['id'] for p in pins}=={'rustc-source198','stage0-rustc1971','stage0-cargo1971','stage0-std1971'},'Exact four-input index');need(not os.path.lexists(out) and out.parent==out.parent.resolve(strict=True) and out.parent.stat().st_uid==os.getuid() and not out.parent.stat().st_mode&0o077,'Fresh private owned inventory output');out.mkdir(mode=0o700);cas=out/'cas';cas.mkdir(mode=0o700);started=time.monotonic();deadline=started+SECONDS;budget=Budget(deadline);physical=Physical();member_path=out/'MEMBERS.jsonl';retained_path=out/'RETAINED.jsonl';member_sink=member_path.open('xb');retained_sink=retained_path.open('xb');index_bytes=0;cas_bytes=0;retained_count=0;seen=set();source_metadata_seen=set();rows=[];counts={'regular':0,'directory':0,'symlink':0,'hardlink':0};error=None;complete=False
+ need(len(raw)==info.st_size and hashlib.sha256(raw).hexdigest()==expected,'Frozen manifest bytes/SHA256');pins=json.loads(raw);need(len(pins)==4 and {p['id'] for p in pins}=={'rustc-source198','stage0-rustc1971','stage0-cargo1971','stage0-std1971'},'Exact four-input index');need(not os.path.lexists(out) and out.parent==out.parent.resolve(strict=True) and out.parent.stat().st_uid==os.getuid() and not out.parent.stat().st_mode&0o077,'Fresh private owned inventory output');out.mkdir(mode=0o700);cas=out/'cas';cas.mkdir(mode=0o700);started=time.monotonic();deadline=started+SECONDS;budget=Budget(deadline);physical=Physical();member_path=out/'MEMBERS.jsonl';retained_path=out/'RETAINED.jsonl';member_sink=private_sink(member_path);retained_sink=private_sink(retained_path);index_bytes=0;cas_bytes=0;retained_count=0;seen=set();source_metadata_seen=set();rows=[];counts={'regular':0,'directory':0,'symlink':0,'hardlink':0};error=None;complete=False
  def append(sink,row):
   nonlocal index_bytes
   body=(json.dumps(row,sort_keys=True,separators=(',',':'))+'\n').encode();need(index_bytes+len(body)<=INDEX,'Combined member/retained index ceiling');physical.reserve(len(body));need(sink.write(body)==len(body),'Complete bounded index write');index_bytes+=len(body)
@@ -117,7 +121,7 @@ def inventory(manifest,expected,out):
      if notice:budget.take('notices',size,NOTICES)
      h=hashlib.sha256();git=hashlib.sha1(b'blob '+str(size).encode()+b'\0');temporary=out/('body-'+str(budget.members)+'.part')
      if meta or notice:physical.reserve(size)
-     sink=temporary.open('xb') if meta or notice else None
+     sink=private_sink(temporary) if meta or notice else None
      try:
       if item.isreg():
        for body in extent(source,size):
