@@ -1,7 +1,7 @@
 """Stopped persistent-byte capture and independent no-extraction roundtrip."""
 import argparse,gzip,hashlib,io,json,os,pathlib,stat,sys,tarfile,time
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
-from common import Refusal,need,encoded,freeze,hash_file,safe_relative,syncdir
+from common import Refusal,need,encoded,freeze,hash_file,safe_relative,syncdir,TAR_PADDING,TarTail,tar_end
 MEMBER_MAP='_checktrail/CAPTURE-MEMBERS.jsonl'
 class Sink:
  def __init__(self,file,maximum):self.file=file;self.maximum=maximum;self.bytes=0;self.hash=hashlib.sha256()
@@ -22,20 +22,9 @@ def scan(root,prefix,deadline,maximum_members=2000000):
  return rows
 def stable(row):
  p=pathlib.Path(row['physical']);s=p.lstat();need((s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns,s.st_ctime_ns)==tuple(row[k] for k in ['dev','inode','bytes','mtimeNS','ctimeNS']),'stopped evidence changed after enumeration');return p,s
-PADDING=1024**2
-class Tail:
- """The decompressed tar stream, keeping its last bytes and their offset.
-
- tarfile stops at an invalid or empty header without saying so, and has
- already consumed that block, so the end marker is checked from these bytes.
- """
- def __init__(self,stream,keep):self.stream=stream;self.keep=keep;self.window=bytearray();self.start=0
- def read(self,n=-1):
-  block=self.stream.read(n);self.window+=block
-  if len(self.window)>self.keep:drop=len(self.window)-self.keep;del self.window[:drop];self.start+=drop
-  return block
+PADDING=TAR_PADDING
 def roundtrip(path,deadline,maximum_bytes,maximum_members=2000000):
- observed={};archive_names=set();manifest=None;manifest_hash=None;total=0;stream=gzip.open(path,'rb');tail=Tail(stream,2*PADDING)
+ observed={};archive_names=set();manifest=None;manifest_hash=None;total=0;stream=gzip.open(path,'rb');tail=TarTail(stream)
  try:
   with tarfile.open(fileobj=tail,mode='r|') as t:
    for item in t:
@@ -56,14 +45,7 @@ def roundtrip(path,deadline,maximum_bytes,maximum_members=2000000):
      for block in iter(lambda:f.read(1048576),b''):need(time.monotonic()<deadline,'capture decoded-byte roundtrip deadline');n+=len(block);total+=len(block);need(n<=item.size and total<=maximum_bytes,'capture decoded-byte accounting');h.update(block)
      need(n==item.size,'complete archived regular body');row.update(bytes=n,sha256=h.hexdigest())
     observed[name]=row
-   # From the aligned end of the last member to the gzip footer (which checks
-   # the CRC): the two zero end blocks, then at most PADDING zero bytes.
-   end=t.offset
-   while True:
-    need(time.monotonic()<deadline,'capture gzip footer deadline');block=t.fileobj.read(65536)
-    need(tail.start+len(tail.window)-end<=1024+PADDING,'zero tar end marker and bounded zero padding')
-    if not block:break
-   need(end>=tail.start and tail.start+len(tail.window)-end>=1024 and not any(tail.window[end-tail.start:]),'zero tar end marker and bounded zero padding')
+   tar_end(t,tail,deadline)
   need(stream.read(1)==b'','complete gzip stream consumed')
  finally:stream.close()
  need(manifest is not None,'internal complete member inventory present');seen=set();regular_paths=0

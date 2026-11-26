@@ -108,6 +108,21 @@ class ObserverControls(unittest.TestCase):
  def test_corrupt_gzip_crc_and_truncated_sdk_package_never_earn_credit(self):
   p=self.sdk();good=p.read_bytes();bad=bytearray(good);bad[-8]^=1;p.write_bytes(bad);self.assertFalse(self.fresh()['selectedSDKArchiveMetadataAndAttributionObserved'])
   p.write_bytes(good[:-5]);self.assertFalse(self.fresh()['selectedSDKArchiveMetadataAndAttributionObserved'])
+ def test_missing_or_replaced_tar_end_marker_never_earns_credit(self):
+  # A complete gzip stream whose tar part ends without its zero end blocks,
+  # or with a non-zero block in their place, at the last member boundary.
+  p=self.sdk();raw=gzip.decompress(p.read_bytes())
+  with tarfile.open(fileobj=io.BytesIO(raw)) as tar:tar.getmembers();end=tar.offset
+  for case,body,credited in [('missing-marker',raw[:end],False),('invalid-header-in-its-place',raw[:end]+b'3517'*128+raw[end+512:],False),('extra-zero-padding',raw+bytes(3517),True),('unchanged',raw,True)]:
+   with self.subTest(case=case):
+    p.write_bytes(gzip.compress(body));row=self.fresh()
+    self.assertIs(row['selectedSDKArchiveMetadataAndAttributionObserved'],credited);self.assertIs(row['candidates'][0].get('fullGzipStreamIntegrityVerified',False),credited)
+ def test_interpreter_segment_must_hold_its_terminating_nul(self):
+  for interpreter,credited in [(b'/lib/ld-musl-aarch64.so.1',False),(b'/lib/ld-musl-aarch64.so.1\0',True)]:
+   with self.subTest(interpreter=interpreter):
+    for x in self.root.glob('*.tar.gz'):x.unlink()
+    self.sdk(changes={'dotnet':self.elf(interpreter=interpreter)});candidate=self.fresh()['candidates'][0]
+    self.assertIs(candidate['targetDotnetARM64MuslELFMetadataMatched'],credited)
  def test_traversal_and_duplicate_package_member_names_never_earn_credit(self):
   p=self.sdk(changes={'../escape':b'inert'});self.assertFalse(self.fresh()['selectedSDKArchiveMetadataAndAttributionObserved'])
   p=self.sdk();good=p.read_bytes()

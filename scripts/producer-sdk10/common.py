@@ -12,6 +12,26 @@ def hash_file(path,algorithm='sha256',deadline=None):
    if deadline is not None:need(time.monotonic()<deadline,'file hashing deadline')
    h.update(block);n+=len(block)
  return n,h.hexdigest()
+TAR_PADDING=1024**2
+class TarTail:
+ """A decompressed tar stream that keeps its last bytes and their offset.
+
+ tarfile stops at an invalid or empty header without saying so, and has
+ already consumed that block, so tar_end() checks the end from these bytes.
+ """
+ def __init__(self,stream,keep=2*TAR_PADDING):self.stream=stream;self.keep=keep;self.window=bytearray();self.start=0
+ def read(self,n=-1):
+  block=self.stream.read(n);self.window+=block
+  if len(self.window)>self.keep:drop=len(self.window)-self.keep;del self.window[:drop];self.start+=drop
+  return block
+def tar_end(archive,tail,deadline,padding=TAR_PADDING):
+ """Read a streamed tar to its end: two zero end blocks at the aligned end of its last member, then at most padding zero bytes."""
+ end=archive.offset
+ while True:
+  need(time.monotonic()<deadline,'tar end-of-archive deadline');block=archive.fileobj.read(65536)
+  need(tail.start+len(tail.window)-end<=1024+padding,'zero tar end marker and bounded zero padding')
+  if not block:break
+ need(end>=tail.start and tail.start+len(tail.window)-end>=1024 and not any(tail.window[end-tail.start:]),'zero tar end marker and bounded zero padding')
 def git_blob(raw):return hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
 def syncdir(path):
  fd=os.open(path,os.O_RDONLY|os.O_DIRECTORY)

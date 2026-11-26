@@ -1,7 +1,7 @@
 """First-party compiler/header and source-endpoint observations, never a review."""
 import argparse,gzip,hashlib,json,os,pathlib,posixpath,re,stat,struct,subprocess,sys,tarfile,time,zlib,xml.etree.ElementTree as ET,xml.parsers.expat as expat
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
-from common import Refusal,need,freeze,encoded,read_json,hash_file,git_blob,syncdir,safe_relative,bundle_json
+from common import Refusal,need,freeze,encoded,read_json,hash_file,git_blob,syncdir,safe_relative,bundle_json,TarTail,tar_end
 def file_identity(path,maximum=256*1024**2,deadline=None):
  p=pathlib.Path(path);fd=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
  try:
@@ -243,7 +243,8 @@ def arm64_musl_elf(f,size):
   ptype,pflags,offset,vaddr,paddr,filesz,memsz,align=struct.unpack('<IIQQQQQQ',table[i*56:(i+1)*56]);loads=loads or ptype==1
   if ptype==3:interpreter=(offset,filesz)
  if not(loads and interpreter and 1<interpreter[1]<=256 and phoff+len(table)<=interpreter[0] and sum(interpreter)<=size):return False
- f.read(interpreter[0]-(phoff+len(table)));return f.read(interpreter[1]).rstrip(b'\0')==b'/lib/ld-musl-aarch64.so.1'
+ # Linux requires the terminating NUL inside the declared segment and reads the path up to the first NUL.
+ f.read(interpreter[0]-(phoff+len(table)));segment=f.read(interpreter[1]);return len(segment)==interpreter[1] and segment.endswith(b'\0') and segment.split(b'\0',1)[0]==b'/lib/ld-musl-aarch64.so.1'
 
 def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
  rows=[];inventory=output_inventory(roots,deadline,'sdk-archives');known=prior_identities(before,'sdk-archives',roots,deadline);command_passed=type(original_build) is dict and original_build.get('originalCodeExecuted') is True and original_build.get('exitCode')==0 and original_build.get('stopReason') is None
@@ -256,8 +257,8 @@ def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
      need(time.monotonic()<deadline,'fresh SDK gzip validation deadline');body=self.stream.read(n);self.bytes+=len(body);need(self.bytes<=8*1024**3,'fresh SDK complete decoded stream bound');return body
    fd=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
    with os.fdopen(fd,'rb') as raw,gzip.GzipFile(fileobj=inventoried_regular(raw,identity),mode='rb') as compressed:
-    reader=Reader(compressed)
-    with tarfile.open(fileobj=reader,mode='r|') as t:
+    reader=Reader(compressed);tail=TarTail(reader)
+    with tarfile.open(fileobj=tail,mode='r|') as t:
      for item in t:
       need(time.monotonic()<deadline and entries<100000,'fresh SDK archive bounds');entries+=1;decoded+=item.size;name=item.name.removeprefix('./')
       if name in ['', '.'] and item.isdir():continue
@@ -275,7 +276,9 @@ def fresh_sdks(roots,profile,deadline,before=None,original_build=None):
        if re.fullmatch(r'shared/Microsoft\.NETCore\.App/[^/]+/libcoreclr\.so',name):layout.add('coreclr')
        if re.fullmatch(r'shared/Microsoft\.NETCore\.App/[^/]+/System\.Private\.CoreLib\.dll',name):layout.add('corelib')
        if name=='sdk/10.0.401/dotnet.dll':layout.add('sdk-entry-assembly')
-    while reader.read(65536):pass
+     # Why iteration stopped matters: a missing or damaged end marker also ends it.
+     tar_end(t,tail,deadline)
+    need(reader.read(1)==b'','complete SDK gzip stream consumed')
    need(file_identity(p,2*1024**3,deadline)==identity,'selected SDK archive changed during metadata validation');row['fullGzipStreamIntegrityVerified']=True
    versions=[x for x in row['versionFiles'] if x['path']=='sdk/10.0.401/.version'];row['requiredProductLayoutMetadataObserved']=layout=={'hostfxr','coreclr','corelib','sdk-entry-assembly'};row['selectedSDKArchiveMetadataAndAttributionMatched']=len(versions)==1 and all(x in versions[0]['lines'] for x in [profile['source']['commit'],'10.0.401',profile['targetRID']]) and row['targetDotnetARM64MuslELFMetadataMatched'] and row.get('dotnetExecutable') is True and row['requiredProductLayoutMetadataObserved'] and row['changedSinceProtectedPreBuildSnapshot'] and command_passed
   except (ValueError,tarfile.TarError,Refusal,struct.error,OSError,EOFError,zlib.error):row['selectedSDKArchiveMetadataAndAttributionMatched']=False
