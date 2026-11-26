@@ -75,14 +75,14 @@
     "sha256": "c415de7356e9232818dae9cb6a3230a127c08fe21f2d82b7ddf4093111413159"
   },
   {
-    "bytes": 86824,
+    "bytes": 88588,
     "file": "test_controller.py",
-    "sha256": "1d98bb86aadbf80d32f89f873ae9ec171101222e18d26abee3c59c3b2eb88361"
+    "sha256": "8bf9edff22616e4010b617343f204b302cfae11cb552034ffbe31df2615306ba"
   },
   {
-    "bytes": 41618,
+    "bytes": 42416,
     "file": "test_inner_failure_observation.py",
-    "sha256": "d5c8eb527b8bf6bd50bdc09709452ec35845163089a35c087c7949c848f6ae81"
+    "sha256": "9299ce4399c993baa2c5289149f85387ed5f019d58fe97b4f712d5829c8a29ba"
   },
   {
     "bytes": 10450,

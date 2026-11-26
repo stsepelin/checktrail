@@ -1,11 +1,12 @@
 """Closed first-party failed-inner metadata, synthetic only; no SDK operations."""
 from pathlib import Path
-import ast,hashlib,io,json,os,plistlib,re,subprocess,sys,tempfile,unittest
+import ast,hashlib,io,json,os,plistlib,re,stat,subprocess,sys,tempfile,unittest
 from contextlib import redirect_stdout
 from types import SimpleNamespace
 from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import host_probe as H
+from test_controller import CreationModes
 
 def root_owned_stand_in():
  """A root-owned regular file addressed by its own resolved path.
@@ -115,8 +116,10 @@ class InnerFailure(unittest.TestCase):
  def summary_with_synthetic_original_sla(self,sla):
   result={'platform':'Darwin','arch':'arm64','macOS':'synthetic','CPUs':3,'RAMBytes':7*1024**3,'scratchFreeBytes':123,'xcodeVersion':'26.2','xcodeBuild':'synthetic','SDKVersionObservedNotHistoricalPublisherPin':'26.2','missingTools':[],'originalSLA':sla,'selectedFrame':{'bytes':12,'sha256':'b'*64,'entries':2,'hashReadBytes':34},'permissionObservation':{'failureCount':0},'controllerProtected':True,'sdkAndToolsProtectedFromBuildUid':True};environment={'GITHUB_ACTIONS':'true','RUNNER_ENVIRONMENT':'github-hosted','GITHUB_RUN_ID':'1','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':'a'*40};out=io.StringIO()
   with tempfile.TemporaryDirectory() as directory:
-   with mock.patch.dict(os.environ,environment),mock.patch.object(H.os,'getuid',return_value=0),mock.patch.object(H.platform,'system',return_value='Darwin'),mock.patch.object(H.platform,'machine',return_value='arm64'),mock.patch.object(H,'collect_metadata',return_value=result) as collected,mock.patch.object(sys,'argv',['host_probe',directory]),redirect_stdout(out):code=H.main()
+   with mock.patch.dict(os.environ,environment),mock.patch.object(H.os,'getuid',return_value=0),mock.patch.object(H.platform,'system',return_value='Darwin'),mock.patch.object(H.platform,'machine',return_value='arm64'),mock.patch.object(H,'collect_metadata',return_value=result) as collected,mock.patch.object(sys,'argv',['host_probe',directory]),redirect_stdout(out),CreationModes('HOST-OBSERVATION.json') as modes:code=H.main()
    collected.assert_called_once();retained=json.loads((Path(directory)/'HOST-OBSERVATION.json').read_bytes());self.assertEqual(sla,retained['originalSLA'])
+   # The receipt is owner-only from its creating syscall, whatever the umask.
+   self.assertEqual([('HOST-OBSERVATION.json',0o600,0)],modes.created);self.assertEqual(0o400,stat.S_IMODE((Path(directory)/'HOST-OBSERVATION.json').stat().st_mode))
   return code,json.loads(out.getvalue()),out.getvalue()
  def test_null_original_sla_is_not_reported_retained_and_still_refuses_admission(self):
   code,summary,text=self.summary_with_synthetic_original_sla(None)
@@ -203,6 +206,10 @@ class PermissionAccessRestore(unittest.TestCase):
   self.probe(inner)
   helper=self.output/H.PL.INNER_HELPER;sha=hashlib.sha256(HELPER).hexdigest()
   self.assertEqual([(helper,HELPER,sha,str(helper),sha,True)],seen);self.assertFalse(os.path.lexists(helper))
+ def test_retained_frame_is_owner_only_before_its_first_byte(self):
+  with CreationModes('selected-sdk-tool-controller-frame.json.gz') as modes:value=self.probe(self.observed(self.accepted()))
+  self.assertEqual([('selected-sdk-tool-controller-frame.json.gz',0o600,0)],modes.created)
+  frame=Path(value['selectedFrame']['file']);self.assertEqual(0o400,self.mode(frame));import gzip;self.assertEqual(self.frame,json.loads(gzip.decompress(frame.read_bytes())))
  def test_success_removes_request_and_restores_private_output(self):
   value=self.probe(self.observed(self.accepted()))
   self.assertEqual([(0o755,0o444)],self.during);self.assertEqual([(0o700,0o400)],self.after);self.assertEqual(0o700,self.mode(self.output));self.assertFalse(os.path.lexists(self.output/'permission-request.json'))

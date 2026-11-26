@@ -1,6 +1,6 @@
 """Synthetic first-party controls only: no upstream source/SDK/compiler execution."""
 from pathlib import Path
-import _io,ast,builtins,importlib.machinery,subprocess,contextlib,copy,hashlib,io,json,os,plistlib,re,signal,stat,sys,tempfile,types,unittest
+import _io,ast,builtins,fnmatch,importlib.machinery,subprocess,contextlib,copy,hashlib,io,json,os,plistlib,re,signal,stat,sys,tempfile,types,unittest
 from contextlib import redirect_stdout
 from unittest import mock
 HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
@@ -776,15 +776,16 @@ class LauncherImportTests(unittest.TestCase):
   body="import importlib,json\nfailed=[]\nfor module,name in %r:\n try:\n  value=importlib.import_module(module)\n  if name is not None and name!='*' and not hasattr(value,name):importlib.import_module(module+'.'+name)\n except Exception as error:failed.append([module,name,type(error).__name__+': '+str(error)])\nraise SystemExit(json.dumps(failed))\n" % (wanted,)
   result=through_launcher(body);self.assertEqual((1,b''),(result.returncode,result.stdout));self.assertEqual([],json.loads(result.stderr))
 class CreationModes:
- """Records each named file's mode and size as the call that creates it returns.
+ """Records the mode and size of each file whose name matches a pattern, as the
+ call that creates it returns.
 
  os.open, built-in open and io.open (pathlib's Path.open, write_bytes and
  write_text) are all observed, so a file created readable and narrowed later
  is seen with its creation mode, before any write or chmod.
  """
- def __init__(self,*names):self.names=set(names);self.created=[];self.patches=[]
+ def __init__(self,*names):self.names=names;self.created=[];self.patches=[]
  def note(self,path,fd):
-  if not isinstance(path,int) and Path(os.fsdecode(os.fspath(path))).name in self.names:
+  if not isinstance(path,int) and any(fnmatch.fnmatchcase(Path(os.fsdecode(os.fspath(path))).name,name) for name in self.names):
    status=os.fstat(fd);self.created.append((Path(os.fsdecode(os.fspath(path))).name,stat.S_IMODE(status.st_mode),status.st_size))
  def __enter__(self):
   real_os_open,real_io_open,real_open=os.open,io.open,builtins.open
@@ -807,7 +808,7 @@ class CreationModes:
 
 class PrivateCreationTests(unittest.TestCase):
  """Private files are owner-only from the syscall that creates them, under any umask."""
- def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve();self.root.chmod(0o755)
+ def setUp(self):self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name).resolve()
  def tearDown(self):self.temp.cleanup()
  def test_creation_observer_sees_a_permissive_umask_creation(self):
   with CreationModes('readable-5521') as modes:(self.root/'readable-5521').write_bytes(b'5521')
@@ -832,9 +833,26 @@ class PrivateCreationTests(unittest.TestCase):
   (self.root/'target-5521').write_bytes(b'target 5521');(self.root/'link-5521').symlink_to(self.root/'target-5521')
   with self.assertRaises(OSError):A.create_private(self.root/'link-5521')
   self.assertEqual(b'target 5521',(self.root/'target-5521').read_bytes())
- def test_inventory_index_sinks_are_owner_only_before_their_first_byte(self):
-  inventory=P.M.primitives()
-  with CreationModes('MEMBERS.jsonl') as modes:
-   with inventory.private_sink(self.root/'MEMBERS.jsonl') as sink:sink.write(b'{"synthetic":5521}\n')
-  self.assertEqual([('MEMBERS.jsonl',0o600,0)],modes.created);self.assertEqual(b'{"synthetic":5521}\n',(self.root/'MEMBERS.jsonl').read_bytes())
+ def synthetic_inventory_inputs(self):
+  import lzma,tarfile
+  folder=self.root/'inputs';folder.mkdir(mode=0o700);pins=[]
+  for index,(name,prefix) in enumerate([('rustc-source198','rustc-1.98.0-src'),('stage0-rustc1971','rustc-1.97.1-aarch64-apple-darwin'),('stage0-cargo1971','cargo-1.97.1-aarch64-apple-darwin'),('stage0-std1971','rust-std-1.97.1-aarch64-apple-darwin')]):
+   stream=io.BytesIO()
+   with tarfile.open(fileobj=stream,mode='w',format=tarfile.USTAR_FORMAT) as tar:
+    root=tarfile.TarInfo(prefix);root.type=tarfile.DIRTYPE;root.mode=0o755;tar.addfile(root)
+    for member,body in [('version',b'synthetic version 5521-%d\n' % index),('LICENSE-MIT',b'synthetic notice 5521-%d\n' % index)]:
+     info=tarfile.TarInfo(prefix+'/'+member);info.size=len(body);info.mode=0o644;tar.addfile(info,io.BytesIO(body))
+   file=folder/(name+'.tar.xz');file.write_bytes(lzma.compress(stream.getvalue()));file.chmod(0o400)
+   pins.append({'id':name,'file':str(file),'bytes':file.stat().st_size,'sha256':hashlib.sha256(file.read_bytes()).hexdigest(),'prefix':prefix})
+  manifest=folder/'manifest.json';manifest.write_bytes(json.dumps(pins).encode());parent=self.root/'inventory';parent.mkdir(mode=0o700)
+  return manifest,hashlib.sha256(manifest.read_bytes()).hexdigest(),parent/'out'
+ def test_inventory_index_and_retained_bodies_are_owner_only_before_their_first_byte(self):
+  manifest,sha,out=self.synthetic_inventory_inputs();inventory=P.M.primitives()
+  with CreationModes('MEMBERS.jsonl','RETAINED.jsonl','body-*.part') as modes:result=inventory.inventory(manifest,sha,out)
+  self.assertTrue(result['completeInertInventory'],result['failure'])
+  names=[row[0] for row in modes.created];self.assertEqual(['MEMBERS.jsonl','RETAINED.jsonl'],names[:2]);self.assertEqual(8,len([n for n in names if n.startswith('body-')]))
+  self.assertEqual([(name,0o600,0) for name in names],modes.created)
+  retained=[json.loads(line) for line in (out/'RETAINED.jsonl').read_bytes().splitlines()];self.assertEqual(8,len(retained))
+  self.assertIn(b'synthetic notice 5521-3\n',{Path(row['file']).read_bytes() for row in retained})
+
 if __name__=='__main__':unittest.main()
