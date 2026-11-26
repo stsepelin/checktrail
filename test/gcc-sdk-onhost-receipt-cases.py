@@ -10,6 +10,7 @@ import os
 import re
 from pathlib import Path
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -194,14 +195,14 @@ m.fixed_work=work;sys.argv=['helper','qualify-on-host','--operator-trust-executi
 
     def test_each_receipt_decoder_admits_only_its_own_exact_policy_revision(self):
         root,_,_,good,_=self.run_entry(self.noisy)
-        current='1e8fe16ba8192347186097b7bc331bb3ae1d5dbf480ae138723a2610642604a8'
+        current='891d71bc936bdccf0875a2385abedcfdf22b365cb51345836b8d7f628e5f9242'
         v5='53e78d4937950c42fdddbcccacbb37b49b84d881ebd16e0f6397b69bad5232e9'
         v4='d3d3df6c5ab0a92b99cd847444750e80f50c5959a42ed4462cce73d9f58d1c58'
         self.assertEqual(m.POLICY_SHA256,current);self.assertEqual(good['sourcePolicySha256'],current)
         decoders={current:m.validate_receipt,v5:m.validate_historical_v5_receipt,v4:m.validate_historical_v4_receipt}
         # Earlier v6 amendments never authorized a run, so no receipt or
         # checkpoint carries their digests and no decoder keeps them.
-        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261','1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6','df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f','dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b']
+        retired=['ad97aef6fd05beca69e27b2ff035c36e04a92c6695c93e83d86d7f9c451cce77','d60c7df439f79aa27cf1629a12a24d6f5044cf48b65a488ddbd1e10de6e94089','3a044fbbd5438560506c2649628bbd855bafc539d1c0a05bb23635e82eedc923','30640bb6878c88f8c145ffe7e4b51eea990661a04a05e28a31d5d91e365eb261','1bef0675ee6055195f264ac5d7997b05429b01402b580826f4ed7dd897500bd6','df094a9cc0e7bef188a0d2605befa076b03e1a217f36032191ac360f69a8706f','dc7a556360a766ed2e4ec899b035a6f81f679ac39ff4526b2084f4bee8ad4b1b','1e8fe16ba8192347186097b7bc331bb3ae1d5dbf480ae138723a2610642604a8']
         self.assertNotIn(current,retired)
         for digest in retired:
             for decode in decoders.values():
@@ -749,7 +750,7 @@ class VerifiedExecution(unittest.TestCase):
   # successes and stopped there.
   successes=extra.get('nodeSuccesses',0);stage=['common-input-acquisition','gcc-input-acquisition'][successes]
   self.assertEqual((value['errorId'],value['diagnostics']['stage']),('input-refused',stage))
-  self.assertEqual(len(observed['node']),successes+1);self.assertEqual(list(staging.iterdir()),[],'The private verified copy was not removed')
+  self.assertEqual(len(observed['node']),successes+1);self.assertEqual([list(root.iterdir()) for root in staging.iterdir()],[[]],'The private verified copy was not removed')
   return value,observed
  def swaps(self,base,markers):
   helper=(ROOT/self.PYTHON).read_text()+MARKER_CODE.format(marker=str(markers['python']))
@@ -798,6 +799,17 @@ class VerifiedExecution(unittest.TestCase):
   self.assertEqual(markers['python'].read_text(),'sibling-module-code-ran-137')
   self.assertEqual(markers['node'].read_text(),'node-import-ran-137')
   self.assertEqual(observed['node'][0]['code'],2)
+
+
+class StagedCleanup(unittest.TestCase):
+ def test_removed_copy_keeps_its_private_root_so_the_cache_prefix_stays_private(self):
+  with tempfile.TemporaryDirectory(prefix='gcc-receipt-staged-cleanup-') as name:
+   parent=Path(name).resolve()
+   with mock.patch.object(m,'STAGING_PARENT',str(parent)),mock.patch.dict(m.VERIFIED),mock.patch.object(sys,'pycache_prefix',sys.pycache_prefix):
+    root=m.stage_verified({'scripts/producer-qualification/synthetic-137.py':(b'value=137\n',0o644)})
+    m.remove_staged();prefix=Path(sys.pycache_prefix)
+    self.assertEqual(prefix.parent,root);self.assertTrue(root.is_dir());self.assertEqual(list(root.iterdir()),[])
+    self.assertEqual(stat.S_IMODE(root.stat().st_mode),0o700);self.assertEqual(root.stat().st_uid,os.geteuid())
 
 
 class CheckoutGitConfig(unittest.TestCase):

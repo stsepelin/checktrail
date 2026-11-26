@@ -263,6 +263,15 @@ def cleanup_owned(output,docker=h.docker):
             result.update(state='local-sdk-image-absence-unqualified-after-ambiguous-commit',ownedImageCleanupComplete=False,
                           unknownUnreferencedImageRemovalAssessed=False)
             raise ValueError('No returned SDK image identity/tag; complete owned image cleanup is unproven')
+        # A recovery tag command that timed out can still finish after the
+        # checks above. Recovery tags are unpredictable, so any binding of one
+        # is owned; the owned tag counts while it still names the owned image.
+        owned_images={returned,result.get('observedLocalImageId')}-{None}
+        remaining=[name for name in recovery_tags(output,tag) if docker(['image','ls','--no-trunc','--quiet',name]).strip()]
+        remaining+=[tag] if set(docker(['image','ls','--no-trunc','--quiet',tag]).decode().split())&owned_images else []
+        if remaining:
+            result.update(ownedImageCleanupComplete=False,ownedTagsRemaining=remaining)
+            raise ValueError('An owned SDK image tag is still present after cleanup; retry before claiming completion')
         return result
     except BaseException as error:
         result['error']=str(error)[:2000];raise

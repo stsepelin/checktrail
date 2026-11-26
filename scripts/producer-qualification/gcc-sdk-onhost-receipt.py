@@ -21,7 +21,7 @@ import tempfile
 import time
 import traceback
 
-POLICY_SHA256='1e8fe16ba8192347186097b7bc331bb3ae1d5dbf480ae138723a2610642604a8'
+POLICY_SHA256='891d71bc936bdccf0875a2385abedcfdf22b365cb51345836b8d7f628e5f9242'
 PREFIX=b'CHECKTRAIL_SDK_RECEIPT_V1 '
 MAX_RECEIPT=16384
 MAX_OPAQUE=16*1024**2
@@ -510,10 +510,12 @@ def stage_verified(files):
 
 
 def remove_staged():
+    """Remove the staged files but keep the empty private root: the bytecode
+    cache prefix still names a path inside it, which nobody else can create."""
     root=VERIFIED.pop('root',None)
     if root is None:return
     for folder,_,_ in os.walk(root):os.chmod(folder,0o700)
-    shutil.rmtree(root)
+    for child in list(root.iterdir()):shutil.rmtree(child) if child.is_dir() and not child.is_symlink() else child.unlink()
 
 
 def fixed_work(private):

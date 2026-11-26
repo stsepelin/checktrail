@@ -6,6 +6,7 @@ remote destination, flags, a larger quota or a different producer.
 """
 import argparse
 import atexit
+import base64
 import errno
 import hashlib
 import importlib.util
@@ -297,9 +298,12 @@ def protected_executable(path, expected_sha256, maximum):
     target = folder / path.name
     observed = hashlib.sha256()
     size = 0
-    source = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | getattr(os, 'O_CLOEXEC', 0))
+    # Nonblocking, so a FIFO swapped in for the executable is refused by the
+    # type check instead of waiting for a writer.
+    source = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | getattr(os, 'O_CLOEXEC', 0))
     try:
-        require(stat.S_ISREG(os.fstat(source).st_mode), 'Bounded ordinary file required')
+        opened = os.fstat(source)
+        require(stat.S_ISREG(opened.st_mode) and opened.st_size <= maximum, 'Bounded ordinary file required')
         with os.fdopen(os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o700), 'wb') as sink:
             while True:
                 raw = os.read(source, 1024 ** 2)
@@ -349,13 +353,22 @@ def observed_image_fields(image):
     return value
 
 
+# Read with this module's own code, so a later validation runs the helper this
+# process loaded beside it, not whatever the path holds at that moment. A
+# native container imports this module from its control mount without the
+# helper and never validates images.
+_IMAGE_IDENTITY_PATH = Path(__file__).with_name('binutils-image-identity.mjs')
+IMAGE_IDENTITY_HELPER = _IMAGE_IDENTITY_PATH.read_bytes() if os.path.lexists(_IMAGE_IDENTITY_PATH) else None
+
+
 def validate_image(image, selected_image, registry, runtime):
     # Acquisition and native admission use one first-party image contract. Some
     # Docker stores expose the manifest ID and others the config ID; both must
     # bind the identical raw pinned registry config and filesystem layers.
-    helper = Path(__file__).with_name('binutils-image-identity.mjs').resolve()
+    require(IMAGE_IDENTITY_HELPER is not None, 'Pinned image identity helper unavailable')
+    helper = 'data:text/javascript;base64,' + base64.b64encode(IMAGE_IDENTITY_HELPER).decode()
     code = ('import { readFileSync } from "node:fs"; '
-            'import { registryImageIdentity, validateObservedImage } from ' + json.dumps(helper.as_uri()) + '; '
+            'import { registryImageIdentity, validateObservedImage } from ' + json.dumps(helper) + '; '
             'const input = JSON.parse(readFileSync(0, "utf8")); '
             'const identity = registryImageIdentity(input.registry, input.selectedImage); '
             'process.stdout.write(JSON.stringify(validateObservedImage(input.image, identity)));')

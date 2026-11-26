@@ -1,5 +1,5 @@
 """Synthetic R3 family plus real readers; ALL Docker/host-runtime seams mocked."""
-import copy,importlib.util,inspect,json,os,shutil,tempfile,unittest
+import copy,importlib.util,inspect,json,os,shutil,sys,tempfile,unittest
 from pathlib import Path
 from unittest import mock
 
@@ -182,6 +182,19 @@ class LocalSdk(unittest.TestCase):
    m.source_policy(copy)
    p=copy/'scripts/producer-qualification/gcc-staged-plan.py';body=p.read_bytes();p.write_bytes(body[:-1]+(b' ' if body[-1:]!=b' ' else b'\n'))
    with self.assertRaisesRegex(ValueError,'R3 SDK runtime source changed'):m.source_policy(copy)
+ def test_staged_copy_passes_source_policy_with_its_read_only_modes(self):
+  with tempfile.TemporaryDirectory(prefix='sdk-policy-staged-') as directory:
+   staging=Path(directory).resolve()
+   with mock.patch.object(m.receipt,'STAGING_PARENT',str(staging)),mock.patch.dict(m.receipt.VERIFIED),mock.patch.object(sys,'pycache_prefix',sys.pycache_prefix):
+    staged=m.stage_source(ROOT)
+    try:
+     self.assertEqual(m.source_policy(staged,staged=True)['revision'],'live-sample-tolerance-and-container-id-v6')
+     # A staged copy is not a checkout, and a checkout is not a staged copy.
+     with self.assertRaisesRegex(ValueError,'R3 SDK runtime source changed'):m.source_policy(staged)
+     with self.assertRaisesRegex(ValueError,'R3 SDK runtime source changed'):m.source_policy(ROOT,staged=True)
+     path=staged/CARRIER;os.chmod(path.parent,0o755);os.chmod(path,0o644)
+     with self.assertRaisesRegex(ValueError,'R3 SDK runtime source changed'):m.source_policy(staged,staged=True)
+    finally:m.receipt.remove_staged()
  def test_no_phase_command_or_execution_boolean_parameter_can_supply_authority(self):
   parameters=inspect.signature(m.verify_prepared).parameters
   self.assertEqual(list(parameters),['repository','sdk_frame','private','docker','source'])

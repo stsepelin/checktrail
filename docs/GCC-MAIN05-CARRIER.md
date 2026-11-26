@@ -66,7 +66,8 @@ or an owned image left untagged, keeps cleanup unqualified, including on any
 later retry that finds the owned image gone. An untagged owned image is recovered through a fresh
 unpredictable tag, never by ID and never by rebinding the owned tag; that tag
 is recorded before its command runs, so a retry removes it even when the
-command created it and never answered. Actual SDK/native elapsed
+command created it and never answered, and cleanup is complete only once no
+recorded recovery tag and no owned tag naming the owned image remains. Actual SDK/native elapsed
 time remains charged when later checks or retention fail. A genuine zero with
 an unconfirmed family creates a charged `terminal-incomplete` row with no
 checkpoint. Such a row blocks every continuation; there is no caller Boolean
@@ -120,9 +121,13 @@ row, and `gcc-hosted-sdk.py` takes its controls from its own directory, which
 outside the receipt must be the checkout it attests. The native05 assembly
 stages the same verified copy before the SDK constructor runs, and both the
 controls copied into the SDK container and the verification after it read
-that copy. The admitted host Node is hashed while it is copied into a private
-0555 executable, and only that copy runs, for its version check and for every
-acquisition step. The configure carrier recomputes its allowance immediately
+that copy, with the staged files' read-only modes checked as such. The
+admitted host Node is opened nonblocking and hashed while it is copied into a
+private 0555 executable, and only that copy runs, for its version check and
+for every acquisition step. The carrier's image-identity helper and the SDK
+material reader are read with the code that uses them, never from their paths
+again later, and removing a staged copy keeps its empty private root so the
+bytecode cache prefix inside it stays private. The configure carrier recomputes its allowance immediately
 before `docker start --attach` and records a not-started attempt when none is
 left. The
 same amended v6 also pins

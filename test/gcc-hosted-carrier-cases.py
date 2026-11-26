@@ -12,6 +12,7 @@ import os
 import shlex
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 import stat
 import tempfile
@@ -233,6 +234,38 @@ class Host(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='gcc-node-copy-synthetic-') as name:
             record=node_record(Path(name).resolve());runtime=h.admit_host_node(record)
             self.assertEqual((runtime['sha256'],runtime['version'],runtime['admittedPath']),(record['sha256'],record['version'],record['path']))
+
+    def copied_modules(self,base,names):
+        """Load modules from a private copy of the pinned sources, so a test can
+        rewrite a sibling file after the module was loaded."""
+        folder=base/'scripts/producer-qualification';folder.mkdir(parents=True)
+        policy=json.loads((MODULE/'gcc-sdk-receipt-policy.v1.json').read_bytes())
+        for row in policy['runtimeFiles']:
+            if row['path'].startswith('scripts/producer-qualification/'):shutil.copy2(ROOT/row['path'],base/row['path'])
+        return folder,[load(folder/name) for name in names]
+
+    def test_image_helper_rewritten_after_the_carrier_loaded_is_never_run(self):
+        for rewrite in [True,False]:
+            with self.subTest(rewrite=rewrite),tempfile.TemporaryDirectory(prefix='gcc-image-helper-synthetic-') as name:
+                base=Path(name).resolve();marker=base/'helper-ran.marker'
+                folder,(carrier,)=self.copied_modules(base,['gcc-hosted-carrier.py'])
+                if rewrite:
+                    (folder/'binutils-image-identity.mjs').write_text(
+                        'import { writeFileSync } from "node:fs";writeFileSync(%s,"rewritten-helper-ran-137");export const registryImageIdentity=()=>{};export const validateObservedImage=()=>({});'%json.dumps(str(marker)))
+                runtime=carrier.admit_host_node(node_record(base))
+                image,selected,registry,_=image_fixture()
+                try:witness=carrier.validate_image(image,selected,registry,runtime)
+                except Exception as error:witness=error
+                self.assertFalse(marker.exists(),'An image helper rewritten after load ran')
+                self.assertTrue(witness['nativeAmd64'],witness)
+
+    def test_fifo_in_place_of_the_admitted_executable_is_refused_without_waiting(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-node-fifo-synthetic-') as name:
+            base=Path(name).resolve();fifo=base/'node';os.mkfifo(fifo)
+            code=('import importlib.util,pathlib,sys;s=importlib.util.spec_from_file_location("c",sys.argv[1]);c=importlib.util.module_from_spec(s);'
+                  's.loader.exec_module(c)\ntry:c.protected_executable(pathlib.Path(sys.argv[2]),"0"*64,1024)\nexcept Exception as e:print("refused",e)')
+            completed=subprocess.run([sys.executable,'-I','-B','-c',code,str(MODULE/'gcc-hosted-carrier.py'),str(fifo)],capture_output=True,timeout=60)
+            self.assertTrue(completed.stdout.decode().startswith('refused Bounded ordinary file required'),completed.stdout+completed.stderr[-500:])
 
     def test_both_original_docker_id_forms_bind_the_same_pinned_layers_and_repository(self):
         image, selected, registry, manifest_digest = image_fixture()

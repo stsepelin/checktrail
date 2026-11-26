@@ -27,6 +27,8 @@ h=load(HERE/'gcc-hosted-carrier.py')
 codec=load(HERE/'gcc-staged-checkpoint.py')
 planner=load(HERE/'gcc-staged-plan.py')
 stage=load(HERE/'gcc-hosted-stage.py')
+# Loaded with this module, so no later call reads a helper from the path again.
+material=load(HERE/'gcc-sdk-material.py')
 require=h.require
 PREDECESSOR={
  'run':44140525465,'job':134241750848,'head':'9b237f06213d06bca5f94340c59bd40b2dccccd3',
@@ -110,7 +112,7 @@ def prepare_readonly_keyring(path, predecessor, expected_root):
     inventory=json.loads((predecessor/'__carrier_work/external-sdk-before.json').read_bytes())
     require(hashlib.sha256(stage.canonical(inventory)).hexdigest()==expected_root['externalSdkSha256'],
             'Authenticated old SDK inventory missing before read-only input preparation')
-    rows=load(HERE/'gcc-sdk-material.py').inventory(inventory)
+    rows=material.inventory(inventory)
     row=rows['/usr/share/keyrings/debian-keyring.gpg']
     require(row['kind']=='file' and h.digest_file(path)=={'bytes':row['bytes'],'sha256':row['sha256']},
             'Original read-only keyring bytes differ')

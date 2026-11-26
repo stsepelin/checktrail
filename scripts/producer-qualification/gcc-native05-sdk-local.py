@@ -15,7 +15,7 @@ sdk=load('gcc-main05-sdk.py')
 image=load('gcc-main05-sdk-image.py')
 h=image.h
 require=h.require
-POLICY_SHA256='1e8fe16ba8192347186097b7bc331bb3ae1d5dbf480ae138723a2610642604a8'
+POLICY_SHA256='891d71bc936bdccf0875a2385abedcfdf22b365cb51345836b8d7f628e5f9242'
 
 POLICY_PATH='scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json'
 
@@ -30,14 +30,17 @@ def stage_source(repository):
  require(POLICY_PATH not in files,'Original R3 SDK runtime source changed')
  return receipt.stage_verified({**files,POLICY_PATH:(raw,mode)})
 
-def source_policy(repository):
+def source_policy(repository,*,staged=False):
+ """A staged copy holds the pinned bytes read-only: 0555 for a row pinned
+ executable, 0444 otherwise; a checkout must hold the pinned mode itself."""
  repository=h.physical(Path(repository))
  path=repository/'scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json'
  require(receipt.file_pin(path,65536)['sha256']==POLICY_SHA256,'Unchanged approved SDK policy required')
  policy=receipt.read_json(path)
  for row in policy['runtimeFiles']:
   p=repository/row['path']
-  require(receipt.file_pin(p,row['bytes'])=={k:row[k] for k in ['bytes','sha256']} and stat.S_IMODE(p.lstat().st_mode)==row['mode'],
+  mode=(0o555 if row['mode']&0o111 else 0o444) if staged else row['mode']
+  require(receipt.file_pin(p,row['bytes'])=={k:row[k] for k in ['bytes','sha256']} and stat.S_IMODE(p.lstat().st_mode)==mode,
           'Original R3 SDK runtime source changed')
  return policy
 
@@ -50,8 +53,8 @@ def verify_prepared(repository,sdk_frame,private,docker=h.docker,*,source=None):
  is the staged verified copy whose bytes the constructor used; the checkout
  itself is read only for its git identity.
  """
- source=Path(repository) if source is None else Path(source)
- policy=source_policy(source);sdk_frame=h.physical(Path(sdk_frame));private=h.physical(Path(private))
+ policy=source_policy(repository) if source is None else source_policy(source,staged=True)
+ source=Path(repository) if source is None else Path(source);sdk_frame=h.physical(Path(sdk_frame));private=h.physical(Path(private))
  require(sdk_frame.is_dir() and private.is_dir() and sdk_frame!=private and sdk_frame not in private.parents and private not in sdk_frame.parents,
          'Separate physical local SDK and reader frames required')
  result=receipt.read_json(sdk_frame/'SDK-FOR-MAIN.json')

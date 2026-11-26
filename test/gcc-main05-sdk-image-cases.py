@@ -338,6 +338,27 @@ class FailedSnapshotCleanup(unittest.TestCase):
             self.assertTrue(result['ownedImageCleanupComplete']);self.assertNotIn(IMAGE,table.images)
             self.assertEqual(result['recoveryTagsRemoved'],created)
 
+    def test_recovery_tag_command_finishing_after_its_retry_check_is_never_called_complete(self):
+        with tempfile.TemporaryDirectory() as name:
+            output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');del table.tags[TAG]
+            pending=[]
+            def lost_answer(args,**kw):
+                if args[0]=='tag' and not pending:
+                    pending.append(args);raise ValueError('Fixed Docker operation failed: synthetic tag timeout 137')
+                if args==['image','inspect',IMAGE] and pending and len(pending)==1:
+                    # The daemon completes the first, timed-out tag command only
+                    # now, after the retry looked for it.
+                    pending.append('applied');table.bind(pending[0][2],IMAGE)
+                return docker(args,**kw)
+            with self.assertRaisesRegex(ValueError,'synthetic tag timeout 137'):m.cleanup_owned(output,lost_answer)
+            self.assertNotIn(pending[0][2],table.tags)
+            with self.assertRaisesRegex(ValueError,'still present after cleanup'):m.cleanup_owned(output,lost_answer)
+            self.assertIn(pending[0][2],table.tags)
+            record=json.loads((output/'SDK-IMAGE-CLEANUP.json').read_bytes())
+            self.assertFalse(record['ownedImageCleanupComplete']);self.assertEqual(record['ownedTagsRemaining'],[pending[0][2]])
+            self.assertTrue(m.cleanup_owned(output,lost_answer)['ownedImageCleanupComplete'])
+            self.assertEqual([tag for tag in table.tags if tag.startswith(TAG)],[]);self.assertNotIn(IMAGE,table.images)
+
     def test_recovery_tag_record_naming_another_image_refuses_removal(self):
         with tempfile.TemporaryDirectory() as name:
             output=Path(name).resolve();_,table,docker=self.attempt(output,'validation-failure');del table.tags[TAG]

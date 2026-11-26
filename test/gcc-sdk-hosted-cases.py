@@ -210,6 +210,22 @@ class Body(unittest.TestCase):
             self.assertEqual(result['bytes'],path.stat().st_size)
 
 class StandaloneControls(unittest.TestCase):
+    def test_material_helper_rewritten_after_load_is_never_run(self):
+        with tempfile.TemporaryDirectory(prefix='gcc-sdk-material-synthetic-') as name:
+            base=Path(name).resolve();folder=base/'scripts/producer-qualification';folder.mkdir(parents=True);marker=base/'material-ran.marker'
+            policy=json.loads((ROOT/'scripts/producer-qualification/gcc-sdk-receipt-policy.v1.json').read_bytes())
+            for row in policy['runtimeFiles']:
+                if row['path'].startswith('scripts/producer-qualification/'):(base/row['path']).write_bytes((ROOT/row['path']).read_bytes())
+            copied=load(folder/'gcc-hosted-sdk.py')
+            (folder/'gcc-sdk-material.py').write_text('import pathlib\npathlib.Path(%r).write_text("rewritten-material-ran-137")\n'%str(marker))
+            inventory={'schemaVersion':1,'entries':[]};predecessor=base/'predecessor';(predecessor/'__carrier_work').mkdir(parents=True)
+            (predecessor/'__carrier_work/external-sdk-before.json').write_bytes(copied.stage.canonical(inventory))
+            root={'externalSdkSha256':hashlib.sha256(copied.stage.canonical(inventory)).hexdigest()}
+            try:copied.prepare_readonly_keyring(base/'keyring.gpg',predecessor,root)
+            except Exception:pass
+            self.assertFalse(marker.exists(),'A material helper rewritten after load ran')
+
+
     def test_direct_run_copies_controls_only_from_the_attested_checkout(self):
         with tempfile.TemporaryDirectory(prefix='gcc-sdk-other-checkout-') as name:
             other=Path(name).resolve();(other/'scripts/producer-qualification').mkdir(parents=True)
